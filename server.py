@@ -15,7 +15,7 @@ import json
 import hashlib
 from datetime import datetime, timedelta
 
-from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File
+from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from groq import Groq
 
@@ -165,7 +165,7 @@ async def verificar_webhook(request: Request):
 
 
 @app.post("/webhook")
-async def recibir_mensaje(request: Request):
+async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     """
     Recibe mensajes entrantes de Meta y procesa la conversación.
     """
@@ -218,7 +218,7 @@ async def recibir_mensaje(request: Request):
     print(f"\n{'─'*50}")
     print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
 
-    procesar_mensaje_interno(numero_wa, nombre, texto_cliente, is_simulacion=False)
+    background_tasks.add_task(procesar_mensaje_interno, numero_wa, nombre, texto_cliente, False)
 
     return {"status": "ok"}
 
@@ -691,7 +691,7 @@ async def enviar_manual_endpoint(request: Request):
     print(f"  [👤 Humano -> {wa_id}]: {texto}")
     
     # Send to WhatsApp
-    from whatsapp_client import enviar_mensaje_texto, enviar_media
+    from whatsapp_client import enviar_mensaje, enviar_media
     import re
     import asyncio
     
@@ -706,7 +706,7 @@ async def enviar_manual_endpoint(request: Request):
             
             if match_sticker: enviar_media(wa_id, "sticker", match_sticker.group(1))
             elif match_img: enviar_media(wa_id, "image", match_img.group(1))
-            else: await enviar_mensaje_texto(wa_id, p)
+            else: enviar_mensaje(wa_id, p)
             
     asyncio.create_task(enviar_partes())
     
