@@ -44,6 +44,8 @@ BOT_GLOBAL_ACTIVO: bool = True
 
 # Cola para debouncing (acumular múltiples mensajes rápidos del mismo usuario)
 mensajes_pendientes: dict[str, list[str]] = {}
+import asyncio
+user_locks: dict[str, asyncio.Lock] = {}
 
 # Regex para detectar escalación desde el mensaje del cliente
 REGEX_ESCALAR = re.compile(
@@ -109,7 +111,7 @@ def llamar_groq(historial: list[dict]) -> str:
             model=GROQ_MODEL,
             messages=historial,
             temperature=TEMPERATURE,
-            max_tokens=512,
+            max_tokens=300,  # Reducido para ahorrar tokens en la cuota TPM de Groq
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
@@ -232,24 +234,32 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
 
 async def procesador_agregado(numero_wa: str, nombre: str):
     """
-    Espera 2.5 segundos de 'silencio' para ver si el cliente manda otro mensaje rápido.
+    Espera 3.0 segundos de 'silencio' para ver si el cliente manda otro mensaje rápido.
     Si llegan más, se agregan a la cola en el endpoint y luego se procesan juntos.
     """
     import asyncio
     import anyio
     
-    await asyncio.sleep(2.5)  # Ventana de agregación de 2.5s
+    await asyncio.sleep(3.0)  # Ventana de agregación de 3.0s
     
-    textos = mensajes_pendientes.pop(numero_wa, [])
-    if not textos:
-        return
+    # Obtener el lock del usuario para evitar llamadas superpuestas al modelo
+    if numero_wa not in user_locks:
+        user_locks[numero_wa] = asyncio.Lock()
         
-    texto_unido = " | ".join(textos)
+    lock = user_locks[numero_wa]
     
-    # Run the synchronous heavy lifting in a thread
-    await anyio.to_thread.run_sync(
-        procesar_mensaje_interno, numero_wa, nombre, texto_unido, False
-    )
+    async with lock:
+        # Extraemos los mensajes RECIÉN AHORA, por si llegaron más mientras esperábamos el Lock
+        textos = mensajes_pendientes.pop(numero_wa, [])
+        if not textos:
+            return
+            
+        texto_unido = " | ".join(textos)
+        
+        # Ejecutar el proceso pesado sincrónico en un hilo separado
+        await anyio.to_thread.run_sync(
+            procesar_mensaje_interno, numero_wa, nombre, texto_unido, False
+        )
 
 
 def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False) -> str | None:
