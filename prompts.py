@@ -18,7 +18,7 @@ def _obtener_guia() -> str:
     return _GUIA_CACHE
 
 
-def get_system_prompt(datos_pedido: dict | None = None) -> str:
+def get_system_prompt(datos_pedido: dict | list[dict] | None = None) -> str:
     """
     Construye el system prompt en 3 bloques:
       1. Instrucciones base
@@ -78,17 +78,21 @@ No la menciones ni la expliques al cliente.
 
     # ── Bloque 3: datos del pedido (Firebase) ───────────────
     if datos_pedido:
-        nombre    = f"{datos_pedido.get('clienteNombre', '')} {datos_pedido.get('clienteApellidos', '')}".strip()
-        estado    = datos_pedido.get("estadoGeneral", "No disponible")
-        id_pedido = datos_pedido.get("id", "N/A")
-
-        prompt += f"""
---- DATOS DEL PEDIDO (información real del sistema) ---
-- Nombre del cliente : {nombre}
-- N° de pedido       : {id_pedido}
-- Estado actual      : {estado}
---- FIN DE DATOS ---
-"""
+        if isinstance(datos_pedido, dict):
+            datos_pedido = [datos_pedido]
+            
+        prompt += "\n--- DATOS DE LOS PEDIDOS DEL CLIENTE (información real del sistema) ---\n"
+        for i, pedido in enumerate(datos_pedido):
+            nombre    = f"{pedido.get('clienteNombre', '')} {pedido.get('clienteApellidos', '')}".strip()
+            estado    = pedido.get("estadoGeneral", "No disponible")
+            id_pedido = pedido.get("id", "N/A")
+            
+            prompt += f"Pedido {i+1}:\n"
+            prompt += f"- Nombre del cliente : {nombre}\n"
+            prompt += f"- N° de pedido       : {id_pedido}\n"
+            prompt += f"- Estado actual      : {estado}\n\n"
+        prompt += "--- FIN DE DATOS ---\n"
+        prompt += "IMPORTANTE: Si el cliente consulta sobre su pedido y tiene más de uno, pregúntale amable y explícitamente sobre cuál de los pedidos mencionados necesita ayuda, dándole los detalles por ID o producto.\n"
     else:
         prompt += """
 --- DATOS DEL PEDIDO ---

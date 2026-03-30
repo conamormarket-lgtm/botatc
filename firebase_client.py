@@ -44,7 +44,7 @@ def _buscar(db, campo: str, valor: str) -> dict | None:
     return None
 
 
-def buscar_pedido_por_telefono(telefono: str) -> dict | None:
+def buscar_pedido_por_telefono(telefono: str) -> list[dict]:
     """
     Busca por número de teléfono en clienteContacto tolerando espacios
     extraños introducidos manualmente desde el panel de control.
@@ -76,14 +76,15 @@ def buscar_pedido_por_telefono(telefono: str) -> dict | None:
     docs = (
         db.collection(COLECCION_PEDIDOS)
           .where(filter=FieldFilter("clienteContacto", "in", variantes_busqueda))
-          .limit(1)
+          .limit(5)
           .get()
     )
     
+    resultados = []
     for doc in docs:
-        return doc.to_dict()
+        resultados.append(doc.to_dict())
         
-    return None
+    return resultados
 
 
 def buscar_pedido_por_id(numero_pedido: str) -> dict | None:

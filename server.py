@@ -285,21 +285,27 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     enviar_mensaje(numero_wa, msg)
                 return msg
         else:
-            datos = buscar_pedido_por_telefono(numero_local)
-            if datos:
-                estado = datos.get("estadoGeneral", "")
-                nombre_cliente = f"{datos.get('clienteNombre','')} {datos.get('clienteApellidos','')}".strip()
-                sesion["nombre_cliente"] = nombre_cliente or nombre
-                print(f"  [✅ Pedido: {datos.get('id')} | Estado: {estado}]")
-
-                if estado in ESTADOS_DISEÑO:
-                    print(f"  [🎨 En Diseño → silencio]")
+            datos_lista = buscar_pedido_por_telefono(numero_local)
+            if datos_lista:
+                # Excluir pedidos que están en Diseño
+                pedidos_no_diseno = [d for d in datos_lista if d.get("estadoGeneral", "") not in ESTADOS_DISEÑO]
+                
+                if not pedidos_no_diseno:
+                    print(f"  [🎨 Todos en Diseño → silencio]")
                     return None
-
-                sesion["datos_pedido"] = datos
+                    
+                nombre_cliente = f"{pedidos_no_diseno[0].get('clienteNombre','')} {pedidos_no_diseno[0].get('clienteApellidos','')}".strip()
+                sesion["nombre_cliente"] = nombre_cliente or nombre
+                
+                ids = [p.get("id") for p in pedidos_no_diseno]
+                print(f"  [✅ Pedidos encontrados: {ids} | Evitando Diseño]")
+                
+                sesion["datos_pedido"] = pedidos_no_diseno[0]  # Backward compatibility for inbox
+                sesion["pedidos_multiples"] = pedidos_no_diseno
+                
                 sesion["historial"][0] = {
                     "role": "system",
-                    "content": get_system_prompt(datos)
+                    "content": get_system_prompt(pedidos_no_diseno)
                 }
             else:
                 print(f"  [❓ Sin pedido registrado → silencio]")
