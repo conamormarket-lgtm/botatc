@@ -1,6 +1,6 @@
 ---
 name: convention
-description: "Convention for IA-ATC. ."
+description: "Convention for botatc. ."
 domain: convention
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Convention
 
-Auto-compiled from **1 real patterns** in **IA-ATC**. This skill is auto-routed to agents when working on convention files.
+Auto-compiled from **1 real patterns** in **botatc**. This skill is auto-routed to agents when working on convention files.
 
 ## 📐 Conventions & Best Practices
 

@@ -1,7 +1,59 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `guia_respuestas.md` (Domain: **Generic Logic**)
+> Dynamically loaded for active file: `serviceAccountKey.json` (Domain: **Config/Infrastructure**)
 
-### 🔴 Generic Logic Gotchas
+### 🔴 Config/Infrastructure Gotchas
+- **⚠️ GOTCHA: Fixed null crash in Response**: - # ─────────────────────────────────────────────
++ from fastapi.responses import Response
+- #  Health check
++ 
+- # ─────────────────────────────────────────────
++ @app.get("/api/media/{media_id}")
+- 
++ async def get_media_proxy(request: Request, media_id: str):
+- @app.get("/")
++     """Proxy para obtener imágenes o stickers de WhatsApp sin exponer el token cliente."""
+- async def home_redirect():
++     if not verificar_sesion(request):
+-     return RedirectResponse("/inbox", status_code=303)
++         raise HTTPException(status_code=403, detail="No autorizado")
+- 
++         
+- @app.get("/health")
++     from whatsapp_client import obtener_media_url, descargar_media
+- async def health():
++     url = await obtener_media_url(media_id)
+-     return {"status": "ok", "bot": "IA-ATC", "sesiones": len(sesiones)}
++     if not url:
+- 
++         return Response(content=b"", status_code=404)
+- 
++         
+- @app.get("/admin/chat/{numero_wa}", response_class=HTMLResponse)
++     contenido, mime_type = await descargar_media(url)
+- async def ver_chat(request: Request, numero_wa: str):
++     if not contenido:
+-     """Vista de conversación estilo WhatsApp para un número específico."""
++         return Response(content=b"", status_code=404)
+-     if not verificar_sesion(request):
++         
+-         return RedirectResponse(url=f"/admin", status_code=302)
++     return Response(content=contenido, media_type=mime_type or "image/jpeg")
+-     sesion = sesiones.get(numero_wa)
++ 
+-     if not sesion:
++ # ─────────────────────────────────────────────
+-         return HTMLResponse("<h2 style='font-family:sans-serif;padding:2rem'>Sesión no encontrada o ya expiró.</h2>")
++ #  Health check
+- 
++ # ─────────────────────────────────────────────
+-     nombre  = sesion.get("nombre_cliente", numero_wa)
++ 
+-     pedido  = sesion.get("datos_pedido", {}).get("id", "—") if sesion.get("datos_pedido") else "—"
++ @app.get("/")
+-     estado  = sesion.get("datos
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
 - **⚠️ GOTCHA: Fixed null crash in Reactivar**: -         # Reset completo de la sesión para ese número
 +         # Reactivar el bot sin borrar el historial ni los datos del pedido vinculados
 -         sesiones[numero_wa] = {
@@ -45,53 +97,87 @@
 -         re
 … [diff truncated]
 
-### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] what-changed in guia_respuestas.md**: - > "¡Ya tenemos todo validado! Tu pedido acaba de entrar a la cola de producción y muy pronto empezaremos a prepararlo. ⚙️"
-+ > "¡Tu pedido ya está en etapa de preparación! Acaba de entrar a la cola de producción y pronto lo tendremos listo. ⚙️"
-- > "Tu pedido ya está en producción, va bien encaminado. 🙌"
-+ > "Tu pedido ya está en la etapa de preparación y va bien encaminado. 🙌"
-- > "Hay una pequeña pausa porque uno de los productos tiene demora en stock. Ya lo estamos resolviendo. ¡Gracias por tu paciencia! 🙏"
-+ > "Tu pedido se encuentra en la etapa de preparación, pero hay una pequeña pausa porque uno de los productos tiene demora de stock. Ya lo estamos resolviendo, ¡gracias por tu paciencia! 🙏"
-
-📌 IDE AST Context: Modified symbols likely include [# Guía de Respuestas — Bot de Atención al Cliente]
-- **[discovery] discovery in guia_respuestas.md**: - ## Estados del Pedido y Cómo Responder
-+ ## Estados del Pedido y Cómo Responder (Usa EXACTAMENTE estas plantillas según el estado de DATOS DEL PEDIDO)
-- ### 🎨 "En Diseño"
-+ ### 🎨 "En Diseño" / "Diseño"
-- > "¡Tu pedido está en diseño! 🎨 Nuestro equipo ya está trabajando en él."
-+ > "¡Tu pedido está en diseño! 🎨 Nuestro equipo creativo ya está trabajando en él."
-- ### ⚙️ "Preparación" / "En Preparación"
-+ ### 💰 "En Cobranza" / "Cobranza"
-- > "Tu pedido ya está en producción, va bien encaminado. 🙌"
-+ > "Tu pedido está en proceso de cobranza y validación de pago. En breve avanzará a la siguiente etapa. 💳"
-- ### 📦 "Empaquetado"
-+ ### 📋 "Listo para Preparar"
-- > "¡Ya está listo y lo estamos empaquetando! 📦 Pronto sale para despacho."
-+ > "¡Ya tenemos todo validado! Tu pedido acaba de entrar a la cola de producción y muy pronto empezaremos a prepararlo. ⚙️"
-- ### 🚚 "Enviado" / "En camino" / "Reparto"
-+ ### ⚙️ "Preparación" / "En Preparación"
-- > "¡Ya está en camino! 🚚 La agencia de envíos lo tiene a cargo."
-+ > "Tu pedido ya está en producción, va bien encaminado. 🙌"
-- ### ✅ "Entregado"
-+ ### 📦 "Empaquetado" / "En Empaquetado"
-- > "Según nuestros registros, tu pedido fue entregado. ¿Lo recibiste bien? 😊"
-+ > "¡Ya está casi listo y en proceso de empaquetado! 📦 Muy pronto pasará al área de despachos."
-- ### ⏸️ "En Pausa por Stock"
-+ ### 🚚 "Enviado" / "En camino" / "En Reparto"
-- > "Hay una pequeña pausa porque uno de los productos tiene demora en stock. Ya lo estamos resolviendo. ¡Gracias por tu paciencia! 🙏"
-+ > "¡Ya está en camino! 🚚 La agencia o repartidor correspondiente lo tiene a cargo."
-- ### ❌ "Anulado"
-+ ### ✅ "Entregado"
-- > "Veo que tu pedido fue anulado. Si quieres más info o hacer uno nuevo, cuéntame. 😊"
-+ > "Según nuestros registros, tu pedido figura como entregado. ¿Lo recibiste bien? 😊"
-- ---
-+ ### 🏁 "Finalizado"
-- 
-+ > "Veo que tu pedido ya está totalmente finalizado y cerrado. ¡Espero que lo estés disfrutando mucho! 🎉"
-- ## Situacio
+### 📐 Config/Infrastructure Conventions & Fixes
+- **[convention] what-changed in .gitignore — confirmed 3x**: - 隧道_log.txt
++ 隧道_log.txt
+- **[problem-fix] Fixed null crash in Sticker**: -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
++                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+-             elif match_imagen:
++                 texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
+-                 media_id = match_imagen.group(1)
++             elif match_imagen:
+-                 caption = match_imagen.group(2)
++                 media_id = match_imagen.group(1)
+-                 img_tag = f'<img src="/api/media/{media_id}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
++                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+-                 texto = img_tag + (f"<span>{caption}</span>" if caption else "")
++                 caption = match_imagen.group(2)
+-                 
++                 img_tag = f'<img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
+-             
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [# Guía de Respuestas — Bot de Atención al Cliente]
+📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
+- **[problem-fix] Fixed null crash in Parsear — protects against XSS and CSRF token theft**: -         enviar_mensaje(numero_wa, respuesta_final)
++         from whatsapp_client import enviar_mensaje, enviar_media
+- 
++         
+-     return respuesta_final
++         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
+- 
++         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
+- 
++         for p in partes:
+- # ─────────────────────────────────────────────
++             p = p.strip()
+- #  Panel de administración
++             if not p: continue
+- # ─────────────────────────────────────────────
++             
+- 
++             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
+- 
++             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
+- 
++             
+- from fastapi import Response
++             if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
+- 
++             elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
+- VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
++             else: enviar_mensaje(numero_wa, p)
+- active_sessions = {}
++ 
+- 
++     return respuesta_final
+- def verificar_sesion(request: Request):
++ 
+-     token = request.cookies.get("session_token")
++ 
+-     return token in active_sessions
++ # ─────────────────────────────────────────────
+- 
++ #  Panel de administración
+- @app.get("/login", response_class=HTMLResponse)
++ # ─────────────────────────────────────────────
+- async def login_get():
++ 
+-     return obtener_login_html()
++ 
+- @app.post("/login")
++ from fastapi import Response
+- async def login_post(response: Response, username: str = Form(...), [REDACTED] = Form(...)):
++ 
+-     if username in VALID_USERS and VALID_USERS[username] == [REDACTED] VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
+-         import uuid
++ active_sessions = {}
+-         token = str(uuid.uuid4())
++ 
+-         active_sessions[token] = username
++ def verificar_sesion
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
 - **[convention] Fixed null crash in FastAPI — confirmed 3x**: - from fastapi import FastAPI, Request, HTTPException, Form
 + from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File
 -     return HTMLResponse(html)
@@ -374,60 +460,3 @@
 +         <a href="/settings" class="nav-item" title="Personalizar Agente IA">
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Strengthened types Contrase**: -         <label>Contraseña Administrativa</label>
-+         <label>Contraseña</label>
--         <button type="submit">Desbloquear</button>
-+         <button type="submit">Desbloquear el Sistema</button>
-- **[what-changed] Added API route: /api/simulador/send**: -     </body>
-+     </html>
--     </html>
-+     """)
--     """.replace("__PWD__", pwd))
-+ 
-- 
-+ @app.post("/api/simulador/send")
-- @app.post("/api/simulador/send")
-+ async def api_simular_mensaje(request: Request):
-- async def api_simular_mensaje(request: Request):
-+     """Recibe el mensaje falso del simulador y procesa la lógica nativa del webhook."""
--     """Recibe el mensaje falso del simulador y procesa la lógica nativa del webhook."""
-+     try:
--     try:
-+         data = await request.json()
--         data = await request.json()
-+     except Exception:
--     except Exception:
-+         raise HTTPException(status_code=400, detail="JSON inválido")
--         raise HTTPException(status_code=400, detail="JSON inválido")
-+         
--         
-+     if not verificar_sesion(request):
--     if not verificar_sesion(request):
-+         raise HTTPException(status_code=403, detail="No autorizado")
--         raise HTTPException(status_code=403, detail="No autorizado")
-+ 
-- 
-+     numero = data.get("numero", "51999999991")
--     numero = data.get("numero", "51999999991")
-+     nombre = data.get("nombre", "Tester")
--     nombre = data.get("nombre", "Tester")
-+     texto = data.get("mensaje", "")
--     texto = data.get("mensaje", "")
-+     
--     
-+     print(f"\n{'─'*50}")
--     print(f"\n{'─'*50}")
-+     print(f"🧪 SIMULADOR | {nombre} ({numero}): {texto}")
--     print(f"🧪 SIMULADOR | {nombre} ({numero}): {texto}")
-+     
--     
-+     respuesta = procesar_mensaje_interno(numero, nombre, texto, is_simulacion=True)
--     respuesta = procesar_mensaje_interno(numero, nombre, texto, is_simulacion=True)
-+     
--     
-+     return {"status": "ok", "respuesta": respuesta}
--     return {"status": "ok", "respuesta": respuesta}
-+ 
-- 
-+ 
-- 

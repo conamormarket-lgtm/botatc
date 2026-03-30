@@ -1,5 +1,5 @@
-# IA-ATC — Project Memory
-# Auto-synced | 94 observations
+# botatc — Project Memory
+# Auto-synced | 98 observations
 
 **Stack:** Python · FastAPI
 
@@ -55,6 +55,3 @@ Example:
 
 ---
 *Auto-synced | 2026-03-30*
-
-# BrainSync Intelligence (Auto-Synced)
-[BrainSync Rules](.brainsync/agent-rules.md)

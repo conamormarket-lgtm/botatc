@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for IA-ATC. 3 conventions, 2 fixes."
+description: "Html for botatc. 3 conventions, 2 fixes."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **7 real patterns** in **IA-ATC**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **7 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## 🔧 Problem Playbooks
 
