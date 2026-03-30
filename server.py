@@ -33,7 +33,7 @@ from bot_atc import normalizar_texto, preprocesar_mensaje
 #  Inicialización
 # ─────────────────────────────────────────────
 app = FastAPI(title="Bot ATC — IA-ATC")
-groq_client = Groq(api_key=GROQ_API_KEY)
+groq_client = Groq(api_key=GROQ_API_KEY, max_retries=0)
 
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"

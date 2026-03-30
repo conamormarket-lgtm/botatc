@@ -12,8 +12,9 @@ def _obtener_guia() -> str:
     if not _GUIA_CACHE:
         import glob
         docs = [{"ruta": "guia_respuestas.md", "etiqueta": "Guía de respuestas principal"}]
-        for pdf_file in glob.glob("*.pdf"):
-            docs.append({"ruta": pdf_file, "etiqueta": pdf_file.replace(".pdf", "")})
+        # Auto-descubrir PDFs desactivado por límite estricto de Groq TPM
+        # for pdf_file in glob.glob("*.pdf"):
+        #     docs.append({"ruta": pdf_file, "etiqueta": pdf_file.replace(".pdf", "")})
         _GUIA_CACHE = cargar_multiples(docs)
     return _GUIA_CACHE
 
