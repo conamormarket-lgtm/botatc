@@ -11,9 +11,9 @@ load_dotenv()  # carga .env si existe (desarrollo local)
 import glob
 DOCUMENTOS_GUIA = [{"ruta": "guia_respuestas.md", "etiqueta": "Guía de respuestas principal"}]
 
-# Auto-descubrir cualquier PDF en la carpeta raíz
-for pdf_file in glob.glob("*.pdf"):
-    DOCUMENTOS_GUIA.append({"ruta": pdf_file, "etiqueta": pdf_file.replace(".pdf", "")})
+# Auto-descubrir cualquier PDF en la carpeta raíz (DESASTIVADO POR LÍMITES DE GROQ)
+# for pdf_file in glob.glob("*.pdf"):
+#     DOCUMENTOS_GUIA.append({"ruta": pdf_file, "etiqueta": pdf_file.replace(".pdf", "")})
 
 # --- LM Studio (solo para bot_atc.py en consola) ---
 LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
@@ -22,7 +22,7 @@ LM_STUDIO_MODEL    = "local-model"
 
 # --- Groq API (para server.py en producción) ---
 GROQ_API_KEY   = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL     = "llama3-8b-8192"
+GROQ_MODEL     = "llama-3.1-8b-instant"
 
 # --- Parámetros del modelo ---
 TEMPERATURE = 0.05  # casi determinista: sigue los documentos sin inventar
