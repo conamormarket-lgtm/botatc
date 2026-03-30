@@ -6,3 +6,4 @@ uvicorn[standard]
 httpx
 pypdf
 python-dotenv
+python-multipart
