@@ -240,6 +240,17 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         from config import NUMEROS_TESTER
         numero_local = normalizar_numero(numero_wa)
         es_tester = numero_local in NUMEROS_TESTER or numero_wa in NUMEROS_TESTER
+        
+        # Guardamos el mensaje temprano para que SIEMPRE aparezca en el Inbox admin
+        texto_historial = texto_cliente
+        partes_media = []
+        if isinstance(texto_cliente, str):
+            if "[sticker:" in texto_cliente or "[imagen:" in texto_cliente:
+                pass # Already structured
+                
+        # Solo lo agregamos si no está ya como último mensaje (evitar duplicados lógicos)
+        if not sesion["historial"] or sesion["historial"][-1].get("content") != texto_cliente:
+            sesion["historial"].append({"role": "user", "content": texto_cliente})
 
         # ── MODO TESTER: preguntar N° de pedido manualmente ──
         if es_tester:
@@ -269,6 +280,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 # Primera vez: pedir el ID de pedido
                 sesion["esperando_pedido_tester"] = True
                 msg = "🧪 *Modo prueba activado.*\n\nEscríbeme el ID del pedido que deseas probar (tal como aparece en Firebase):"
+                sesion["historial"].append({"role": "assistant", "content": msg})
                 if not is_simulacion:
                     enviar_mensaje(numero_wa, msg)
                 return msg
@@ -293,6 +305,10 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 print(f"  [❓ Sin pedido registrado → silencio]")
                 return None
     else:
+        # Ya hay sesión con datos_pedido. Guardamos su mensaje entrante temprano.
+        if not sesion["historial"] or sesion["historial"][-1].get("content") != texto_cliente:
+            sesion["historial"].append({"role": "user", "content": texto_cliente})
+            
         estado_actual = sesion["datos_pedido"].get("estadoGeneral", "")
         if estado_actual in ESTADOS_DISEÑO:
             print(f"  [🎨 Pedido volvió a Diseño → silencio]")
@@ -322,7 +338,11 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     texto_modelo = preprocesar_mensaje(normalizar_texto(texto_cliente))
 
     # ── Agregar al historial y llamar al modelo ───────────
-    sesion["historial"].append({"role": "user", "content": texto_modelo})
+    if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
+        sesion["historial"][-1]["content"] = texto_modelo
+    else:
+        sesion["historial"].append({"role": "user", "content": texto_modelo})
+        
     sesion["historial"] = recortar_historial(sesion["historial"])
 
     respuesta_bot = llamar_groq(sesion["historial"])
