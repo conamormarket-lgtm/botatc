@@ -42,6 +42,9 @@ sesiones: dict[str, dict] = {}
 # Interruptor global — False = bot completamente apagado
 BOT_GLOBAL_ACTIVO: bool = True
 
+# Cola para debouncing (acumular múltiples mensajes rápidos del mismo usuario)
+mensajes_pendientes: dict[str, list[str]] = {}
+
 # Regex para detectar escalación desde el mensaje del cliente
 REGEX_ESCALAR = re.compile(
     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
@@ -218,9 +221,35 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     print(f"\n{'─'*50}")
     print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
 
-    background_tasks.add_task(procesar_mensaje_interno, numero_wa, nombre, texto_cliente, False)
+    if numero_wa not in mensajes_pendientes:
+        mensajes_pendientes[numero_wa] = [texto_cliente]
+        background_tasks.add_task(procesador_agregado, numero_wa, nombre)
+    else:
+        mensajes_pendientes[numero_wa].append(texto_cliente)
 
     return {"status": "ok"}
+
+
+async def procesador_agregado(numero_wa: str, nombre: str):
+    """
+    Espera 2.5 segundos de 'silencio' para ver si el cliente manda otro mensaje rápido.
+    Si llegan más, se agregan a la cola en el endpoint y luego se procesan juntos.
+    """
+    import asyncio
+    import anyio
+    
+    await asyncio.sleep(2.5)  # Ventana de agregación de 2.5s
+    
+    textos = mensajes_pendientes.pop(numero_wa, [])
+    if not textos:
+        return
+        
+    texto_unido = " | ".join(textos)
+    
+    # Run the synchronous heavy lifting in a thread
+    await anyio.to_thread.run_sync(
+        procesar_mensaje_interno, numero_wa, nombre, texto_unido, False
+    )
 
 
 def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False) -> str | None:
