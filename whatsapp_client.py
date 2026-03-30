@@ -1,0 +1,133 @@
+# ============================================================
+#  whatsapp_client.py — Envía mensajes a WhatsApp via Meta API
+# ============================================================
+import httpx
+from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
+
+META_API_URL = f"https://graph.facebook.com/{META_API_VERSION}/{META_PHONE_NUMBER_ID}/messages"
+
+
+def enviar_mensaje(numero_destino: str, texto: str) -> bool:
+    """
+    Envía un mensaje de texto al número de WhatsApp indicado.
+
+    Args:
+        numero_destino: Número completo con código de país (ej: '51945257117')
+        texto:          Texto del mensaje a enviar
+
+    Returns:
+        True si el envío fue exitoso, False si hubo error.
+    """
+    headers = {
+        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": numero_destino,
+        "type": "text",
+        "text": {"body": texto},
+    }
+
+    try:
+        response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
+        response.raise_for_status()
+        return True
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Error Meta API ({e.response.status_code}): {e.response.text}")
+        return False
+    except Exception as e:
+        print(f"❌ Error enviando mensaje: {e}")
+        return False
+
+def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str) -> bool:
+    """
+    Envía media (sticker, imagen, video, documento) a un número.
+    tipo_media: 'sticker', 'image', 'video', 'audio', 'document'
+    """
+    headers = {
+        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    
+    es_url = media_id_o_url.startswith("http")
+    media_obj = {"link": media_id_o_url} if es_url else {"id": media_id_o_url}
+    
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": numero_destino,
+        "type": tipo_media,
+        tipo_media: media_obj,
+    }
+
+    try:
+        response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
+        response.raise_for_status()
+        return True
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Error Meta API Media ({e.response.status_code}): {e.response.text}")
+        return False
+    except Exception as e:
+        print(f"❌ Error enviando {tipo_media}: {e}")
+        return False
+
+
+async def enviar_mensaje_texto(numero_destino: str, texto: str) -> bool:
+    """
+    Versión async de enviar_mensaje para usar desde endpoints FastAPI.
+    Usa httpx.AsyncClient para no bloquear el event loop.
+    """
+    headers = {
+        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": numero_destino,
+        "type": "text",
+        "text": {"body": texto},
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
+            response.raise_for_status()
+            print(f"✅ Mensaje manual enviado a {numero_destino}")
+            return True
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Error Meta API al enviar manual ({e.response.status_code}): {e.response.text}")
+        return False
+    except Exception as e:
+        print(f"❌ Error enviando mensaje manual: {e}")
+        return False
+
+
+async def obtener_media_url(media_id: str) -> str | None:
+    """Consigue la URL temporal de descarga de un media_id de Meta."""
+    url = f"https://graph.facebook.com/{META_API_VERSION}/{media_id}"
+    headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get(url, headers=headers, timeout=10)
+            res.raise_for_status()
+            return res.json().get("url")
+    except Exception as e:
+        print(f"❌ Error al obtener URL de media {media_id}: {e}")
+        return None
+
+
+async def descargar_media(media_url: str) -> tuple[bytes | None, str | None]:
+    """Descarga el binario de la foto o sticker y su tipo MIME usando el token de Meta."""
+    headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get(media_url, headers=headers, timeout=15)
+            res.raise_for_status()
+            mime_type = res.headers.get("content-type")
+            return res.content, mime_type
+    except Exception as e:
+        print(f"❌ Error descargando media: {e}")
+        return None, None

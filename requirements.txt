@@ -1,0 +1,8 @@
+firebase-admin
+openai
+groq
+fastapi
+uvicorn[standard]
+httpx
+pypdf
+python-dotenv

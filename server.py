@@ -1,0 +1,1290 @@
+# ============================================================
+#  server.py — Servidor FastAPI: webhook de WhatsApp + panel admin
+#
+#  FLUJO POR MENSAJE:
+#  1. Meta envía POST /webhook con el mensaje del cliente
+#  2. Extraemos número y texto del cliente
+#  3. Normalizamos número → buscamos en Firebase
+#  4. Si pedido en Diseño o no existe → silencio
+#  5. Si bot activo → normalizar texto → llamar Groq → responder
+#  6. Si [ESCALAR] detectado → pausar bot → marcar para humano
+#  PANEL ADMIN: GET /admin → lista de chats escalados + botón reactivar
+# ============================================================
+import re
+import json
+import hashlib
+from datetime import datetime, timedelta
+
+from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from groq import Groq
+
+from config import (
+    GROQ_API_KEY, GROQ_MODEL, TEMPERATURE,
+    META_VERIFY_TOKEN, SESION_EXPIRA_HORAS, ESTADOS_DISEÑO,
+    MAX_HISTORIAL_TURNOS, ADMIN_PASSWORD
+)
+from prompts import get_system_prompt, MENSAJE_BIENVENIDA
+from firebase_client import buscar_pedido_por_telefono
+from whatsapp_client import enviar_mensaje
+from bot_atc import normalizar_texto, preprocesar_mensaje
+
+# ─────────────────────────────────────────────
+#  Inicialización
+# ─────────────────────────────────────────────
+app = FastAPI(title="Bot ATC — IA-ATC")
+groq_client = Groq(api_key=GROQ_API_KEY)
+
+# Sesiones en memoria: {numero_wa: SesionDict}
+# numero_wa tiene código de país: "51945257117"
+sesiones: dict[str, dict] = {}
+
+# Interruptor global — False = bot completamente apagado
+BOT_GLOBAL_ACTIVO: bool = True
+
+# Regex para detectar escalación desde el mensaje del cliente
+REGEX_ESCALAR = re.compile(
+    r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
+    r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
+    r"me comunican|quiero que me atienda|hablen conmigo)\b",
+    re.IGNORECASE
+)
+
+
+# ─────────────────────────────────────────────
+#  Gestión de sesiones
+# ─────────────────────────────────────────────
+
+def obtener_o_crear_sesion(numero_wa: str) -> dict:
+    """
+    Retorna la sesión existente si está dentro del tiempo válido,
+    o crea una nueva si expiró o no existe.
+    """
+    ahora = datetime.utcnow()
+    sesion = sesiones.get(numero_wa)
+
+    if sesion:
+        inactivo = ahora - sesion["ultima_actividad"]
+        if inactivo > timedelta(hours=SESION_EXPIRA_HORAS):
+            # Sesión expirada → nueva sesión pero conservamos datos del cliente
+            print(f"  [🔄 Sesión expirada para {numero_wa} → nueva sesión]")
+            sesion = None
+
+    if not sesion:
+        sesiones[numero_wa] = {
+            "historial":         [{"role": "system", "content": get_system_prompt()}],
+            "datos_pedido":      None,
+            "bot_activo":        True,
+            "ultima_actividad":  ahora,
+            "escalado_en":       None,
+            "motivo_escalacion": None,
+            "nombre_cliente":    "Cliente",
+        }
+
+    return sesiones[numero_wa]
+
+
+def normalizar_numero(numero_wa: str) -> str:
+    """
+    Quita el código de país peruano para buscar en Firebase.
+    '51945257117' → '945257117'
+    """
+    digitos = numero_wa.replace("+", "").strip()
+    if digitos.startswith("51") and len(digitos) == 11:
+        return digitos[2:]
+    return digitos
+
+
+# ─────────────────────────────────────────────
+#  Llamada al modelo (Groq)
+# ─────────────────────────────────────────────
+
+def llamar_groq(historial: list[dict]) -> str:
+    """Llama a Groq con el historial y retorna la respuesta del modelo."""
+    try:
+        response = groq_client.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=historial,
+            temperature=TEMPERATURE,
+            max_tokens=512,
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"❌ Error Groq: {e}")
+        return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
+
+
+def recortar_historial(historial: list[dict]) -> list[dict]:
+    """Conserva system prompt + últimos N turnos."""
+    system = [historial[0]]
+    turnos = historial[1:]
+    if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
+        turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
+    return system + turnos
+
+
+# ─────────────────────────────────────────────
+#  Lógica de escalación
+# ─────────────────────────────────────────────
+
+def procesar_escalacion(numero_wa: str, sesion: dict, respuesta_bot: str) -> str:
+    """
+    Detecta [ESCALAR] en la respuesta del bot y actualiza la sesión.
+    Retorna la respuesta limpia (sin la etiqueta).
+    """
+    if "[ESCALAR]" in respuesta_bot:
+        respuesta_limpia = respuesta_bot.replace("[ESCALAR]", "").strip()
+        sesion["bot_activo"] = False
+        sesion["escalado_en"] = datetime.utcnow()
+        sesion["motivo_escalacion"] = "Detectado por el modelo"
+        print(f"  [🚨 ESCALADO → {numero_wa} | {sesion['nombre_cliente']}]")
+        return respuesta_limpia
+    return respuesta_bot
+
+
+# ─────────────────────────────────────────────
+#  Webhook de Meta
+# ─────────────────────────────────────────────
+
+@app.get("/webhook")
+async def verificar_webhook(request: Request):
+    """
+    Meta hace un GET para verificar que el servidor es legítimo.
+    Responde con hub.challenge si el token coincide.
+    """
+    params = dict(request.query_params)
+    mode      = params.get("hub.mode")
+    token     = params.get("hub.verify_token")
+    challenge = params.get("hub.challenge")
+
+    if mode == "subscribe" and token == META_VERIFY_TOKEN:
+        print("✅ Webhook de Meta verificado correctamente.")
+        return int(challenge)
+
+    raise HTTPException(status_code=403, detail="Token de verificación incorrecto.")
+
+
+@app.post("/webhook")
+async def recibir_mensaje(request: Request):
+    """
+    Recibe mensajes entrantes de Meta y procesa la conversación.
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="JSON inválido")
+
+    # Meta envía varios tipos de eventos; solo nos interesan mensajes de texto
+    try:
+        entry    = body["entry"][0]
+        changes  = entry["changes"][0]["value"]
+
+        # Ignorar eventos que no sean mensajes (ej: estados de entrega)
+        if "messages" not in changes:
+            return {"status": "ok"}
+
+        mensaje_data  = changes["messages"][0]
+        numero_wa     = mensaje_data["from"]           # ej: "51945257117"
+        tipo_mensaje  = mensaje_data.get("type", "")
+
+        # Obtener nombre de contacto
+        nombre = "Cliente"
+        if "contacts" in changes and changes["contacts"]:
+            nombre = changes["contacts"][0].get("profile", {}).get("name", "Cliente")
+
+        # Procesar según tipo de mensaje
+        if tipo_mensaje == "text":
+            texto_cliente = mensaje_data["text"]["body"].strip()
+        elif tipo_mensaje == "sticker":
+            media_id = mensaje_data.get("sticker", {}).get("id", "")
+            texto_cliente = f"[sticker:{media_id}]"
+        elif tipo_mensaje == "image":
+            media_id = mensaje_data.get("image", {}).get("id", "")
+            caption  = mensaje_data.get("image", {}).get("caption", "")
+            texto_cliente = f"[imagen:{media_id}]" + (f" {caption}" if caption else "")
+        elif tipo_mensaje == "audio":
+            texto_cliente = "[🎤 Mensaje de voz]"
+        elif tipo_mensaje == "video":
+            texto_cliente = "[🎥 Video]"
+        elif tipo_mensaje == "document":
+            filename = mensaje_data.get("document", {}).get("filename", "archivo")
+            texto_cliente = f"[📎 Archivo: {filename}]"
+        else:
+            texto_cliente = f"[{tipo_mensaje}]"
+
+    except (KeyError, IndexError):
+        return {"status": "ok"}   # payload inesperado → ignorar sin error
+
+    print(f"\n{'─'*50}")
+    print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
+
+    procesar_mensaje_interno(numero_wa, nombre, texto_cliente, is_simulacion=False)
+
+    return {"status": "ok"}
+
+
+def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False) -> str | None:
+    """Procesa un mensaje y devuelve la respuesta del bot (si la hay) sin enviarla si es simulación."""
+    global BOT_GLOBAL_ACTIVO
+    if not BOT_GLOBAL_ACTIVO:
+        print(f"  [⏹ Bot APAGADO globalmente → silencio]")
+        return None
+
+    # ── Obtener/crear sesión ──────────────────────────────
+    sesion = obtener_o_crear_sesion(numero_wa)
+    sesion["ultima_actividad"] = datetime.utcnow()
+    sesion["nombre_cliente"]   = nombre
+
+    # ── Buscar pedido en Firebase (con número del WA) ─────
+    if sesion["datos_pedido"] is None:
+        from config import NUMEROS_TESTER
+        numero_local = normalizar_numero(numero_wa)
+        es_tester = numero_local in NUMEROS_TESTER or numero_wa in NUMEROS_TESTER
+
+        # ── MODO TESTER: preguntar N° de pedido manualmente ──
+        if es_tester:
+            # Si ya nos dijo el número de pedido, buscarlo por ID
+            if sesion.get("esperando_pedido_tester"):
+                from firebase_client import inicializar_firebase
+                db = inicializar_firebase()
+                id_pedido = texto_cliente.strip().upper()
+                try:
+                    doc = db.collection("pedidos").document(id_pedido).get()
+                    datos = doc.to_dict() if doc.exists else None
+                except Exception:
+                    datos = None
+
+                if datos:
+                    sesion["esperando_pedido_tester"] = False
+                    sesion["datos_pedido"] = datos
+                    sesion["nombre_cliente"] = f"{datos.get('clienteNombre','')} {datos.get('clienteApellidos','')}".strip() or nombre
+                    sesion["historial"][0] = {"role": "system", "content": get_system_prompt(datos)}
+                    print(f"  [🧪 TESTER: Pedido '{id_pedido}' cargado]")
+                else:
+                    msg = f"❌ No encontré ningún pedido con el ID '{texto_cliente.strip()}'. Inténtalo de nuevo (escribe solo el ID exacto)."
+                    if not is_simulacion:
+                        enviar_mensaje(numero_wa, msg)
+                    return msg
+            else:
+                # Primera vez: pedir el ID de pedido
+                sesion["esperando_pedido_tester"] = True
+                msg = "🧪 *Modo prueba activado.*\n\nEscríbeme el ID del pedido que deseas probar (tal como aparece en Firebase):"
+                if not is_simulacion:
+                    enviar_mensaje(numero_wa, msg)
+                return msg
+        else:
+            datos = buscar_pedido_por_telefono(numero_local)
+            if datos:
+                estado = datos.get("estadoGeneral", "")
+                nombre_cliente = f"{datos.get('clienteNombre','')} {datos.get('clienteApellidos','')}".strip()
+                sesion["nombre_cliente"] = nombre_cliente or nombre
+                print(f"  [✅ Pedido: {datos.get('id')} | Estado: {estado}]")
+
+                if estado in ESTADOS_DISEÑO:
+                    print(f"  [🎨 En Diseño → silencio]")
+                    return None
+
+                sesion["datos_pedido"] = datos
+                sesion["historial"][0] = {
+                    "role": "system",
+                    "content": get_system_prompt(datos)
+                }
+            else:
+                print(f"  [❓ Sin pedido registrado → silencio]")
+                return None
+    else:
+        estado_actual = sesion["datos_pedido"].get("estadoGeneral", "")
+        if estado_actual in ESTADOS_DISEÑO:
+            print(f"  [🎨 Pedido volvió a Diseño → silencio]")
+            return None
+
+    # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
+    if not sesion["bot_activo"]:
+        # Guardar en historial para que sea visible en el Inbox aunque el bot no responda
+        sesion["historial"].append({"role": "user", "content": texto_cliente})
+        sesion["historial"] = recortar_historial(sesion["historial"])
+        sesion["ultima_actividad"] = datetime.utcnow()
+        print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
+        return None
+
+    # ── Escalación rápida por keywords del cliente ────────
+    if REGEX_ESCALAR.search(texto_cliente):
+        print(f"  [🚨 Escalación por keyword detectada]")
+        sesion["bot_activo"]        = False
+        sesion["escalado_en"]       = datetime.utcnow()
+        sesion["motivo_escalacion"] = f"Keyword: '{texto_cliente[:60]}'"
+        msg = "Voy a avisarle a uno de nuestros asesores para que te escriba por aquí en breve. 😊"
+        if not is_simulacion:
+            enviar_mensaje(numero_wa, msg)
+        return msg
+
+    # ── Preprocesar texto (normalizar + cancelar=pagar) ───
+    texto_modelo = preprocesar_mensaje(normalizar_texto(texto_cliente))
+
+    # ── Agregar al historial y llamar al modelo ───────────
+    sesion["historial"].append({"role": "user", "content": texto_modelo})
+    sesion["historial"] = recortar_historial(sesion["historial"])
+
+    respuesta_bot = llamar_groq(sesion["historial"])
+
+    # ── Procesar escalación si el modelo la detectó ───────
+    respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
+
+    # ── Guardar respuesta en historial ────────────────────
+    sesion["historial"].append({"role": "assistant", "content": respuesta_final})
+
+    # ── Enviar respuesta al cliente por WhatsApp ──────────
+    print(f"🤖 María: {respuesta_final[:80]}...")
+    if not is_simulacion:
+        from whatsapp_client import enviar_mensaje, enviar_media
+        
+        # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
+        partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
+        for p in partes:
+            p = p.strip()
+            if not p: continue
+            
+            match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
+            match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
+            
+            if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
+            elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
+            else: enviar_mensaje(numero_wa, p)
+
+    return respuesta_final
+
+
+# ─────────────────────────────────────────────
+#  Panel de administración
+# ─────────────────────────────────────────────
+
+
+
+from fastapi import Response
+
+VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
+active_sessions = {}
+
+def verificar_sesion(request: Request):
+    token = request.cookies.get("session_token")
+    return token in active_sessions
+
+@app.get("/login", response_class=HTMLResponse)
+async def login_get():
+    return obtener_login_html()
+
+@app.post("/login")
+async def login_post(response: Response, username: str = Form(...), password: str = Form(...)):
+    if username in VALID_USERS and VALID_USERS[username] == password:
+        import uuid
+        token = str(uuid.uuid4())
+        active_sessions[token] = username
+        resp = RedirectResponse(url="/inbox", status_code=303)
+        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=86400)
+        return resp
+    return HTMLResponse(obtener_login_html(error="Usuario o clave incorrectos."), status_code=401)
+
+@app.get("/logout")
+async def logout():
+    resp = RedirectResponse(url="/login", status_code=303)
+    resp.delete_cookie("session_token")
+    return resp
+
+def obtener_login_html(error=""):
+    err_html = f'<div class="error">{error}</div>' if error else ''
+    return """
+    <html><head><title>Acceso Restringido — IA-ATC</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+          --primary-color: #3b82f6; --primary-hover: #2563eb;
+          --bg-main: #0f172a; --accent-bg: rgba(30, 41, 59, 0.7);
+          --accent-border: rgba(255, 255, 255, 0.1);
+          --text-main: #f8fafc; --text-muted: #94a3b8;
+      }
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Inter',sans-serif;display:flex;justify-content:center;
+           align-items:center;min-height:100vh;background-color:var(--bg-main);
+           background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-main) 70%);
+           color:var(--text-main);-webkit-font-smoothing: antialiased;}
+      .glass-modal{background:var(--accent-bg);padding:3rem 2.5rem;border-radius:24px;
+            box-shadow:0 25px 50px -12px rgba(0,0,0,.5);width:90%;max-width:380px;
+            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border:1px solid var(--accent-border);text-align:center;}
+      .logo{font-size:3rem;margin-bottom:1rem;display:inline-block;animation:float 3s ease-in-out infinite}
+      @keyframes float { 0%, 100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+      h2{font-family:'Outfit',sans-serif;font-size:1.5rem;margin-bottom:.5rem;font-weight:700}
+      p.subtitle{font-size:.9rem;color:var(--text-muted);margin-bottom:2rem}
+      label{font-size:.85rem;color:var(--text-muted);font-weight:500;display:block;margin-bottom:.5rem;text-align:left}
+      input{width:100%;padding:1rem 1.25rem;border:1px solid var(--accent-border);border-radius:12px;
+            font-size:1rem;outline:none;transition:all .2s;background:rgba(15,23,42,0.6);color:white;
+            margin-bottom:1.5rem;}
+      input:focus{border-color:var(--primary-color);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+      button{width:100%;padding:1rem;background:var(--primary-color);color:white;
+             border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;
+             transition:background .2s;font-family:'Inter',sans-serif;}
+      button:hover{background:var(--primary-hover)}
+      .error{color:#ef4444;font-size:0.85rem;margin-bottom:1.5rem;font-weight:500;background:rgba(239, 68, 68, 0.1);padding:0.5rem;border-radius:8px;}
+    </style></head>
+    <body><div class="glass-modal">
+      <div class="logo">🤖</div>
+      <h2>Identificación</h2>
+      <p class="subtitle">Ingresa tus credenciales del sistema</p>
+      __ERR_HTML__
+      <form method="post" action="/login">
+        <label>Usuario</label>
+        <input type="text" name="username" placeholder="Tu usuario..." required autofocus>
+        <label>Contraseña</label>
+        <input type="password" name="password" placeholder="Ingresa tu clave secreta..." required>
+        <button type="submit">Desbloquear el Sistema</button>
+      </form>
+    </div></body></html>
+    """.replace("__ERR_HTML__", err_html)
+
+@app.get("/settings", response_class=HTMLResponse)
+async def settings_panel(request: Request):
+    """Personalización de Agente y Base de Conocimiento."""
+    if not verificar_sesion(request):
+        return HTMLResponse(obtener_login_html(), status_code=200)
+
+    import os
+    if not os.path.exists("settings.html"): return HTMLResponse("404: settings.html no encontrado")
+        
+    with open("settings.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    try:
+        with open("guia_respuestas.md", "r", encoding="utf-8") as f:
+            guia_content = f.read()
+    except Exception:
+        guia_content = ""
+
+    html = html.replace("{guia_content}", guia_content)
+    html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
+    
+    import glob
+    pdfs_html = ""
+    for pdf in glob.glob("*.pdf"):
+        pdfs_html += f"<li class='pdf-list-item'><div style='display:flex;align-items:center;gap:0.5rem;'><svg class='icon-pdf' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/></svg> {pdf}</div> <button onclick=\"deletePdf('{pdf}')\" class='pdf-delete-btn'><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 6h18'/><path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/><path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/></svg> Borrar</button></li>"
+    
+    html = html.replace("{lista_pdfs}", pdfs_html or "<li style='color:var(--text-muted);font-style:italic;padding:0.5rem;'>Ningún archivo PDF subido.</li>")
+    
+    return HTMLResponse(html)
+
+@app.post("/api/settings/save")
+async def save_settings(request: Request, guia_content: str = Form(...)):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+
+    with open("guia_respuestas.md", "w", encoding="utf-8") as f:
+        f.write(guia_content)
+        
+    # Limpiamos caché del bot nativo para que levante los nuevos conocimientos
+    import prompts
+    prompts._GUIA_CACHE = ""
+
+    return RedirectResponse(url="/settings?saved=true", status_code=303)
+
+@app.post("/api/settings/upload_pdf")
+async def upload_pdf(request: Request, pdf_file: UploadFile = File(...)):
+    if not verificar_sesion(request):
+        return RedirectResponse(url="/login", status_code=303)
+        
+    if pdf_file.filename and pdf_file.filename.lower().endswith(".pdf"):
+        content = await pdf_file.read()
+        with open(pdf_file.filename, "wb") as f:
+            f.write(content)
+            
+        import prompts
+        prompts._GUIA_CACHE = ""
+        return RedirectResponse(url="/settings?pdf=true", status_code=303)
+    
+    return RedirectResponse(url="/settings?error=true", status_code=303)
+
+@app.get("/api/settings/delete_pdf/{filename}")
+async def delete_pdf(request: Request, filename: str):
+    if not verificar_sesion(request):
+        return RedirectResponse(url="/login", status_code=303)
+        
+    import os
+    if filename.endswith(".pdf") and os.path.exists(filename):
+        os.remove(filename)
+        import prompts
+        prompts._GUIA_CACHE = ""
+        
+    return RedirectResponse(url="/settings?deleted=true", status_code=303)
+
+@app.get("/admin", response_class=HTMLResponse)
+async def panel_admin(request: Request):
+    """Panel web de administración mejorado."""
+    if not verificar_sesion(request):
+        return HTMLResponse(obtener_login_html(), status_code=200)
+
+    # ── Datos para el panel ──────────────────────────────
+    import os
+    if not os.path.exists("admin.html"): return HTMLResponse("404: admin.html no encontrado")
+        
+    with open("admin.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    ahora       = datetime.utcnow()
+    total       = len(sesiones)
+    escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
+    escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
+    n_escalados = len(escalados)
+    n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
+
+    def tiempo_relativo(dt):
+        diff = ahora - dt
+        m = int(diff.total_seconds() / 60)
+        if m < 1:   return "ahora"
+        if m < 60:  return f"hace {m}m"
+        return f"hace {m//60}h {m%60}m"
+
+    def ultimo_msg(sesion):
+        hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
+        if not hist: return "—"
+        return hist[-1]["content"][:60] + ("…" if len(hist[-1]["content"]) > 60 else "")
+
+    # ── Tabla: Esperando humano ──────────────────────────
+    filas_esc = ""
+    for num, s in escalados:
+        hace   = tiempo_relativo(s["escalado_en"])
+        nombre = s.get("nombre_cliente", num)
+        motivo = (s.get("motivo_escalacion") or "—")[:55]
+        pedido = s.get("datos_pedido", {}).get("id", "—") if s.get("datos_pedido") else "—"
+        
+        filas_esc += f"""
+        <tr>
+          <td><div style="font-weight:600;color:var(--text-main)">{nombre}</div><div style="font-size:0.75rem;color:var(--text-muted)">+{num}</div></td>
+          <td><span class="badge pedido">#{pedido}</span></td>
+          <td style="color:var(--danger-color);font-weight:600">{hace}</td>
+          <td><span style="font-size:0.85rem;color:var(--text-muted)">{motivo}</span></td>
+          <td style="display:flex;gap:0.5rem;align-items:center;">
+            <a href="/inbox/{num}" class="btn-action btn-outline">Ir a Inbox</a>
+            <form method="post" action="/admin/reactivar/{num}" style="margin:0">
+              <button type="submit" class="btn-action btn-primary">Reactivar IA</button>
+            </form>
+          </td>
+        </tr>"""
+    if not filas_esc:
+        filas_esc = '<tr class="empty-row"><td colspan="5">Ningún chat está esperando atención manual. Todo fluye automatizado. ✅</td></tr>'
+
+    # ── Tabla: Todas las sesiones ────────────────────────
+    todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True)
+    filas_all = ""
+    for num, s in todas:
+        inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
+        activo   = s.get("bot_activo", True)
+        
+        if inactivo_horas > SESION_EXPIRA_HORAS and activo:
+            continue
+            
+        nombre   = s.get("nombre_cliente", num)
+        pedido   = s.get("datos_pedido", {}).get("id", "—") if s.get("datos_pedido") else "—"
+        ult_act  = tiempo_relativo(s["ultima_actividad"])
+        preview  = ultimo_msg(s)
+        
+        badge = '<span class="badge active">IA Bot</span>' if activo else '<span class="badge danger">Humano</span>'
+        
+        filas_all += f"""
+        <tr>
+          <td><div style="font-weight:600;color:var(--text-main)">{nombre}</div><div style="font-size:0.75rem;color:var(--text-muted)">+{num}</div></td>
+          <td><span class="badge pedido">#{pedido}</span></td>
+          <td>{badge}</td>
+          <td style="color:var(--text-muted);font-size:0.85rem">{ult_act}</td>
+          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-muted);font-size:0.85rem">{preview}</td>
+          <td>
+            <a href="/inbox/{num}" class="btn-action btn-outline">Espiar Chat</a>
+          </td>
+        </tr>"""
+    if not filas_all:
+        filas_all = '<tr class="empty-row"><td colspan="6">Sin sesiones activas recientes.</td></tr>'
+
+    # Reemplazos
+    html = html.replace("{pwd}", "")
+    html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
+    html = html.replace("{class_btn_toggle}", "danger" if BOT_GLOBAL_ACTIVO else "")
+    html = html.replace("{txt_btn_toggle}", "Apagar IA Global" if BOT_GLOBAL_ACTIVO else "Activar IA Global")
+    html = html.replace("{total_sesiones}", str(total))
+    html = html.replace("{bots_activos}", str(n_activos))
+    html = html.replace("{humanos_requeridos}", str(n_escalados))
+    html = html.replace("{filas_esperando_humano}", filas_esc)
+    html = html.replace("{filas_todas}", filas_all)
+    
+    return HTMLResponse(html)
+
+
+@app.post("/admin/reactivar/{numero_wa}")
+async def reactivar_bot(request: Request, numero_wa: str):
+    """Reactiva el bot para un número específico y limpia la sesión."""
+    if not verificar_sesion(request):
+        return RedirectResponse(url="/login", status_code=303)
+
+    if numero_wa in sesiones:
+        # Reactivar el bot sin borrar el historial ni los datos del pedido vinculados
+        sesiones[numero_wa]["bot_activo"] = True
+        sesiones[numero_wa]["escalado_en"] = None
+        sesiones[numero_wa]["motivo_escalacion"] = None
+        sesiones[numero_wa]["ultima_actividad"] = datetime.utcnow()
+        print(f"  [▶ Bot reactivado para {numero_wa} desde panel admin]")
+
+    form_data = await request.form()
+    redirect_url = form_data.get("redirect", "/admin")
+    return RedirectResponse(url=redirect_url, status_code=303)
+
+@app.post("/api/admin/pausar/{numero_wa}")
+async def pausar_bot_manual(request: Request, numero_wa: str):
+    """Pausa al bot de forma manual para un WA específico."""
+    if not verificar_sesion(request):
+        return RedirectResponse(url="/login", status_code=303)
+
+    if numero_wa in sesiones:
+        sesiones[numero_wa]["bot_activo"] = False
+        sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
+        sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
+        print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
+        
+    form_data = await request.form()
+    redirect_url = form_data.get("redirect", f"/inbox/{numero_wa}")
+    return RedirectResponse(url=redirect_url, status_code=303)
+
+
+@app.post("/api/admin/enviar_manual")
+async def enviar_manual_endpoint(request: Request):
+    """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    
+    data = await request.json()
+    wa_id = data.get("wa_id")
+    texto = data.get("texto", "").strip()
+    
+    if not wa_id or wa_id not in sesiones or not texto:
+        return {"ok": False}
+        
+    s = sesiones[wa_id]
+    s["historial"].append({"role": "assistant", "content": texto})
+    s["ultima_actividad"] = datetime.utcnow()
+    
+    print(f"  [👤 Humano -> {wa_id}]: {texto}")
+    
+    # Send to WhatsApp
+    from whatsapp_client import enviar_mensaje_texto, enviar_media
+    import re
+    import asyncio
+    
+    async def enviar_partes():
+        partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', texto)
+        for p in partes:
+            p = p.strip()
+            if not p: continue
+            
+            match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
+            match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
+            
+            if match_sticker: enviar_media(wa_id, "sticker", match_sticker.group(1))
+            elif match_img: enviar_media(wa_id, "image", match_img.group(1))
+            else: await enviar_mensaje_texto(wa_id, p)
+            
+    asyncio.create_task(enviar_partes())
+    
+    return {"ok": True}
+
+
+@app.post("/admin/toggle")
+async def toggle_bot_global(request: Request):
+    """Activa o desactiva el bot globalmente."""
+    global BOT_GLOBAL_ACTIVO
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    BOT_GLOBAL_ACTIVO = not BOT_GLOBAL_ACTIVO
+    estado = "ACTIVADO" if BOT_GLOBAL_ACTIVO else "APAGADO"
+    print(f"  [\u26a1 Bot {estado} globalmente desde panel admin]")
+    return RedirectResponse(url=f"/admin", status_code=303)
+
+@app.get("/api/debug/historial/{wa_id}")
+async def debug_historial(wa_id: str):
+    if wa_id in sesiones:
+        return JSONResponse(sesiones[wa_id]["historial"])
+    return {"status": "none"}
+
+
+
+from fastapi.responses import Response
+
+@app.get("/api/media/{media_id}")
+async def get_media_proxy(request: Request, media_id: str):
+    """Proxy para obtener imágenes o stickers de WhatsApp sin exponer el token cliente."""
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+        
+    from whatsapp_client import obtener_media_url, descargar_media
+    url = await obtener_media_url(media_id)
+    if not url:
+        return Response(content=b"", status_code=404)
+        
+    contenido, mime_type = await descargar_media(url)
+    if not contenido:
+        return Response(content=b"", status_code=404)
+        
+    return Response(content=contenido, media_type=mime_type or "image/jpeg")
+
+
+# ─────────────────────────────────────────────
+#  Health check
+# ─────────────────────────────────────────────
+
+@app.get("/")
+async def home_redirect():
+    return RedirectResponse("/inbox", status_code=303)
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "bot": "IA-ATC", "sesiones": len(sesiones)}
+
+
+@app.get("/admin/chat/{numero_wa}", response_class=HTMLResponse)
+async def ver_chat(request: Request, numero_wa: str):
+    """Vista de conversación estilo WhatsApp para un número específico."""
+    if not verificar_sesion(request):
+        return RedirectResponse(url=f"/admin", status_code=302)
+
+    sesion = sesiones.get(numero_wa)
+    if not sesion:
+        return HTMLResponse("<h2 style='font-family:sans-serif;padding:2rem'>Sesión no encontrada o ya expiró.</h2>")
+
+    nombre  = sesion.get("nombre_cliente", numero_wa)
+    pedido  = sesion.get("datos_pedido", {}).get("id", "—") if sesion.get("datos_pedido") else "—"
+    estado  = sesion.get("datos_pedido", {}).get("estadoGeneral", "—") if sesion.get("datos_pedido") else "—"
+    activo  = sesion.get("bot_activo", True)
+    msgs    = [m for m in sesion.get("historial", []) if m["role"] != "system"]
+
+    burbujas = ""
+    for m in msgs:
+        es_bot    = m["role"] == "assistant"
+        clase     = "burbuja-bot" if es_bot else "burbuja-user"
+        lado      = "bot-lado" if es_bot else "user-lado"
+        remitente = "🤖 María" if es_bot else f"👤 {nombre}"
+        texto     = m["content"].replace("\n", "<br>")
+        burbujas += f"""
+        <div class="mensaje {lado}">
+          <div class="remitente">{remitente}</div>
+          <div class="{clase}">{texto}</div>
+        </div>"""
+
+    if not burbujas:
+        burbujas = '<p style="text-align:center;color:#aaa;padding:2rem">Sin mensajes aún en esta sesión</p>'
+
+    estado_badge = "🟢 Bot activo" if activo else "🔴 Esperando humano"
+    color_badge  = "#2e7d32" if activo else "#c62828"
+    bg_badge     = "#e8f5e9" if activo else "#ffebee"
+
+    btn_reactivar = "" if activo else f"""
+    <form method="post" action="/admin/reactivar/{numero_wa}" style="margin:0">
+      <button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;
+                     border-radius:8px;cursor:pointer;font-weight:600">▶ Reactivar bot</button>
+    </form>"""
+
+    return HTMLResponse(f"""
+    <html><head><title>Chat: {nombre}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {{
+        --wa-bg: #ece5dd;
+        --wa-chat-bg: #e5ddd5;
+        --wa-header: #075e54;
+        --wa-me: #dcf8c6;
+        --wa-bot: #ffffff;
+        --text-dark: #111b21;
+        --text-gray: #667781;
+      }}
+      *{{box-sizing:border-box;margin:0;padding:0}}
+      body{{font-family:'Inter',sans-serif;background-color:var(--wa-chat-bg);
+            /* Patrón sutil de fondo tipo WhatsApp */
+            background-image: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z" fill="%23dfd8d1" fill-opacity="0.4" fill-rule="evenodd"/%3E%3C/svg%3E');
+            min-height:100vh;display:flex;flex-direction:column;
+            -webkit-font-smoothing: antialiased;}}
+      .topbar{{background:var(--wa-header);color:white;padding:1rem 1.5rem;
+               display:flex;justify-content:space-between;align-items:center;
+               box-shadow:0 2px 4px rgba(0,0,0,.1);position:sticky;top:0;z-index:10}}
+      .topbar-left h2{{font-size:1.1rem;font-weight:600;margin-bottom:.15rem}}
+      .topbar-left small{{font-size:.85rem;opacity:.9}}
+      .topbar-right{{display:flex;align-items:center;gap:1rem}}
+      .estado-chip{{padding:.35rem .85rem;border-radius:20px;font-size:.8rem;font-weight:600;
+                    background:{bg_badge};color:{color_badge};border:1px solid rgba(0,0,0,0.05)}}
+      .btn-reactivar{{background:#25d366;color:white;border:none;padding:.5rem 1rem;
+                      border-radius:8px;cursor:pointer;font-weight:600;font-size:.85rem;
+                      transition:transform .2s, box-shadow .2s;box-shadow:0 1px 2px rgba(0,0,0,0.1)}}
+      .btn-reactivar:hover{{transform:translateY(-1px);box-shadow:0 4px 6px rgba(0,0,0,0.15)}}
+      .back-btn{{color:white;text-decoration:none;font-size:.9rem;font-weight:500;
+                 background:rgba(255,255,255,.15);padding:.5rem 1rem;border-radius:8px;
+                 transition:background .2s}}
+      .back-btn:hover{{background:rgba(255,255,255,.25)}}
+      .chat-area{{flex:1;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem;max-width:850px;
+                  width:100%;margin:0 auto}}
+      .mensaje{{display:flex;flex-direction:column;max-width:80%;position:relative}}
+      .bot-lado{{align-self:flex-start}}
+      .user-lado{{align-self:flex-end}}
+      .remitente{{font-size:.75rem;color:var(--text-gray);margin-bottom:.25rem;font-weight:600}}
+      .user-lado .remitente{{text-align:right}}
+      .burbuja-bot{{background:var(--wa-bot);border-radius:0 12px 12px 12px;padding:.75rem 1rem;
+                   font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
+                   color:var(--text-dark);position:relative}}
+      .burbuja-user{{background:var(--wa-me);border-radius:12px 0 12px 12px;padding:.75rem 1rem;
+                    font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
+                    color:var(--text-dark);position:relative}}
+      /* Colitas de las burbujas */
+      .burbuja-bot::before{{content:"";position:absolute;top:0;left:-8px;
+                            border-right:8px solid var(--wa-bot);border-bottom:8px solid transparent}}
+      .burbuja-user::before{{content:"";position:absolute;top:0;right:-8px;
+                             border-left:8px solid var(--wa-me);border-bottom:8px solid transparent}}
+                             
+      .info-bar{{background:white;margin:1.5rem auto 0;border-radius:12px;padding:1rem 1.5rem;
+                 display:flex;gap:2rem;font-size:.9rem;color:var(--text-gray);flex-wrap:wrap;
+                 box-shadow:0 2px 5px rgba(0,0,0,.05);max-width:850px;width:calc(100% - 3rem);
+                 border:1px solid rgba(0,0,0,0.02)}}
+      .info-bar span{{display:flex;align-items:center;gap:.5rem}}
+      .info-bar b{{color:var(--text-dark);font-weight:600}}
+    </style></head>
+    <body>
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2>{nombre}</h2>
+        <small>+{numero_wa} &middot; Pedido #{pedido} &middot; {estado}</small>
+      </div>
+      <div class="topbar-right">
+        <span class="estado-chip">{estado_badge}</span>
+        {btn_reactivar.replace('button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;\\n                     border-radius:8px;cursor:pointer;font-weight:600"', 'button class="btn-reactivar"')}
+        <a href="/admin" class="back-btn">← Volver al Panel</a>
+      </div>
+    </div>
+    <div class="info-bar">
+      <span>👤 <b>{nombre}</b></span>
+      <span>📦 Pedido <b>#{pedido}</b></span>
+      <span>📌 Estado <b>{estado}</b></span>
+      <span>💬 <b>{len(msgs)}</b> mensajes</span>
+    </div>
+    <div class="chat-area">
+      {burbujas}
+    </div>
+    </body></html>
+    """)
+
+# ==========================================
+# INBOX MODERNO (Tipo Respond.io / SPA)
+# ==========================================
+
+def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
+    if not verificar_sesion(request):
+        return HTMLResponse(obtener_login_html(), status_code=401)
+
+    import os
+    if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
+        
+    with open("inbox.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    ahora = datetime.utcnow()
+    
+    def tiempo_relativo(dt):
+        diff = ahora - dt
+        m = int(diff.total_seconds() / 60)
+        if m < 1:   return "ahora"
+        if m < 60:  return f"{m}m"
+        if m < 1440: return f"{m//60}h"
+        return f"{m//1440}d"
+
+    def ultimo_msg(sesion):
+        hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
+        if not hist: return "—"
+        return hist[-1]["content"][:50] + ("…" if len(hist[-1]["content"]) > 50 else "")
+
+    # Procesar Lista de Chats
+    todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True)
+    lista_chats_html = ""
+    
+    for num, s in todas:
+        inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
+        activo = s.get("bot_activo", True)
+        
+        # Filtro de inactividad
+        if inactivo_horas > SESION_EXPIRA_HORAS and activo:
+            continue
+            
+        # Filtro de Tab
+        if tab == "human" and activo:
+            continue
+
+        nombre   = s.get("nombre_cliente", num)
+        preview  = ultimo_msg(s)
+        time_str = tiempo_relativo(s["ultima_actividad"])
+        
+        badge_html = '<span class="badge">🟢 Bot Activo</span>'
+        if not activo:
+            badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
+            
+        active_class = "active-row" if wa_id == num else ""
+            
+        lista_chats_html += f"""
+        <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
+            <div class="chat-row-header">
+                <span class="chat-name">{nombre}</span>
+                <span class="chat-time">{time_str}</span>
+            </div>
+            <div class="chat-preview">{preview}</div>
+            <div class="chat-badges">{badge_html}</div>
+        </a>"""
+
+    if not lista_chats_html:
+        lista_chats_html = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:0.9rem">No hay conversaciones activas.</div>'
+
+    # Procesar Panel Derecho (Chat Viewer)
+    chat_viewer_html = ""
+    chat_view_css = ""
+    
+    if not wa_id or wa_id not in sesiones:
+        chat_viewer_html = """
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <h3>Tu Inbox está vacío</h3>
+            <p>Selecciona una conversación a la izquierda para comenzar a visualizarla.</p>
+        </div>"""
+    else:
+        # Renderizar Chat Activo
+        s = sesiones[wa_id]
+        nombre_chat = s.get("nombre_cliente", wa_id)
+        activo_chat = s.get("bot_activo", True)
+        msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
+        
+        import re
+        burbujas = ""
+        for m in msgs:
+            es_bot = m["role"] == "assistant"
+            clase  = "bubble-bot" if es_bot else "bubble-user"
+            lado   = "lado-izq" if es_bot else "lado-der"
+            texto  = m["content"].replace("\\n", "<br>")
+            
+            # --- Renderizar media_id si es [sticker:ID] o [imagen:ID] ---
+            # Buscamos patrones exactos
+            match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", texto.strip())
+            match_imagen = re.match(r"^\[imagen:([^\]]+)\]\s*(.*)$", texto.strip())
+            
+            if match_sticker:
+                media_id = match_sticker.group(1)
+                src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+                texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
+            elif match_imagen:
+                media_id = match_imagen.group(1)
+                src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+                caption = match_imagen.group(2)
+                img_tag = f'<img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
+                texto = img_tag + (f"<span>{caption}</span>" if caption else "")
+                
+            burbujas += f'<div class="bubble {clase} {lado}">{texto}</div>'
+            
+        if not burbujas:
+            burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
+
+        # Cabecera superior del chat
+        status_bar = ""
+        if not activo_chat:
+            status_bar = f"""
+            <div style="background:var(--danger-color);color:white;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
+                Atención manual en curso
+                <form method="post" action="/admin/reactivar/{wa_id}" style="margin:0">
+                  <input type="hidden" name="redirect" value="/inbox/{wa_id}?tab={tab}">
+                  <button type="submit" style="background:white;color:var(--danger-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">✅ Reactivar Bot</button>
+                </form>
+            </div>"""
+        else:
+            status_bar = f"""
+            <div style="background:var(--success-color);color:white;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
+                Bot IA respondiendo automáticamente
+                <form method="post" action="/api/admin/pausar/{wa_id}" style="margin:0">
+                  <input type="hidden" name="redirect" value="/inbox/{wa_id}?tab={tab}">
+                  <button type="submit" style="background:white;color:var(--success-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">⏸️ Pausar IA</button>
+                </form>
+            </div>"""
+
+        chat_box = ""
+        if activo_chat:
+            chat_box = """
+            <div style="opacity:0.6;font-size:0.85rem;color:var(--text-muted);display:flex;align-items:center;justify-content:center;padding:0.5rem;">
+                El Bot IA está controlando este chat. Pausa al bot para intervenir.
+            </div>"""
+        else:
+            chat_box = f"""
+            <form onsubmit="window.enviarMensajeManual(event, '{wa_id}')" style="display:flex;gap:0.5rem;width:100%;margin:0;">
+                <input type="text" id="manualMsgInput" placeholder="Escribe tu mensaje manual aquí..." style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required>
+                <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
+            </form>
+            """
+
+        chat_viewer_html = f"""
+        {status_bar}
+        <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
+            <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </a>
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
+            <div style="min-width:0">
+                <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{nombre_chat}</h3>
+                <small style="color:var(--text-muted)">+{wa_id}</small>
+            </div>
+        </div>
+        
+        <div style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
+            {burbujas}
+        </div>
+        
+        <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
+            {chat_box}
+        </div>
+        <script>
+            var c = document.getElementById('chatScroll');
+            if(c) c.scrollTop = c.scrollHeight;
+        </script>
+        """
+        
+        chat_view_css = """
+        .bubble { max-width:80%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; }
+        .lado-izq { align-self:flex-start; }
+        .lado-der { align-self:flex-end; }
+        .bubble-bot { background:var(--accent-bg); color:var(--text-main); border-bottom-left-radius:4px; border:1px solid var(--accent-border); }
+        .bubble-user { background:var(--primary-color); color:#ffffff; border-bottom-right-radius:4px; }
+        """
+
+    # Reemplazos finales en la plantilla
+    es_chat_valido = bool(wa_id and wa_id in sesiones)
+    html = html.replace("{body_class}", "view-chat" if es_chat_valido else "view-list")
+    html = html.replace("{tab_all_active}", "active" if tab != "human" else "")
+    html = html.replace("{tab_human_active}", "active" if tab == "human" else "")
+    html = html.replace("{lista_chats_html}", lista_chats_html)
+    html = html.replace("{chat_viewer_html}", chat_viewer_html)
+    html = html.replace("{chat_view_css}", chat_view_css)
+    html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
+    
+    return HTMLResponse(html)
+
+@app.get("/inbox", response_class=HTMLResponse)
+async def inbox_main(request: Request, tab: str = "all"):
+    return renderizar_inbox(request, None, tab)
+
+@app.get("/inbox/{wa_id}", response_class=HTMLResponse)
+async def inbox_chat(request: Request, wa_id: str, tab: str = "all"):
+    return renderizar_inbox(request, wa_id, tab)
+
+@app.get("/debug")
+async def debug_sesiones():
+    """Endpoint temporal para inspeccionar sesiones activas."""
+    resultado = {}
+    for num, s in sesiones.items():
+        historial_resumido = [
+            {"role": m["role"], "preview": m["content"][:100]}
+            for m in s["historial"]
+            if m["role"] != "system"
+        ]
+        resultado[num] = {
+            "nombre": s.get("nombre_cliente"),
+            "bot_activo": s.get("bot_activo"),
+            "pedido_id": s.get("datos_pedido", {}).get("id") if s.get("datos_pedido") else None,
+            "estado_pedido": s.get("datos_pedido", {}).get("estadoGeneral") if s.get("datos_pedido") else None,
+            "mensajes": historial_resumido,
+        }
+    return resultado
+
+
+# ─────────────────────────────────────────────
+#  Simulador Web de Chat
+# ─────────────────────────────────────────────
+
+@app.get("/simulador", response_class=HTMLResponse)
+async def pagina_simulador(request: Request):
+    """Interfaz web para probar el comportamiento del bot."""
+    if not verificar_sesion(request):
+        return RedirectResponse(url=f"/admin", status_code=302)
+    return HTMLResponse("""
+    <html>
+    <head>
+      <title>Simulador de WhatsApp</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+      <style>
+        :root {
+          --wa-bg: #ece5dd; --wa-chat-bg: #e5ddd5; --wa-header: #075e54;
+          --wa-me: #dcf8c6; --wa-bot: #ffffff; --text-dark: #111b21; --text-gray: #667781;
+        }
+        * {box-sizing:border-box;margin:0;padding:0;}
+        body {font-family:'Inter',sans-serif;background:#202c33;height:100vh;display:flex;align-items:center;justify-content:center;}
+        .app {width:100%;max-width:900px;height:90vh;display:flex;background:white;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+        .sidebar {width:300px;background:#f0f2f5;border-right:1px solid #d1d7db;display:flex;flex-direction:column;z-index:10;}
+        .sidebar-header {background:#f0f2f5;height:60px;padding:1rem;display:flex;align-items:center;font-weight:600;border-bottom:1px solid #d1d7db;color:#111b21;}
+        .sidebar-content {padding:1.5rem 1rem;flex:1;display:flex;flex-direction:column;gap:1.5rem;}
+        .input-group {display:flex;flex-direction:column;gap:0.4rem;}
+        .input-group label {font-size:0.8rem;color:var(--text-gray);font-weight:600;}
+        .input-group input {padding:0.75rem 1rem;border:1px solid #d1d7db;border-radius:8px;font-size:0.95rem;outline:none;}
+        .input-group input:focus {border-color:#00a884;}
+        .btn-limpiar {background:white;border:1px solid #d1d7db;padding:0.6rem;border-radius:8px;cursor:pointer;font-weight:600;color:#54656f;}
+        .btn-limpiar:hover {background:#f5f6f6;}
+        
+        .chat-section {flex:1;display:flex;flex-direction:column;background-color:var(--wa-chat-bg);
+                       background-image: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z" fill="%23dfd8d1" fill-opacity="0.4" fill-rule="evenodd"/%3E%3C/svg%3E');}
+        
+        .chat-header {background:#f0f2f5;height:60px;padding:1rem;display:flex;align-items:center;font-weight:600;border-bottom:1px solid #d1d7db;}
+        .chat-area {flex:1;padding:2rem 4%;overflow-y:auto;display:flex;flex-direction:column;gap:0.5rem;}
+        .chat-input-area {background:#f0f2f5;padding:0.75rem 1rem;display:flex;gap:1rem;align-items:center;}
+        .chat-input {flex:1;padding:0.75rem 1.25rem;border-radius:24px;border:none;outline:none;font-size:1rem;background:white;}
+        .send-btn {background:#00a884;color:white;border:none;width:45px;height:45px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+        .send-btn:hover {background:#017b61;}
+        .send-btn:disabled {background:#aaa;cursor:not-allowed;}
+        
+        /* Burbujas */
+        .msg {max-width:75%;display:flex;flex-direction:column;position:relative;margin-bottom:0.3rem;}
+        .msg-user {align-self:flex-end;background:var(--wa-me);border-radius:12px 0 12px 12px;padding:0.5rem 0.75rem;box-shadow:0 1px 1px rgba(0,0,0,0.1);color:var(--text-dark);}
+        .msg-bot {align-self:flex-start;background:var(--wa-bot);border-radius:0 12px 12px 12px;padding:0.5rem 0.75rem;box-shadow:0 1px 1px rgba(0,0,0,0.1);color:var(--text-dark);}
+        .msg-user::before {content:"";position:absolute;top:0;right:-8px;border-left:8px solid var(--wa-me);border-bottom:8px solid transparent;}
+        .msg-bot::before {content:"";position:absolute;top:0;left:-8px;border-right:8px solid var(--wa-bot);border-bottom:8px solid transparent;}
+        .typing {font-style:italic;color:var(--text-gray);font-size:0.85rem;}
+        
+        @media(max-width:768px){ .app{height:100vh;flex-direction:column;border-radius:0;} .sidebar{width:100%;height:auto;padding-bottom:1rem;border-right:none;border-bottom:1px solid #ccc;} }
+      </style>
+    </head>
+    <body>
+      <div class="app">
+        <div class="sidebar">
+          <div class="sidebar-header">⚙️ Configuración del Test</div>
+          <div class="sidebar-content">
+            <div class="input-group">
+              <label>Teléfono a simular (WA)</label>
+              <input type="text" id="sim-numero" value="51999999991">
+            </div>
+            <div class="input-group">
+              <label>Nombre del Cliente</label>
+              <input type="text" id="sim-nombre" value="Tester Local">
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-gray);line-height:1.5">
+              Este chat emula al servidor conectándose a Firebase y consultando a Groq, pero <b>no enviará el mensaje real a tu teléfono</b> a través de la API de Meta.
+            </p>
+          </div>
+        </div>
+        
+        <div class="chat-section">
+          <div class="chat-header">
+            Bot IA-ATC — Entorno de Prueba Local
+            <a href="/admin" style="margin-left:auto; text-decoration:none; color:var(--text-gray); font-size:0.85rem; font-weight:500">← Volver al Panel</a>
+          </div>
+          <div class="chat-area" id="chat">
+            <div class="msg msg-bot">
+              ¡Hola! Escribe aquí para probar el bot. Utiliza un número que tenga pedido en tu base de datos para probar la búsqueda.
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" id="mensaje" class="chat-input" placeholder="Escribe un mensaje de prueba..." autofocus onkeypress="handleEnter(event)">
+            <button id="send-btn" class="send-btn" onclick="sendMessage()">➤</button>
+          </div>
+        </div>
+      </div>
+      
+      <script>
+        const chat = document.getElementById('chat');
+        const inputMsg = document.getElementById('mensaje');
+        const inputNum = document.getElementById('sim-numero');
+        const inputNom = document.getElementById('sim-nombre');
+        const sendBtn = document.getElementById('send-btn');
+        
+        function handleEnter(e) {
+            if(e.key === 'Enter') sendMessage();
+        }
+        
+        async function sendMessage() {
+            const texto = inputMsg.value.trim();
+            if(!texto) return;
+            
+            const numero = inputNum.value.trim();
+            const nombre = inputNom.value.trim();
+            
+            addMessage(texto, 'msg-user');
+            inputMsg.value = '';
+            
+            const typingId = 'typing-' + Date.now();
+            addTyping(typingId);
+            sendBtn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/simulador/send', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ numero, nombre, mensaje: texto })
+                });
+                
+                const data = await res.json();
+                removeTyping(typingId);
+                
+                if(data.respuesta) {
+                    addMessage(data.respuesta, 'msg-bot');
+                } else {
+                    addMessage("<span style='color:#a0a0a0;font-style:italic'>(El bot no ha respondido. Quizás está apagado, o el pedido está en Diseño)</span>", 'msg-bot');
+                }
+            } catch(error) {
+                removeTyping(typingId);
+                addMessage("<span style='color:red'>⚠️ Error de conexión</span>", 'msg-bot');
+            }
+            sendBtn.disabled = false;
+            inputMsg.focus();
+        }
+        
+        function addMessage(texto, cssClass) {
+            const div = document.createElement('div');
+            div.className = `msg ${cssClass}`;
+            div.innerHTML = texto.replace(/\\n/g, '<br>');
+            chat.appendChild(div);
+            scrollBottom();
+        }
+        
+        function addTyping(id) {
+            const div = document.createElement('div');
+            div.className = `msg msg-bot typing`;
+            div.id = id;
+            div.innerText = 'escribiendo...';
+            chat.appendChild(div);
+            scrollBottom();
+        }
+        
+        function removeTyping(id) {
+            const div = document.getElementById(id);
+            if(div) div.remove();
+        }
+        
+        function scrollBottom() {
+            chat.scrollTop = chat.scrollHeight;
+        }
+      </script>
+    </html>
+    """)
+
+@app.post("/api/simulador/send")
+async def api_simular_mensaje(request: Request):
+    """Recibe el mensaje falso del simulador y procesa la lógica nativa del webhook."""
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="JSON inválido")
+        
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+
+    numero = data.get("numero", "51999999991")
+    nombre = data.get("nombre", "Tester")
+    texto = data.get("mensaje", "")
+    
+    print(f"\n{'─'*50}")
+    print(f"🧪 SIMULADOR | {nombre} ({numero}): {texto}")
+    
+    respuesta = procesar_mensaje_interno(numero, nombre, texto, is_simulacion=True)
+    
+    return {"status": "ok", "respuesta": respuesta}
+
+

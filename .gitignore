@@ -1,0 +1,35 @@
+# ⚠️ SEGURIDAD — Archivos que NUNCA deben subirse a Git
+
+# Credenciales de Firebase Admin (acceso total a tu base de datos)
+serviceAccountKey.json
+*.json
+__pycache__/
+*.pyc
+.env
+json
+
+# Variables de entorno
+.env
+.env.local
+.env.*
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Auto-generated agent rules (personalized per developer)
+.brainsync/agent-rules.md
+
+AGENT.md
+CLAUDE.md
+.agent-mem/
+
+*.exe
+*.log
+隧道_log.txt
