@@ -22,7 +22,7 @@ LM_STUDIO_MODEL    = "local-model"
 
 # --- Groq API (para server.py en producción) ---
 GROQ_API_KEY   = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL     = "llama-3.1-8b-instant"
+GROQ_MODEL     = "llama3-8b-8192"
 
 # --- Parámetros del modelo ---
 TEMPERATURE = 0.05  # casi determinista: sigue los documentos sin inventar
@@ -39,7 +39,7 @@ FIREBASE_JSON             = os.getenv("FIREBASE_JSON")
 COLECCION_PEDIDOS         = "pedidos"
 
 # --- Sesiones ---
-MAX_HISTORIAL_TURNOS     = 20
+MAX_HISTORIAL_TURNOS     = 6
 SESION_EXPIRA_HORAS      = 4    # tras N horas de inactividad → sesión nueva
 ESTADOS_DISEÑO           = {"En Diseño", "en diseño", "Diseño", "diseño"}
 
