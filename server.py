@@ -26,7 +26,7 @@ from config import (
 )
 from prompts import get_system_prompt, MENSAJE_BIENVENIDA
 from firebase_client import buscar_pedido_por_telefono
-from whatsapp_client import enviar_mensaje
+from whatsapp_client import enviar_mensaje, enviar_media
 from bot_atc import normalizar_texto, preprocesar_mensaje
 
 # ─────────────────────────────────────────────
@@ -356,8 +356,6 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Enviar respuesta al cliente por WhatsApp ──────────
     print(f"🤖 María: {respuesta_final[:80]}...")
     if not is_simulacion:
-        from whatsapp_client import enviar_mensaje, enviar_media
-        
         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
         for p in partes:
