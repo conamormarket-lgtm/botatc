@@ -34,7 +34,8 @@ META_VERIFY_TOKEN    = os.getenv("META_VERIFY_TOKEN", "bot_atc_token")
 META_API_VERSION     = "v19.0"
 
 # --- Firebase ---
-FIREBASE_CREDENTIALS_PATH = "serviceAccountKey.json"
+FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "serviceAccountKey.json")
+FIREBASE_JSON             = os.getenv("FIREBASE_JSON")
 COLECCION_PEDIDOS         = "pedidos"
 
 # --- Sesiones ---

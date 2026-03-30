@@ -6,18 +6,27 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
 
-from config import FIREBASE_CREDENTIALS_PATH, COLECCION_PEDIDOS
+from config import FIREBASE_CREDENTIALS_PATH, FIREBASE_JSON, COLECCION_PEDIDOS
 
 
 def inicializar_firebase():
     """Inicializa Firebase Admin una sola vez."""
     if not firebase_admin._apps:
-        if not os.path.exists(FIREBASE_CREDENTIALS_PATH):
-            raise FileNotFoundError(
-                f"\n❌ No se encontró '{FIREBASE_CREDENTIALS_PATH}'.\n"
-                "Genera la clave en Firebase Console → Configuración → Cuentas de servicio.\n"
-            )
-        cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+        if FIREBASE_JSON:
+            import json
+            try:
+                cred_dict = json.loads(FIREBASE_JSON)
+                cred = credentials.Certificate(cred_dict)
+            except Exception as e:
+                raise ValueError(f"❌ Error parseando FIREBASE_JSON: {e}")
+        else:
+            if not os.path.exists(FIREBASE_CREDENTIALS_PATH):
+                raise FileNotFoundError(
+                    f"\n❌ No se encontró '{FIREBASE_CREDENTIALS_PATH}' ni la variable FIREBASE_JSON.\n"
+                    "Genera la clave en Firebase Console → Configuración → Cuentas de servicio.\n"
+                )
+            cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+            
         firebase_admin.initialize_app(cred)
     return firestore.client()
 
