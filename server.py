@@ -112,16 +112,26 @@ def llamar_gemini(historial: list[dict]) -> str:
         # El primer mensaje siempre es el sistema
         system_text = historial[0]["content"]
         
-        # Mapeamos el historialresto a formato Gemini, uniendo roles consecutivos si los hay
+        # Mapeamos el historial a formato Gemini, uniendo roles consecutivos si los hay
         gemini_contents = []
         for msg in historial[1:]:
             role = "model" if msg["role"] == "assistant" else "user"
             
-            # Si el último mensaje es del mismo rol, simplemente anexamos el texto para no romper la regla
+            # CRÍTICO: Gemini exige que la conversación inicie obligatoriamente con el usuario.
+            # Si debido al recorte del historial (o respuestas manuales del admin) 
+            # el primer mensaje resulta ser del bot, lo saltamos hasta encontrar al primer 'user'.
+            if not gemini_contents and role == "model":
+                continue
+            
+            # Si el último mensaje procesado es del mismo rol, anexamos su texto para no romper la regla
             if gemini_contents and gemini_contents[-1]["role"] == role:
                 gemini_contents[-1]["parts"][0]["text"] += f"\n\n{msg['content']}"
             else:
                 gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+                
+        # Doble verificación final: si por alguna razón no quedó nada (ej. puros mensajes de admin)
+        if not gemini_contents:
+            gemini_contents.append({"role": "user", "parts": [{"text": "[Retomando la conversación]"}]})
             
         config = types.GenerateContentConfig(
             system_instruction=system_text,
