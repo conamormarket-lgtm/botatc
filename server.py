@@ -130,16 +130,27 @@ def llamar_gemini(historial: list[dict]) -> str:
         )
         return response.text.strip()
     except Exception as e:
+        import traceback
+        with open("error_gemini.txt", "w") as f:
+            f.write(traceback.format_exc())
         print(f"❌ Error Gemini: {e}")
         return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
 
 
 def recortar_historial(historial: list[dict]) -> list[dict]:
-    """Conserva system prompt + últimos N turnos."""
+    """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
     system = [historial[0]]
     turnos = historial[1:]
+    
+    # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
+        
+        # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
+        # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
+        if turnos and turnos[0]["role"] == "assistant":
+            turnos = turnos[1:]
+            
     return system + turnos
 
 
