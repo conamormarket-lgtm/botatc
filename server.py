@@ -47,6 +47,7 @@ BOT_GLOBAL_ACTIVO: bool = True
 mensajes_pendientes: dict[str, list[str]] = {}
 import asyncio
 user_locks: dict[str, asyncio.Lock] = {}
+mensajes_procesados_ids = set()
 
 # Regex para detectar escalación desde el mensaje del cliente
 REGEX_ESCALAR = re.compile(
@@ -125,7 +126,7 @@ def llamar_gemini(historial: list[dict]) -> str:
         config = types.GenerateContentConfig(
             system_instruction=system_text,
             temperature=TEMPERATURE,
-            max_output_tokens=300,
+            max_output_tokens=800,
         )
         
         response = gemini_client.models.generate_content(
@@ -220,6 +221,16 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             return {"status": "ok"}
 
         mensaje_data  = changes["messages"][0]
+        mensaje_id    = mensaje_data.get("id", "")
+        
+        # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta
+        if mensaje_id in mensajes_procesados_ids:
+            return {"status": "ok"}
+        mensajes_procesados_ids.add(mensaje_id)
+        # Limitar la memoria del set para evitar fugas (guardamos aprox 500 ids)
+        if len(mensajes_procesados_ids) > 500:
+            mensajes_procesados_ids.clear()
+            
         numero_wa     = mensaje_data["from"]           # ej: "51945257117"
         tipo_mensaje  = mensaje_data.get("type", "")
 

@@ -25,7 +25,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL   = "gemini-2.5-flash"
 
 # --- Parámetros del modelo ---
-TEMPERATURE = 0.05  # casi determinista: sigue los documentos sin inventar
+TEMPERATURE = 0.4  # Balanceado: previene cortes abruptos en respuestas repetitivas
 
 # --- Meta WhatsApp Business API ---
 META_ACCESS_TOKEN    = os.getenv("META_ACCESS_TOKEN", "")
