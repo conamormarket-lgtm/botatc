@@ -132,12 +132,8 @@ def llamar_gemini(historial: list[dict]) -> str:
             role = "model" if msg["role"] == "assistant" else "user"
             
             # CRÍTICO: Gemini exige que la conversación inicie obligatoriamente con el usuario.
-            # Si debido al recorte del historial (o respuestas manuales del admin) 
-            # el primer mensaje resulta ser del bot, lo saltamos hasta encontrar al primer 'user'.
             if not gemini_contents and role == "model":
                 continue
-            
-            # Si el último mensaje procesado es del mismo rol, anexamos su texto para no romper la regla
             
             # Buscar si el mensaje es un audio (enviado por el cliente)
             match_audio = re.match(r"^\[audio:([^\]]+)\]$", msg["content"].strip())
@@ -148,22 +144,23 @@ def llamar_gemini(historial: list[dict]) -> str:
                 audio_data = media_cache.get(media_id)
                 if audio_data:
                     contenido_bytes, mime_type = audio_data
-                    # Fallback si Meta no da mime type correcto
+                    # Depurar codecs en mime_type (ej. audio/ogg; codecs=opus -> audio/ogg)
+                    if mime_type and ";" in mime_type: mime_type = mime_type.split(";")[0]
                     if not mime_type: mime_type = "audio/ogg" 
                     part = types.Part.from_bytes(data=contenido_bytes, mime_type=mime_type)
                 else:
-                    part = types.Part.from_text("[🎤 Mensaje de voz (Audio no disponible en caché)]")
+                    part = types.Part.from_text(text="[🎤 Mensaje de voz (Audio expirado o no disponible en caché)]")
             else:
-                part = types.Part.from_text(msg["content"])
+                part = types.Part.from_text(text=msg["content"])
                 
-            if gemini_contents and gemini_contents[-1]["role"] == role:
-                gemini_contents[-1]["parts"].append(part)
+            if gemini_contents and gemini_contents[-1].role == role:
+                gemini_contents[-1].parts.append(part)
             else:
-                gemini_contents.append({"role": role, "parts": [part]})
+                gemini_contents.append(types.Content(role=role, parts=[part]))
                 
-        # Doble verificación final: si por alguna razón no quedó nada (ej. puros mensajes de admin)
+        # Doble verificación final: si por alguna razón no quedó nada
         if not gemini_contents:
-            gemini_contents.append({"role": "user", "parts": [{"text": "[Retomando la conversación]"}]})
+            gemini_contents.append(types.Content(role="user", parts=[types.Part.from_text(text="[Retomando la conversación]")]))
             
         config = types.GenerateContentConfig(
             system_instruction=system_text,
