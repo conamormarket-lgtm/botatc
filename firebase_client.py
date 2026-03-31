@@ -76,7 +76,7 @@ def buscar_pedido_por_telefono(telefono: str) -> list[dict]:
     docs = (
         db.collection(COLECCION_PEDIDOS)
           .where(filter=FieldFilter("clienteContacto", "in", variantes_busqueda))
-          .limit(5)
+          .limit(20)
           .get()
     )
     
@@ -84,7 +84,12 @@ def buscar_pedido_por_telefono(telefono: str) -> list[dict]:
     for doc in docs:
         resultados.append(doc.to_dict())
         
-    return resultados
+    # Ordenar los resultados localmente en memoria (por el campo 'id' descendente)
+    # Ya que los IDs son secuenciales (006979, 008917...), el mayor es el más reciente.
+    resultados.sort(key=lambda x: str(x.get("id", "0")), reverse=True)
+    
+    # Devolver únicamente los 5 pedidos más recientes para no saturar a la IA
+    return resultados[:5]
 
 
 def buscar_pedido_por_id(numero_pedido: str) -> dict | None:
