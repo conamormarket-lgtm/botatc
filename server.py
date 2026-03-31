@@ -49,6 +49,20 @@ import asyncio
 user_locks: dict[str, asyncio.Lock] = {}
 mensajes_procesados_ids = set()
 
+# Caché de archivos multimedia (Audios, Imágenes, etc.) para que Gemini y el UI los lean
+media_cache: dict[str, tuple[bytes, str]] = {}
+
+async def cachear_media(media_id: str):
+    if not media_id or media_id in media_cache: return
+    try:
+        from whatsapp_client import obtener_media_url, descargar_media
+        url = await obtener_media_url(media_id)
+        if url:
+            contenido, mime = await descargar_media(url)
+            if contenido: media_cache[media_id] = (contenido, mime)
+    except: pass
+mensajes_procesados_ids = set()
+
 # Regex para detectar escalación desde el mensaje del cliente
 REGEX_ESCALAR = re.compile(
     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
@@ -124,10 +138,28 @@ def llamar_gemini(historial: list[dict]) -> str:
                 continue
             
             # Si el último mensaje procesado es del mismo rol, anexamos su texto para no romper la regla
-            if gemini_contents and gemini_contents[-1]["role"] == role:
-                gemini_contents[-1]["parts"][0]["text"] += f"\n\n{msg['content']}"
+            
+            # Buscar si el mensaje es un audio (enviado por el cliente)
+            match_audio = re.match(r"^\[audio:([^\]]+)\]$", msg["content"].strip())
+            
+            part = None
+            if match_audio:
+                media_id = match_audio.group(1)
+                audio_data = media_cache.get(media_id)
+                if audio_data:
+                    contenido_bytes, mime_type = audio_data
+                    # Fallback si Meta no da mime type correcto
+                    if not mime_type: mime_type = "audio/ogg" 
+                    part = types.Part.from_bytes(data=contenido_bytes, mime_type=mime_type)
+                else:
+                    part = types.Part.from_text("[🎤 Mensaje de voz (Audio no disponible en caché)]")
             else:
-                gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+                part = types.Part.from_text(msg["content"])
+                
+            if gemini_contents and gemini_contents[-1]["role"] == role:
+                gemini_contents[-1]["parts"].append(part)
+            else:
+                gemini_contents.append({"role": role, "parts": [part]})
                 
         # Doble verificación final: si por alguna razón no quedó nada (ej. puros mensajes de admin)
         if not gemini_contents:
@@ -255,12 +287,17 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         elif tipo_mensaje == "sticker":
             media_id = mensaje_data.get("sticker", {}).get("id", "")
             texto_cliente = f"[sticker:{media_id}]"
+            background_tasks.add_task(cachear_media, media_id)
         elif tipo_mensaje == "image":
             media_id = mensaje_data.get("image", {}).get("id", "")
             caption  = mensaje_data.get("image", {}).get("caption", "")
             texto_cliente = f"[imagen:{media_id}]" + (f" {caption}" if caption else "")
-        elif tipo_mensaje == "audio":
-            texto_cliente = "[🎤 Mensaje de voz]"
+            background_tasks.add_task(cachear_media, media_id)
+        elif tipo_mensaje in ["audio", "voice"]:
+            # WhatsApp puede enviar audio (grabados) o voice (voice notes)
+            media_id = mensaje_data.get(tipo_mensaje, {}).get("id", "")
+            texto_cliente = f"[audio:{media_id}]"
+            background_tasks.add_task(cachear_media, media_id)
         elif tipo_mensaje == "video":
             texto_cliente = "[🎥 Video]"
         elif tipo_mensaje == "document":
@@ -587,6 +624,24 @@ async def settings_panel(request: Request):
     
     return HTMLResponse(html)
 
+@app.get("/api/media/{media_id}")
+async def get_media_endpoint(media_id: str):
+    from fastapi.responses import Response
+    if media_id in media_cache:
+        data, mime = media_cache[media_id]
+        return Response(content=data, media_type=mime)
+        
+    try:
+        from whatsapp_client import obtener_media_url, descargar_media
+        url = await obtener_media_url(media_id)
+        if url:
+            data, mime = await descargar_media(url)
+            if data:
+                media_cache[media_id] = (data, mime)
+                return Response(content=data, media_type=mime)
+    except: pass
+    return Response(content=b"", status_code=404)
+    
 @app.post("/api/settings/save")
 async def save_settings(request: Request, guia_content: str = Form(...)):
     if not verificar_sesion(request):
@@ -1086,6 +1141,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             # Buscamos patrones exactos
             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", texto.strip())
             match_imagen = re.match(r"^\[imagen:([^\]]+)\]\s*(.*)$", texto.strip())
+            match_audio = re.match(r"^\[audio:([^\]]+)\]$", texto.strip())
             
             if match_sticker:
                 media_id = match_sticker.group(1)
@@ -1097,6 +1153,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
                 caption = match_imagen.group(2)
                 img_tag = f'<img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
                 texto = img_tag + (f"<span>{caption}</span>" if caption else "")
+            elif match_audio:
+                media_id = match_audio.group(1)
+                src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+                texto = f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none;"></audio><br><small style="opacity:0.6;font-size:0.7rem;">Nota de Voz</small></div>'
+                
                 
             burbujas += f'<div class="bubble {clase} {lado}">{texto}</div>'
             
