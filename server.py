@@ -16,11 +16,11 @@ import hashlib
 from datetime import datetime, timedelta
 
 from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File, BackgroundTasks
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
-from groq import Groq
+from google import genai
+from google.genai import types
 
 from config import (
-    GROQ_API_KEY, GROQ_MODEL, TEMPERATURE,
+    GEMINI_API_KEY, GEMINI_MODEL, TEMPERATURE,
     META_VERIFY_TOKEN, SESION_EXPIRA_HORAS, ESTADOS_DISEÑO,
     MAX_HISTORIAL_TURNOS, ADMIN_PASSWORD
 )
@@ -33,7 +33,7 @@ from bot_atc import normalizar_texto, preprocesar_mensaje
 #  Inicialización
 # ─────────────────────────────────────────────
 app = FastAPI(title="Bot ATC — IA-ATC")
-groq_client = Groq(api_key=GROQ_API_KEY, max_retries=0)
+gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"
@@ -101,21 +101,35 @@ def normalizar_numero(numero_wa: str) -> str:
 
 
 # ─────────────────────────────────────────────
-#  Llamada al modelo (Groq)
+#  Llamada al modelo (Gemini)
 # ─────────────────────────────────────────────
 
-def llamar_groq(historial: list[dict]) -> str:
-    """Llama a Groq con el historial y retorna la respuesta del modelo."""
+def llamar_gemini(historial: list[dict]) -> str:
+    """Llama a Gemini con el historial y retorna la respuesta del modelo."""
     try:
-        response = groq_client.chat.completions.create(
-            model=GROQ_MODEL,
-            messages=historial,
+        # El primer mensaje siempre es el sistema
+        system_text = historial[0]["content"]
+        
+        # Mapeamos el historial resto a formato Gemini
+        gemini_contents = []
+        for msg in historial[1:]:
+            role = "model" if msg["role"] == "assistant" else "user"
+            gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+            
+        config = types.GenerateContentConfig(
+            system_instruction=system_text,
             temperature=TEMPERATURE,
-            max_tokens=300,  # Reducido para ahorrar tokens en la cuota TPM de Groq
+            max_output_tokens=300,
         )
-        return response.choices[0].message.content.strip()
+        
+        response = gemini_client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=gemini_contents,
+            config=config,
+        )
+        return response.text.strip()
     except Exception as e:
-        print(f"❌ Error Groq: {e}")
+        print(f"❌ Error Gemini: {e}")
         return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
 
 
@@ -389,8 +403,8 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         sesion["historial"].append({"role": "user", "content": texto_modelo})
         
     sesion["historial"] = recortar_historial(sesion["historial"])
-
-    respuesta_bot = llamar_groq(sesion["historial"])
+    print(f"  [🧠 Enviando {len(sesion['historial'])} turnos a Gemini]")
+    respuesta_bot = llamar_gemini(sesion["historial"])
 
     # ── Procesar escalación si el modelo la detectó ───────
     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)

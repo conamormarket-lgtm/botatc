@@ -20,9 +20,9 @@ LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
 LM_STUDIO_API_KEY  = "lm-studio"
 LM_STUDIO_MODEL    = "local-model"
 
-# --- Groq API (para server.py en producción) ---
-GROQ_API_KEY   = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL     = "llama-3.1-8b-instant"
+# --- Gemini API (para server.py en producción) ---
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL   = "gemini-2.5-flash"
 
 # --- Parámetros del modelo ---
 TEMPERATURE = 0.05  # casi determinista: sigue los documentos sin inventar
