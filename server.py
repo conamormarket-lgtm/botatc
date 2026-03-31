@@ -900,7 +900,7 @@ async def get_media_proxy(request: Request, media_id: str):
 
 
 # ─────────────────────────────────────────────
-#  Health check
+#  Health check y Debug
 # ─────────────────────────────────────────────
 
 @app.get("/")
@@ -910,6 +910,14 @@ async def home_redirect():
 @app.get("/health")
 async def health():
     return {"status": "ok", "bot": "IA-ATC", "sesiones": len(sesiones)}
+
+@app.get("/debug_err", response_class=HTMLResponse)
+async def debug_error():
+    import os
+    if os.path.exists("error_gemini.txt"):
+        with open("error_gemini.txt", "r") as f:
+            return f"<pre>{f.read()}</pre>"
+    return "No hay error_gemini.txt registrado."
 
 
 @app.get("/admin/chat/{numero_wa}", response_class=HTMLResponse)
