@@ -111,11 +111,16 @@ def llamar_gemini(historial: list[dict]) -> str:
         # El primer mensaje siempre es el sistema
         system_text = historial[0]["content"]
         
-        # Mapeamos el historial resto a formato Gemini
+        # Mapeamos el historialresto a formato Gemini, uniendo roles consecutivos si los hay
         gemini_contents = []
         for msg in historial[1:]:
             role = "model" if msg["role"] == "assistant" else "user"
-            gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+            
+            # Si el último mensaje es del mismo rol, simplemente anexamos el texto para no romper la regla
+            if gemini_contents and gemini_contents[-1]["role"] == role:
+                gemini_contents[-1]["parts"][0]["text"] += f"\n\n{msg['content']}"
+            else:
+                gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
             
         config = types.GenerateContentConfig(
             system_instruction=system_text,
