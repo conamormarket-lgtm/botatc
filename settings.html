@@ -248,7 +248,19 @@
                 </button>
             </header>
 
-            <div class="container">
+            <div class="container" style="display:flex; flex-direction:column; gap:2rem;">
+            
+                <div class="proactive-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <h3 style="margin-bottom:0.25rem;color:var(--text-main);font-family:var(--font-heading)">Notificaciones Automáticas de Provincia</h3>
+                        <p style="color:var(--text-muted);font-size:0.9rem;">El bot detecta pagos y avances de pedidos en tiempo real para clientes de provincia y envía un mensaje por WhatsApp sin intervención tuya.</p>
+                    </div>
+                    <form method="post" action="/api/settings/toggle_proactive" style="margin:0;">
+                        <button type="submit" style="background:{proactive_color};color:white;border:none;padding:0.75rem 1.5rem;border-radius:8px;font-weight:600;cursor:pointer;font-family:var(--font-main);white-space:nowrap;transition:transform 0.2s;">
+                            {proactive_text}
+                        </button>
+                    </form>
+                </div>
                 <div class="pdf-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;">
                     <h3 style="margin-bottom:0.5rem;color:var(--text-main);font-family:var(--font-heading)">Archivos PDF con conocimiento extra</h3>
                     <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Los archivos PDF en esta lista se combinan con la guía central para formar el cerebro del asistente.</p>

@@ -19,6 +19,9 @@ ORDEN_ETAPAS = {
 # Solamente se guardan las variables mínimas para optimizar RAM.
 cache_pedidos = {}
 
+# Interruptor (Toggleable desde Panel) - Apagado por defecto
+NOTIFICACIONES_PROACTIVAS_ACTIVAS = False
+
 def notificar_whatsapp(pedido: dict, mensaje: str):
     contacto = pedido.get("clienteContacto", "").strip()
     if not contacto:
@@ -57,6 +60,9 @@ def _enviar_plantilla_2(pedido: dict, nueva_etapa: str):
     notificar_whatsapp(pedido, mensaje)
 
 def procesar_cambio_pedido(doc_id: str, pedido: dict):
+    if not NOTIFICACIONES_PROACTIVAS_ACTIVAS:
+        return
+
     # Validar si aplica: Solo PROVINCIA
     provincia = pedido.get("clienteProvincia", "Lima Metropolitana")
     if not provincia or provincia.strip().lower() in ["lima metropolitana", "lima"]:

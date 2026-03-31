@@ -622,8 +622,16 @@ async def settings_panel(request: Request):
     except Exception:
         guia_content = ""
 
+    try:
+        from pedidos_observer import NOTIFICACIONES_PROACTIVAS_ACTIVAS
+        proact_activo = NOTIFICACIONES_PROACTIVAS_ACTIVAS
+    except:
+        proact_activo = False
+
     html = html.replace("{guia_content}", guia_content)
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
+    html = html.replace("{proactive_text}", "Desactivar Envíos" if proact_activo else "Activar Sistema Proactivo")
+    html = html.replace("{proactive_color}", "#ef4444" if proact_activo else "#10b981")
     
     import glob
     pdfs_html = ""
@@ -694,6 +702,16 @@ async def delete_pdf(request: Request, filename: str):
         prompts._GUIA_CACHE = ""
         
     return RedirectResponse(url="/settings?deleted=true", status_code=303)
+
+@app.post("/api/settings/toggle_proactive")
+async def toggle_proactive(request: Request):
+    if not verificar_sesion(request):
+        return RedirectResponse(url="/login", status_code=303)
+    
+    import pedidos_observer
+    pedidos_observer.NOTIFICACIONES_PROACTIVAS_ACTIVAS = not pedidos_observer.NOTIFICACIONES_PROACTIVAS_ACTIVAS
+    
+    return RedirectResponse(url="/settings", status_code=303)
 
 @app.get("/admin", response_class=HTMLResponse)
 async def panel_admin(request: Request):
