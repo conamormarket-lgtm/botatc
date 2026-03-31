@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 3 gotchas, 6 conventions, 11 fixes."
+description: "Python for botatc. 3 gotchas, 7 conventions, 17 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **36 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **45 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -23,6 +23,114 @@ Auto-compiled from **36 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in firebase_client.py
+- def calcular_cola_pedido(pedido: dict) -> int:
+-     """
+-     Calcula el puesto exacto de un pedido comparando cuántos IDs 
+-     (secuencias más antiguas) existen en la misma etapa (estadoGeneral).
+-     """
+-     estado = pedido.get("estadoGeneral")
+-     pid = pedido.get("id")
+-     if not estado or not pid: return 0
+-     
+-     db = inicializar_firebase()
+-     try:
+-         docs = db.col
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in Sticker
+-             
++             match_audio = re.match(r"^\[audio:([^\]]+)\]$", texto.strip())
+-             if match_sticker:
++             
+-                 media_id = match_sticker.group(1)
++             if match_sticker:
+-                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
++                 media_id = match_sticker.group(1)
+-                 t
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Sticker
+3. identifier: Imagen
+4. identifier: Nota
+5. identifier: Voz
+
+### Fixed null crash in Regex — protects against XSS and CSRF token theft
+- 
++ mensajes_procesados_ids = set()
+- # Regex para detectar escalación desde el mensaje del cliente
++ 
+- REGEX_ESCALAR = re.compile(
++ # Regex para detectar escalación desde el mensaje del cliente
+-     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
++ REGEX_ESCALAR = re.compile(
+-     r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
++     r"\b(hablar con|c
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Regex
+3. identifier: IGNORECASE
+4. identifier: Gesti
+5. identifier: Retorna
+
+### Fixed null crash in Error — protects against XSS and CSRF token theft
+-         print(f"❌ Error Gemini: {e}")
++         import traceback
+-         return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
++         with open("error_gemini.txt", "w") as f:
+- 
++             f.write(traceback.format_exc())
+- 
++         print(f"❌ Error Gemini: {e}")
+- def recortar_historial(historial: list[dict]) -> list[dict]:
++         return "Disculpa, tuve un p
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Error
+3. identifier: Gemini
+4. identifier: Disculpa
+5. identifier: Intenta
+
+### Fixed null crash in Procesar — protects against XSS and CSRF token theft
+-     try:
++     respuesta_bot = llamar_gemini(sesion["historial"])
+-         respuesta_bot = llamar_gemini(sesion["historial"])
++ 
+- 
++     # ── Procesar escalación si el modelo la detectó ───────
+-     # ── Procesar escalación si el modelo la detectó ───────
++     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
+-     respuesta_final = procesar_escalacion(numero_wa
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Procesar
+3. identifier: Guardar
+4. identifier: Enviar
+5. identifier: WhatsApp
+
+### problem-fix in test_groq.py
+File updated (external): test_groq.py
+
+Content summary (10 lines):
+﻿from dotenv import load_dotenv
+load_dotenv()
+import os, groq
+client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
+try:
+  resp = client.chat.completions.create(model='llama3-8b-8192', messages=[{'role': 'user', 'content': 'hola'}], max_tokens=10)
+  print('OK:', resp.choices[0].message.content)
+except Exception as e:
+  print('ERROR
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in Parsear — protects against XSS and CSRF token theft
 -         from whatsapp_client import enviar_mensaje, enviar_media
@@ -214,6 +322,8 @@ Auto-compiled from **36 real patterns** in **botatc**. This skill is auto-routed
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x** — -         # Mapeamos el historial resto a formato Gemini
++         # Mapeamos el historialresto a f
 - 📐 **Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x** — -     sesion["historial"].append({"role": "user", "content": texto_modelo})
 +     if sesion["histor
 - 📐 **Fixed null crash in FastAPI — confirmed 3x** — - from fastapi import FastAPI, Request, HTTPException, Form
@@ -229,16 +339,6 @@ Auto-compiled from **36 real patterns** in **botatc**. This skill is auto-routed
 + 
 
 - 📐 **Fixed null crash in INBOX — confirmed 3x** — - 
-+ # ==========================================
-- 
-+ # INBOX MODERNO (Tipo Respond.io / SPA)
--
++ # =======================================
 
-## 🤔 Decisions & Trade-offs
-
-- **Optimized Cargar** — - from config import DOCUMENTOS_GUIA
-+ from document_loader import cargar_multiples
-- from document_
-
----
-*Auto-generated by BrainSync 🧠 | 36 patterns | 2026-03-30*
+... [Truncated — see individual observations for full content]

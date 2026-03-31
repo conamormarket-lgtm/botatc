@@ -98,86 +98,174 @@
 … [diff truncated]
 
 ### 📐 Config/Infrastructure Conventions & Fixes
-- **[convention] what-changed in .gitignore — confirmed 3x**: - 隧道_log.txt
-+ 隧道_log.txt
-- **[problem-fix] Fixed null crash in Sticker**: -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
-+                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
--             elif match_imagen:
-+                 texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
--                 media_id = match_imagen.group(1)
-+             elif match_imagen:
--                 caption = match_imagen.group(2)
-+                 media_id = match_imagen.group(1)
--                 img_tag = f'<img src="/api/media/{media_id}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
-+                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
--                 texto = img_tag + (f"<span>{caption}</span>" if caption else "")
-+                 caption = match_imagen.group(2)
--                 
-+                 img_tag = f'<img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
+- **[problem-fix] Fixed null crash in Procesar — protects against XSS and CSRF token theft**: -     try:
++     respuesta_bot = llamar_gemini(sesion["historial"])
+-         respuesta_bot = llamar_gemini(sesion["historial"])
++ 
+- 
++     # ── Procesar escalación si el modelo la detectó ───────
+-     # ── Procesar escalación si el modelo la detectó ───────
++     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
+-     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
++ 
+- 
++     # ── Guardar respuesta en historial ────────────────────
+-     # ── Guardar respuesta en historial ────────────────────
++     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
+-     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
++ 
+- 
++     # ── Enviar respuesta al cliente por WhatsApp ──────────
+-     # ── Enviar respuesta al cliente por WhatsApp ──────────
++     print(f"🤖 María: {respuesta_final[:80]}...")
+-     print(f"🤖 María: {respuesta_final[:80]}...")
++     if not is_simulacion:
+-     if not is_simulacion:
++         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
+-         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
++         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
+-         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
++         for p in partes:
+-         for p in partes:
++             p = p.strip()
+-             p = p.strip()
++             if not p: continue
+-             if not p: continue
++             
 -             
++             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
+-             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
++             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
+-             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
++             
+-             
++             if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
+-             if match_stick
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
-- **[problem-fix] Fixed null crash in Parsear — protects against XSS and CSRF token theft**: -         enviar_mensaje(numero_wa, respuesta_final)
-+         from whatsapp_client import enviar_mensaje, enviar_media
-- 
-+         
--     return respuesta_final
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
+- **[problem-fix] problem-fix in test_groq.py**: File updated (external): test_groq.py
+
+Content summary (10 lines):
+﻿from dotenv import load_dotenv
+load_dotenv()
+import os, groq
+client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
+try:
+  resp = client.chat.completions.create(model='llama3-8b-8192', messages=[{'role': 'user', 'content': 'hola'}], max_tokens=10)
+  print('OK:', resp.choices[0].message.content)
+except Exception as e:
+  print('ERROR:', e)
+
+- **[problem-fix] Fixed null crash in Parsear — protects against XSS and CSRF token theft**: -         from whatsapp_client import enviar_mensaje, enviar_media
 +         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
-- 
+-         
 +         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
-- 
+-         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
 +         for p in partes:
-- # ─────────────────────────────────────────────
+-         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
 +             p = p.strip()
-- #  Panel de administración
+-         for p in partes:
 +             if not p: continue
-- # ─────────────────────────────────────────────
+-             p = p.strip()
 +             
-- 
+-             if not p: continue
 +             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
-- 
+-             
 +             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
-- 
+-             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
 +             
-- from fastapi import Response
+-             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
 +             if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
-- 
+-             
 +             elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
-- VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
+-             if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
 +             else: enviar_mensaje(numero_wa, p)
-- active_sessions = {}
+-             elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
++ 
+-             else: enviar_mensaje(numero_wa, p)
++     return respuesta_final
+-     return respuesta_final
 + 
 - 
-+     return respuesta_final
-- def verificar_sesion(request: Request):
-+ 
--     token = request.cookies.get("session_token")
-+ 
--     return token in active_sessions
 + # ─────────────────────────────────────────────
 - 
 + #  Panel de administración
-- @app.get("/login", response_class=HTMLResponse)
-+ # ─────────────────────────────────────────────
-- async def login_get():
+- #  Panel de administración
 + 
--     return obtener_login_html()
+- # ─────────────────────────────────────────────
 + 
-- @app.post("/login")
+- 
 + from fastapi import Response
-- async def login_post(response: Response, username: str = Form(...), [REDACTED] = Form(...)):
-+ 
--     if username in VALID_USERS and VALID_USERS[username] == [REDACTED] VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
--         import uuid
+- from fastapi import Response
++ VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
+- 
 + active_sessions = {}
--         token = str(uuid.uuid4())
+- VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
 + 
--         active_sessions[token] = username
-+ def verificar_sesion
+- active_sessions = {}
++ def verificar_sesion(request: Request):
+- 
++     token = request.cookies.get("session_token")
+- d
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
+- **[what-changed] Replaced dependency server**: -     from whatsapp_client import enviar_mensaje_texto, enviar_media
++     from whatsapp_client import enviar_mensaje, enviar_media
+-             else: await enviar_mensaje_texto(wa_id, p)
++             else: enviar_mensaje(wa_id, p)
+
+📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
+- **[convention] Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x**: -     sesion["historial"].append({"role": "user", "content": texto_modelo})
++     if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
+-     sesion["historial"] = recortar_historial(sesion["historial"])
++         sesion["historial"][-1]["content"] = texto_modelo
+- 
++     else:
+-     respuesta_bot = llamar_groq(sesion["historial"])
++         sesion["historial"].append({"role": "user", "content": texto_modelo})
+- 
++         
+-     # ── Procesar escalación si el modelo la detectó ───────
++     sesion["historial"] = recortar_historial(sesion["historial"])
+-     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
++ 
+- 
++     respuesta_bot = llamar_groq(sesion["historial"])
+-     # ── Guardar respuesta en historial ────────────────────
++ 
+-     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
++     # ── Procesar escalación si el modelo la detectó ───────
+- 
++     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
+-     # ── Enviar respuesta al cliente por WhatsApp ──────────
++ 
+-     print(f"🤖 María: {respuesta_final[:80]}...")
++     # ── Guardar respuesta en historial ────────────────────
+-     if not is_simulacion:
++     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
+-         from whatsapp_client import enviar_mensaje, enviar_media
++ 
+-         
++     # ── Enviar respuesta al cliente por WhatsApp ──────────
+-         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
++     print(f"🤖 María: {respuesta_final[:80]}...")
+-         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
++     if not is_simulacion:
+-         for p in partes:
++         from whatsapp_client import enviar_mensaje, enviar_media
+-             p = p.strip()
++         
+-             if not p: continue
++         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
+-             
++         p
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
+- **[convention] what-changed in .gitignore — confirmed 3x**: - 隧道_log.txt
++ 隧道_log.txt
 - **[convention] Fixed null crash in FastAPI — confirmed 3x**: - from fastapi import FastAPI, Request, HTTPException, Form
 + from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File
 -     return HTMLResponse(html)
@@ -404,59 +492,3 @@
 +         return RedirectResponse(url="/login", status_code=303)
 - **[what-changed] Replaced auth RedirectResponse**: -         raise HTTPException(status_code=403, detail="No autorizado")
 +         return RedirectResponse(url="/login", status_code=303)
-- **[convention] Fixed null crash in RedirectResponse — confirmed 3x**: -     return RedirectResponse(url=f"/admin", status_code=303)
-+     return RedirectResponse(url=request.form().get("redirect", "/admin") if isinstance(request, Request) else "/admin", status_code=303)
-- 
-+ @app.post("/api/admin/pausar/{numero_wa}")
-- @app.post("/api/admin/enviar_manual")
-+ async def pausar_bot_manual(request: Request, numero_wa: str):
-- async def enviar_manual_endpoint(request: Request):
-+     """Pausa al bot de forma manual para un WA específico."""
--     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
-+     if not verificar_sesion(request):
--     if not verificar_sesion(request):
-+         raise HTTPException(status_code=403, detail="No autorizado")
--         raise HTTPException(status_code=403, detail="No autorizado")
-+ 
--     
-+     if numero_wa in sesiones:
--     data = await request.json()
-+         sesiones[numero_wa]["bot_activo"] = False
--     wa_id = data.get("wa_id")
-+         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
--     texto = data.get("texto", "").strip()
-+         sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
--     
-+         print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
--     if not wa_id or wa_id not in sesiones or not texto:
-+         
--         return {"ok": False}
-+     form_data = await request.form()
--         
-+     redirect_url = form_data.get("redirect", f"/inbox/{numero_wa}")
--     s = sesiones[wa_id]
-+     return RedirectResponse(url=redirect_url, status_code=303)
--     s["historial"].append({"role": "assistant", "content": texto})
-+ 
--     s["ultima_actividad"] = datetime.utcnow()
-+ 
--     
-+ @app.post("/api/admin/enviar_manual")
--     print(f"  [👤 Humano -> {wa_id}]: {texto}")
-+ async def enviar_manual_endpoint(request: Request):
--     
-+     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
--     # Send to WhatsApp
-+     if not verificar_sesion(request):
--     from whatsapp_c
-… [diff truncated]
-- **[what-changed] what-changed in server.py**: -         <a href="/inbox/{num}&tab={tab}" class="chat-row {active_class}">
-+         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
--             <a href="/inbox&tab={tab}" class="btn-responsive-back" title="Volver a la lista">
-+             <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
-- **[what-changed] what-changed in admin.html**: -         <!-- Agent Settings Icon (Futuro) -->
-+         <!-- Agent Settings Icon -->
--         <a href="#" class="nav-item" title="Personalizar Agente IA (Próximamente)">
-+         <a href="/settings" class="nav-item" title="Personalizar Agente IA">
-
-📌 IDE AST Context: Modified symbols likely include [html]

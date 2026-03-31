@@ -82,61 +82,18 @@ No la menciones ni la expliques al cliente.
         if isinstance(datos_pedido, dict):
             datos_pedido = [datos_pedido]
             
-        prompt += "\n--- DATOS DE LOS PEDIDOS DEL CLIENTE (información real en tiempo real) ---\n"
-        from firebase_client import calcular_cola_pedido
-        
+        prompt += "\n--- DATOS DE LOS PEDIDOS DEL CLIENTE (información real del sistema) ---\n"
         for i, pedido in enumerate(datos_pedido):
             nombre    = f"{pedido.get('clienteNombre', '')} {pedido.get('clienteApellidos', '')}".strip()
             estado    = pedido.get("estadoGeneral", "No disponible")
             id_pedido = pedido.get("id", "N/A")
             
-            # Nuevos datos (Provincia, Deuda, Puesto)
-            provincia = pedido.get("clienteProvincia", "No especificada").strip()
-            
-            # Finanzas (deuda) -> Revisar el dict 'cobro'
-            cobro = pedido.get("cobro", {})
-            restante = cobro.get("restante", -1)
-            if restante == 0:
-                finanzas = "Pagado al 100% (Deuda cero)"
-            elif restante > 0:
-                finanzas = f"El cliente tiene una deuda pendiente de S/{restante}"
-            else:
-                finanzas = "No hay datos de cobranza"
-                
-            # Calcular en qué lugar de la cola se encuentra para esta fase
-            puesto = calcular_cola_pedido(pedido)
-            
             prompt += f"Pedido {i+1}:\n"
             prompt += f"- Nombre del cliente : {nombre}\n"
             prompt += f"- N° de pedido       : {id_pedido}\n"
-            prompt += f"- Estado actual      : {estado}\n"
-            prompt += f"- Lugar de envío     : {provincia}\n"
-            prompt += f"- Estado Financiero  : {finanzas}\n"
-            prompt += f"- N° Cola/Puesto en {estado}: #{puesto}\n\n"
-            
+            prompt += f"- Estado actual      : {estado}\n\n"
         prompt += "--- FIN DE DATOS ---\n"
-        prompt += "IMPORTANTE: Si el cliente consulta sobre su pedido y tiene más de uno, pregúntale amable y explícitamente sobre cuál de los pedidos mencionados necesita ayuda.\n"
-        prompt += """
---- INSTRUCCIÓN ESTRICTA PARA PEDIDOS DE PROVINCIA ---
-Si el 'Lugar de envío' del pedido consultado NO es "Lima Metropolitana" (es decir, es una provincia), DEBES usar OBLIGATORIAMENTE LAS SIGUIENTES PLANTILLAS EXCEPCIONALES según aplique el caso y su Puesto/Cola. 
-
-- OPCIÓN A (Solo si su Estado Financiero dice "Pagado al 100%" y acaba de pasar a estado "En Preparación_"):
-Felicidades [Nombre] Tu cuenta está pagada al 100% y tu pedido [Número de pedido] acaba de pasar a preparación. Está en el puesto: [Número de puesto]
-En cuanto tu pedido avance a Estampado te avisaremos.
-
-Puedes revisar el estado de tu pedido las 24 horas del día desde la web:
-https://www.conamor.pe/cuenta/pedidos
-
-- OPCIÓN B (Para cualquier otra etapa o si no encaja en la Opción A, pero ES de Provincia):
-Hola [Nombre] Tu pedido [Número de pedido] se encuentra en [Estado actual] En el número de cola [Número de Puesto]
-Agradecemos tu paciencia, estamos comprometidos en terminar tu pedido lo más rápido posible pero sobre todo cuidando que quede perfecto como si fuera para nosotros. Nuevamente, gracias por tu paciencia.
-
-Puedes revisar el estado de tu pedido las 24 horas del día desde la web:
-https://www.conamor.pe/cuenta/pedidos
-
-Regla: No alteres el texto de la plantilla seleccionada para Provincia, debes rellenar los corchetes con los "DATOS DE LOS PEDIDOS" que tienes arriba y enviarlo tal cual sin agregar textos extra de bienvenida ni despedida.
---- FIN INSTRUCCIÓN PROVINCIA ---
-"""
+        prompt += "IMPORTANTE: Si el cliente consulta sobre su pedido y tiene más de uno, pregúntale amable y explícitamente sobre cuál de los pedidos mencionados necesita ayuda, dándole los detalles por ID o producto.\n"
     else:
         prompt += """
 --- DATOS DEL PEDIDO ---

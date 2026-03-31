@@ -113,26 +113,3 @@ def buscar_pedido_por_id(numero_pedido: str) -> dict | None:
             return resultado
 
     return None
-
-def calcular_cola_pedido(pedido: dict) -> int:
-    """
-    Calcula el puesto exacto de un pedido comparando cuántos IDs 
-    (secuencias más antiguas) existen en la misma etapa (estadoGeneral).
-    """
-    estado = pedido.get("estadoGeneral")
-    pid = pedido.get("id")
-    if not estado or not pid: return 0
-    
-    db = inicializar_firebase()
-    try:
-        docs = db.collection(COLECCION_PEDIDOS).where(filter=FieldFilter("estadoGeneral", "==", estado)).get()
-        puesto = 1
-        for d in docs:
-            data = d.to_dict()
-            other_id = data.get("id", "")
-            if other_id and other_id < pid:
-                puesto += 1
-        return puesto
-    except Exception as e:
-        print(f"Error cola: {e}")
-        return 0

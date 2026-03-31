@@ -1,7 +1,7 @@
 
 
-# Project Memory — IA-ATC
-> 99 notes | Score threshold: >40
+# Project Memory — botatc
+> 120 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,13 +18,9 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
-- **⚠️ GOTCHA: Fixed null crash in Response** — - # ─────────────────────────────────────────────
-+ from fastapi.resp
-
-## Project Standards
-
+- Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in .gitignore — confirmed 3x
 - Fixed null crash in FastAPI — confirmed 3x
@@ -32,11 +28,12 @@
 - Fixed null crash in RedirectResponse — confirmed 3x
 - Strengthened types Contrase
 - Fixed null crash in Response — protects against XSS and CSRF token theft — confirmed 4x
-- Strengthened types DOCTYPE
 
 ## Known Fixes
 
 - ❌ +         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in RedirectResponse
+- ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
+- ❌ -     except Exception as e: → ✅ problem-fix in firebase_client.py
 
 ## Learned Patterns
 

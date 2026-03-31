@@ -36,6 +36,13 @@ from bot_atc import normalizar_texto, preprocesar_mensaje
 app = FastAPI(title="Bot ATC — IA-ATC")
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
+@app.on_event("startup")
+def startup_event():
+    from pedidos_observer import iniciar_observador_pedidos
+    import threading
+    t = threading.Thread(target=iniciar_observador_pedidos, daemon=True)
+    t.start()
+
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"
 sesiones: dict[str, dict] = {}
