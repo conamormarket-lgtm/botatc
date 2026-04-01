@@ -113,3 +113,55 @@ def buscar_pedido_por_id(numero_pedido: str) -> dict | None:
             return resultado
 
     return None
+
+# ============================================================
+#  PERSISTENCIA DE CHATS (NUEVO)
+# ============================================================
+
+def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
+    """Guarda toda la sesión del cliente en Firestore."""
+    db = inicializar_firebase()
+    doc_ref = db.collection("chats_atc").document(numero_wa)
+    
+    # Preparamos el dict para guardar
+    data_to_save = {
+        "bot_activo": sesion_dict.get("bot_activo", True),
+        "ultima_actividad": sesion_dict.get("ultima_actividad"), # datetime object
+        "escalado_en": sesion_dict.get("escalado_en"),           # datetime object o None
+        "motivo_escalacion": sesion_dict.get("motivo_escalacion"),
+        "nombre_cliente": sesion_dict.get("nombre_cliente", "Cliente"),
+        "historial": sesion_dict.get("historial", []),
+        "datos_pedido": sesion_dict.get("datos_pedido"),
+        "pedidos_multiples": sesion_dict.get("pedidos_multiples"),
+        "esperando_pedido_tester": sesion_dict.get("esperando_pedido_tester", False)
+    }
+    
+    # Firestore maneja datetimes nativamente
+    doc_ref.set(data_to_save)
+
+
+def cargar_sesion_chat(numero_wa: str) -> dict | None:
+    """Carga y devuelve la sesión si existe en Firestore."""
+    db = inicializar_firebase()
+    doc_ref = db.collection("chats_atc").document(numero_wa)
+    doc = doc_ref.get()
+    
+    if doc.exists:
+        data = doc.to_dict()
+        # Aseguramos de que todo lo necesario esté para compatibilidad con la app local
+        # Firestore devuelve Datetimes de google.api.core.datetime_helpers,
+        # lo convertimos o lo dejamos, usualmente FastAPI/Python lo maneja bien si es naive/aware
+        
+        # Convertimos DatetimeWithNanoseconds a datetime ingenuo para evitar conflictos de zona horaria con datetime.utcnow()
+        if data.get("ultima_actividad"):
+            from google.api_core.datetime_helpers import DatetimeWithNanoseconds
+            if isinstance(data["ultima_actividad"], DatetimeWithNanoseconds):
+                data["ultima_actividad"] = data["ultima_actividad"].replace(tzinfo=None)
+                
+        if data.get("escalado_en"):
+            from google.api_core.datetime_helpers import DatetimeWithNanoseconds
+            if isinstance(data["escalado_en"], DatetimeWithNanoseconds):
+                data["escalado_en"] = data["escalado_en"].replace(tzinfo=None)
+                
+        return data
+    return None

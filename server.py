@@ -86,10 +86,22 @@ REGEX_ESCALAR = re.compile(
 def obtener_o_crear_sesion(numero_wa: str) -> dict:
     """
     Retorna la sesión existente si está dentro del tiempo válido,
-    o crea una nueva si expiró o no existe.
+    la recupera de Firestore si el bot se reinició, o crea una nueva.
     """
     ahora = datetime.utcnow()
     sesion = sesiones.get(numero_wa)
+
+    if not sesion:
+        # 1. Intentar cargar desde Firebase si el servidor se reinició
+        try:
+            from firebase_client import cargar_sesion_chat
+            sesion_db = cargar_sesion_chat(numero_wa)
+            if sesion_db:
+                sesiones[numero_wa] = sesion_db
+                sesion = sesion_db
+                print(f"  [☁️ Historial recuperado desde la nube para {numero_wa}]")
+        except Exception as e:
+            print(f"  [❌ Error al cargar historial de Firestore: {e}]")
 
     if sesion:
         inactivo = ahora - sesion["ultima_actividad"]
@@ -447,6 +459,8 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 }
             else:
                 print(f"  [❓ Sin pedido registrado → silencio]")
+                try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+                except: pass
                 return None
     else:
         # Ya hay sesión con datos_pedido. Guardamos su mensaje entrante temprano.
@@ -456,6 +470,8 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         estado_actual = sesion["datos_pedido"].get("estadoGeneral", "")
         if estado_actual in ESTADOS_DISEÑO:
             print(f"  [🎨 Pedido volvió a Diseño → silencio]")
+            try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+            except: pass
             return None
 
     # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
@@ -465,6 +481,8 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         sesion["historial"] = recortar_historial(sesion["historial"])
         sesion["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+        except: pass
         return None
 
     # ── Escalación rápida por keywords del cliente ────────
@@ -476,6 +494,10 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         msg = "Voy a avisarle a uno de nuestros asesores para que te escriba por aquí en breve. 😊"
         if not is_simulacion:
             enviar_mensaje(numero_wa, msg)
+            
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+        except: pass
+        
         return msg
 
     # ── Preprocesar texto (normalizar + cancelar=pagar) ───
@@ -513,6 +535,10 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
             else: enviar_mensaje(numero_wa, p)
 
+    
+    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+    except: pass
+    
     return respuesta_final
 
 
@@ -827,6 +853,8 @@ async def reactivar_bot(request: Request, numero_wa: str):
         sesiones[numero_wa]["motivo_escalacion"] = None
         sesiones[numero_wa]["ultima_actividad"] = datetime.utcnow()
         print(f"  [▶ Bot reactivado para {numero_wa} desde panel admin]")
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
+        except: pass
 
     form_data = await request.form()
     redirect_url = form_data.get("redirect", "/admin")
@@ -843,6 +871,8 @@ async def pausar_bot_manual(request: Request, numero_wa: str):
         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
         sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
         print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
+        except: pass
         
     form_data = await request.form()
     redirect_url = form_data.get("redirect", f"/inbox/{numero_wa}")
@@ -867,6 +897,8 @@ async def enviar_manual_endpoint(request: Request):
     s["ultima_actividad"] = datetime.utcnow()
     
     print(f"  [👤 Humano -> {wa_id}]: {texto}")
+    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
+    except: pass
     
     # Send to WhatsApp
     from whatsapp_client import enviar_mensaje, enviar_media

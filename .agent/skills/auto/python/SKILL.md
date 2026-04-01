@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 3 gotchas, 7 conventions, 17 fixes."
+description: "Python for botatc. 3 gotchas, 8 conventions, 17 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **49 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **50 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -322,6 +322,8 @@ except Exception as e:
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Fixed null crash in RedirectResponse — confirmed 3x** — - 
++         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, s
 - 📐 **Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x** — -         # Mapeamos el historial resto a formato Gemini
 +         # Mapeamos el historialresto a f
 - 📐 **Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x** — -     sesion["historial"].append({"role": "user", "content": texto_modelo})
@@ -335,10 +337,5 @@ except Exception as e:
 -         <
 - 📐 **Fixed null crash in Response — protects against XSS and CSRF token theft — confirmed 4x** — - def verificar_admin([REDACTED]
 + 
--     """Verificación simple de contraseña del panel."""
-+ 
-
-- 📐 **Fixed null crash in INBOX — confirmed 3x** — - 
-+ # =======================================
 
 ... [Truncated — see individual observations for full content]

@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 128 notes | Score threshold: >40
+> 130 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
