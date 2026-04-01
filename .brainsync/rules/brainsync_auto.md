@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 130 notes | Score threshold: >40
+> 131 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,7 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
+- Fixed null crash in RedirectResponse — confirmed 3x
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in .gitignore — confirmed 3x
@@ -27,7 +28,6 @@
 - Strengthened types Documentos
 - Fixed null crash in RedirectResponse — confirmed 3x
 - Strengthened types Contrase
-- Fixed null crash in Response — protects against XSS and CSRF token theft — confirmed 4x
 
 ## Known Fixes
 
