@@ -1174,28 +1174,29 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             texto  = m["content"].replace("\\n", "<br>")
             
             # --- Renderizar media_id si es [sticker:ID] o [imagen:ID] ---
-            # Buscamos patrones exactos
-            match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", texto.strip())
-            match_imagen = re.match(r"^\[imagen:([^\]]+)\]\s*(.*)$", texto.strip())
-            match_audio = re.match(r"^\[audio:([^\]]+)\]$", texto.strip())
+            import re
             
-            if match_sticker:
-                media_id = match_sticker.group(1)
+            def reemplazar_archivos_inline(match):
+                tipo = match.group(1)
+                media_id = match.group(2)
                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
-                texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
-            elif match_imagen:
-                media_id = match_imagen.group(1)
-                src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
-                caption = match_imagen.group(2)
-                img_tag = f'<img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
-                texto = img_tag + (f"<span>{caption}</span>" if caption else "")
-            elif match_audio:
-                media_id = match_audio.group(1)
-                src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
-                texto = f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none;"></audio><br><small style="opacity:0.6;font-size:0.7rem;">Nota de Voz</small></div>'
                 
-                
-            burbujas += f'<div class="bubble {clase} {lado}">{texto}</div>'
+                if tipo == "sticker":
+                    return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
+                elif tipo == "imagen":
+                    return f'<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';"></div>'
+                elif tipo == "audio":
+                    return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
+                return match.group(0)
+
+            # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
+            # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
+            texto_renderizado = re.sub(r"\[(sticker|imagen|audio):([^\]]+)\]", reemplazar_archivos_inline, texto)
+            
+            # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
+            texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
+            
+            burbujas += f'<div class="bubble {clase} {lado}">{texto_renderizado}</div>'
             
         if not burbujas:
             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
