@@ -54,93 +54,273 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
-- **⚠️ GOTCHA: Fixed null crash in Reactivar**: -         # Reset completo de la sesión para ese número
-+         # Reactivar el bot sin borrar el historial ni los datos del pedido vinculados
--         sesiones[numero_wa] = {
-+         sesiones[numero_wa]["bot_activo"] = True
--             "historial":         [{"role": "system", "content": get_system_prompt()}],
-+         sesiones[numero_wa]["escalado_en"] = None
--             "datos_pedido":      None,
-+         sesiones[numero_wa]["motivo_escalacion"] = None
--             "bot_activo":        True,
-+         sesiones[numero_wa]["ultima_actividad"] = datetime.utcnow()
--             "ultima_actividad":  datetime.utcnow(),
-+         print(f"  [▶ Bot reactivado para {numero_wa} desde panel admin]")
--             "escalado_en":       None,
-+ 
--             "motivo_escalacion": None,
-+     form_data = await request.form()
--             "nombre_cliente":    sesiones[numero_wa].get("nombre_cliente", "Cliente"),
-+     redirect_url = form_data.get("redirect", "/admin")
--         }
-+     return RedirectResponse(url=redirect_url, status_code=303)
--         print(f"  [▶ Bot reactivado para {numero_wa} desde panel admin]")
-+ 
-- 
-+ @app.post("/api/admin/pausar/{numero_wa}")
--     form_data = await request.form()
-+ async def pausar_bot_manual(request: Request, numero_wa: str):
--     redirect_url = form_data.get("redirect", "/admin")
-+     """Pausa al bot de forma manual para un WA específico."""
--     return RedirectResponse(url=redirect_url, status_code=303)
-+     if not verificar_sesion(request):
-- 
-+         return RedirectResponse(url="/login", status_code=303)
-- @app.post("/api/admin/pausar/{numero_wa}")
-+ 
-- async def pausar_bot_manual(request: Request, numero_wa: str):
-+     if numero_wa in sesiones:
--     """Pausa al bot de forma manual para un WA específico."""
-+         sesiones[numero_wa]["bot_activo"] = False
--     if not verificar_sesion(request):
-+         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
--         re
-… [diff truncated]
 
 ### 📐 Config/Infrastructure Conventions & Fixes
-- **[problem-fix] Fixed null crash in Procesar — protects against XSS and CSRF token theft**: -     try:
-+     respuesta_bot = llamar_gemini(sesion["historial"])
--         respuesta_bot = llamar_gemini(sesion["historial"])
-+ 
+- **[what-changed] Updated configuration OpenAI — externalizes configuration for environment fle...**: - from openai import OpenAI
++ from dotenv import load_dotenv
+- client = OpenAI(api_key=os.getenv('GEMINI_API_KEY'), base_url='https://generativelanguage.googleapis.com/v1beta/openai/')
++ load_dotenv()
+- try:
++ from openai import OpenAI
+-     resp = client.chat.completions.create(model='gemini-2.0-flash', messages=[{'role': 'user', 'content': 'hola'}])
++ client = OpenAI(api_key=os.getenv('GEMINI_API_KEY'), base_url='https://generativelanguage.googleapis.com/v1beta/openai/')
+-     print('OK', resp)
++ try:
+- except Exception as e:
++     resp = client.chat.completions.create(model='gemini-2.0-flash', messages=[{'role': 'user', 'content': 'hola'}])
+-     import traceback
++     print('OK', resp)
+-     traceback.print_exc()
++ except Exception as e:
 - 
-+     # ── Procesar escalación si el modelo la detectó ───────
--     # ── Procesar escalación si el modelo la detectó ───────
-+     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
--     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
++     import traceback
++     traceback.print_exc()
 + 
-- 
-+     # ── Guardar respuesta en historial ────────────────────
--     # ── Guardar respuesta en historial ────────────────────
-+     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
--     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
+
+📌 IDE AST Context: Modified symbols likely include [client, resp]
+- **[discovery] discovery in pedidos_observer.py**: - from bot_atc import limpiar_telefono
 + 
+
+📌 IDE AST Context: Modified symbols likely include [ORDEN_ETAPAS, cache_pedidos, notificar_whatsapp, _enviar_plantilla_1, _enviar_plantilla_2]
+- **[decision] Optimized Prevenir**: -     # deudaTotal podría no existir, asumimos 0 por defecto o extraemos de donde debe ser
++     try: deuda_nueva = float(pedido.get("deudaTotal", 0))
+-     try:
++     except: deuda_nueva = 0
+-         deuda_nueva = float(pedido.get("deudaTotal", 0))
++         
+-     except:
++     estado_viejo = cache_pedidos.get(doc_id, {}).get("estadoGeneral", "")
+-         deuda_nueva = 0
++     deuda_vieja = cache_pedidos.get(doc_id, {}).get("deudaTotal", -1)
+-         
++     
+-     estado_viejo = cache_pedidos.get(doc_id, {}).get("estadoGeneral", "")
++     # Prevenir alertas al cargar por primera vez un documento modificado
+-     deuda_vieja = cache_pedidos.get(doc_id, {}).get("deudaTotal", -1)
++     if not estado_viejo or deuda_vieja == -1:
+-     
++         return
+-     # Ignorar si es el mismo estado y misma deuda
++ 
+-     if estado_nuevo == estado_viejo and deuda_nueva == deuda_vieja:
++     # Escenario 1: Acaba de pagar su deuda al 100% Y se encuentra en Preparación
+-         return
++     # (Puede haber llegado a Preparación en este instante, o ya estar allí y recién pagar)
 - 
-+     # ── Enviar respuesta al cliente por WhatsApp ──────────
--     # ── Enviar respuesta al cliente por WhatsApp ──────────
-+     print(f"🤖 María: {respuesta_final[:80]}...")
--     print(f"🤖 María: {respuesta_final[:80]}...")
-+     if not is_simulacion:
--     if not is_simulacion:
-+         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
--         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
-+         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
--         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
-+         for p in partes:
--         for p in partes:
-+             p = p.strip()
--             p = p.strip()
-+             if not p: continue
--             if not p: continue
++     if estado_nuevo == "Preparación" and deuda_nueva == 0 and deuda_vieja > 0:
+-     # Escenario 1: Pagó al 100% (deuda bajó a 0) Y pasó a Preparación
++         _enviar_plantilla_1(pedido)
+-     if estado_nuevo == "Preparación" and deuda_nueva == 0 and deuda_vieja > 0:
++         return
+-         _enviar_plantilla_1(pedido)
++ 
+-     
++     # Escenario 2: Cambio hacia una etapa posterior en estadoGeneral
+-     # Escenario 2: Cambio de etapa normal hacia un estado MAYOR
++     if estado_nuevo != estado_viejo:
+-     elif estado_nuevo != estado_viejo:
++         peso_nuevo = ORDEN_ETAPAS.get(estado_nuevo, 0)
+-         peso_nuevo = ORDEN_ETAPAS.get(estado_nuevo, 0)
++         peso_viejo = ORDEN_ETAPAS.get(estado_viejo, 0)
+-         peso_viejo = ORDEN_ETAPAS.get(estado_viejo, 0)
++         
+-         
++         # Si avanza y es mayor que Diseño
+-             # Excluimos "Preparación" si acaba de pasar de (deuda_
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [ORDEN_ETAPAS, cache_pedidos, notificar_whatsapp, _enviar_plantilla_1, _enviar_plantilla_2]
+- **[trade-off] trade-off in prompts.py**: -         prompt += "\n--- DATOS DE LOS PEDIDOS DEL CLIENTE (información real en tiempo real) ---\n"
++         prompt += "\n--- DATOS DE LOS PEDIDOS DEL CLIENTE (información real del sistema) ---\n"
+-         from firebase_client import calcular_cola_pedido
++         for i, pedido in enumerate(datos_pedido):
+-         
++             nombre    = f"{pedido.get('clienteNombre', '')} {pedido.get('clienteApellidos', '')}".strip()
+-         for i, pedido in enumerate(datos_pedido):
++             estado    = pedido.get("estadoGeneral", "No disponible")
+-             nombre    = f"{pedido.get('clienteNombre', '')} {pedido.get('clienteApellidos', '')}".strip()
++             id_pedido = pedido.get("id", "N/A")
+-             estado    = pedido.get("estadoGeneral", "No disponible")
++             
+-             id_pedido = pedido.get("id", "N/A")
++             prompt += f"Pedido {i+1}:\n"
+-             
++             prompt += f"- Nombre del cliente : {nombre}\n"
+-             # Nuevos datos (Provincia, Deuda, Puesto)
++             prompt += f"- N° de pedido       : {id_pedido}\n"
+-             provincia = pedido.get("clienteProvincia", "No especificada").strip()
++             prompt += f"- Estado actual      : {estado}\n\n"
+-             
++         prompt += "--- FIN DE DATOS ---\n"
+-             # Finanzas (deuda) -> Revisar el dict 'cobro'
++         prompt += "IMPORTANTE: Si el cliente consulta sobre su pedido y tiene más de uno, pregúntale amable y explícitamente sobre cuál de los pedidos mencionados necesita ayuda, dándole los detalles por ID o producto.\n"
+-             cobro = pedido.get("cobro", {})
++     else:
+-             restante = cobro.get("restante", -1)
++         prompt += """
+-             if restante == 0:
++ --- DATOS DEL PEDIDO ---
+-                 finanzas = "Pagado al 100% (Deuda cero)"
++ Aún no tienes datos de ningún pedido específico.
+-             elif restante > 0:
++ Solo pide el identificador si el cliente pregunta por SU pedido en particular.
+-       
+… [diff truncated]
+- **[problem-fix] problem-fix in firebase_client.py**: - def calcular_cola_pedido(pedido: dict) -> int:
+-     """
+-     Calcula el puesto exacto de un pedido comparando cuántos IDs 
+-     (secuencias más antiguas) existen en la misma etapa (estadoGeneral).
+-     """
+-     estado = pedido.get("estadoGeneral")
+-     pid = pedido.get("id")
+-     if not estado or not pid: return 0
+-     
+-     db = inicializar_firebase()
+-     try:
+-         docs = db.collection(COLECCION_PEDIDOS).where(filter=FieldFilter("estadoGeneral", "==", estado)).get()
+-         puesto = 1
+-         for d in docs:
+-             data = d.to_dict()
+-             other_id = data.get("id", "")
+-             if other_id and other_id < pid:
+-                 puesto += 1
+-         return puesto
+-     except Exception as e:
+-         print(f"Error cola: {e}")
+-         return 0
+- 
+
+📌 IDE AST Context: Modified symbols likely include [inicializar_firebase, _buscar, buscar_pedido_por_telefono, buscar_pedido_por_id]
+- **[problem-fix] Fixed null crash in Sticker**: -             
++             match_audio = re.match(r"^\[audio:([^\]]+)\]$", texto.strip())
+-             if match_sticker:
++             
+-                 media_id = match_sticker.group(1)
++             if match_sticker:
+-                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
++                 media_id = match_sticker.group(1)
+-                 texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
++                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+-             elif match_imagen:
++                 texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
+-                 media_id = match_imagen.group(1)
++             elif match_imagen:
+-                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
++                 media_id = match_imagen.group(1)
+-                 caption = match_imagen.group(2)
++                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+-                 img_tag = f'<img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
++          
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
+- **[what-changed] Replaced auth server**: -             max_output_tokens=300,
++             max_output_tokens=800,
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
+- **[problem-fix] Fixed null crash in Regex — protects against XSS and CSRF token theft**: - 
++ mensajes_procesados_ids = set()
+- # Regex para detectar escalación desde el mensaje del cliente
++ 
+- REGEX_ESCALAR = re.compile(
++ # Regex para detectar escalación desde el mensaje del cliente
+-     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
++ REGEX_ESCALAR = re.compile(
+-     r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
++     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
+-     r"me comunican|quiero que me atienda|hablen conmigo)\b",
++     r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
+-     re.IGNORECASE
++     r"me comunican|quiero que me atienda|hablen conmigo)\b",
+- )
++     re.IGNORECASE
+- 
++ )
+- # ─────────────────────────────────────────────
++ 
+- #  Gestión de sesiones
++ # ─────────────────────────────────────────────
+- # ─────────────────────────────────────────────
++ #  Gestión de sesiones
+- 
++ # ─────────────────────────────────────────────
+- def obtener_o_crear_sesion(numero_wa: str) -> dict:
++ 
+-     """
++ def obtener_o_crear_sesion(numero_wa: str) -> dict:
+-     Retorna la sesión existente si está dentro del tiempo válido,
++     """
+-     o crea una nueva si expiró o no existe.
++     Retorna la sesión existente si está dentro del tiempo válido,
+-     """
++     o crea una nueva si expiró o no existe.
+-     ahora = datetime.utcnow()
++     """
+-     sesion = sesiones.get(numero_wa)
++     ahora = datetime.utcnow()
+- 
++     sesion = sesiones.get(numero_wa)
+-     if sesion:
++ 
+-         inactivo = ahora - sesion["ultima_actividad"]
++     if sesion:
+-         if inactivo > timedelta(hours=SESION_EXPIRA_HORAS):
++         inactivo = ahora - sesion["ultima_actividad"]
+-             # Sesión expirada → nueva sesión pero conservamos datos del cliente
++         if inactivo > timedelta(hours=SESION_EXPIRA_HORAS):
+-             print(f"  [🔄 Sesión expirada para {numero_wa} → nueva sesión]")
++             # Sesión expirada → nueva sesión per
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
+- **[convention] Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x**: -         # Mapeamos el historial resto a formato Gemini
++         # Mapeamos el historialresto a formato Gemini, uniendo roles consecutivos si los hay
+-             gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
 +             
 -             
-+             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
--             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
-+             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
--             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
++             # Si el último mensaje es del mismo rol, simplemente anexamos el texto para no romper la regla
+-         config = types.GenerateContentConfig(
++             if gemini_contents and gemini_contents[-1]["role"] == role:
+-             system_instruction=system_text,
++                 gemini_contents[-1]["parts"][0]["text"] += f"\n\n{msg['content']}"
+-             temperature=TEMPERATURE,
++             else:
+-             max_output_tokens=300,
++                 gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+-         )
 +             
--             
-+             if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
--             if match_stick
+-         
++         config = types.GenerateContentConfig(
+-         response = gemini_client.models.generate_content(
++             system_instruction=system_text,
+-             model=GEMINI_MODEL,
++             temperature=TEMPERATURE,
+-             contents=gemini_contents,
++             max_output_tokens=300,
+-             config=config,
++         )
+-         )
++         
+-         return response.text.strip()
++         response = gemini_client.models.generate_content(
+-     except Exception as e:
++             model=GEMINI_MODEL,
+-         import traceback
++             contents=gemini_contents,
+-         with open("error_gemini.txt", "w") as f:
++             config=config,
+-             f.write(traceback.format_exc())
++         )
+-         print(f"❌ Error Gemini: {e}")
++         return response.text.strip()
+-         return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
++     except Exception as e:
+- 
++         import traceback
+- 
++         with open("error_gemini.txt", "w") as f:
+- def recortar_historial(historial: list[dict]) -> list[dict]:
++             f.writ
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
@@ -157,60 +337,6 @@ try:
 except Exception as e:
   print('ERROR:', e)
 
-- **[problem-fix] Fixed null crash in Parsear — protects against XSS and CSRF token theft**: -         from whatsapp_client import enviar_mensaje, enviar_media
-+         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
--         
-+         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
--         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
-+         for p in partes:
--         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
-+             p = p.strip()
--         for p in partes:
-+             if not p: continue
--             p = p.strip()
-+             
--             if not p: continue
-+             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
--             
-+             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
--             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
-+             
--             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
-+             if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
--             
-+             elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
--             if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
-+             else: enviar_mensaje(numero_wa, p)
--             elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
-+ 
--             else: enviar_mensaje(numero_wa, p)
-+     return respuesta_final
--     return respuesta_final
-+ 
-- 
-+ # ─────────────────────────────────────────────
-- 
-+ #  Panel de administración
-- #  Panel de administración
-+ 
-- # ─────────────────────────────────────────────
-+ 
-- 
-+ from fastapi import Response
-- from fastapi import Response
-+ VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
-- 
-+ active_sessions = {}
-- VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
-+ 
-- active_sessions = {}
-+ def verificar_sesion(request: Request):
-- 
-+     token = request.cookies.get("session_token")
-- d
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
 - **[what-changed] Replaced dependency server**: -     from whatsapp_client import enviar_mensaje_texto, enviar_media
 +     from whatsapp_client import enviar_mensaje, enviar_media
 -             else: await enviar_mensaje_texto(wa_id, p)
@@ -300,195 +426,3 @@ except Exception as e:
 +         f.write(guia_content)
 - @app.get("/adm
 … [diff truncated]
-- **[problem-fix] Patched security issue RESPONSIVE**: -             <div class="container" style="gap:2rem;">
-+         .container {
--                 
-+             padding: 2.5rem;
--                 <div class="pdf-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;">
-+             max-width: 1000px;
--                     <h3 style="margin-bottom:1rem;color:var(--text-main);font-family:var(--font-heading)">Documentos Complementarios (PDF)</h3>
-+             margin: 0 auto;
--                     <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem">Estos archivos son leídos dinámicamente cada vez que un cliente te contacta.</p>
-+             width: 100%;
--                     
-+             display: flex;
--                     <ul style="list-style:none;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:0.5rem;">
-+             flex-direction: column;
--                         {lista_pdfs}
-+             flex: 1;
--                     </ul>
-+             gap: 2rem;
--                     
-+         }
--                 </div>
-+ 
-- 
-+         .editor-card {
--                 <div class="editor-card">
-+             background-color: var(--accent-bg);
--                     <div class="editor-header">
-+             border: 1px solid var(--accent-border);
--                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-+             border-radius: 12px;
--                         guia_respuestas.md
-+             overflow: hidden;
--                     </div>
-+             display: flex;
--                     <textarea class="code-editor" name="guia_content" spellcheck="false">{guia_content}</textarea>
-+             flex-direction: column;
--                 </div>
-+             flex: 1;
--
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Strengthened types Documentos**: -         .container {
-+             <div class="container" style="gap:2rem;">
--             padding: 2.5rem;
-+                 
--             max-width: 1000px;
-+                 <div class="pdf-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;">
--             margin: 0 auto;
-+                     <h3 style="margin-bottom:1rem;color:var(--text-main);font-family:var(--font-heading)">Documentos Complementarios (PDF)</h3>
--             width: 100%;
-+                     <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1rem">Estos archivos son leídos dinámicamente cada vez que un cliente te contacta.</p>
--             display: flex;
-+                     
--             flex-direction: column;
-+                     <ul style="list-style:none;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:0.5rem;">
--             flex: 1;
-+                         {lista_pdfs}
--         }
-+                     </ul>
-- 
-+                     
--         .editor-card {
-+                 </div>
--             background-color: var(--accent-bg);
-+ 
--             border: 1px solid var(--accent-border);
-+                 <div class="editor-card">
--             border-radius: 12px;
-+                     <div class="editor-header">
--             overflow: hidden;
-+                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
--             display: flex;
-+                         guia_respuestas.md
--             flex-direction: column;
-+                     </div>
--             flex: 1;
-+                     <textarea class="code-editor" name="guia_content" spellcheck="false">{guia_content}</textarea>
--             min-height: 500px;
-+                 
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[decision] Optimized Cargar**: - from config import DOCUMENTOS_GUIA
-+ from document_loader import cargar_multiples
-- from document_loader import cargar_multiples
-+ 
-- 
-+ # ── Cargar documentos UNA sola vez al llamar al prompt ────
-- # ── Cargar documentos UNA sola vez al importar el módulo ────
-+ # Así no se relee el disco cada vez que se procesa a menos que limpiemos el caché.
-- # Así no se relee el disco cada vez que se actualiza el contexto del pedido.
-+ _GUIA_CACHE: str = ""
-- _GUIA_CACHE: str = ""
-+ 
-- 
-+ def _obtener_guia() -> str:
-- def _obtener_guia() -> str:
-+     global _GUIA_CACHE
--     global _GUIA_CACHE
-+     if not _GUIA_CACHE:
--     if not _GUIA_CACHE:
-+         import glob
--         _GUIA_CACHE = cargar_multiples(DOCUMENTOS_GUIA)
-+         docs = [{"ruta": "guia_respuestas.md", "etiqueta": "Guía de respuestas principal"}]
--     return _GUIA_CACHE
-+         for pdf_file in glob.glob("*.pdf"):
-- 
-+             docs.append({"ruta": pdf_file, "etiqueta": pdf_file.replace(".pdf", "")})
-- 
-+         _GUIA_CACHE = cargar_multiples(docs)
-- def get_system_prompt(datos_pedido: dict | None = None) -> str:
-+     return _GUIA_CACHE
--     """
-+ 
--     Construye el system prompt en 3 bloques:
-+ 
--       1. Instrucciones base
-+ def get_system_prompt(datos_pedido: dict | None = None) -> str:
--       2. Documentos de guía (cacheados en memoria)
-+     """
--       3. Datos del pedido desde Firebase (si ya los tenemos)
-+     Construye el system prompt en 3 bloques:
--     """
-+       1. Instrucciones base
-- 
-+       2. Documentos de guía (cacheados en memoria)
--     # ── Bloque 1: instrucciones base ────────────────────────
-+       3. Datos del pedido desde Firebase (si ya los tenemos)
--     prompt = """Eres María, la asistente virtual de atención al cliente de nuestra tienda.
-+     """
-- Tu canal de atención es WhatsApp exclusivamente.
-+ 
-- 
-+     # ── Bloque 1: instrucciones base ────────────────────────
-- REGLAS CRÍTICAS — SÍGUELAS SIN EXCEPCIÓN:
-+     prompt = """Eres María, la asistente virtual de
-… [diff truncated]
-- **[what-changed] Added API key auth authentication**: - DOCUMENTOS_GUIA = [
-+ import glob
--     {"ruta": "guia_respuestas.md", "etiqueta": "Guía de respuestas"},
-+ DOCUMENTOS_GUIA = [{"ruta": "guia_respuestas.md", "etiqueta": "Guía de respuestas principal"}]
--     {"ruta": "FLUJO DE ATENCIÓN AL CLIENTE Y COBRANZA.pdf", "etiqueta": "Flujo de atención al cliente y cobranza"},
-+ 
-- ]
-+ # Auto-descubrir cualquier PDF en la carpeta raíz
-- 
-+ for pdf_file in glob.glob("*.pdf"):
-- # --- LM Studio (solo para bot_atc.py en consola) ---
-+     DOCUMENTOS_GUIA.append({"ruta": pdf_file, "etiqueta": pdf_file.replace(".pdf", "")})
-- LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
-+ 
-- LM_STUDIO_API_KEY  = "lm-studio"
-+ # --- LM Studio (solo para bot_atc.py en consola) ---
-- LM_STUDIO_MODEL    = "local-model"
-+ LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
-- 
-+ LM_STUDIO_API_KEY  = "lm-studio"
-- # --- Groq API (para server.py en producción) ---
-+ LM_STUDIO_MODEL    = "local-model"
-- GROQ_API_KEY   = os.getenv("GROQ_API_KEY", "")
-+ 
-- GROQ_MODEL     = "llama-3.1-8b-instant"
-+ # --- Groq API (para server.py en producción) ---
-- 
-+ GROQ_API_KEY   = os.getenv("GROQ_API_KEY", "")
-- # --- Parámetros del modelo ---
-+ GROQ_MODEL     = "llama-3.1-8b-instant"
-- TEMPERATURE = 0.05  # casi determinista: sigue los documentos sin inventar
-+ 
-- 
-+ # --- Parámetros del modelo ---
-- # --- Meta WhatsApp Business API ---
-+ TEMPERATURE = 0.05  # casi determinista: sigue los documentos sin inventar
-- META_ACCESS_TOKEN    = os.getenv("META_ACCESS_TOKEN", "")
-+ 
-- META_PHONE_NUMBER_ID = os.getenv("META_PHONE_NUMBER_ID", "")
-+ # --- Meta WhatsApp Business API ---
-- META_VERIFY_TOKEN    = os.getenv("META_VERIFY_TOKEN", "bot_atc_token")
-+ META_ACCESS_TOKEN    = os.getenv("META_ACCESS_TOKEN", "")
-- META_API_VERSION     = "v19.0"
-+ META_PHONE_NUMBER_ID = os.getenv("META_PHONE_NUMBER_ID", "")
-- 
-+ META_VERIFY_TOKEN    = os.getenv("META_VERIFY_TOKEN", "bot_atc_token")
-- # --- Firebase ---
-+ META_API_VERSION     = "v19.0"
-- FIREBASE_CREDENTIALS_PATH = "serviceAcc
-… [diff truncated]
-- **[what-changed] Replaced auth RedirectResponse**: -         raise HTTPException(status_code=403, detail="No autorizado")
-+         return RedirectResponse(url="/login", status_code=303)
-- **[what-changed] Replaced auth RedirectResponse**: -         raise HTTPException(status_code=403, detail="No autorizado")
-+         return RedirectResponse(url="/login", status_code=303)

@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 123 observations
+# Auto-synced | 125 observations
 
 **Stack:** Python · FastAPI
 
@@ -54,4 +54,7 @@ Example:
 > ℹ️ DO NOT call get_context() or get_gotchas() at startup — context above IS your context.
 
 ---
-*Auto-synced | 2026-03-31*
+*Auto-synced | 2026-04-01*
+
+# BrainSync Intelligence (Auto-Synced)
+[BrainSync Rules](.brainsync/agent-rules.md)
