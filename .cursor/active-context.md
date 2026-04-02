@@ -56,6 +56,69 @@
 📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
 
 ### 📐 Config/Infrastructure Conventions & Fixes
+- **[convention] Fixed null crash in RedirectResponse — confirmed 3x**: - 
++         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
+-     form_data = await request.form()
++         except: pass
+-     redirect_url = form_data.get("redirect", "/admin")
++ 
+-     return RedirectResponse(url=redirect_url, status_code=303)
++     form_data = await request.form()
+- 
++     redirect_url = form_data.get("redirect", "/admin")
+- @app.post("/api/admin/pausar/{numero_wa}")
++     return RedirectResponse(url=redirect_url, status_code=303)
+- async def pausar_bot_manual(request: Request, numero_wa: str):
++ 
+-     """Pausa al bot de forma manual para un WA específico."""
++ @app.post("/api/admin/pausar/{numero_wa}")
+-     if not verificar_sesion(request):
++ async def pausar_bot_manual(request: Request, numero_wa: str):
+-         return RedirectResponse(url="/login", status_code=303)
++     """Pausa al bot de forma manual para un WA específico."""
+- 
++     if not verificar_sesion(request):
+-     if numero_wa in sesiones:
++         return RedirectResponse(url="/login", status_code=303)
+-         sesiones[numero_wa]["bot_activo"] = False
++ 
+-         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
++     if numero_wa in sesiones:
+-         sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
++         sesiones[numero_wa]["bot_activo"] = False
+-         print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
++         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
+-         
++         sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
+-     form_data = await request.form()
++         print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
+-     redirect_url = form_data.get("redirect", f"/inbox/{numero_wa}")
++         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
+-     return RedirectResponse(url=redirect_url, status_code=303)
++         except: pass
+-
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
+- **[discovery] discovery in prompts.py**: - 10. USO DE STICKERS: Tienes la capacidad de usar stickers. Cuando sea útil ser dinámica 
++ 10. USO DE STICKERS: Tienes un pequeño catálogo de stickers oficiales para ser más dinámica. 
+-     (ej: agradecer, celebrar que llegó, lamentar retraso), agrega una etiqueta al final de tu respuesta: 
++     ESTÁ ESTRICTAMENTE PROHIBIDO inventar URLs o usar imágenes que no estén en esta lista.
+-     [sticker:https://dummyimage.com/150x150/000/fff.png&text=Sticker] o busca URLs válidas y graciosas (puedes inventar o usar links gif directos terminados en png/jpg o Giphy si crees que funcionan).
++     Para usarlos, copia y pega EXACTAMENTE la etiqueta a continuación al final de tu respuesta:
+- 
++     - [sticker:https://raw.githubusercontent.com/conamormarket lgtm/botatc/refs/heads/main/stickers/bendiciones.webp]  -> (Usa este para cuando el cliente se despide)
+- ESCALACIÓN A HUMANO — MUY IMPORTANTE:
++     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer)
+- Cuando detectes CUALQUIERA de estas situaciones, agrega [ESCALAR] al FINAL de tu respuesta:
++     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre)
+- - El cliente pide explícitamente hablar con una persona, asesor, encargado o humano.
++     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/buenas%20tardes.webp]  -> (Usa este si el primer mensaje del cliente llega entre las 12pm y las 5:59pm y el cliente dijo buenas tardes)
+- - El cliente expresa frustración intensa, molestia fuerte o amenaza con queja formal.
++     - [sticker:http://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/claro%20que%20si.webp]  -> (Usa este si tu respuesta es positiva para algo que el cliente te pida que
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [_GUIA_CACHE, _obtener_guia, get_system_prompt, MENSAJE_BIENVENIDA]
 - **[what-changed] Updated configuration OpenAI — externalizes configuration for environment fle...**: - from openai import OpenAI
 + from dotenv import load_dotenv
 - client = OpenAI(api_key=os.getenv('GEMINI_API_KEY'), base_url='https://generativelanguage.googleapis.com/v1beta/openai/')
@@ -191,86 +254,8 @@
 - 
 
 📌 IDE AST Context: Modified symbols likely include [inicializar_firebase, _buscar, buscar_pedido_por_telefono, buscar_pedido_por_id]
-- **[problem-fix] Fixed null crash in Sticker**: -             
-+             match_audio = re.match(r"^\[audio:([^\]]+)\]$", texto.strip())
--             if match_sticker:
-+             
--                 media_id = match_sticker.group(1)
-+             if match_sticker:
--                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
-+                 media_id = match_sticker.group(1)
--                 texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
-+                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
--             elif match_imagen:
-+                 texto = f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></div>'
--                 media_id = match_imagen.group(1)
-+             elif match_imagen:
--                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
-+                 media_id = match_imagen.group(1)
--                 caption = match_imagen.group(2)
-+                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
--                 img_tag = f'<img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';">'
-+          
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
 - **[what-changed] Replaced auth server**: -             max_output_tokens=300,
 +             max_output_tokens=800,
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
-- **[problem-fix] Fixed null crash in Regex — protects against XSS and CSRF token theft**: - 
-+ mensajes_procesados_ids = set()
-- # Regex para detectar escalación desde el mensaje del cliente
-+ 
-- REGEX_ESCALAR = re.compile(
-+ # Regex para detectar escalación desde el mensaje del cliente
--     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
-+ REGEX_ESCALAR = re.compile(
--     r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
-+     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
--     r"me comunican|quiero que me atienda|hablen conmigo)\b",
-+     r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
--     re.IGNORECASE
-+     r"me comunican|quiero que me atienda|hablen conmigo)\b",
-- )
-+     re.IGNORECASE
-- 
-+ )
-- # ─────────────────────────────────────────────
-+ 
-- #  Gestión de sesiones
-+ # ─────────────────────────────────────────────
-- # ─────────────────────────────────────────────
-+ #  Gestión de sesiones
-- 
-+ # ─────────────────────────────────────────────
-- def obtener_o_crear_sesion(numero_wa: str) -> dict:
-+ 
--     """
-+ def obtener_o_crear_sesion(numero_wa: str) -> dict:
--     Retorna la sesión existente si está dentro del tiempo válido,
-+     """
--     o crea una nueva si expiró o no existe.
-+     Retorna la sesión existente si está dentro del tiempo válido,
--     """
-+     o crea una nueva si expiró o no existe.
--     ahora = datetime.utcnow()
-+     """
--     sesion = sesiones.get(numero_wa)
-+     ahora = datetime.utcnow()
-- 
-+     sesion = sesiones.get(numero_wa)
--     if sesion:
-+ 
--         inactivo = ahora - sesion["ultima_actividad"]
-+     if sesion:
--         if inactivo > timedelta(hours=SESION_EXPIRA_HORAS):
-+         inactivo = ahora - sesion["ultima_actividad"]
--             # Sesión expirada → nueva sesión pero conservamos datos del cliente
-+         if inactivo > timedelta(hours=SESION_EXPIRA_HORAS):
--             print(f"  [🔄 Sesión expirada para {numero_wa} → nueva sesión]")
-+             # Sesión expirada → nueva sesión per
-… [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
 - **[convention] Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x**: -         # Mapeamos el historial resto a formato Gemini
