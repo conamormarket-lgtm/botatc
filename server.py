@@ -343,7 +343,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     contexto = changes["messages"][0].get("context", {})
     if "id" in contexto:
         reply_id = contexto["id"]
-        texto_citado = "un mensaje multimedia"
+        texto_citado = "uno de tus mensajes"
         
         # Buscar en RAM el mensaje original para mostrarlo
         if numero_wa in sesiones:
@@ -547,11 +547,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Procesar escalación si el modelo la detectó ───────
     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
 
-    # ── Guardar respuesta en historial ────────────────────
-    sesion["historial"].append({"role": "assistant", "content": respuesta_final})
-
     # ── Enviar respuesta al cliente por WhatsApp ──────────
     print(f"🤖 María: {respuesta_final[:80]}...")
+    wamid_out = None
     if not is_simulacion:
         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
@@ -562,9 +560,12 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
             
-            if match_sticker: enviar_media(numero_wa, "sticker", match_sticker.group(1))
-            elif match_img: enviar_media(numero_wa, "image", match_img.group(1))
-            else: enviar_mensaje(numero_wa, p)
+            if match_sticker: wamid_out = enviar_media(numero_wa, "sticker", match_sticker.group(1)) or wamid_out
+            elif match_img: wamid_out = enviar_media(numero_wa, "image", match_img.group(1)) or wamid_out
+            else: wamid_out = enviar_mensaje(numero_wa, p) or wamid_out
+
+    # ── Guardar respuesta en historial ────────────────────
+    sesion["historial"].append({"role": "assistant", "content": respuesta_final, "msg_id": wamid_out})
 
     
     try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
@@ -936,6 +937,7 @@ async def enviar_manual_endpoint(request: Request):
     
     async def enviar_partes():
         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', texto)
+        last_wamid = None
         for p in partes:
             p = p.strip()
             if not p: continue
@@ -943,9 +945,21 @@ async def enviar_manual_endpoint(request: Request):
             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
             
-            if match_sticker: enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid)
-            elif match_img: enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid)
-            else: enviar_mensaje(wa_id, p, reply_to_wamid)
+            if match_sticker: 
+                last_wamid = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid) or last_wamid
+            elif match_img: 
+                last_wamid = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid) or last_wamid
+            else: 
+                last_wamid = enviar_mensaje(wa_id, p, reply_to_wamid) or last_wamid
+                
+        if last_wamid:
+            # Update the history object we just placed
+            for msg in reversed(s["historial"]):
+                if msg["role"] == "assistant" and msg["content"] == texto:
+                    msg["msg_id"] = last_wamid
+                    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
+                    except: pass
+                    break
             
     asyncio.create_task(enviar_partes())
     

@@ -16,7 +16,7 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) 
         texto:          Texto del mensaje a enviar
 
     Returns:
-        True si el envío fue exitoso, False si hubo error.
+        wamid string si el envío fue exitoso, None si hubo error.
     """
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
@@ -37,13 +37,14 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) 
     try:
         response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
         response.raise_for_status()
-        return True
+        data = response.json()
+        return data.get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
         print(f"❌ Error Meta API ({e.response.status_code}): {e.response.text}")
-        return False
+        return None
     except Exception as e:
         print(f"❌ Error enviando mensaje: {e}")
-        return False
+        return None
 
 def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None) -> bool:
     """
@@ -72,13 +73,14 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
     try:
         response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
         response.raise_for_status()
-        return True
+        data = response.json()
+        return data.get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
-        print(f"❌ Error Meta API Media ({e.response.status_code}): {e.response.text}")
-        return False
+        print(f"❌ Error Meta API ({e.response.status_code}): {e.response.text}")
+        return None
     except Exception as e:
-        print(f"❌ Error enviando {tipo_media}: {e}")
-        return False
+        print(f"❌ Error enviando media ({tipo_media}): {e}")
+        return None
 
 
 async def enviar_mensaje_texto(numero_destino: str, texto: str) -> bool:
@@ -102,13 +104,13 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str) -> bool:
             response = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
             response.raise_for_status()
             print(f"✅ Mensaje manual enviado a {numero_destino}")
-            return True
+            return response.json().get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
         print(f"❌ Error Meta API al enviar manual ({e.response.status_code}): {e.response.text}")
-        return False
+        return None
     except Exception as e:
         print(f"❌ Error enviando mensaje manual: {e}")
-        return False
+        return None
 
 
 async def obtener_media_url(media_id: str) -> str | None:
