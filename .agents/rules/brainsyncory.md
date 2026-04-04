@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 134 notes | Score threshold: >40
+> 137 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,39 +18,18 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
-
-- **⚠️ GOTCHA: Fixed null crash in Response** — - # ─────────────────────────────────────────────
-+ from fastapi.resp
-
-## Active: `.`
-
-- **⚠️ GOTCHA: Fixed null crash in Response**
-- **Fixed null crash in RedirectResponse — confirmed 3x**
-- **⚠️ GOTCHA: Fixed null crash in Reactivar**
-- **gotcha in debug_telefono.py**
-- **gotcha in .gitignore**
-
-## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
 - Fixed null crash in RedirectResponse — confirmed 3x
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in .gitignore — confirmed 3x
-- Fixed null crash in FastAPI — confirmed 3x
-- Strengthened types Documentos
-- Fixed null crash in RedirectResponse — confirmed 3x
-- Strengthened types Contrase
 
 ## Known Fixes
 
 - ❌ +         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in RedirectResponse
 - ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
 - ❌ -     except Exception as e: → ✅ problem-fix in firebase_client.py
-
-## Recent Decisions
-
-- decision in inbox.html
 
 ## Learned Patterns
 

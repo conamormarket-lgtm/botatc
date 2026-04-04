@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 3 gotchas, 8 conventions, 17 fixes."
+description: "Python for botatc. 3 gotchas, 8 conventions, 18 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **51 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **53 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -23,6 +23,13 @@ Auto-compiled from **51 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in server.py
+-                     return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
++                     return f"""<div style=
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in firebase_client.py
 - def calcular_cola_pedido(pedido: dict) -> int:
@@ -329,13 +336,6 @@ except Exception as e:
 - 📐 **Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x** — -     sesion["historial"].append({"role": "user", "content": texto_modelo})
 +     if sesion["histor
 - 📐 **Fixed null crash in FastAPI — confirmed 3x** — - from fastapi import FastAPI, Request, HTTPException, Form
-+ from fastapi import FastAPI, Request,
-- 📐 **Fixed null crash in RedirectResponse — confirmed 3x** — -     return RedirectResponse(url=f"/admin", status_code=303)
-+     return RedirectResponse(url=req
-- 📐 **Strengthened types Contrase** — -         <label>Contraseña Administrativa</label>
-+         <label>Contraseña</label>
--         <
-- 📐 **Fixed null crash in Response — protects against XSS and CSRF token theft — confirmed 4x** — - def verificar_admin([REDACTED]
-+ 
++ fro
 
 ... [Truncated — see individual observations for full content]

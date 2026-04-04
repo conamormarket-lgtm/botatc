@@ -286,10 +286,12 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta
         if mensaje_id in mensajes_procesados_ids:
             return {"status": "ok"}
-        mensajes_procesados_ids.add(mensaje_id)
-        # Limitar la memoria del set para evitar fugas (guardamos aprox 500 ids)
-        if len(mensajes_procesados_ids) > 500:
-            mensajes_procesados_ids.clear()
+        mensajes_procesados_ids[mensaje_id] = True
+        
+        # Mantener solo los últimos 1000 IDs para evitar fugas sin vaciar el historial reciente
+        if len(mensajes_procesados_ids) > 1000:
+            oldest = next(iter(mensajes_procesados_ids))
+            del mensajes_procesados_ids[oldest]
             
         numero_wa     = mensaje_data["from"]           # ej: "51945257117"
         tipo_mensaje  = mensaje_data.get("type", "")
@@ -1202,9 +1204,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
                 
                 if tipo == "sticker":
-                    return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
+                    return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/150x150?text=Sticker';"></div>"""
                 elif tipo == "imagen":
-                    return f'<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';"></div>'
+                    return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
                 elif tipo == "audio":
                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
                 return match.group(0)
@@ -1216,7 +1218,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
             
-            burbujas += f'<div class="bubble {clase} {lado}">{texto_renderizado}</div>'
+            burbujas += f"""<div class="bubble {clase} {lado}" onclick="document.getElementById('manualMsgInput').value = '> ' + this.innerText.trim() + '\\n\\n' + document.getElementById('manualMsgInput').value; document.getElementById('manualMsgInput').focus();" style="cursor:pointer;" title="Click para citar este mensaje">{texto_renderizado}</div>"""
             
         if not burbujas:
             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
@@ -1250,6 +1252,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             </div>"""
         else:
             chat_box = f"""
+            <div style="padding-bottom: 0.6rem; display:flex; gap:0.5rem; overflow-x:auto;">
+                <button type="button" onclick="let s=prompt('Ingresa el ID del Sticker (ej: 12515...) o URL de Github:'); if(s) document.getElementById('manualMsgInput').value += (s.startsWith('http')?'[sticker:'+s+']':'[sticker:'+s+']'); document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">🎟️ Insertar Sticker</button>
+                <button type="button" onclick="let i=prompt('Ingresa el enlace (URL) de la imagen:'); if(i) document.getElementById('manualMsgInput').value += '[imagen:'+i+']'; document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">📸 Insertar Imagen</button>
+            </div>
             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}')" style="display:flex;gap:0.5rem;width:100%;margin:0;">
                 <input type="text" id="manualMsgInput" placeholder="Escribe tu mensaje manual aquí..." style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required>
                 <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>

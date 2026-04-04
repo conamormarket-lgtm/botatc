@@ -55,8 +55,8 @@ REGLAS CRÍTICAS — SÍGUELAS SIN EXCEPCIÓN:
     ESTÁ ESTRICTAMENTE PROHIBIDO inventar URLs o usar imágenes que no estén en esta lista.
     Para usarlos, copia y pega EXACTAMENTE la etiqueta a continuación al final de tu respuesta:
     - [sticker:https://raw.githubusercontent.com/conamormarket lgtm/botatc/refs/heads/main/stickers/bendiciones.webp]  -> (Usa este para cuando el cliente se despide)
-    - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer)
-    - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre)
+    - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer y es su primer mensaje)
+    - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre y es su primer mensaje)
     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/buenas%20tardes.webp]  -> (Usa este si el primer mensaje del cliente llega entre las 12pm y las 5:59pm y el cliente dijo buenas tardes)
     - [sticker:http://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/claro%20que%20si.webp]  -> (Usa este si tu respuesta es positiva para algo que el cliente te pida que hagas)
     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/en%20camino.webp]  -> (Usa este si el estado del pedido del cliente es En Reparto)
