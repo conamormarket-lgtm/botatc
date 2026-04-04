@@ -342,7 +342,20 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     # Detectar si el cliente está usando la función de deslizar/responder
     contexto = changes["messages"][0].get("context", {})
     if "id" in contexto:
-        texto_cliente = f"_{{Respuesta nativa}}_ {texto_cliente}"
+        reply_id = contexto["id"]
+        texto_citado = "un mensaje multimedia"
+        
+        # Buscar en RAM el mensaje original para mostrarlo
+        if numero_wa in sesiones:
+            for msg_item in reversed(sesiones[numero_wa].get("historial", [])):
+                if msg_item.get("msg_id") == reply_id:
+                    texto_crudo = msg_item.get("content", "")
+                    texto_limpio = texto_crudo.replace("\n", " ").strip()
+                    if texto_limpio:
+                        texto_citado = texto_limpio[:40] + ("..." if len(texto_limpio) > 40 else "")
+                    break
+                    
+        texto_cliente = f"[[REPLY|{texto_citado}]]{texto_cliente}"
 
     print(f"\n{'─'*50}")
     print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
@@ -1241,9 +1254,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
             
             # Formatear el indicador de respuesta nativa
-            if texto_renderizado.startswith("_{Respuesta nativa}_ "):
-                html_reply = f'<div style="font-size:0.75rem; color:var(--text-muted); background:var(--accent-bg); padding:0.3rem 0.5rem; border-radius:4px; margin-bottom:0.4rem; border-left:2px solid var(--primary-color); display:inline-block;">↩️ Respondió a un mensaje</div><br>'
-                texto_renderizado = texto_renderizado.replace("_{Respuesta nativa}_ ", html_reply, 1)
+            import re
+            match = re.match(r"^\[\[REPLY\|(.*?)\]\](.*)$", texto_renderizado, flags=re.DOTALL)
+            if match:
+                texto_citado = match.group(1)
+                texto_restante = match.group(2)
+                html_reply = f'<div style="font-size:0.75rem; color:var(--text-muted); background:rgba(0,0,0,0.15); padding:0.35rem 0.6rem; border-radius:6px; margin-bottom:0.4rem; border-left:3px solid var(--primary-color); display:flex; flex-direction:column; max-width:100%; overflow:hidden;"><span style="font-weight:600;font-size:0.65rem;margin-bottom:0.1rem;opacity:0.8;">Respondió a:</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{texto_citado}</span></div>'
+                texto_renderizado = html_reply + texto_restante
                 
             wamid = m.get("msg_id", "")
             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
