@@ -400,6 +400,11 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     sesion["ultima_actividad"] = datetime.utcnow()
     sesion["nombre_cliente"]   = nombre
 
+    # 1) Guardar mensaje TEMPRANO para que SIEMPRE aparezca en el Inbox, sin duplicarse
+    # Verificamos si no es exactamente el mismo último mensaje
+    if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
+        sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
+
     # ── Buscar pedido en Firebase (con número del WA) ─────
     if sesion["datos_pedido"] is None:
         from config import NUMEROS_TESTER
@@ -478,10 +483,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 except: pass
                 return None
     else:
-        # Ya hay sesión con datos_pedido. Guardamos su mensaje entrante temprano.
-        if not sesion["historial"] or sesion["historial"][-1].get("content") != texto_cliente:
-            sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
-            
+        # Ya hay sesión con datos_pedido.
         estado_actual = sesion["datos_pedido"].get("estadoGeneral", "")
         if estado_actual in ESTADOS_DISEÑO:
             print(f"  [🎨 Pedido volvió a Diseño → silencio]")
@@ -491,8 +493,6 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
 
     # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
     if not sesion["bot_activo"]:
-        # Guardar en historial para que sea visible en el Inbox aunque el bot no responda
-        sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
         sesion["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
@@ -518,11 +518,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     texto_modelo = preprocesar_mensaje(normalizar_texto(texto_cliente))
 
     # ── Agregar al historial y llamar al modelo ───────────
+    # Reemplazamos el texto original (raw) con el normalizado para Gemini
     if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
         sesion["historial"][-1]["content"] = texto_modelo
-        sesion["historial"][-1]["msg_id"]  = msg_id
-    else:
-        sesion["historial"].append({"role": "user", "content": texto_modelo, "msg_id": msg_id})
         
     historial_para_gemini = recortar_historial(sesion["historial"])
     print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
