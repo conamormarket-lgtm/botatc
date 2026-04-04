@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 3 gotchas, 8 conventions, 18 fixes."
+description: "Python for botatc. 3 gotchas, 8 conventions, 20 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **54 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **56 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -23,6 +23,42 @@ Auto-compiled from **54 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Enviar — protects against XSS and CSRF token theft
+-     # ── Guardar respuesta en historial ────────────────────
++     # ── Enviar respuesta al cliente por WhatsApp ──────────
+-     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
++     print(f"🤖 María: {respuesta_final[:80]}...")
+- 
++     wamid_out = None
+-     # ── Enviar respuesta al cliente por WhatsApp ──────────
++     if not is_simulacion:
+-     print(f
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Enviar
+3. identifier: WhatsApp
+4. identifier: Mar
+5. identifier: None
+
+### Fixed null crash in KeyError — protects against XSS and CSRF token theft
+-     # Detectar si el cliente está usando la función de deslizar/responder
++     except (KeyError, IndexError):
+-     contexto = changes["messages"][0].get("context", {})
++         return {"status": "ok"}   # payload inesperado → ignorar sin error
+-     if "id" in contexto:
++ 
+-         reply_id = contexto["id"]
++     # Detectar si el cliente está usando la función de deslizar/responder
+-
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: KeyError
+3. identifier: IndexError
+4. identifier: Detectar
+5. identifier: Buscar
 
 ### problem-fix in server.py
 -                     return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
@@ -307,35 +343,6 @@ except Exception as e:
 - 
 + 
 + 
-+ # ─────────────────────────────────────────────
-+ #  Simulador Web de Chat
-+ # ─────────────────────────────────────────────
-+ 
-+ @app.get("/simulador", response_class=HTMLResponse)
-+ async def pagina_simulador():
-+     """Interfaz web para probar el comportamiento del bot."""
-+     return HTMLResponse("""
-+     <html>
-+     <head>
-+       <title>Simulador de WhatsApp</title
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Simulador
-3. identifier: Web
-4. identifier: Chat
-5. identifier: HTMLResponse
-
-## 📐 Conventions & Best Practices
-
-### Project Conventions
-- 📐 **Fixed null crash in RedirectResponse — confirmed 3x** — - 
-+         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, s
-- 📐 **Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x** — -         # Mapeamos el historial resto a formato Gemini
-+         # Mapeamos el historialresto a f
-- 📐 **Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x** — -     sesion["historial"].append({"role": "user", "content": texto_modelo})
-+     if sesion["histor
-- 📐 **Fixed null crash in FastAPI — confirmed 3x** — - from fastapi import FastAPI, Request, HTTPException, Form
-+ fro
++ # ───────────────────────────────────────────
 
 ... [Truncated — see individual observations for full content]

@@ -14,6 +14,7 @@ import re
 import json
 import hashlib
 from datetime import datetime, timedelta
+import asyncio
 
 from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -908,6 +909,21 @@ async def pausar_bot_manual(request: Request, numero_wa: str):
     return RedirectResponse(url=redirect_url, status_code=303)
 
 
+@app.post("/api/admin/upload_media")
+async def admin_upload_media(file: UploadFile = File(...)):
+    """Sube una imagen directamente desde la interfaz Web a Meta Graph."""
+    try:
+        from whatsapp_client import subir_media
+        content = await file.read()
+        media_id = await subir_media(content, file.content_type, file.filename or "upload.png")
+        
+        if media_id:
+            return {"ok": True, "media_id": media_id}
+        
+        return {"ok": False, "error": "No se pudo subir a Meta"}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
 @app.post("/api/admin/enviar_manual")
 async def enviar_manual_endpoint(request: Request):
     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
@@ -1313,8 +1329,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
         else:
             chat_box = f"""
             <div style="padding-bottom: 0.6rem; display:flex; gap:0.5rem; overflow-x:auto;">
-                <button type="button" onclick="let s=prompt('Ingresa el ID del Sticker (ej: 12515...) o URL de Github:'); if(s) document.getElementById('manualMsgInput').value += (s.startsWith('http')?'[sticker:'+s+']':'[sticker:'+s+']'); document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">🎟️ Insertar Sticker</button>
-                <button type="button" onclick="let i=prompt('Ingresa el enlace (URL) de la imagen:'); if(i) document.getElementById('manualMsgInput').value += '[imagen:'+i+']'; document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">📸 Insertar Imagen</button>
+                <button type="button" onclick="let s=prompt('Ingresa el ID del Sticker (ej: 12515...) o URL de Github:'); if(s) document.getElementById('manualMsgInput').value += (s.startsWith('http')?'[sticker:'+s+']':'[sticker:'+s+']'); document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">🎟️ URL Sticker</button>
+                <button type="button" onclick="let i=prompt('Ingresa el enlace (URL) de la imagen:'); if(i) document.getElementById('manualMsgInput').value += '[imagen:'+i+']'; document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">📸 URL Imagen</button>
+                <button type="button" onclick="document.getElementById('hiddenFileInput').click();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s; display:flex; align-items:center; gap:0.3rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Subir Imagen Local</button>
             </div>
             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>

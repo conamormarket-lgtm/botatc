@@ -139,3 +139,22 @@ async def descargar_media(media_url: str) -> tuple[bytes | None, str | None]:
     except Exception as e:
         print(f"❌ Error descargando media: {e}")
         return None, None
+
+async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload.png") -> str | None:
+    """Sube un archivo binario a Meta Graph API y retorna su Media ID nativo."""
+    url = f"https://graph.facebook.com/{META_API_VERSION}/{META_PHONE_NUMBER_ID}/media"
+    headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
+    files = {"file": (filename, file_bytes, mime_type)}
+    data = {"messaging_product": "whatsapp"}
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.post(url, headers=headers, data=data, files=files, timeout=30)
+            res.raise_for_status()
+            return res.json().get("id")
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Error HTTP subiendo media ({e.response.status_code}): {e.response.text}")
+        return None
+    except Exception as e:
+        print(f"❌ Error subiendo media a Meta: {e}")
+        return None

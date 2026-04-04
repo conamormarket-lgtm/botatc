@@ -478,6 +478,63 @@
                 alert("Error de red conectando con el panel Web.");
             }
         };
+        // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
+        const uploadMedia = async (file) => {
+            const input = document.getElementById('manualMsgInput');
+            if(!input) return;
+            
+            // UI Feedback
+            input.placeholder = "Subiendo imagen a WhatsApp... ⏳";
+            input.disabled = true;
+            
+            const formData = new FormData();
+            formData.append("file", file);
+            
+            try {
+                const res = await fetch('/api/admin/upload_media', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if(data.ok && data.media_id) {
+                    input.value += `[imagen:${data.media_id}] `;
+                } else {
+                    alert("Error subiendo: " + (data.error || "Desconocido"));
+                }
+            } catch(e) {
+                alert("Error de red subiendo archivo.");
+            } finally {
+                input.placeholder = "Escribe tu respuesta aquí...";
+                input.disabled = false;
+                input.focus();
+            }
+        };
+
+        // Pegar imagen directamente en el chat
+        document.addEventListener('paste', function(e) {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let index in items) {
+                const item = items[index];
+                if (item.kind === 'file') {
+                    const blob = item.getAsFile();
+                    uploadMedia(blob);
+                }
+            }
+        });
+
+        // Trigger del input hidden
+        document.addEventListener('change', function(e) {
+            if(e.target && e.target.id === 'hiddenFileInput') {
+                if(e.target.files && e.target.files[0]) {
+                    uploadMedia(e.target.files[0]);
+                }
+                e.target.value = ''; // Reset
+            }
+        });
+
     </script>
+    <!-- Elemento oculto para abrir el selector de archivos del sistema -->
+    <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
 </body>
 </html>
