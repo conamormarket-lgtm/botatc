@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 162 notes | Score threshold: >40
+> 164 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -28,6 +28,7 @@
 - Fixed null crash in GICA — confirmed 4x
 - Fixed null crash in RedirectResponse — confirmed 3x
 - Git Commit: stickers — confirmed 3x
+- Git Commit: stickers — confirmed 3x
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in .gitignore — confirmed 3x
@@ -41,6 +42,7 @@
 
 ## Learned Patterns
 
+- Always: Git Commit: stickers — confirmed 3x (seen 2x)
 - Always: Strengthened types DOCTYPE (seen 2x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed

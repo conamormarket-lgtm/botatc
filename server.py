@@ -1482,6 +1482,37 @@ async def upload_stickers(files: List[UploadFile] = File(...)):
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
+from pydantic import BaseModel
+class SaveMediaPayload(BaseModel):
+    media_id: str
+
+@app.post("/api/admin/stickers/save_from_media")
+async def save_sticker_media(payload: SaveMediaPayload, request: Request):
+    """Guarda un sticker enviado por el usuario a la galería global de favoritos."""
+    if not verificar_sesion(request):
+        return {"ok": False, "error": "No autorizado"}
+        
+    media_id = payload.media_id
+    from whatsapp_client import obtener_media_url, descargar_media
+    url = await obtener_media_url(media_id)
+    if not url: return {"ok": False, "error": "Archivo no ubicado en WhatsApp Meta"}
+    
+    contenido, mime_type = await descargar_media(url)
+    if not contenido: return {"ok": False, "error": "No se pudo descargar content"}
+    
+    import os
+    from firebase_client import guardar_sticker_en_bd
+    basename = f"fav_{media_id}.webp"
+    
+    os.makedirs("static/stickers", exist_ok=True)
+    filepath = os.path.join("static", "stickers", basename)
+    with open(filepath, "wb") as f:
+        f.write(contenido)
+        
+    guardar_sticker_en_bd(basename, contenido)
+    return {"ok": True, "filename": basename}
+
+
 @app.get("/api/stickers")
 def get_stickers():
     """Retorna la lista de stickers webp disponibles localmente."""
