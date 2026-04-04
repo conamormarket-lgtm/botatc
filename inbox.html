@@ -478,6 +478,44 @@
                 alert("Error de red conectando con el panel Web.");
             }
         };
+
+        // LIBRERÍA LOCAL DE STICKERS
+        window.toggleStickersMenu = async function() {
+            const drawer = document.getElementById('stickersDrawer');
+            if(!drawer) return;
+            
+            if (drawer.style.display === 'none' || drawer.style.display === '') {
+                drawer.style.display = 'block';
+                const grid = document.getElementById('stickersGrid');
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5;">Cargando...</div>';
+                try {
+                    const res = await fetch('/api/stickers');
+                    const data = await res.json();
+                    if(data.stickers && data.stickers.length > 0) {
+                        grid.innerHTML = data.stickers.map(s => 
+                            `<img src="/static/stickers/${s}" style="width:80px; height:80px; object-fit:contain; cursor:pointer; padding:5px; border-radius:8px; border:2px solid transparent; transition:border 0.2s;" onmouseover="this.style.border='2px solid var(--primary-color)'" onmouseout="this.style.border='2px solid transparent'" onclick="insertStickerLocal('${s}')" title="${s}">`
+                        ).join('');
+                    } else {
+                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5;">Aún no has subido stickers.<br>Copia archivos .webp en la carpeta <pre style="display:inline;background:var(--accent-bg);padding:3px;border-radius:4px;">static/stickers</pre> de tu servidor.</div>';
+                    }
+                } catch(e) { grid.innerHTML = '<div style="grid-column: 1/-1; padding:2rem; color:var(--danger-color);">Error cargando.</div>'; }
+                
+                // Scroll to make drawer visible
+                drawer.scrollIntoView({ behavior: "smooth" });
+            } else {
+                drawer.style.display = 'none';
+            }
+        };
+
+        window.insertStickerLocal = function(filename) {
+            const input = document.getElementById('manualMsgInput');
+            if(input) {
+                input.value += `[sticker-local:${filename}] `;
+                input.focus();
+                document.getElementById('stickersDrawer').style.display = 'none';
+            }
+        };
+
         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
         const uploadMedia = async (file, mode = 'imagen') => {
             const input = document.getElementById('manualMsgInput');
@@ -524,8 +562,9 @@
             }
         });
 
-        // Trigger del input hidden
-        document.addEventListener('change', function(e) {
+        // Trigger de los inputs ocultos
+        document.addEventListener('change', async function(e) {
+            // Caso 1: Subida general (solo un archivo por click)
             if(e.target && e.target.id === 'hiddenFileInput') {
                 const mode = e.target.getAttribute('data-mode') || 'imagen';
                 if(e.target.files && e.target.files[0]) {
@@ -533,10 +572,51 @@
                 }
                 e.target.value = ''; // Reset
             }
+            // Caso 2: Subida brutal de Pack de Stickers
+            else if(e.target && e.target.id === 'stickerFolderInput') {
+                const files = e.target.files;
+                if(!files || files.length === 0) return;
+                
+                // Mostrar loading
+                document.getElementById('stickersGrid').innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; font-weight:bold;">Subiendo ${files.length} archivos a tu librería... ⏳</div>`;
+                
+                const formData = new FormData();
+                let validCount = 0;
+                for(let i=0; i<files.length; i++) {
+                    const f = files[i];
+                    if(f.name.endsWith('.webp') || f.name.endsWith('.png')) {
+                        formData.append("files", f);
+                        validCount++;
+                    }
+                }
+                
+                if (validCount === 0) {
+                    alert("No se encontraron archivos webp o png válidos en esta carpeta.");
+                    e.target.value = '';
+                    toggleStickersMenu(); toggleStickersMenu(); // refresh
+                    return;
+                }
+                
+                try {
+                    const res = await fetch('/api/admin/stickers/upload', { method: 'POST', body: formData });
+                    const result = await res.json();
+                    if(result.ok) alert(`✅ Éxito: Se alojaron ${result.count} stickers de los ${validCount} adjuntados.`);
+                    else alert("Error subiendo stickers: " + result.error);
+                } catch(error) {
+                    alert("Falla crítica en carga de red local.");
+                }
+                
+                e.target.value = ''; // Reset buffer
+                
+                // Refresh Drawer
+                document.getElementById('stickersDrawer').style.display = 'none';
+                toggleStickersMenu();
+            }
         });
 
     </script>
-    <!-- Elemento oculto para abrir el selector de archivos del sistema -->
+    <!-- Elementos ocultos para selectores del sistema -->
     <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
+    <input type="file" id="stickerFolderInput" style="display:none;" accept="image/webp, image/png" webkitdirectory directory multiple>
 </body>
 </html>

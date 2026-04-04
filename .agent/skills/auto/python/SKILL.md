@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 3 gotchas, 8 conventions, 21 fixes."
+description: "Python for botatc. 4 gotchas, 8 conventions, 21 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **57 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **58 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **57 real patterns** in **botatc**. This skill is auto-routed
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Stickers | -             </div> +                 <button type="button" onclick="toggleStickersMenu()" style=" |
 | ⚠️ GOTCHA: Fixed null crash in Response | - # ───────────────────────────────────────────── + from fastapi.responses import Response - #  He |
 | ⚠️ GOTCHA: Fixed null crash in Reactivar | -         # Reset completo de la sesión para ese número +         # Reactivar el bot sin borrar el  |
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
@@ -338,12 +339,6 @@ except Exception as e:
 **Actionable Steps:**
 1. Modified 1 files
 2. identifier: HTMLResponse
-3. identifier: Request
-4. identifier: None
-5. identifier: Endpoint
-
-### Fixed null crash in Filtro
--         nombre   = s.get("nombre_cliente", "—")
-+      
+3. identif
 
 ... [Truncated — see individual observations for full content]

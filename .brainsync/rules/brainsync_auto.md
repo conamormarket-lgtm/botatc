@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 153 notes | Score threshold: >40
+> 155 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,14 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Stickers** — -             </div>
++                 <button type="button" onclick=
+
+## Project Standards
+
+- Fixed null crash in GICA — confirmed 4x
 - Fixed null crash in RedirectResponse — confirmed 3x
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x

@@ -35,6 +35,12 @@ from bot_atc import normalizar_texto, preprocesar_mensaje
 #  Inicialización
 # ─────────────────────────────────────────────
 app = FastAPI(title="Bot ATC — IA-ATC")
+
+import os
+from fastapi.staticfiles import StaticFiles
+os.makedirs("static/stickers", exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 @app.on_event("startup")
@@ -952,7 +958,8 @@ async def enviar_manual_endpoint(request: Request):
     import asyncio
     
     async def enviar_partes():
-        partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', texto)
+        from whatsapp_client import enviar_media, enviar_mensaje, subir_media
+        partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
         last_wamid = None
         for p in partes:
             p = p.strip()
@@ -960,11 +967,22 @@ async def enviar_manual_endpoint(request: Request):
             
             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
+            match_sticker_local = re.match(r"^\[sticker-local:([^\]]+)\]$", p)
             
             if match_sticker: 
                 last_wamid = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid) or last_wamid
             elif match_img: 
                 last_wamid = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid) or last_wamid
+            elif match_sticker_local:
+                filename = match_sticker_local.group(1)
+                filepath = os.path.join("static", "stickers", filename)
+                if os.path.exists(filepath):
+                    with open(filepath, "rb") as f: file_bytes = f.read()
+                    mime = "image/webp" if filepath.endswith(".webp") else "image/png"
+                    w_id = await subir_media(file_bytes, mime, filename)
+                    if w_id:
+                        tipo = "sticker" if mime == "image/webp" else "image"
+                        last_wamid = enviar_media(wa_id, tipo, w_id, reply_to_wamid) or last_wamid
             else: 
                 last_wamid = enviar_mensaje(wa_id, p, reply_to_wamid) or last_wamid
                 
@@ -1331,6 +1349,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             <div style="padding-bottom: 0.6rem; display:flex; gap:0.5rem; overflow-x:auto;">
                 <button type="button" onclick="document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s; display:flex; align-items:center; gap:0.3rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Subir Imagen</button>
                 <button type="button" onclick="document.getElementById('hiddenFileInput').setAttribute('data-mode', 'sticker'); document.getElementById('hiddenFileInput').accept='image/webp'; document.getElementById('hiddenFileInput').click();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">🎟️ Subir Sticker WEBP</button>
+                <button type="button" onclick="toggleStickersMenu()" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">😎 Stickers Extras</button>
             </div>
             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
@@ -1358,6 +1377,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
         
         <div style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
             {burbujas}
+        </div>
+        
+        <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:250px; overflow-y:auto; overflow-x:hidden;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <span style="font-weight:600; color:var(--text-main);">Librería de Stickers Locales</span>
+                <button type="button" onclick="document.getElementById('stickerFolderInput').click()" style="padding:0.4rem 0.8rem; background:var(--bg-secondary); border: 1px solid var(--accent-border); color:var(--text-main); border-radius:6px; font-weight:600; cursor:pointer; font-size:0.8rem; transition:background 0.2s;">📁 Subir Carpeta</button>
+            </div>
+            <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem; justify-items: center;"></div>
         </div>
         
         <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
@@ -1392,6 +1419,36 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
 @app.get("/inbox", response_class=HTMLResponse)
 async def inbox_main(request: Request, tab: str = "all"):
     return renderizar_inbox(request, None, tab)
+
+from typing import List
+
+@app.post("/api/admin/stickers/upload")
+async def upload_stickers(files: List[UploadFile] = File(...)):
+    """Recibe múltiples archivos webp/png y los guarda estáticamente."""
+    try:
+        os.makedirs("static/stickers", exist_ok=True)
+        count = 0
+        for file in files:
+            if file.filename.endswith(".webp") or file.filename.endswith(".png"):
+                filepath = os.path.join("static/stickers", file.filename)
+                content = await file.read()
+                with open(filepath, "wb") as f:
+                    f.write(content)
+                count += 1
+        return {"ok": True, "count": count}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+@app.get("/api/stickers")
+def get_stickers():
+    """Retorna la lista de stickers webp disponibles localmente."""
+    try:
+        if not os.path.exists("static/stickers"): return {"ok": True, "stickers": []}
+        files = os.listdir("static/stickers")
+        stickers = [f for f in files if f.endswith(".webp") or f.endswith(".png")]
+        return {"ok": True, "stickers": stickers}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 @app.get("/inbox/{wa_id}", response_class=HTMLResponse)
 async def inbox_chat(request: Request, wa_id: str, tab: str = "all"):
