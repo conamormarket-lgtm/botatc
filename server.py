@@ -1429,7 +1429,9 @@ async def upload_stickers(files: List[UploadFile] = File(...)):
         count = 0
         for file in files:
             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
-                filepath = os.path.join("static/stickers", file.filename)
+                # Extraemos solo el nombre del archivo, ignorando subcarpetas
+                basename = os.path.basename(file.filename)
+                filepath = os.path.join("static", "stickers", basename)
                 content = await file.read()
                 with open(filepath, "wb") as f:
                     f.write(content)
