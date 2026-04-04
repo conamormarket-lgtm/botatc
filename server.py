@@ -1238,8 +1238,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
             
             wamid = m.get("msg_id", "")
-            onclick_js = f"document.getElementById('replyToWamid').value='{wamid}'; document.getElementById('replyPreviewTxt').innerText=this.innerText.substring(0,40)+'...'; document.getElementById('replyPreviewContainer').style.display='flex'; document.getElementById('manualMsgInput').focus();" if wamid else ""
-            burbujas += f'<div class="bubble {clase} {lado}" onclick="{onclick_js}" style="cursor:pointer;" title="Click para citar este mensaje nativamente en WhatsApp">{texto_renderizado}</div>'
+            wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
+            burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr} title="Click derecho (PC) o mantener presionado (Móvil) para opciones">{texto_renderizado}</div>'
             
         if not burbujas:
             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
