@@ -479,12 +479,12 @@
             }
         };
         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
-        const uploadMedia = async (file) => {
+        const uploadMedia = async (file, mode = 'imagen') => {
             const input = document.getElementById('manualMsgInput');
             if(!input) return;
             
             // UI Feedback
-            input.placeholder = "Subiendo imagen a WhatsApp... ⏳";
+            input.placeholder = `Subiendo ${mode} a WhatsApp... ⏳`;
             input.disabled = true;
             
             const formData = new FormData();
@@ -498,7 +498,7 @@
                 const data = await res.json();
                 
                 if(data.ok && data.media_id) {
-                    input.value += `[imagen:${data.media_id}] `;
+                    input.value += `[${mode}:${data.media_id}] `;
                 } else {
                     alert("Error subiendo: " + (data.error || "Desconocido"));
                 }
@@ -518,7 +518,8 @@
                 const item = items[index];
                 if (item.kind === 'file') {
                     const blob = item.getAsFile();
-                    uploadMedia(blob);
+                    // Paste always defaults to 'imagen' type
+                    uploadMedia(blob, 'imagen');
                 }
             }
         });
@@ -526,8 +527,9 @@
         // Trigger del input hidden
         document.addEventListener('change', function(e) {
             if(e.target && e.target.id === 'hiddenFileInput') {
+                const mode = e.target.getAttribute('data-mode') || 'imagen';
                 if(e.target.files && e.target.files[0]) {
-                    uploadMedia(e.target.files[0]);
+                    uploadMedia(e.target.files[0], mode);
                 }
                 e.target.value = ''; // Reset
             }

@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 149 notes | Score threshold: >40
+> 153 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -28,6 +28,7 @@
 ## Known Fixes
 
 - ❌ +         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in RedirectResponse
+- ❌ -         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in UploadFile
 - ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
 - ❌ -     except Exception as e: → ✅ problem-fix in firebase_client.py
 

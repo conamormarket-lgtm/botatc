@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 3 gotchas, 8 conventions, 20 fixes."
+description: "Python for botatc. 3 gotchas, 8 conventions, 21 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **56 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **57 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -23,6 +23,23 @@ Auto-compiled from **56 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in UploadFile
+- @app.post("/api/admin/enviar_manual")
++ @app.post("/api/admin/upload_media")
+- async def enviar_manual_endpoint(request: Request):
++ async def admin_upload_media(file: UploadFile = File(...)):
+-     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
++     """Sube una imagen directamente desde la interfaz Web a Meta Graph."""
+-     if not verificar_sesion(request):
++ 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UploadFile
+3. identifier: File
+4. identifier: Sube
+5. identifier: Web
 
 ### Fixed null crash in Enviar — protects against XSS and CSRF token theft
 -     # ── Guardar respuesta en historial ────────────────────
@@ -327,22 +344,6 @@ except Exception as e:
 
 ### Fixed null crash in Filtro
 -         nombre   = s.get("nombre_cliente", "—")
-+         # Filtro de limpieza visual: ocultar si pasaron las horas limite y ESTA resuelto por el bot
--         pedido   = s.get("datos_pedido", {}).get("id", "—") if s.get("datos_pedido") else "—"
-+         # (Si está marcado como esperando humano o bot apagado, NUNCA se oculta)
--         estado_p = s.get("datos_pedido", {}).get("estadoGeneral
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Filtro
-3. identifier: ESTA
-4. identifier: NUNCA
-5. identifier: Ocultar
-
-### Fixed null crash in Simulador
-- 
-+ 
-+ 
-+ # ───────────────────────────────────────────
++      
 
 ... [Truncated — see individual observations for full content]
