@@ -339,6 +339,11 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     except (KeyError, IndexError):
         return {"status": "ok"}   # payload inesperado → ignorar sin error
 
+    # Detectar si el cliente está usando la función de deslizar/responder
+    contexto = changes["messages"][0].get("context", {})
+    if "id" in contexto:
+        texto_cliente = f"_{{Respuesta nativa}}_ {texto_cliente}"
+
     print(f"\n{'─'*50}")
     print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
 
@@ -1235,6 +1240,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
             
+            # Formatear el indicador de respuesta nativa
+            if texto_renderizado.startswith("_{Respuesta nativa}_ "):
+                html_reply = f'<div style="font-size:0.75rem; color:var(--text-muted); background:var(--accent-bg); padding:0.3rem 0.5rem; border-radius:4px; margin-bottom:0.4rem; border-left:2px solid var(--primary-color); display:inline-block;">↩️ Respondió a un mensaje</div><br>'
+                texto_renderizado = texto_renderizado.replace("_{Respuesta nativa}_ ", html_reply, 1)
+                
             wamid = m.get("msg_id", "")
             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr} title="Click derecho (PC) o mantener presionado (Móvil) para opciones">{texto_renderizado}</div>'
