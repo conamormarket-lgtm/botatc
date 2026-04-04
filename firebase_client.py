@@ -184,3 +184,39 @@ def cargar_todas_las_sesiones() -> dict:
         sesiones_restauradas[doc.id] = data
         
     return sesiones_restauradas
+
+# ============================================================
+#  PERSISTENCIA DE STICKERS EN FIRESTORE
+# ============================================================
+import base64
+
+def guardar_sticker_en_bd(filename: str, file_bytes: bytes):
+    """Guarda físicamente un archivo en la base de datos convirtiéndolo a Base64."""
+    db = inicializar_firebase()
+    b64_data = base64.b64encode(file_bytes).decode('utf-8')
+    db.collection("bot_stickers").document(filename).set({
+        "filename": filename,
+        "base64": b64_data,
+        "updatedAt": firestore.SERVER_TIMESTAMP
+    })
+
+def cargar_stickers_de_bd(directorio: str):
+    """Descarga todos los stickers desde Firestore al directorio temporal en memoria."""
+    db = inicializar_firebase()
+    docs = db.collection("bot_stickers").limit(300).stream()
+    import os
+    os.makedirs(directorio, exist_ok=True)
+    count = 0
+    for doc in docs:
+        try:
+            data = doc.to_dict()
+            filename = data.get("filename")
+            b64 = data.get("base64")
+            if filename and b64:
+                filepath = os.path.join(directorio, filename)
+                with open(filepath, "wb") as f:
+                    f.write(base64.b64decode(b64))
+                count += 1
+        except Exception as e:
+            print(f"Error cargando sticker {doc.id}: {e}")
+    return count

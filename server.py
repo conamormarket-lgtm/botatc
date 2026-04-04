@@ -45,20 +45,29 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 @app.on_event("startup")
 def startup_event():
-    # ── Restaurar toda la memoria desde Firestore para el Inbox ──
+    # ── Restaurar toda la memoria y stickers desde Firebase ──
     try:
-        from firebase_client import cargar_todas_las_sesiones
+        from firebase_client import cargar_todas_las_sesiones, cargar_stickers_de_bd
+        # Restaurar sesiones (Inbox)
         sesiones_restauradas = cargar_todas_las_sesiones()
         for wa_id, s in sesiones_restauradas.items():
             sesiones[wa_id] = s
         print(f"✅ Se restauraron {len(sesiones_restauradas)} conversaciones en memoria desde Firebase.")
+        
+        # Restaurar Libreria de Stickers estatica
+        import os
+        os.makedirs("static/stickers", exist_ok=True)
+        count_stickers = cargar_stickers_de_bd("static/stickers")
+        print(f"✅ Se restauraron {count_stickers} stickers desde la DB al FileSystem efímero.")
     except Exception as e:
-        print(f"❌ Error al restaurar conversaciones desde Firebase: {e}")
+        print(f"❌ Error al restaurar datos desde Firebase: {e}")
 
-    from pedidos_observer import iniciar_observador_pedidos
-    import threading
-    t = threading.Thread(target=iniciar_observador_pedidos, daemon=True)
-    t.start()
+    try:
+        from pedidos_observer import iniciar_observador_pedidos
+        import threading
+        t = threading.Thread(target=iniciar_observador_pedidos, daemon=True)
+        t.start()
+    except: pass
 
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"
@@ -1435,8 +1444,10 @@ from typing import List
 
 @app.post("/api/admin/stickers/upload")
 async def upload_stickers(files: List[UploadFile] = File(...)):
-    """Recibe múltiples archivos webp/png y los guarda estáticamente."""
+    """Recibe múltiples archivos webp/png, los guarda en disco ephemeral y sincroniza a Firestore."""
     try:
+        import os
+        from firebase_client import guardar_sticker_en_bd
         os.makedirs("static/stickers", exist_ok=True)
         count = 0
         for file in files:
@@ -1445,8 +1456,14 @@ async def upload_stickers(files: List[UploadFile] = File(...)):
                 basename = os.path.basename(file.filename)
                 filepath = os.path.join("static", "stickers", basename)
                 content = await file.read()
+                
+                # Guardar local efímero (para el render estático actual)
                 with open(filepath, "wb") as f:
                     f.write(content)
+                
+                # Guardar en Base de Datos (Persistente)
+                guardar_sticker_en_bd(basename, content)
+                
                 count += 1
         return {"ok": True, "count": count}
     except Exception as e:
