@@ -165,3 +165,22 @@ def cargar_sesion_chat(numero_wa: str) -> dict | None:
                 
         return data
     return None
+
+def cargar_todas_las_sesiones() -> dict:
+    """Carga TODAS las sesiones de Firestore para poblar la RAM en el arranque del servidor."""
+    db = inicializar_firebase()
+    coleccion = db.collection("chats_atc")
+    docs = coleccion.stream()
+    
+    sesiones_restauradas = {}
+    from google.api_core.datetime_helpers import DatetimeWithNanoseconds
+    
+    for doc in docs:
+        data = doc.to_dict()
+        if data.get("ultima_actividad") and isinstance(data["ultima_actividad"], DatetimeWithNanoseconds):
+            data["ultima_actividad"] = data["ultima_actividad"].replace(tzinfo=None)
+        if data.get("escalado_en") and isinstance(data["escalado_en"], DatetimeWithNanoseconds):
+            data["escalado_en"] = data["escalado_en"].replace(tzinfo=None)
+        sesiones_restauradas[doc.id] = data
+        
+    return sesiones_restauradas

@@ -38,6 +38,16 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 @app.on_event("startup")
 def startup_event():
+    # ── Restaurar toda la memoria desde Firestore para el Inbox ──
+    try:
+        from firebase_client import cargar_todas_las_sesiones
+        sesiones_restauradas = cargar_todas_las_sesiones()
+        for wa_id, s in sesiones_restauradas.items():
+            sesiones[wa_id] = s
+        print(f"✅ Se restauraron {len(sesiones_restauradas)} conversaciones en memoria desde Firebase.")
+    except Exception as e:
+        print(f"❌ Error al restaurar conversaciones desde Firebase: {e}")
+
     from pedidos_observer import iniciar_observador_pedidos
     import threading
     t = threading.Thread(target=iniciar_observador_pedidos, daemon=True)
