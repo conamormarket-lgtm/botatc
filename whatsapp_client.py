@@ -158,3 +158,31 @@ async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload
     except Exception as e:
         print(f"❌ Error subiendo media a Meta: {e}")
         return None
+
+async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str) -> bool:
+    """Envía una reacción a un mensaje específico."""
+    headers = {
+        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": numero_destino,
+        "type": "reaction",
+        "reaction": {
+            "message_id": message_id,
+            "emoji": emoji
+        }
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
+            res.raise_for_status()
+            return True
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Error Meta Reaccion ({e.response.status_code}): {e.response.text}")
+        return False
+    except Exception as e:
+        print(f"❌ Error enviando reacción: {e}")
+        return False

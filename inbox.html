@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Inbox - IA-ATC</title>
     <!-- Fuentes de Google: Inter para lectura, Outfit para acentos audaces -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
     <style>
         :root {
             /* 1. Nivel de Color Principal */
@@ -317,7 +318,17 @@
     </div>
 
     <!-- MENÚ CONTEXTUAL PERSONALIZADO (Click derecho PC o Mantener en Móvil) -->
-    <div id="bubbleContextMenu" style="display:none; position:fixed; z-index:9999; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.15); min-width:200px; font-family:var(--font-main); overflow:hidden;">
+    <div id="bubbleContextMenu" style="display:none; position:fixed; z-index:9999; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.15); min-width:220px; font-family:var(--font-main); overflow:hidden;">
+        <!-- BARRA DE REACCIONES -->
+        <div style="display:flex; justify-content:space-around; padding:0.6rem; border-bottom:1px solid var(--accent-border); background:var(--accent-bg);">
+            <div class="ctx-emoji" onclick="enviarReaccion('👍')">👍</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('❤️')">❤️</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('😂')">😂</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('😮')">😮</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('😢')">😢</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('🙏')">🙏</div>
+        </div>
+        
         <div class="ctx-item" id="ctxReply" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v3a4 4 0 0 0 4 4h14"/><path d="m8 14-5-5 5-5"/></svg>
             <strong>Responder Nativamente</strong>
@@ -337,6 +348,8 @@
     </div>
     <style>
         .ctx-item:hover { background: var(--accent-bg); }
+        .ctx-emoji { cursor:pointer; font-size:1.3rem; padding:0.1rem 0.2rem; border-radius:50%; transition:transform 0.15s, background 0.15s; }
+        .ctx-emoji:hover { transform: scale(1.3); background: rgba(255,255,255,0.1); }
     </style>
 
     <script>
@@ -421,6 +434,26 @@
             document.getElementById("bubbleContextMenu").style.display = "none";
             navigator.clipboard.writeText(ctxTargetText.trim());
         });
+        
+        async function enviarReaccion(emojiStr) {
+            document.getElementById("bubbleContextMenu").style.display = "none";
+            if(!ctxTargetWamid) return alert("❌ Este mensaje no se puede reaccionar");
+
+            const wa_id = window.location.pathname.split('/').pop(); // /inbox/519...
+            try {
+                const res = await fetch('/api/admin/reaccionar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({wa_id: wa_id, message_id: ctxTargetWamid, emoji: emojiStr})
+                });
+                const data = await res.json();
+                if(!data.ok) {
+                    alert("❌ Error: " + data.error);
+                }
+            } catch(e) {
+                alert("❌ Falla de conectividad");
+            }
+        }
         
         document.getElementById("ctxSaveSticker").addEventListener("click", async function() {
             document.getElementById("bubbleContextMenu").style.display = "none";
@@ -516,14 +549,30 @@
             }
             
             try {
-                await fetch('/api/admin/enviar_manual', {
+                const res = await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyWamid })
                 });
+                
+                const data = await res.json();
+                if (!data.ok) {
+                    // Si falló (ej: ventana de 24h de Meta API)
+                    if(scroll && scroll.lastChild === bubble) {
+                        scroll.removeChild(bubble);
+                    }
+                    if (data.error === "META_API_REJECTED") {
+                        alert("❌ Error de WhatsApp (Meta): No puedes enviar mensajes libres a este número porque no te ha escrito en las últimas 24 horas. ¡El cliente debe escribirte primero!");
+                    } else {
+                        alert("❌ Error no controlado al enviar: " + data.error);
+                    }
+                }
             } catch(e) {
                 console.error("Fallo al enviar:", e);
-                alert("Error de red conectando con el panel Web.");
+                if(scroll && scroll.lastChild === bubble) {
+                    scroll.removeChild(bubble);
+                }
+                alert("Error de red conectando con el panel Web o timeout.");
             }
         };
 

@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 4 gotchas, 8 conventions, 22 fixes."
+description: "Python for botatc. 5 gotchas, 8 conventions, 22 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **60 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **61 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **60 real patterns** in **botatc**. This skill is auto-routed
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in ReaccionPayload | - @app.post("/admin/toggle") + class ReaccionPayload(BaseModel): - async def toggle_bot_global(req |
 | ⚠️ GOTCHA: Fixed null crash in Stickers | -             </div> +                 <button type="button" onclick="toggleStickersMenu()" style=" |
 | ⚠️ GOTCHA: Fixed null crash in Response | - # ───────────────────────────────────────────── + from fastapi.responses import Response - #  He |
 | ⚠️ GOTCHA: Fixed null crash in Reactivar | -         # Reset completo de la sesión para ese número +         # Reactivar el bot sin borrar el  |
@@ -334,13 +335,6 @@ except Exception as e:
 +     if not os.path.exists("admin.html"): return HTMLResponse("404: admin.html no encontrado")
 -     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
 +         
--     escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
-+     with open("admin
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: HTMLResponse
-3. identifier: True
-4. id
+-     escalados.sort(key=lambda x: x
 
 ... [Truncated — see individual observations for full content]

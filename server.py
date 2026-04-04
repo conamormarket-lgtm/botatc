@@ -954,22 +954,17 @@ async def enviar_manual_endpoint(request: Request):
         return {"ok": False}
         
     s = sesiones[wa_id]
-    s["historial"].append({"role": "assistant", "content": texto})
-    s["ultima_actividad"] = datetime.utcnow()
+    # No guardamos en historial todavía, hasta confirmar envío
     
-    print(f"  [👤 Humano -> {wa_id}]: {texto}")
-    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
-    except: pass
-    
-    # Send to WhatsApp
     from whatsapp_client import enviar_mensaje, enviar_media
     import re
-    import asyncio
     
-    async def enviar_partes():
+    async def process_and_send():
         from whatsapp_client import enviar_media, enviar_mensaje, subir_media
         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
         last_wamid = None
+        exito_alguna_parte = False
+        
         for p in partes:
             p = p.strip()
             if not p: continue
@@ -978,36 +973,68 @@ async def enviar_manual_endpoint(request: Request):
             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
             match_sticker_local = re.match(r"^\[sticker-local:([^\]]+)\]$", p)
             
+            w_id_current = None
             if match_sticker: 
-                last_wamid = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid) or last_wamid
+                w_id_current = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid)
             elif match_img: 
-                last_wamid = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid) or last_wamid
+                w_id_current = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid)
             elif match_sticker_local:
                 filename = match_sticker_local.group(1)
                 filepath = os.path.join("static", "stickers", filename)
                 if os.path.exists(filepath):
                     with open(filepath, "rb") as f: file_bytes = f.read()
                     mime = "image/webp" if filepath.endswith(".webp") else "image/png"
-                    w_id = await subir_media(file_bytes, mime, filename)
-                    if w_id:
+                    w_id_meta = await subir_media(file_bytes, mime, filename)
+                    if w_id_meta:
                         tipo = "sticker" if mime == "image/webp" else "image"
-                        last_wamid = enviar_media(wa_id, tipo, w_id, reply_to_wamid) or last_wamid
+                        w_id_current = enviar_media(wa_id, tipo, w_id_meta, reply_to_wamid)
             else: 
-                last_wamid = enviar_mensaje(wa_id, p, reply_to_wamid) or last_wamid
-                
-        if last_wamid:
-            # Update the history object we just placed
-            for msg in reversed(s["historial"]):
-                if msg["role"] == "assistant" and msg["content"] == texto:
-                    msg["msg_id"] = last_wamid
-                    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
-                    except: pass
-                    break
+                w_id_current = enviar_mensaje(wa_id, p, reply_to_wamid)
             
-    asyncio.create_task(enviar_partes())
-    
-    return {"ok": True}
+            if w_id_current:
+                last_wamid = w_id_current
+                exito_alguna_parte = True
+                
+        return exito_alguna_parte, last_wamid
 
+    # Wait for the API to process it synchronously from the user's perspective
+    exito, msg_wamid = await process_and_send()
+    
+    if exito:
+        s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid})
+        s["ultima_actividad"] = datetime.utcnow()
+        print(f"  [👤 Humano -> {wa_id}]: {texto}")
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
+        except: pass
+        return {"ok": True}
+    else:
+        return {"ok": False, "error": "META_API_REJECTED"}
+
+
+class ReaccionPayload(BaseModel):
+    wa_id: str
+    message_id: str
+    emoji: str
+
+@app.post("/api/admin/reaccionar")
+async def admin_reaccionar(payload: ReaccionPayload, request: Request):
+    """Permite al operador reaccionar a un mensaje del usuario."""
+    if not verificar_sesion(request):
+        return {"ok": False, "error": "No autorizado"}
+    
+    from whatsapp_client import enviar_reaccion_async
+    exito = await enviar_reaccion_async(payload.wa_id, payload.message_id, payload.emoji)
+    
+    if exito:
+        # Añadir al historial local? (Opcional, pero para mantener registro)
+        s = sesiones.get(payload.wa_id)
+        if s:
+            s["historial"].append({"role": "assistant", "content": f"*[Reacción enviada: {payload.emoji}]*"})
+            s["ultima_actividad"] = datetime.utcnow()
+            try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(payload.wa_id, s)
+            except: pass
+        return {"ok": True}
+    return {"ok": False, "error": "No se pudo enviar la reacción a Meta"}
 
 @app.post("/admin/toggle")
 async def toggle_bot_global(request: Request):
@@ -1376,11 +1403,22 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}')" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center;">
                 <input type="hidden" id="replyToWamid" value="">
                 
-                <div style="position:relative;">
+                <div style="position:relative; display:flex; gap:0.5rem;">
+                    <!-- Emoji Picker Button -->
+                    <button type="button" onclick="const m = document.getElementById('emojiMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Emojis">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                    </button>
+                    <!-- Menú Flotante de Emojis -->
+                    <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:transparent; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15);">
+                        <emoji-picker class="light"></emoji-picker>
+                    </div>
+
+                    <!-- Botón Clip (Adjuntos) -->
                     <button type="button" onclick="const m = document.getElementById('attachMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Adjuntar">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                     </button>
-                    <!-- Menú Flotante de Adjuntos -->
+                </div>
+                <!-- Menú Flotante de Adjuntos -->
                     <div id="attachMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:190px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.2rem; z-index:100;">
                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Subir Imagen
