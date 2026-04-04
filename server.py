@@ -1379,10 +1379,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             {burbujas}
         </div>
         
-        <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:250px; overflow-y:auto; overflow-x:hidden;">
+        <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:220px; overflow-y:auto; overflow-x:hidden;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
                 <span style="font-weight:600; color:var(--text-main);">Librería de Stickers Locales</span>
-                <button type="button" onclick="document.getElementById('stickerFolderInput').click()" style="padding:0.4rem 0.8rem; background:var(--bg-secondary); border: 1px solid var(--accent-border); color:var(--text-main); border-radius:6px; font-weight:600; cursor:pointer; font-size:0.8rem; transition:background 0.2s;">📁 Subir Carpeta</button>
             </div>
             <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem; justify-items: center;"></div>
         </div>

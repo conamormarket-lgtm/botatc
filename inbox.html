@@ -572,51 +572,10 @@
                 }
                 e.target.value = ''; // Reset
             }
-            // Caso 2: Subida brutal de Pack de Stickers
-            else if(e.target && e.target.id === 'stickerFolderInput') {
-                const files = e.target.files;
-                if(!files || files.length === 0) return;
-                
-                // Mostrar loading
-                document.getElementById('stickersGrid').innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; font-weight:bold;">Subiendo ${files.length} archivos a tu librería... ⏳</div>`;
-                
-                const formData = new FormData();
-                let validCount = 0;
-                for(let i=0; i<files.length; i++) {
-                    const f = files[i];
-                    if(f.name.endsWith('.webp') || f.name.endsWith('.png')) {
-                        formData.append("files", f);
-                        validCount++;
-                    }
-                }
-                
-                if (validCount === 0) {
-                    alert("No se encontraron archivos webp o png válidos en esta carpeta.");
-                    e.target.value = '';
-                    toggleStickersMenu(); toggleStickersMenu(); // refresh
-                    return;
-                }
-                
-                try {
-                    const res = await fetch('/api/admin/stickers/upload', { method: 'POST', body: formData });
-                    const result = await res.json();
-                    if(result.ok) alert(`✅ Éxito: Se alojaron ${result.count} stickers de los ${validCount} adjuntados.`);
-                    else alert("Error subiendo stickers: " + result.error);
-                } catch(error) {
-                    alert("Falla crítica en carga de red local.");
-                }
-                
-                e.target.value = ''; // Reset buffer
-                
-                // Refresh Drawer
-                document.getElementById('stickersDrawer').style.display = 'none';
-                toggleStickersMenu();
-            }
         });
 
     </script>
     <!-- Elementos ocultos para selectores del sistema -->
     <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
-    <input type="file" id="stickerFolderInput" style="display:none;" accept="image/webp, image/png" webkitdirectory directory multiple>
 </body>
 </html>
