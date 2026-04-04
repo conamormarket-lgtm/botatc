@@ -297,6 +297,13 @@
                 <a href="/inbox?tab=all" class="tab {tab_all_active}">Todos</a>
                 <a href="/inbox?tab=human" class="tab {tab_human_active}">Humanos</a>
             </div>
+            <!-- BUSCADOR / NUEVO CHAT -->
+            <div style="margin-top: 1rem; position: relative;">
+                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar número en 51..." style="width:100%; padding: 0.6rem 2.5rem; border-radius: 8px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.9rem; outline:none;" autocomplete="off">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                
+                <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()" style="display:none; position:absolute; right:0.4rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:6px; color:white; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight:bold; cursor:pointer;" title="Empezar un chat con este número">NUEVO</button>
+            </div>
         </div>
         <div class="chats-container">
             {lista_chats_html}
@@ -573,6 +580,38 @@
                 e.target.value = ''; // Reset
             }
         });
+
+        // Funcionalidad del Buscador Local y Nuevo Chat
+        document.getElementById('chatSearchInput')?.addEventListener('input', function(e) {
+            const val = e.target.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('.chat-row');
+            let isPhoneNum = /^[0-9+ ]+$/.test(val) && val.replace(/\D/g, '').length >= 9;
+            
+            rows.forEach(row => {
+                const name = row.querySelector('.chat-name').innerText.toLowerCase();
+                const phone = row.getAttribute('href') || "";
+                if(name.includes(val) || phone.includes(val)) {
+                    row.style.display = 'block';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            const btn = document.getElementById('btnNewChat');
+            if (isPhoneNum) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        });
+        
+        function iniciarNuevoChat() {
+            let val = document.getElementById('chatSearchInput').value.trim();
+            val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
+            if (val.length < 9) return alert("Número muy corto");
+            if (!val.startsWith("51")) val = "51" + val;
+            window.location.href = `/inbox/${val}`;
+        }
 
     </script>
     <!-- Elementos ocultos para selectores del sistema -->

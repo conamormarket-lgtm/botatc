@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 4 gotchas, 8 conventions, 21 fixes."
+description: "Python for botatc. 4 gotchas, 8 conventions, 22 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **58 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **60 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -24,6 +24,22 @@ Auto-compiled from **58 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in True
+-     
++     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
+-     # SECCIÓN NUEVA: BUSCADOR / NUEVO CHAT en el HTML de admin (o inbox)
++     escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
+-     # Nota: La instrucción pide insertar esto en el div list-header de inbox.html
++     n_escalados = len(escalados)
+-     # Aquí se m
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: True
+3. identifier: Tabla
+4. identifier: Esperando
+5. identifier: Inbox
 
 ### Fixed null crash in UploadFile
 - @app.post("/api/admin/enviar_manual")
@@ -325,20 +341,6 @@ except Exception as e:
 1. Modified 1 files
 2. identifier: HTMLResponse
 3. identifier: True
-4. identifier: Tabla
-5. identifier: Esperando
-
-### Fixed null crash in HTMLResponse
--     html = html.replace("{body_class}", "view-chat" if wa_id else "view-list")
-+     es_chat_valido = bool(wa_id and wa_id in sesiones)
--     html = html.replace("{tab_all_active}", "active" if tab != "human" else "")
-+     html = html.replace("{body_class}", "view-chat" if es_chat_valido else "view-list")
--     html = html.replace("{tab_human_active}", "active" if tab == "human" else "")
-+
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: HTMLResponse
-3. identif
+4. id
 
 ... [Truncated — see individual observations for full content]

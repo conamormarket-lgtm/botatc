@@ -1265,12 +1265,25 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
     chat_viewer_html = ""
     chat_view_css = ""
     
+    # Auto-inicializar chat nuevo si se manda un número válido (ej. desde el buscador UI)
+    if wa_id and wa_id not in sesiones:
+        import re
+        if re.match(r'^51\d{9}$', str(wa_id)):
+            sesiones[wa_id] = {
+                "historial": [],
+                "ultima_actividad": datetime.utcnow(),
+                "bot_activo": False,
+                "nombre_cliente": f"+{wa_id}"
+            }
+            # Add to the left side menu as well right now so it renders
+            todas.insert(0, (wa_id, sesiones[wa_id]))
+
     if not wa_id or wa_id not in sesiones:
         chat_viewer_html = """
         <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <h3>Tu Inbox está vacío</h3>
-            <p>Selecciona una conversación a la izquierda para comenzar a visualizarla.</p>
+            <p>Selecciona una conversación a la izquierda o navega por números nuevos.</p>
         </div>"""
     else:
         # Renderizar Chat Activo
