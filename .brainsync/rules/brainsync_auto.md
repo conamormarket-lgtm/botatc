@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 132 notes | Score threshold: >40
+> 134 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -22,11 +22,6 @@
 
 - **⚠️ GOTCHA: Fixed null crash in Response** — - # ─────────────────────────────────────────────
 + from fastapi.resp
-- **⚠️ GOTCHA: Fixed null crash in Reactivar** — -         # Reset completo de la sesión para ese número
-+         # R
-- **gotcha in debug_telefono.py** — File updated (external): debug_telefono.py
-
-Content summary (25 lines)
 
 ## Active: `.`
 
@@ -34,7 +29,7 @@ Content summary (25 lines)
 - **Fixed null crash in RedirectResponse — confirmed 3x**
 - **⚠️ GOTCHA: Fixed null crash in Reactivar**
 - **gotcha in debug_telefono.py**
-- **Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x**
+- **gotcha in .gitignore**
 
 ## Project Standards
 

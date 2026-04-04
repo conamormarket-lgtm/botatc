@@ -104,11 +104,7 @@ def obtener_o_crear_sesion(numero_wa: str) -> dict:
             print(f"  [❌ Error al cargar historial de Firestore: {e}]")
 
     if sesion:
-        inactivo = ahora - sesion["ultima_actividad"]
-        if inactivo > timedelta(hours=SESION_EXPIRA_HORAS):
-            # Sesión expirada → nueva sesión pero conservamos datos del cliente
-            print(f"  [🔄 Sesión expirada para {numero_wa} → nueva sesión]")
-            sesion = None
+        pass # La sesión ya no expira nunca, como en un Inbox real
 
     if not sesion:
         sesiones[numero_wa] = {
@@ -478,7 +474,6 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     if not sesion["bot_activo"]:
         # Guardar en historial para que sea visible en el Inbox aunque el bot no responda
         sesion["historial"].append({"role": "user", "content": texto_cliente})
-        sesion["historial"] = recortar_historial(sesion["historial"])
         sesion["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
@@ -509,9 +504,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     else:
         sesion["historial"].append({"role": "user", "content": texto_modelo})
         
-    sesion["historial"] = recortar_historial(sesion["historial"])
-    print(f"  [🧠 Enviando {len(sesion['historial'])} turnos a Gemini]")
-    respuesta_bot = llamar_gemini(sesion["historial"])
+    historial_para_gemini = recortar_historial(sesion["historial"])
+    print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
+    respuesta_bot = llamar_gemini(historial_para_gemini)
 
     # ── Procesar escalación si el modelo la detectó ───────
     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
@@ -801,9 +796,6 @@ async def panel_admin(request: Request):
     for num, s in todas:
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
         activo   = s.get("bot_activo", True)
-        
-        if inactivo_horas > SESION_EXPIRA_HORAS and activo:
-            continue
             
         nombre   = s.get("nombre_cliente", num)
         pedido   = s.get("datos_pedido", {}).get("id", "—") if s.get("datos_pedido") else "—"
@@ -1148,10 +1140,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
         activo = s.get("bot_activo", True)
         
-        # Filtro de inactividad
-        if inactivo_horas > SESION_EXPIRA_HORAS and activo:
-            continue
-            
         # Filtro de Tab
         if tab == "human" and activo:
             continue

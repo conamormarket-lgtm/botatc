@@ -56,6 +56,10 @@
 📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
 
 ### 📐 Config/Infrastructure Conventions & Fixes
+- **[what-changed] what-changed in config.py**: - GEMINI_MODEL   = "gemini-1.5-flash"
++ GEMINI_MODEL   = "gemini-2.5-flash"
+
+📌 IDE AST Context: Modified symbols likely include [DOCUMENTOS_GUIA, LM_STUDIO_BASE_URL, LM_STUDIO_API_KEY, LM_STUDIO_MODEL, GEMINI_API_KEY]
 - **[convention] Fixed null crash in RedirectResponse — confirmed 3x**: - 
 +         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
 -     form_data = await request.form()
@@ -377,37 +381,3 @@ except Exception as e:
 📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
 - **[convention] what-changed in .gitignore — confirmed 3x**: - 隧道_log.txt
 + 隧道_log.txt
-- **[convention] Fixed null crash in FastAPI — confirmed 3x**: - from fastapi import FastAPI, Request, HTTPException, Form
-+ from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File
--     return HTMLResponse(html)
-+     import glob
-- 
-+     pdfs_html = ""
-- @app.post("/api/settings/save")
-+     for pdf in glob.glob("*.pdf"):
-- async def save_settings(request: Request, guia_content: str = Form(...)):
-+         pdfs_html += f"<li class='pdf-list-item'><div style='display:flex;align-items:center;gap:0.5rem;'><svg class='icon-pdf' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/></svg> {pdf}</div> <button onclick=\"deletePdf('{pdf}')\" class='pdf-delete-btn'><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 6h18'/><path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/><path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/></svg> Borrar</button></li>"
--     if not verificar_sesion(request):
-+     
--         raise HTTPException(status_code=403, detail="No autorizado")
-+     html = html.replace("{lista_pdfs}", pdfs_html or "<li style='color:var(--text-muted);font-style:italic;padding:0.5rem;'>Ningún archivo PDF subido.</li>")
-- 
-+     
--     with open("guia_respuestas.md", "w", encoding="utf-8") as f:
-+     return HTMLResponse(html)
--         f.write(guia_content)
-+ 
--         
-+ @app.post("/api/settings/save")
--     # Limpiamos caché del bot nativo para que levante los nuevos conocimientos
-+ async def save_settings(request: Request, guia_content: str = Form(...)):
--     import prompts
-+     if not verificar_sesion(request):
--     prompts._GUIA_CACHE = ""
-+         raise HTTPException(status_code=403, detail="No autorizado")
--     return RedirectResponse(url="/settings?saved=true", status_code=303)
-+     with open("guia_respuestas.md", "w", encoding="utf-8") as f:
-- 
-+         f.write(guia_content)
-- @app.get("/adm
-… [diff truncated]
