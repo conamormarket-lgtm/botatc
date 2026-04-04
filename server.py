@@ -64,7 +64,7 @@ BOT_GLOBAL_ACTIVO: bool = True
 mensajes_pendientes: dict[str, list[str]] = {}
 import asyncio
 user_locks: dict[str, asyncio.Lock] = {}
-mensajes_procesados_ids = set()
+mensajes_procesados_ids = {}
 
 # Caché de archivos multimedia (Audios, Imágenes, etc.) para que Gemini y el UI los lean
 media_cache: dict[str, tuple[bytes, str]] = {}
@@ -78,7 +78,7 @@ async def cachear_media(media_id: str):
             contenido, mime = await descargar_media(url)
             if contenido: media_cache[media_id] = (contenido, mime)
     except: pass
-mensajes_procesados_ids = set()
+
 
 # Regex para detectar escalación desde el mensaje del cliente
 REGEX_ESCALAR = re.compile(
