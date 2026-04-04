@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **53 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **54 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

@@ -342,11 +342,12 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     print(f"\n{'─'*50}")
     print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
 
+    dict_msg = {"texto": texto_cliente, "id": mensaje_id}
     if numero_wa not in mensajes_pendientes:
-        mensajes_pendientes[numero_wa] = [texto_cliente]
+        mensajes_pendientes[numero_wa] = [dict_msg]
         background_tasks.add_task(procesador_agregado, numero_wa, nombre)
     else:
-        mensajes_pendientes[numero_wa].append(texto_cliente)
+        mensajes_pendientes[numero_wa].append(dict_msg)
 
     return {"status": "ok"}
 
@@ -368,20 +369,26 @@ async def procesador_agregado(numero_wa: str, nombre: str):
     lock = user_locks[numero_wa]
     
     async with lock:
-        # Extraemos los mensajes RECIÉN AHORA, por si llegaron más mientras esperábamos el Lock
-        textos = mensajes_pendientes.pop(numero_wa, [])
-        if not textos:
+        # Extraemos los mensajes RECIÉN AHORA
+        textos_dicts = mensajes_pendientes.pop(numero_wa, [])
+        if not textos_dicts:
             return
             
-        texto_unido = " | ".join(textos)
+        # Compatibilidad con variables en memoria del formato viejo
+        if isinstance(textos_dicts[0], str):
+            texto_unido = " | ".join(textos_dicts)
+            last_id = None
+        else:
+            texto_unido = " | ".join([m["texto"] for m in textos_dicts])
+            last_id = textos_dicts[-1]["id"]
         
         # Ejecutar el proceso pesado sincrónico en un hilo separado
         await anyio.to_thread.run_sync(
-            procesar_mensaje_interno, numero_wa, nombre, texto_unido, False
+            procesar_mensaje_interno, numero_wa, nombre, texto_unido, False, last_id
         )
 
 
-def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False) -> str | None:
+def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None) -> str | None:
     """Procesa un mensaje y devuelve la respuesta del bot (si la hay) sin enviarla si es simulación."""
     global BOT_GLOBAL_ACTIVO
     if not BOT_GLOBAL_ACTIVO:
@@ -473,7 +480,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     else:
         # Ya hay sesión con datos_pedido. Guardamos su mensaje entrante temprano.
         if not sesion["historial"] or sesion["historial"][-1].get("content") != texto_cliente:
-            sesion["historial"].append({"role": "user", "content": texto_cliente})
+            sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
             
         estado_actual = sesion["datos_pedido"].get("estadoGeneral", "")
         if estado_actual in ESTADOS_DISEÑO:
@@ -485,7 +492,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
     if not sesion["bot_activo"]:
         # Guardar en historial para que sea visible en el Inbox aunque el bot no responda
-        sesion["historial"].append({"role": "user", "content": texto_cliente})
+        sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
         sesion["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
@@ -513,8 +520,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Agregar al historial y llamar al modelo ───────────
     if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
         sesion["historial"][-1]["content"] = texto_modelo
+        sesion["historial"][-1]["msg_id"]  = msg_id
     else:
-        sesion["historial"].append({"role": "user", "content": texto_modelo})
+        sesion["historial"].append({"role": "user", "content": texto_modelo, "msg_id": msg_id})
         
     historial_para_gemini = recortar_historial(sesion["historial"])
     print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
@@ -892,6 +900,7 @@ async def enviar_manual_endpoint(request: Request):
     data = await request.json()
     wa_id = data.get("wa_id")
     texto = data.get("texto", "").strip()
+    reply_to_wamid = data.get("reply_to_wamid")
     
     if not wa_id or wa_id not in sesiones or not texto:
         return {"ok": False}
@@ -918,9 +927,9 @@ async def enviar_manual_endpoint(request: Request):
             match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
             match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
             
-            if match_sticker: enviar_media(wa_id, "sticker", match_sticker.group(1))
-            elif match_img: enviar_media(wa_id, "image", match_img.group(1))
-            else: enviar_mensaje(wa_id, p)
+            if match_sticker: enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid)
+            elif match_img: enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid)
+            else: enviar_mensaje(wa_id, p, reply_to_wamid)
             
     asyncio.create_task(enviar_partes())
     
@@ -1228,7 +1237,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
             
-            burbujas += f"""<div class="bubble {clase} {lado}" onclick="document.getElementById('manualMsgInput').value = '> ' + this.innerText.trim() + '\\n\\n' + document.getElementById('manualMsgInput').value; document.getElementById('manualMsgInput').focus();" style="cursor:pointer;" title="Click para citar este mensaje">{texto_renderizado}</div>"""
+            wamid = m.get("msg_id", "")
+            onclick_js = f"document.getElementById('replyToWamid').value='{wamid}'; document.getElementById('replyPreviewTxt').innerText=this.innerText.substring(0,40)+'...'; document.getElementById('replyPreviewContainer').style.display='flex'; document.getElementById('manualMsgInput').focus();" if wamid else ""
+            burbujas += f'<div class="bubble {clase} {lado}" onclick="{onclick_js}" style="cursor:pointer;" title="Click para citar este mensaje nativamente en WhatsApp">{texto_renderizado}</div>'
             
         if not burbujas:
             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
@@ -1266,8 +1277,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
                 <button type="button" onclick="let s=prompt('Ingresa el ID del Sticker (ej: 12515...) o URL de Github:'); if(s) document.getElementById('manualMsgInput').value += (s.startsWith('http')?'[sticker:'+s+']':'[sticker:'+s+']'); document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">🎟️ Insertar Sticker</button>
                 <button type="button" onclick="let i=prompt('Ingresa el enlace (URL) de la imagen:'); if(i) document.getElementById('manualMsgInput').value += '[imagen:'+i+']'; document.getElementById('manualMsgInput').focus();" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">📸 Insertar Imagen</button>
             </div>
+            <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
+                <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
+                <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</button>
+            </div>
             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}')" style="display:flex;gap:0.5rem;width:100%;margin:0;">
-                <input type="text" id="manualMsgInput" placeholder="Escribe tu mensaje manual aquí..." style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required>
+                <input type="hidden" id="replyToWamid" value="">
+                <input type="text" id="manualMsgInput" placeholder="Escribe tu respuesta aquí..." style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required>
                 <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
             </form>
             """

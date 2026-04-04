@@ -373,11 +373,17 @@
                 scroll.scrollTop = scroll.scrollHeight;
             }
             
+            const replyWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
+            if(document.getElementById('replyPreviewContainer')) {
+                document.getElementById('replyPreviewContainer').style.display = 'none';
+                if(document.getElementById('replyToWamid')) document.getElementById('replyToWamid').value = '';
+            }
+            
             try {
                 await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ wa_id: wa_id, texto: msj })
+                    body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyWamid })
                 });
             } catch(e) {
                 console.error("Fallo al enviar:", e);

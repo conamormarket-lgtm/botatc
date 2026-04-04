@@ -7,7 +7,7 @@ from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
 META_API_URL = f"https://graph.facebook.com/{META_API_VERSION}/{META_PHONE_NUMBER_ID}/messages"
 
 
-def enviar_mensaje(numero_destino: str, texto: str) -> bool:
+def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) -> bool:
     """
     Envía un mensaje de texto al número de WhatsApp indicado.
 
@@ -30,6 +30,9 @@ def enviar_mensaje(numero_destino: str, texto: str) -> bool:
         "type": "text",
         "text": {"body": texto},
     }
+    
+    if reply_to_wamid:
+        payload["context"] = {"message_id": reply_to_wamid}
 
     try:
         response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
@@ -42,7 +45,7 @@ def enviar_mensaje(numero_destino: str, texto: str) -> bool:
         print(f"❌ Error enviando mensaje: {e}")
         return False
 
-def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str) -> bool:
+def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None) -> bool:
     """
     Envía media (sticker, imagen, video, documento) a un número.
     tipo_media: 'sticker', 'image', 'video', 'audio', 'document'
@@ -62,6 +65,9 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str) -> b
         "type": tipo_media,
         tipo_media: media_obj,
     }
+    
+    if reply_to_wamid:
+        payload["context"] = {"message_id": reply_to_wamid}
 
     try:
         response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
