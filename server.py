@@ -18,6 +18,7 @@ import asyncio
 
 from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from pydantic import BaseModel
 from google import genai
 from google.genai import types
 
