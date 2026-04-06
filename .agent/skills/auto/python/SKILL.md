@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 10 conventions, 24 fixes."
+description: "Python for botatc. 10 gotchas, 10 conventions, 26 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **70 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **72 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,36 @@ Auto-compiled from **70 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Added error handling Respuestas — wraps unsafe operation in error boundary
+-             async function cargarQuickReplies() {
++             async function cargarQuickReplies() {{
+-                 try {
++                 try {{
+-                 } catch(e) {
++                 }} catch(e) {{
+-                 }
++                 }}
+-             }
++             }}
+-             function renderQuickReplies(data) {
++             function renderQuickReplies(data)
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Respuestas
+
+### Fixed null crash in Quick — prevents null/undefined runtime crashes
+-                     <!-- Menú Flotante de Plantillas -->
++                     <!-- Botón Quick Replies -->
+-                     <div id="templateMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direct
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Bot
+3. identifier: Quick
+4. identifier: Replies
+5. identifier: Respuestas
 
 ### Fixed null crash in None
 -         lista_chats_html += f"""
@@ -284,41 +314,6 @@ except Exception as e:
 +         from whatsapp_client import enviar_mensaje, enviar_media
 - 
 +         
--     return respuesta_final
-+         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
-- 
-+         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
-- 
-+         for p in partes:
-- # ──────────────────────────
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Parsear
-3. identifier: Panel
-4. identifier: Response
-5. identifier: Request
-
-### Fixed null crash in RedirectResponse
--     return RedirectResponse(url=request.form().get("redirect", "/admin") if isinstance(request, Request) else "/admin", status_code=303)
-+     form_data = await request.form()
-- 
-+     redirect_url = form_data.get("redirect", "/admin")
-- @app.post("/api/admin/pausar/{numero_wa}")
-+     return RedirectResponse(url=redirect_url, status_code=303)
-- async def pausar_bot_manual(request: Request
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: RedirectResponse
-3. identifier: Request
-4. identifier: Pausa
-5. identifier: HTTPException
-
-### Fixed null crash in Request
-- @app.post("/admin/toggle")
-+ @app.post("/api/admin/enviar_manual")
-- async def toggle_bot_global(request: Request):
-+ async def enviar_manual_endpoint(re
+-     return respuesta_
 
 ... [Truncated — see individual observations for full content]

@@ -741,6 +741,84 @@ async def get_media_endpoint(media_id: str):
                 return Response(content=data, media_type=mime)
     except: pass
     return Response(content=b"", status_code=404)
+
+@app.get("/api/quick-replies")
+async def get_quick_replies(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import cargar_quick_replies_bd
+    return cargar_quick_replies_bd()
+
+@app.post("/api/quick-replies")
+async def create_quick_reply(request: Request, data: dict):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import guardar_quick_reply_bd
+    import uuid
+    new_id = str(uuid.uuid4())
+    guardar_quick_reply_bd(
+        id_qr=new_id,
+        titulo=data.get("title", ""),
+        contenido=data.get("content", ""),
+        categoria=data.get("category", "General"),
+        tipo=data.get("type", "text")
+    )
+    return {"status": "ok", "id": new_id}
+
+@app.delete("/api/quick-replies/{qr_id}")
+async def delete_quick_reply(request: Request, qr_id: str):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import eliminar_quick_reply_bd
+    eliminar_quick_reply_bd(qr_id)
+    return {"status": "ok"}
+
+@app.get("/api/backup/export")
+async def export_backup(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import cargar_quick_replies_bd, cargar_etiquetas_bd, cargar_plantillas_bd
+    data = {
+        "quick_replies": cargar_quick_replies_bd(),
+        "labels": cargar_etiquetas_bd(),
+        "templates": cargar_plantillas_bd()
+    }
+    headers = {"Content-Disposition": "attachment; filename=backup_iatc.json"}
+    return JSONResponse(content=data, headers=headers)
+
+@app.post("/api/backup/import")
+async def import_backup(request: Request, file: UploadFile = File(...)):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    try:
+        content = await file.read()
+        import json
+        data = json.loads(content.decode("utf-8"))
+        from firebase_client import guardar_quick_reply_bd, guardar_etiqueta_bd, guardar_plantilla_bd
+        
+        if "quick_replies" in data:
+            for qr in data["quick_replies"]:
+                if qr.get("id"):
+                    guardar_quick_reply_bd(
+                        id_qr=qr.get("id"),
+                        titulo=qr.get("title", ""),
+                        contenido=qr.get("content", ""),
+                        categoria=qr.get("category", "General"),
+                        tipo=qr.get("type", "text")
+                    )
+        
+        if "labels" in data:
+            for lb in data["labels"]:
+                if lb.get("id"):
+                    guardar_etiqueta_bd(
+                        id_etiqueta=lb.get("id"),
+                        nombre=lb.get("name", "Etiqueta"),
+                        color=lb.get("color", "#000000")
+                    )
+                    
+        return {"status": "ok", "message": "Importación exitosa"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
     
 @app.post("/api/settings/save")
 async def save_settings(request: Request, guia_content: str = Form(...)):
@@ -1489,21 +1567,180 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <button type="button" onclick="const m = document.getElementById('templateMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarPlantillas();" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Plantillas (24h)">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     </button>
-                    <!-- Menú Flotante de Plantillas -->
-                    <div id="templateMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
-                        <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                            Plantillas de Meta
-                            <button type="button" onclick="crearPlantilla()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;">+</button>
-                        </div>
-                        <div id="templateList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:150px; overflow-y:auto;">
-                            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>
-                        </div>
-                    </div>
+                    <!-- Botón Quick Replies -->
+                    <button type="button" onclick="const side = document.getElementById('rightSidebar'); side.style.display = side.style.display==='none'?'flex':'none'; if(side.style.display==='flex') cargarQuickReplies();" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Respuestas Rápidas (/)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/><circle cx="10" cy="14" r="3"/><line x1="12" y1="16" x2="15" y2="19"/></svg>
+                    </button>
                 </div>
 
-                <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje..." style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required>
+                <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
                 <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;height:44px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
             </form>
+            
+            <script>
+            let quickRepliesCache = [];
+            async function cargarQuickReplies() {{
+                const list = document.getElementById("quickRepliesList");
+                if(!list) return;
+                try {{
+                    const res = await fetch("/api/quick-replies");
+                    const data = await res.json();
+                    quickRepliesCache = data;
+                    renderQuickReplies(data);
+                }} catch(e) {{
+                    list.innerHTML = `<div style="font-size:0.8rem; color:red; padding:0.5rem; text-align:center;">Error al cargar</div>`;
+                }}
+            }}
+            function renderQuickReplies(data) {{
+                const list = document.getElementById("quickRepliesList");
+                if(!list) return;
+                if(data.length === 0) {{
+                    list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:1rem; text-align:center; height:100%; display:flex; align-items:center; justify-content:center;">Sin respuestas rápidas en el sistema.</div>`;
+                    return;
+                }}
+                list.innerHTML = "";
+                data.forEach(qr => {{
+                    const container = document.createElement("div");
+                    container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
+                    container.onmouseover = function() {{this.style.borderColor='var(--primary-color)';}};
+                    container.onmouseout = function() {{this.style.borderColor='var(--accent-border)';}};
+                    
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column;";
+                    
+                    const headerRow = document.createElement("div");
+                    headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:0.2rem;";
+                    
+                    const title = document.createElement("strong");
+                    title.innerText = qr.title || qr.category;
+                    title.style.fontSize = "0.9rem";
+                    
+                    const catBadge = document.createElement("span");
+                    catBadge.innerText = (qr.category && qr.category!==qr.title) ? qr.category : "";
+                    catBadge.style.cssText = "font-size:0.65rem; background:rgba(255,255,255,0.1); padding:0.1rem 0.4rem; border-radius:4px;";
+                    
+                    headerRow.appendChild(title);
+                    if(catBadge.innerText) headerRow.appendChild(catBadge);
+                    
+                    const prev = document.createElement("span");
+                    prev.style.cssText = "font-size:0.8rem; color:var(--text-muted); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; line-height:1.4;";
+                    prev.innerText = qr.content;
+                    
+                    btn.onclick = () => aplicarQuickReply(qr.content);
+                    btn.appendChild(headerRow);
+                    btn.appendChild(prev);
+                    
+                    const delBtn = document.createElement("button");
+                    delBtn.innerHTML = "×";
+                    delBtn.title = "Eliminar";
+                    delBtn.style.cssText = "position:absolute; top:0.5rem; right:0.5rem; background:rgba(0,0,0,0.3); border:none; color:#ef4444; border-radius:50%; width:20px; height:20px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0; transition:opacity 0.2s;";
+                    container.onmouseenter = () => delBtn.style.opacity = "1";
+                    container.onmouseleave = () => delBtn.style.opacity = "0";
+                    
+                    delBtn.onclick = (e) => {{
+                        e.stopPropagation();
+                        eliminarQR(qr.id);
+                    }};
+                    
+                    container.appendChild(btn);
+                    container.appendChild(delBtn);
+                    list.appendChild(container);
+                }});
+            }}
+            function filtrarQuickReplies(val) {{
+                const valLower = val.toLowerCase();
+                const filt = quickRepliesCache.filter(q => q.title?.toLowerCase().includes(valLower) || q.content?.toLowerCase().includes(valLower));
+                renderQuickReplies(filt);
+            }}
+            function aplicarQuickReply(text) {{
+                let nombreCliente = "{nombre_chat}";
+                let finalMsg = text.replace(/#nombre/gi, nombreCliente);
+                const input = document.getElementById("manualMsgInput");
+                if(input) {{
+                    const cursorPos = input.selectionStart;
+                    const textBefore = input.value.substring(0, cursorPos);
+                    const textAfter  = input.value.substring(cursorPos, input.value.length);
+                    const slashMatch = textBefore.match(/(?:^|\\s)\/$/); 
+                    
+                    if (slashMatch) {{
+                        input.value = textBefore.substring(0, textBefore.length - 1) + finalMsg + textAfter;
+                    }} else {{
+                        input.value += finalMsg;
+                    }}
+                    input.focus();
+                    document.getElementById('rightSidebar').style.display = 'none';
+                }}
+            }}
+            function checkQuickReplyTrigger(input) {{
+                if(input.value.endsWith("/")) {{
+                    const side = document.getElementById('rightSidebar');
+                    if(side){{
+                        side.style.display = 'flex';
+                        cargarQuickReplies();
+                        setTimeout(()=> document.getElementById('qrSearchFilter').focus(), 50);
+                    }}
+                }}
+            }}
+            
+            function abrirModalCrearQR() {{
+                const m = document.getElementById('qrCreateModal');
+                if(m) {{
+                    document.getElementById('newQrTitle').value = '';
+                    document.getElementById('newQrContent').value = '';
+                    document.getElementById('newQrCat').value = 'General';
+                    m.style.display = 'flex';
+                    setTimeout(()=> document.getElementById('newQrTitle').focus(), 50);
+                }}
+            }}
+            
+            function insertarVariableQR(variable) {{
+                const ta = document.getElementById('newQrContent');
+                if(!ta) return;
+                const pos = ta.selectionStart;
+                const txt = ta.value;
+                ta.value = txt.slice(0, pos) + variable + txt.slice(ta.selectionEnd);
+                ta.selectionStart = ta.selectionEnd = pos + variable.length;
+                ta.focus();
+            }}
+
+            async function guardarNuevoQR() {{
+                const title = document.getElementById('newQrTitle').value.trim();
+                const content = document.getElementById('newQrContent').value.trim();
+                const cat = document.getElementById('newQrCat').value.trim() || "General";
+                
+                if(!title || !content) return alert("Se requiere Título y Mensaje para continuar.");
+                
+                const id_qr = "qr_" + Date.now();
+                try {{
+                    const res = await fetch("/api/quick-replies", {{
+                        method: "POST",
+                        headers: {{ "Content-Type": "application/json" }},
+                        body: JSON.stringify({{ id: id_qr, title: title, content: content, category: cat, type: "text" }})
+                    }});
+                    const d = await res.json();
+                    if(d.ok || res.ok) {{
+                        document.getElementById('qrCreateModal').style.display = 'none';
+                        cargarQuickReplies();
+                    }} else {{
+                        alert("Hubo un error guardando.");
+                    }}
+                }} catch(e) {{
+                    alert("Error enviando red");
+                }}
+            }}
+
+            async function eliminarQR(id) {{
+                if(!confirm("¿Deseas eliminar definitivamente este atajo?")) return;
+                try {{
+                    const res = await fetch(`/api/quick-replies/${{id}}`, {{ method: "DELETE" }});
+                    if(res.ok) cargarQuickReplies();
+                }} catch(e) {{
+                    alert("No se pudo eliminar");
+                }}
+            }}
+
+            </script>
             """
 
         session_tags = s.get("etiquetas", [])
@@ -1517,47 +1754,99 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
 
         chat_viewer_html = f"""
-        {status_bar}
-        <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
-            <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </a>
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
-            <div style="min-width:0; flex:1;">
-                <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;">
-                    {nombre_chat} {tags_bar}
-                </h3>
-                <small style="color:var(--text-muted)">+{wa_id}</small>
-            </div>
-            <!-- Botón de gestionar etiquetas -->
-            <div style="position:relative;">
-                <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                </button>
-                <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
-                    <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                        Etiquetas 
-                        <button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>
+        <div style="display:flex; flex-direction:row; height:100%; width:100%;">
+            <!-- START CHAT MAIN COLUMN -->
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-main);">
+                {status_bar}
+                <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
+                    <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </a>
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{{nombre_chat[0].upper()}}</div>
+                    <div style="min-width:0; flex:1;">
+                        <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;">
+                            {{nombre_chat}} {{tags_bar}}
+                        </h3>
+                        <small style="color:var(--text-muted)">+{{wa_id}}</small>
                     </div>
-                    <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:220px; overflow-y:auto;">
+                    <!-- Botón de gestionar etiquetas -->
+                    <div style="position:relative;">
+                        <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        </button>
+                        <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
+                            <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                                Etiquetas 
+                                <button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>
+                            </div>
+                            <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:220px; overflow-y:auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
+                    {burbujas}
+                </div>
+                
+                <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:220px; overflow-y:auto; overflow-x:hidden;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                        <span style="font-weight:600; color:var(--text-main);">Librería de Stickers Locales</span>
+                    </div>
+                    <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem; justify-items: center;"></div>
+                </div>
+                
+                <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
+                    {chat_box}
+                </div>
+            </div>
+            <!-- END CHAT MAIN COLUMN -->
+
+            <!-- START RIGHT SIDEBAR (CRM Tools) -->
+            <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
+                <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
+                    <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
+                </div>
+                <div style="padding:1rem 1.5rem; border-bottom:1px solid var(--accent-border); background:var(--bg-main);">
+                    <div style="display:flex; gap:0.5rem; justify-content:space-between;">
+                        <input type="text" id="qrSearchFilter" placeholder="Buscar... (/)" onkeyup="filtrarQuickReplies(this.value)" style="flex:1; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem;">
+                        <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:6px; padding:0 0.8rem; cursor:pointer;" title="Crear nueva respuesta rápida">NUEVA</button>
+                    </div>
+                </div>
+                <div id="quickRepliesList" style="flex:1; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:0.6rem;">
+                    <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando...</div>
+                </div>
+
+                <!-- Hidden section / Sub-panel for Creating QR -->
+                <div id="qrCreateModal" style="display:none; position:absolute; inset:0; background:var(--bg-main); flex-direction:column; z-index:10; border-left:1px solid var(--accent-border);">
+                    <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                        <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; margin:0;">Crear Respuesta</h3>
+                        <button onclick="document.getElementById('qrCreateModal').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
+                    </div>
+                    <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.2rem; flex:1; overflow-y:auto;">
+                        <div>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Atajo / Título</label>
+                            <input type="text" id="newQrTitle" placeholder="ej: saludo" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Mensaje</label>
+                            <textarea id="newQrContent" rows="6" placeholder="Escribe el bloque de texto..." style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem; resize:vertical;"></textarea>
+                            <div style="margin-top:0.5rem; display:flex; gap:0.5rem;">
+                                <button onclick="insertarVariableQR('#nombre')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:4px; font-weight:600; cursor:pointer;" title="Inserta el nombre del contacto">+#nombre</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Categoría (Opcional)</label>
+                            <input type="text" id="newQrCat" placeholder="General" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                        </div>
+                    </div>
+                    <div style="padding:1.5rem; border-top:1px solid var(--accent-border);">
+                        <button onclick="guardarNuevoQR()" style="width:100%; background:var(--primary-color); color:white; border:none; padding:0.8rem; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.95rem;">Guardar Respuesta</button>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
-            {burbujas}
-        </div>
-        
-        <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:220px; overflow-y:auto; overflow-x:hidden;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                <span style="font-weight:600; color:var(--text-main);">Librería de Stickers Locales</span>
-            </div>
-            <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem; justify-items: center;"></div>
-        </div>
-        
-        <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
-            {chat_box}
+            <!-- END RIGHT SIDEBAR -->
         </div>
         <script>
             var c = document.getElementById('chatScroll');
