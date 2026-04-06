@@ -1266,26 +1266,34 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     lista_chats_html = ""
     
     # ------------------ Generador de Filtro de Etiquetas HTML ------------------
-    labels_filter_html = '<div style="margin-top:0.8rem; display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:0.3rem;" class="hide-scrollbar">'
-    active_btn_style = "var(--primary-color)"
-    all_btn_border = active_btn_style if not label_filter else "transparent"
-    all_btn_bg = f"rgba(59, 130, 246, 0.1)" if not label_filter else "var(--accent-bg)"
-    all_btn_color = active_btn_style if not label_filter else "var(--text-muted)"
-    
-    labels_filter_html += f'<a href="/inbox?tab={tab}" style="white-space:nowrap; padding:0.25rem 0.75rem; border-radius:16px; font-size:0.75rem; font-weight:600; text-decoration:none; border:1px solid {all_btn_border}; background:{all_btn_bg}; color:{all_btn_color}; transition:all 0.2s;">Todas</a>'
+    active_label_obj = next((l for l in global_labels if l.get("id") == label_filter), None) if label_filter else None
+    active_label_name = active_label_obj.get("name") if active_label_obj else "Filtro: Ninguno"
+    if active_label_name.endswith("Ninguno"): active_label_name = "Filtrar Etiquetas: Desactivado"
+
+    labels_filter_html = f"""
+    <div style="position:relative; margin-top:1rem; text-align:left;">
+        <button type="button" onclick="const m = document.getElementById('inboxFilterMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            {active_label_name}
+        </button>
+        
+        <div id="inboxFilterMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
+            <a href="/inbox?tab={tab}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
+    """
     
     for l in global_labels:
         lid = l.get("id")
         lnombre = l.get("name", "Etiqueta")
         lcolor = l.get("color", "#94a3b8")
         is_active = (label_filter == lid)
-        bg = f"{lcolor}22" if is_active else "var(--accent-bg)"
-        border = lcolor if is_active else "var(--accent-border)"
-        txt_color = lcolor if is_active else "var(--text-muted)"
+        bg = f"{lcolor}33" if is_active else "transparent"
+        labels_filter_html += f"""
+            <a href="/inbox?tab={tab}&label={lid}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{bg};">
+                <span style="width:12px; height:12px; border-radius:50%; background:{lcolor};"></span> {lnombre}
+            </a>
+        """
         
-        labels_filter_html += f'<a href="/inbox?tab={tab}&label={lid}" style="white-space:nowrap; padding:0.25rem 0.75rem; border-radius:16px; font-size:0.75rem; font-weight:600; text-decoration:none; border:1px solid {border}; background:{bg}; color:{txt_color}; transition:all 0.2s;">{lnombre}</a>'
-        
-    labels_filter_html += '</div>'
+    labels_filter_html += '</div></div>'
     
     for num, s in todas:
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600

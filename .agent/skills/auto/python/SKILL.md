@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 9 gotchas, 9 conventions, 24 fixes."
+description: "Python for botatc. 10 gotchas, 10 conventions, 24 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **68 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **70 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **68 real patterns** in **botatc**. This skill is auto-routed
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in HTMLResponse | -     html = html.replace("{chat_viewer_html}", chat_viewer_html) +     html = html.replace("{label |
 | ⚠️ GOTCHA: Fixed null crash in None | -         chat_viewer_html = f""" +         session_tags = s.get("etiquetas", []) -         {statu |
 | ⚠️ GOTCHA: Updated typing database schema | -  +  +  + # ============================================================ + #  API DE GESTOR DE E |
 | ⚠️ GOTCHA: Fixed null crash in Plantillas | -                     <!-- Botón Plantillas --> +                     </div> -                     |
@@ -318,9 +319,6 @@ except Exception as e:
 - @app.post("/admin/toggle")
 + @app.post("/api/admin/enviar_manual")
 - async def toggle_bot_global(request: Request):
-+ async def enviar_manual_endpoint(request: Request):
--     """Activa o desactiva el bot globalmente."""
-+     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
--  
++ async def enviar_manual_endpoint(re
 
 ... [Truncated — see individual observations for full content]

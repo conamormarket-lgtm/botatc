@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 191 notes | Score threshold: >40
+> 205 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse** — -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
++  
 - **⚠️ GOTCHA: Fixed null crash in None** — -         chat_viewer_html = f"""
 +         session_tags = s.get("eti
 - **⚠️ GOTCHA: Updated typing database schema** — - 
@@ -33,14 +35,14 @@
 
 ## Project Standards
 
+- what-changed in inbox.html — confirmed 5x
+- what-changed in server.py — confirmed 3x
 - Fixed null crash in None — confirmed 3x
 - Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
 - Fixed null crash in EMOJI — confirmed 3x
 - Fixed null crash in GICA — confirmed 4x
+- Git Commit: plantillas — confirmed 3x
 - Fixed null crash in RedirectResponse — confirmed 3x
-- Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
-- Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
-- what-changed in .gitignore — confirmed 3x
 
 ## Known Fixes
 
