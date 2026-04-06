@@ -1315,6 +1315,14 @@ async def ver_chat(request: Request, numero_wa: str):
 # ==========================================
 
 def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None):
+    # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
+    global global_labels
+    if not global_labels:
+        try:
+            from firebase_client import cargar_etiquetas_bd
+            global_labels = cargar_etiquetas_bd()
+        except: pass
+
     if not verificar_sesion(request):
         return HTMLResponse(obtener_login_html(), status_code=401)
 
@@ -1668,9 +1676,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     }} else {{
                         input.value += finalMsg;
                     }}
+                    
                     document.getElementById('rightSidebar').style.display = 'none';
-                    if (window.enviarMensajeManual) {{
-                        window.enviarMensajeManual(new Event('submit'), '{wa_id}');
+                    
+                    // Simular clic en el botón de "Enviar" del formulario
+                    const form = input.closest('form');
+                    if(form) {{
+                        const btn = form.querySelector('button[type="submit"]');
+                        if(btn) btn.click();
                     }}
                 }}
             }}
@@ -2266,6 +2279,14 @@ async def api_delete_label(payload: LabelPayload, request: Request):
 async def api_list_labels(request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
+    global global_labels
+    if not global_labels:
+        try:
+            from firebase_client import cargar_etiquetas_bd
+            global_labels = cargar_etiquetas_bd()
+            print("🔄 Etiquetas recargadas dinámicamente desde Firebase.")
+        except Exception as e:
+            print(f"Error recargando etiquetas: {e}")
     return {"ok": True, "labels": global_labels}
 
 class AssignLabelPayload(BaseModel):

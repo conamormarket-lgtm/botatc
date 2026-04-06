@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 219 notes | Score threshold: >40
+> 221 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -35,6 +35,7 @@
 
 ## Project Standards
 
+- Fixed null crash in Simular — confirmed 3x
 - Fixed null crash in PLANTILLAS — confirmed 5x
 - what-changed in inbox.html — confirmed 5x
 - what-changed in server.py — confirmed 3x
@@ -42,7 +43,6 @@
 - Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
 - Fixed null crash in EMOJI — confirmed 3x
 - Fixed null crash in GICA — confirmed 4x
-- Git Commit: plantillas — confirmed 3x
 
 ## Known Fixes
 
