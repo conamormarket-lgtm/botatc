@@ -1284,13 +1284,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
         active_class = "active-row" if wa_id == num else ""
             
         session_tags = s.get("etiquetas", [])
+        if session_tags is None: session_tags = []
         tags_html = ""
         if session_tags:
             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
             for tid in session_tags:
                 lbl = next((l for l in global_labels if l.get("id") == tid), None)
                 if lbl:
-                    tags_html += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
+                    col = lbl.get("color", "#94a3b8")
+                    nm = lbl.get("name", "Etiqueta")
+                    tags_html += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
             tags_html += '</div>'
             
         lista_chats_html += f"""
@@ -1468,11 +1471,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             """
 
         session_tags = s.get("etiquetas", [])
+        if session_tags is None: session_tags = []
         tags_bar = ""
         for tid in session_tags:
             lbl = next((l for l in global_labels if l.get("id") == tid), None)
             if lbl:
-                tags_bar += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
+                col = lbl.get("color", "#94a3b8")
+                nm = lbl.get("name", "Etiqueta")
+                tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
 
         chat_viewer_html = f"""
         {status_bar}
