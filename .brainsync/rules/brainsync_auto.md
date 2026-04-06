@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 184 notes | Score threshold: >40
+> 190 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -33,13 +33,13 @@
 
 ## Project Standards
 
+- Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
 - Fixed null crash in EMOJI — confirmed 3x
 - Fixed null crash in GICA — confirmed 4x
 - Fixed null crash in RedirectResponse — confirmed 3x
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in .gitignore — confirmed 3x
-- Git Commit: stickers — confirmed 3x
 - Git Commit: stickers — confirmed 3x
 
 ## Known Fixes
@@ -48,6 +48,7 @@
 - ❌ -         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in UploadFile
 - ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
 - ❌ -     except Exception as e: → ✅ problem-fix in firebase_client.py
+- ❌ -                 console.warn('Error en Live Chat Polling:', e); → ✅ Fixed null crash in CERRAR
 
 ## Learned Patterns
 
