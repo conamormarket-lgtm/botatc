@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 11 conventions, 26 fixes."
+description: "Python for botatc. 10 gotchas, 11 conventions, 27 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **73 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **74 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,25 @@ Auto-compiled from **73 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
+-     if not verificar_sesion(request):
++     # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
+-         return HTMLResponse(obtener_login_html(), status_code=401)
++     global global_labels
+- 
++     if not global_labels:
+-     import os
++         try:
+-     if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
++             from 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: HTMLResponse
+3. identifier: Procesar
+4. identifier: Lista
+5. identifier: Chats
 
 ### Added error handling Respuestas — wraps unsafe operation in error boundary
 -             async function cargarQuickReplies() {
@@ -300,20 +319,6 @@ except Exception as e:
 5. identifier: Request
 
 ### Fixed null crash in Sticker
--                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"><br><small style="opacity:0.6;font-size:0.7rem;">Sticker</small></
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Sticker
-3. identifier: Imagen
-4. identifier: Conversaci
-5. identifier: Cabecera
-
-### Fixed null crash in Parsear — protects against XSS and CSRF token theft
--         enviar_mensaje(numero_wa, respuesta_final)
-+         from whatsapp_client import enviar_mensaje, enviar_media
-- 
-+         
--     return respuesta_
+-                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style="width: 150px; height: 150px; object-fit: cover; border-radi
 
 ... [Truncated — see individual observations for full content]

@@ -1544,7 +1544,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</button>
             </div>
             
-            <form onsubmit="window.enviarMensajeManual(event, '{wa_id}')" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center;">
+            <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center;">
                 <input type="hidden" id="replyToWamid" value="">
                 
                 <div style="position:relative; display:flex; gap:0.5rem;">
