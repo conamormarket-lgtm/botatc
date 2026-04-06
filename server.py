@@ -1236,7 +1236,7 @@ async def ver_chat(request: Request, numero_wa: str):
 # INBOX MODERNO (Tipo Respond.io / SPA)
 # ==========================================
 
-def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
+def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None):
     if not verificar_sesion(request):
         return HTMLResponse(obtener_login_html(), status_code=401)
 
