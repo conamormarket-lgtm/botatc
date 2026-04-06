@@ -942,15 +942,11 @@
             const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
             if(!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
             
-            let r = prompt(`Escribe "add" para AÑADIR o "rm" para QUITAR la etiqueta de este chat:`, "add");
-            if (!r) return;
-            r = r.trim().toLowerCase();
-            
             try {
                 const res = await fetch(`/api/admin/chats/labels/toggle`, {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({wa_id: wa_id, label_id: lbl_id, action: r})
+                    body: JSON.stringify({wa_id: wa_id, label_id: lbl_id, action: "toggle"})
                 });
                 
                 const data = await res.json();

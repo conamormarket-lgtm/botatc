@@ -2021,6 +2021,11 @@ async def api_toggle_chat_label(payload: ToggleLabelPayload, request: Request):
             current_labels.add(payload.label_id)
         elif payload.action == "rm":
             current_labels.discard(payload.label_id)
+        elif payload.action == "toggle":
+            if payload.label_id in current_labels:
+                current_labels.discard(payload.label_id)
+            else:
+                current_labels.add(payload.label_id)
         
         s["etiquetas"] = list(current_labels)
         guardar_sesion_chat(payload.wa_id, s)
