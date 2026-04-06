@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 190 observations
+# Auto-synced | 198 observations
 
 **Stack:** Python · FastAPI
 
@@ -35,6 +35,7 @@ Example:
 
 # 📐 Conventions
 
+- Git Commit: plantillas — confirmed 3x
 - Git Commit: stickers — confirmed 3x
 - Git Commit: stickers — confirmed 3x
 - Version your API from day 1 (/api/v1/)
@@ -42,7 +43,6 @@ Example:
 - Implement soft delete for important data — don't hard delete without confirmation
 - Handle timezone correctly — store UTC, display in user's timezone
 - Make layouts responsive from the start — mobile-first approach
-- Disable submit button during form submission — prevent double-submit
 
 # ⚡ Available Tools (ON-DEMAND only)
 - `save(title, content, category)` — Save a note + auto-detect conflicts

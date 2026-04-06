@@ -267,6 +267,8 @@
             .btn-responsive-back { display: flex; align-items: center; }
         }
 
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="{body_class}">
@@ -298,14 +300,18 @@
                 <a href="/inbox?tab=all" class="tab {tab_all_active}">Todos</a>
                 <a href="/inbox?tab=human" class="tab {tab_human_active}">Humanos</a>
             </div>
+            
+            {labels_filter_html}
+
             <!-- BUSCADOR / NUEVO CHAT -->
-            <div style="margin-top: 1rem; position: relative;">
+            <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
                 <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar número en 51..." style="width:100%; padding: 0.6rem 2.5rem; border-radius: 8px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.9rem; outline:none;" autocomplete="off">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 
                 <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()" style="display:none; position:absolute; right:0.4rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:6px; color:white; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight:bold; cursor:pointer;" title="Empezar un chat con este número">NUEVO</button>
             </div>
         </div>
+
         <div class="chats-container">
             {lista_chats_html}
         </div>

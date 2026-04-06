@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 190 notes | Score threshold: >40
+> 191 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -33,6 +33,7 @@
 
 ## Project Standards
 
+- Fixed null crash in None — confirmed 3x
 - Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
 - Fixed null crash in EMOJI — confirmed 3x
 - Fixed null crash in GICA — confirmed 4x
@@ -40,7 +41,6 @@
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in .gitignore — confirmed 3x
-- Git Commit: stickers — confirmed 3x
 
 ## Known Fixes
 

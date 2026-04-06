@@ -1265,6 +1265,28 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
     todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True)
     lista_chats_html = ""
     
+    # ------------------ Generador de Filtro de Etiquetas HTML ------------------
+    labels_filter_html = '<div style="margin-top:0.8rem; display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:0.3rem;" class="hide-scrollbar">'
+    active_btn_style = "var(--primary-color)"
+    all_btn_border = active_btn_style if not label_filter else "transparent"
+    all_btn_bg = f"rgba(59, 130, 246, 0.1)" if not label_filter else "var(--accent-bg)"
+    all_btn_color = active_btn_style if not label_filter else "var(--text-muted)"
+    
+    labels_filter_html += f'<a href="/inbox?tab={tab}" style="white-space:nowrap; padding:0.25rem 0.75rem; border-radius:16px; font-size:0.75rem; font-weight:600; text-decoration:none; border:1px solid {all_btn_border}; background:{all_btn_bg}; color:{all_btn_color}; transition:all 0.2s;">Todas</a>'
+    
+    for l in global_labels:
+        lid = l.get("id")
+        lnombre = l.get("name", "Etiqueta")
+        lcolor = l.get("color", "#94a3b8")
+        is_active = (label_filter == lid)
+        bg = f"{lcolor}22" if is_active else "var(--accent-bg)"
+        border = lcolor if is_active else "var(--accent-border)"
+        txt_color = lcolor if is_active else "var(--text-muted)"
+        
+        labels_filter_html += f'<a href="/inbox?tab={tab}&label={lid}" style="white-space:nowrap; padding:0.25rem 0.75rem; border-radius:16px; font-size:0.75rem; font-weight:600; text-decoration:none; border:1px solid {border}; background:{bg}; color:{txt_color}; transition:all 0.2s;">{lnombre}</a>'
+        
+    labels_filter_html += '</div>'
+    
     for num, s in todas:
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
         activo = s.get("bot_activo", True)
@@ -1272,8 +1294,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
         # Filtro de Tab
         if tab == "human" and activo:
             continue
+            
+        session_tags = s.get("etiquetas", [])
+        if session_tags is None: session_tags = []
+        
+        # Filtro de Etiqueta (Label)
+        if label_filter and label_filter not in session_tags:
+            continue
 
         nombre   = s.get("nombre_cliente", num)
+        if not nombre: nombre = num
         preview  = ultimo_msg(s)
         time_str = tiempo_relativo(s["ultima_actividad"])
         
@@ -1283,8 +1313,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             
         active_class = "active-row" if wa_id == num else ""
             
-        session_tags = s.get("etiquetas", [])
-        if session_tags is None: session_tags = []
         tags_html = ""
         if session_tags:
             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
@@ -1308,7 +1336,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
         </a>"""
 
     if not lista_chats_html:
-        lista_chats_html = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:0.9rem">No hay conversaciones activas.</div>'
+        lista_chats_html = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:0.9rem">No hay conversacioes que coincidan con estos filtros.</div>'
 
     # Procesar Panel Derecho (Chat Viewer)
     chat_viewer_html = ""
@@ -1543,6 +1571,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
     html = html.replace("{tab_all_active}", "active" if tab != "human" else "")
     html = html.replace("{tab_human_active}", "active" if tab == "human" else "")
     html = html.replace("{lista_chats_html}", lista_chats_html)
+    html = html.replace("{labels_filter_html}", labels_filter_html)
     html = html.replace("{chat_viewer_html}", chat_viewer_html)
     html = html.replace("{chat_view_css}", chat_view_css)
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
@@ -1550,8 +1579,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
     return HTMLResponse(html)
 
 @app.get("/inbox", response_class=HTMLResponse)
-async def inbox_main(request: Request, tab: str = "all"):
-    return renderizar_inbox(request, None, tab)
+async def inbox_main(request: Request, tab: str = "all", label: str = None):
+    return renderizar_inbox(request, None, tab, label)
 
 from typing import List
 
@@ -1625,8 +1654,8 @@ def get_stickers():
         return {"ok": False, "error": str(e)}
 
 @app.get("/inbox/{wa_id}", response_class=HTMLResponse)
-async def inbox_chat(request: Request, wa_id: str, tab: str = "all"):
-    return renderizar_inbox(request, wa_id, tab)
+async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None):
+    return renderizar_inbox(request, wa_id, tab, label)
 
 @app.get("/debug")
 async def debug_sesiones():
