@@ -952,13 +952,16 @@
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({wa_id: wa_id, label_id: lbl_id, action: r})
                 });
-                if(res.ok) {
+                
+                const data = await res.json();
+                if(data.ok) {
                     window.location.reload();
                 } else {
-                    const err = await res.json();
-                    alert("Error: " + err.error);
+                    alert("Error: " + data.error);
                 }
             } catch(e) {
+                alert("Error de conexión al alternar etiqueta.");
+            }
                 alert("Error de red");
             }
         }

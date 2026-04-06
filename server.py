@@ -2007,7 +2007,14 @@ async def api_toggle_chat_label(payload: ToggleLabelPayload, request: Request):
         raise HTTPException(status_code=403, detail="No autorizado")
         
     from firebase_client import cargar_sesion_chat, guardar_sesion_chat
+    
+    # 1. Intentar cargar desde Firestore
     s = cargar_sesion_chat(payload.wa_id)
+    
+    # 2. Si no existe en Firestore, intentar desde memoria (chat nuevo)
+    if not s:
+        s = sesiones.get(payload.wa_id)
+        
     if s:
         current_labels = set(s.get("etiquetas", []))
         if payload.action == "add":
@@ -2017,7 +2024,10 @@ async def api_toggle_chat_label(payload: ToggleLabelPayload, request: Request):
         
         s["etiquetas"] = list(current_labels)
         guardar_sesion_chat(payload.wa_id, s)
+        
         if payload.wa_id in sesiones:
             sesiones[payload.wa_id]["etiquetas"] = list(current_labels)
+            
         return {"ok": True}
-    return {"ok": False, "error": "Chat no existe"}
+        
+    return {"ok": False, "error": "Chat no existe en memoria ni BD"}
