@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 217 notes | Score threshold: >40
+> 219 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -51,6 +51,10 @@
 - ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
 - ❌ -     except Exception as e: → ✅ problem-fix in firebase_client.py
 - ❌ -                 console.warn('Error en Live Chat Polling:', e); → ✅ Fixed null crash in CERRAR
+
+## Recent Decisions
+
+- decision in task.md
 
 ## Learned Patterns
 

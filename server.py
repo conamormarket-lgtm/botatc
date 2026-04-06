@@ -1668,8 +1668,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     }} else {{
                         input.value += finalMsg;
                     }}
-                    input.focus();
                     document.getElementById('rightSidebar').style.display = 'none';
+                    if (window.enviarMensajeManual) {{
+                        window.enviarMensajeManual(new Event('submit'), '{wa_id}');
+                    }}
                 }}
             }}
             function checkQuickReplyTrigger(input) {{
@@ -1762,12 +1764,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
-                    <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{{nombre_chat[0].upper()}}</div>
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
                     <div style="min-width:0; flex:1;">
                         <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;">
-                            {{nombre_chat}} {{tags_bar}}
+                            {nombre_chat} {tags_bar}
                         </h3>
-                        <small style="color:var(--text-muted)">+{{wa_id}}</small>
+                        <small style="color:var(--text-muted)">+{wa_id}</small>
                     </div>
                     <!-- Botón de gestionar etiquetas -->
                     <div style="position:relative;">
