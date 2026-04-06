@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 171 notes | Score threshold: >40
+> 184 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,22 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in None** — -         chat_viewer_html = f"""
++         session_tags = s.get("eti
+- **⚠️ GOTCHA: Updated typing database schema** — - 
++ 
++ 
++ # =======================================================
+- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     <!-- Botón Plantillas -->
++                    
+- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     </div>
++                     <!-- Botón Plantil
+
+## Project Standards
+
+- Fixed null crash in EMOJI — confirmed 3x
 - Fixed null crash in GICA — confirmed 4x
 - Fixed null crash in RedirectResponse — confirmed 3x
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
@@ -37,6 +51,7 @@
 
 ## Learned Patterns
 
+- Avoid: ⚠️ GOTCHA: Fixed null crash in Plantillas (seen 2x)
 - Always: Git Commit: stickers — confirmed 3x (seen 2x)
 - Always: Strengthened types DOCTYPE (seen 2x)
 - Agent generates new migration for every change (squash related changes)

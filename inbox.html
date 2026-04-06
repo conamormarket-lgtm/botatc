@@ -714,17 +714,6 @@
 
         // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
         document.addEventListener("click", function(e) {
-        // EMOJI PICKER HOOK - Global event delegation
-        document.addEventListener('emoji-click', event => {
-            const input = document.getElementById('manualMsgInput');
-            if(input) {
-                input.value += event.detail.unicode;
-                input.focus();
-            }
-        });
-
-        // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
-        document.addEventListener("click", function(e) {
             const emojiMenu = document.getElementById("emojiMenu");
             if(emojiMenu && !e.target.closest('#emojiMenu') && !e.target.closest('button[title="Emojis"]')) {
                 emojiMenu.style.display = "none";
@@ -738,6 +727,11 @@
             const templateMenu = document.getElementById("templateMenu");
             if(templateMenu && !e.target.closest('#templateMenu') && !e.target.closest('button[title="Plantillas (24h)"]')) {
                 templateMenu.style.display = "none";
+            }
+            
+            const chatLabelMenu = document.getElementById("chatLabelMenu");
+            if(chatLabelMenu && !e.target.closest('#chatLabelMenu') && !e.target.closest('button[title="Etiquetas del Chat"]')) {
+                chatLabelMenu.style.display = "none";
             }
         });
 
@@ -832,6 +826,109 @@
                 }
             } catch(e) {
                 alert("Falla de conectividad");
+            }
+        }
+
+        // ================= ETIQUETAS (LABELS) LOGIC =================
+        async function crearGlobalLabel() {
+            const name = prompt("Escribe el nombre de la nueva etiqueta (ej: Nuevo Cliente, Venta Cerrada):");
+            if(!name) return;
+            const color = prompt("Escribe un color en HEX (ej: #ef4444 para rojo, #3b82f6 para azul, #22c55e para verde, #f59e0b para naranja). Si lo dejas vacío, será gris:") || "#94a3b8";
+            
+            const id = 'lbl_' + Date.now();
+            try {
+                const res = await fetch("/api/admin/labels/save", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({id: id, name: name.trim(), color: color.trim()})
+                });
+                if(res.ok) cargarChatLabels();
+            } catch(e) {
+                alert("Error guardando etiqueta");
+            }
+        }
+
+        async function eliminarGlobalLabel(id, name, event) {
+            event.stopPropagation();
+            if(!confirm(`¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminará de todos los chats asignados).`)) return;
+            try {
+                const res = await fetch("/api/admin/labels/delete", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({id: id})
+                });
+                if(res.ok) window.location.reload();
+            } catch(e) {
+                alert("Error eliminando etiqueta");
+            }
+        }
+
+        async function cargarChatLabels() {
+            const list = document.getElementById("chatLabelList");
+            if(!list) return;
+            list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
+            
+            try {
+                const res = await fetch("/api/admin/labels/list");
+                const data = await res.json();
+                
+                if(data.ok) {
+                    list.innerHTML = "";
+                    if(data.labels.length === 0) {
+                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin etiquetas. Apreta (+) para añadir.</div>`;
+                    } else {
+                        data.labels.forEach(lbl => {
+                            const btn = document.createElement("div");
+                            btn.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:0.4rem; background:var(--bg-main); border-radius:6px; font-size:0.85rem; cursor:pointer;";
+                            btn.onclick = () => alternarChatLabel(lbl.id);
+                            
+                            const colorDot = document.createElement("div");
+                            colorDot.style.cssText = `width:12px; height:12px; border-radius:50%; background:${lbl.color}; margin-right:0.5rem;`;
+                            
+                            const nameSpan = document.createElement("span");
+                            nameSpan.innerText = lbl.name;
+                            nameSpan.style.cssText = "flex:1; color:var(--text-main); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
+                            
+                            const delBtn = document.createElement("button");
+                            delBtn.type = "button";
+                            delBtn.innerText = "×";
+                            delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.1rem; padding:0 0.2rem;";
+                            delBtn.onclick = (e) => eliminarGlobalLabel(lbl.id, lbl.name, e);
+                            
+                            btn.appendChild(colorDot);
+                            btn.appendChild(nameSpan);
+                            btn.appendChild(delBtn);
+                            list.appendChild(btn);
+                        });
+                    }
+                }
+            } catch(e) {
+                list.innerHTML = `<div style="font-size:0.8rem; color:red; padding:0.5rem; text-align:center;">Error al cargar</div>`;
+            }
+        }
+        
+        async function alternarChatLabel(lbl_id) {
+            const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
+            if(!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+            
+            let r = prompt(`Escribe "add" para AÑADIR o "rm" para QUITAR la etiqueta de este chat:`, "add");
+            if (!r) return;
+            r = r.trim().toLowerCase();
+            
+            try {
+                const res = await fetch(`/api/admin/chats/labels/toggle`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({wa_id: wa_id, label_id: lbl_id, action: r})
+                });
+                if(res.ok) {
+                    window.location.reload();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + err.error);
+                }
+            } catch(e) {
+                alert("Error de red");
             }
         }
 

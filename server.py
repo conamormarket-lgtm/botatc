@@ -60,6 +60,12 @@ def startup_event():
         os.makedirs("static/stickers", exist_ok=True)
         count_stickers = cargar_stickers_de_bd("static/stickers")
         print(f"✅ Se restauraron {count_stickers} stickers desde la DB al FileSystem efímero.")
+        
+        # Restaurar Etiquetas
+        from firebase_client import cargar_etiquetas_bd
+        global global_labels
+        global_labels = cargar_etiquetas_bd()
+        print(f"✅ Se restauraron {len(global_labels)} etiquetas globales.")
     except Exception as e:
         print(f"❌ Error al restaurar datos desde Firebase: {e}")
 
@@ -73,6 +79,7 @@ def startup_event():
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"
 sesiones: dict[str, dict] = {}
+global_labels: list = []
 
 # Interruptor global — False = bot completamente apagado
 BOT_GLOBAL_ACTIVO: bool = True
@@ -1276,6 +1283,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             
         active_class = "active-row" if wa_id == num else ""
             
+        session_tags = s.get("etiquetas", [])
+        tags_html = ""
+        if session_tags:
+            tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
+            for tid in session_tags:
+                lbl = next((l for l in global_labels if l.get("id") == tid), None)
+                if lbl:
+                    tags_html += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
+            tags_html += '</div>'
+            
         lista_chats_html += f"""
         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
             <div class="chat-row-header">
@@ -1284,6 +1301,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             </div>
             <div class="chat-preview">{preview}</div>
             <div class="chat-badges">{badge_html}</div>
+            {tags_html}
         </a>"""
 
     if not lista_chats_html:
@@ -1449,6 +1467,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
             </form>
             """
 
+        session_tags = s.get("etiquetas", [])
+        tags_bar = ""
+        for tid in session_tags:
+            lbl = next((l for l in global_labels if l.get("id") == tid), None)
+            if lbl:
+                tags_bar += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
+
         chat_viewer_html = f"""
         {status_bar}
         <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
@@ -1456,9 +1481,25 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </a>
             <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
-            <div style="min-width:0">
-                <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{nombre_chat}</h3>
+            <div style="min-width:0; flex:1;">
+                <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;">
+                    {nombre_chat} {tags_bar}
+                </h3>
                 <small style="color:var(--text-muted)">+{wa_id}</small>
+            </div>
+            <!-- Botón de gestionar etiquetas -->
+            <div style="position:relative;">
+                <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                </button>
+                <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
+                    <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                        Etiquetas 
+                        <button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>
+                    </div>
+                    <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:220px; overflow-y:auto;">
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -1848,3 +1889,92 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
             guardar_sesion_chat(payload.wa_id, s)
         return {"ok": True, "wamid": wamid}
     return {"ok": False, "error": "No se pudo enviar (Verifica que el WABA ID sea el correcto o Meta la rechazó)."}
+
+
+# ============================================================
+#  API DE GESTOR DE ETIQUETAS Y ASIGNACIONES
+# ============================================================
+
+from typing import Optional
+
+class LabelPayload(BaseModel):
+    id: str
+    name: Optional[str] = None
+    color: Optional[str] = None
+
+@app.post("/api/admin/labels/save")
+async def api_save_label(payload: LabelPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import guardar_etiqueta_bd
+    guardar_etiqueta_bd(payload.id, payload.name, payload.color)
+    global global_labels
+    global_labels = [l for l in global_labels if l.get("id") != payload.id]
+    global_labels.append({"id": payload.id, "name": payload.name, "color": payload.color})
+    return {"ok": True}
+
+@app.post("/api/admin/labels/delete")
+async def api_delete_label(payload: LabelPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import eliminar_etiqueta_bd
+    eliminar_etiqueta_bd(payload.id)
+    global global_labels
+    global_labels = [l for l in global_labels if l.get("id") != payload.id]
+    
+    # Quitar etiqueta de sesiones cargadas
+    for k, s in sesiones.items():
+        if "etiquetas" in s and payload.id in s["etiquetas"]:
+            s["etiquetas"].remove(payload.id)
+    return {"ok": True}
+
+@app.get("/api/admin/labels/list")
+async def api_list_labels(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    return {"ok": True, "labels": global_labels}
+
+class AssignLabelPayload(BaseModel):
+    wa_id: str
+    label_ids: list
+
+@app.post("/api/admin/chats/labels")
+async def api_assign_chat_labels(payload: AssignLabelPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    
+    from firebase_client import cargar_sesion_chat, guardar_sesion_chat
+    s = cargar_sesion_chat(payload.wa_id)
+    if s:
+        s["etiquetas"] = payload.label_ids
+        guardar_sesion_chat(payload.wa_id, s)
+        if payload.wa_id in sesiones:
+            sesiones[payload.wa_id]["etiquetas"] = payload.label_ids
+        return {"ok": True}
+    return {"ok": False, "error": "Chat no existe"}
+
+class ToggleLabelPayload(BaseModel):
+    wa_id: str
+    label_id: str
+    action: str
+
+@app.post("/api/admin/chats/labels/toggle")
+async def api_toggle_chat_label(payload: ToggleLabelPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+        
+    from firebase_client import cargar_sesion_chat, guardar_sesion_chat
+    s = cargar_sesion_chat(payload.wa_id)
+    if s:
+        current_labels = set(s.get("etiquetas", []))
+        if payload.action == "add":
+            current_labels.add(payload.label_id)
+        elif payload.action == "rm":
+            current_labels.discard(payload.label_id)
+        
+        s["etiquetas"] = list(current_labels)
+        guardar_sesion_chat(payload.wa_id, s)
+        if payload.wa_id in sesiones:
+            sesiones[payload.wa_id]["etiquetas"] = list(current_labels)
+        return {"ok": True}
+    return {"ok": False, "error": "Chat no existe"}

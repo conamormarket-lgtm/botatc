@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 5 gotchas, 8 conventions, 22 fixes."
+description: "Python for botatc. 9 gotchas, 8 conventions, 24 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **61 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **67 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **61 real patterns** in **botatc**. This skill is auto-routed
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in None | -         chat_viewer_html = f""" +         session_tags = s.get("etiquetas", []) -         {statu |
+| ⚠️ GOTCHA: Updated typing database schema | -  +  +  + # ============================================================ + #  API DE GESTOR DE E |
+| ⚠️ GOTCHA: Fixed null crash in Plantillas | -                     <!-- Botón Plantillas --> +                     </div> -                     |
+| ⚠️ GOTCHA: Fixed null crash in Plantillas | -                     </div> +                     <!-- Botón Plantillas --> -                 </d |
 | ⚠️ GOTCHA: Fixed null crash in ReaccionPayload | - @app.post("/admin/toggle") + class ReaccionPayload(BaseModel): - async def toggle_bot_global(req |
 | ⚠️ GOTCHA: Fixed null crash in Stickers | -             </div> +                 <button type="button" onclick="toggleStickersMenu()" style=" |
 | ⚠️ GOTCHA: Fixed null crash in Response | - # ───────────────────────────────────────────── + from fastapi.responses import Response - #  He |
@@ -25,6 +29,44 @@ Auto-compiled from **61 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in None
+-         lista_chats_html += f"""
++         session_tags = s.get("etiquetas", [])
+-         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
++         tags_html = ""
+-             <div class="chat-row-header">
++         if session_tags:
+-                 <span class="chat-name">{nombre}</span>
++             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3r
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: None
+3. identifier: Procesar
+4. identifier: Panel
+5. identifier: Derecho
+
+### Fixed null crash in Interruptor — protects against XSS and CSRF token theft
+- 
++ global_labels: list = []
+- # Interruptor global — False = bot completamente apagado
++ 
+- BOT_GLOBAL_ACTIVO: bool = True
++ # Interruptor global — False = bot completamente apagado
+- 
++ BOT_GLOBAL_ACTIVO: bool = True
+- # Cola para debouncing (acumular múltiples mensajes rápidos del mismo usuario)
++ 
+- mensajes_pendientes: dict[str, list[str]] = {}
++ # Cola para debouncing (acumular m
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Interruptor
+3. identifier: False
+4. identifier: True
+5. identifier: Cola
 
 ### Fixed null crash in True
 -     
@@ -279,62 +321,6 @@ except Exception as e:
 + async def enviar_manual_endpoint(request: Request):
 -     """Activa o desactiva el bot globalmente."""
 +     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
--     global BOT_GLOBAL_ACTIVO
-+     if not verificar_sesion(request):
--     if not verifi
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Request
-3. identifier: Recibe
-4. identifier: WhatsApp
-5. identifier: HTTPException
-
-### Fixed null crash in RedirectResponse
-- async def health():
-+ async def home_redirect():
--     return {"status": "ok", "bot": "IA-ATC", "sesiones": len(sesiones)}
-+     return RedirectResponse("/inbox", status_code=303)
-- 
-+ @app.get("/health")
-- @app.get("/admin/chat/{numero_wa}", response_class=HTMLResponse)
-+ async def health():
-- async def ver_chat(request: Request, numero_wa: str):
-+     return {"status": "ok", "bot": "I
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: RedirectResponse
-3. identifier: ATC
-4. identifier: HTMLResponse
-5. identifier: Request
-
-### Fixed null crash in Acceso
-- 
-+ def obtener_login_html():
-- @app.get("/admin", response_class=HTMLResponse)
-+     return """
-- async def panel_admin(request: Request, pwd: str = ""):
-+     <html><head><title>Acceso Restringido — IA-ATC</title>
--     """Panel web de administración mejorado."""
-+     <meta name="viewport" content="width=device-width,initial-scale=1">
-- 
-+     <link href="https://fonts.googleapis.com/
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Acceso
-3. identifier: Restringido
-4. identifier: ATC
-5. identifier: Inter
-
-### Fixed null crash in HTMLResponse
--     ahora       = datetime.utcnow()
-+     import os
--     total       = len(sesiones)
-+     if not os.path.exists("admin.html"): return HTMLResponse("404: admin.html no encontrado")
--     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
-+         
--     escalados.sort(key=lambda x: x
+-  
 
 ... [Truncated — see individual observations for full content]

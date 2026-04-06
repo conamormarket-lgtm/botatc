@@ -247,3 +247,31 @@ def cargar_plantillas_bd() -> list:
         if "name" in data:
             plantillas.append(data)
     return plantillas
+
+
+# ============================================================
+#  PERSISTENCIA DE ETIQUETAS GLOBALES (LABELS)
+# ============================================================
+
+def guardar_etiqueta_bd(id_etiqueta: str, nombre: str, color: str):
+    db = inicializar_firebase()
+    db.collection("bot_labels").document(id_etiqueta).set({
+        "id": id_etiqueta,
+        "name": nombre,
+        "color": color,
+        "createdAt": firestore.SERVER_TIMESTAMP
+    })
+
+def eliminar_etiqueta_bd(id_etiqueta: str):
+    db = inicializar_firebase()
+    db.collection("bot_labels").document(id_etiqueta).delete()
+
+def cargar_etiquetas_bd() -> list:
+    db = inicializar_firebase()
+    docs = db.collection("bot_labels").stream()
+    etiquetas = []
+    for doc in docs:
+        data = doc.to_dict()
+        if "id" in data:
+            etiquetas.append(data)
+    return etiquetas
