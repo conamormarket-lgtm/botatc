@@ -1427,6 +1427,21 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all"):
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Stickers
                         </button>
                     </div>
+
+                    <!-- Botón Plantillas -->
+                    <button type="button" onclick="const m = document.getElementById('templateMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex'){ cargarPlantillas() }" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Plantillas (24h)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    </button>
+                    <!-- Menú Flotante de Plantillas -->
+                    <div id="templateMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
+                        <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                            Plantillas de Meta
+                            <button type="button" onclick="crearPlantilla()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;">+</button>
+                        </div>
+                        <div id="templateList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:150px; overflow-y:auto;">
+                            <div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>
+                        </div>
+                    </div>
                 </div>
 
                 <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje..." style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required>
@@ -1776,4 +1791,60 @@ async def api_simular_mensaje(request: Request):
     
     return {"status": "ok", "respuesta": respuesta}
 
+# ============================================================
+#  API DE GESTOR DE PLANTILLAS
+# ============================================================
 
+class TemplatePayload(BaseModel):
+    name: str
+    language: str = "es"
+
+@app.post("/api/admin/templates/save")
+async def api_save_template(payload: TemplatePayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import guardar_plantilla_bd
+    guardar_plantilla_bd(payload.name, payload.language)
+    return {"ok": True}
+
+@app.post("/api/admin/templates/delete")
+async def api_delete_template(payload: TemplatePayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import eliminar_plantilla_bd
+    eliminar_plantilla_bd(payload.name)
+    return {"ok": True}
+
+@app.get("/api/admin/templates/list")
+async def api_list_templates(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from firebase_client import cargar_plantillas_bd
+    plantillas = cargar_plantillas_bd()
+    return {"ok": True, "plantillas": plantillas}
+
+class EnviarPlantillaPayload(BaseModel):
+    wa_id: str
+    template_name: str
+    language_code: str = "es"
+
+@app.post("/api/admin/enviar_plantilla")
+async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+        
+    from whatsapp_client import enviar_plantilla
+    wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code)
+    
+    if wamid:
+        # Registrar el envío en el historial del dashboard
+        from firebase_client import cargar_sesion_chat, guardar_sesion_chat
+        s = cargar_sesion_chat(payload.wa_id)
+        if s:
+            if "historial" not in s: s["historial"] = []
+            s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
+            from datetime import datetime
+            s["ultima_actividad"] = datetime.utcnow()
+            guardar_sesion_chat(payload.wa_id, s)
+        return {"ok": True, "wamid": wamid}
+    return {"ok": False, "error": "No se pudo enviar (Verifica que el WABA ID sea el correcto o Meta la rechazó)."}

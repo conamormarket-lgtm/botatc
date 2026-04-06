@@ -702,6 +702,139 @@
             if (!val.startsWith("51")) val = "51" + val;
             window.location.href = `/inbox/${val}`;
         }
+        
+        // EMOJI PICKER HOOK - Global event delegation
+        document.addEventListener('emoji-click', event => {
+            const input = document.getElementById('manualMsgInput');
+            if(input) {
+                input.value += event.detail.unicode;
+                input.focus();
+            }
+        });
+
+        // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
+        document.addEventListener("click", function(e) {
+        // EMOJI PICKER HOOK - Global event delegation
+        document.addEventListener('emoji-click', event => {
+            const input = document.getElementById('manualMsgInput');
+            if(input) {
+                input.value += event.detail.unicode;
+                input.focus();
+            }
+        });
+
+        // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
+        document.addEventListener("click", function(e) {
+            const emojiMenu = document.getElementById("emojiMenu");
+            if(emojiMenu && !e.target.closest('#emojiMenu') && !e.target.closest('button[title="Emojis"]')) {
+                emojiMenu.style.display = "none";
+            }
+            
+            const attachMenu = document.getElementById("attachMenu");
+            if(attachMenu && !e.target.closest('#attachMenu') && !e.target.closest('button[title="Adjuntar"]')) {
+                attachMenu.style.display = "none";
+            }
+
+            const templateMenu = document.getElementById("templateMenu");
+            if(templateMenu && !e.target.closest('#templateMenu') && !e.target.closest('button[title="Plantillas (24h)"]')) {
+                templateMenu.style.display = "none";
+            }
+        });
+
+        // ================= PLANTILLAS LOGIC =================
+        async function cargarPlantillas() {
+            const list = document.getElementById("templateList");
+            if(!list) return;
+            list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
+            try {
+                const res = await fetch("/api/admin/templates/list");
+                const data = await res.json();
+                if(data.ok) {
+                    list.innerHTML = "";
+                    if(data.plantillas.length === 0) {
+                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
+                    } else {
+                        data.plantillas.forEach(p => {
+                            const btn = document.createElement("div");
+                            btn.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:0.5rem; background:var(--bg-main); border-radius:6px; font-size:0.85rem;";
+                            
+                            const sendBtn = document.createElement("button");
+                            sendBtn.type = "button";
+                            sendBtn.innerText = p.name;
+                            sendBtn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); font-weight:500; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
+                            sendBtn.onclick = () => enviarPlantillaLoc(p.name, p.language);
+                            
+                            const delBtn = document.createElement("button");
+                            delBtn.type = "button";
+                            delBtn.innerText = "×";
+                            delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:#ef4444; font-size:1.1rem; padding:0 0.2rem;";
+                            delBtn.onclick = () => eliminarPlantilla(p.name);
+                            
+                            btn.appendChild(sendBtn);
+                            btn.appendChild(delBtn);
+                            list.appendChild(btn);
+                        });
+                    }
+                }
+            } catch(e) {
+                list.innerHTML = `<div style="font-size:0.8rem; color:red; padding:0.5rem; text-align:center;">Error al cargar</div>`;
+            }
+        }
+
+        async function crearPlantilla() {
+            const name = prompt("Escribe el NOMBRE EXACTO de la plantilla en Meta (ej: hola_cliente)");
+            if(!name) return;
+            const lang = prompt("Esribe el código de idioma (ej: es, es_PE). Si no sabes, pon 'es'") || "es";
+            try {
+                const res = await fetch("/api/admin/templates/save", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({name: name.trim(), language: lang.trim()})
+                });
+                if(res.ok) cargarPlantillas();
+            } catch(e) {
+                alert("Error guardando plantilla");
+            }
+        }
+
+        async function eliminarPlantilla(name) {
+            if(!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
+            try {
+                const res = await fetch("/api/admin/templates/delete", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({name: name})
+                });
+                if(res.ok) cargarPlantillas();
+            } catch(e) {
+                alert("Error eliminando plantilla");
+            }
+        }
+
+        async function enviarPlantillaLoc(name, lang) {
+            const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
+            if(!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+            
+            if(!confirm(`Se le enviará la plantilla '${name}' al número +${wa_id}. ¿Deseas continuar?`)) return;
+            document.getElementById("templateMenu").style.display = "none";
+            
+            try {
+                const res = await fetch("/api/admin/enviar_plantilla", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({wa_id: wa_id, template_name: name, language_code: lang})
+                });
+                const data = await res.json();
+                if(data.ok) {
+                    alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
+                } else {
+                    alert("❌ Error: " + data.error);
+                }
+            } catch(e) {
+                alert("Falla de conectividad");
+            }
+        }
+
 
     </script>
     <!-- Elementos ocultos para selectores del sistema -->

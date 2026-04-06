@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 167 notes | Score threshold: >40
+> 171 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,23 +18,15 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
-
-- **⚠️ GOTCHA: Fixed null crash in ReaccionPayload** — - @app.post("/admin/toggle")
-+ class ReaccionPayload(BaseModel):
-- a
-- **⚠️ GOTCHA: Fixed null crash in Stickers** — -             </div>
-+                 <button type="button" onclick=
-
-## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
 - Fixed null crash in GICA — confirmed 4x
 - Fixed null crash in RedirectResponse — confirmed 3x
-- Git Commit: stickers — confirmed 3x
-- Git Commit: stickers — confirmed 3x
 - Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x
 - Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in .gitignore — confirmed 3x
+- Git Commit: stickers — confirmed 3x
+- Git Commit: stickers — confirmed 3x
 
 ## Known Fixes
 

@@ -186,3 +186,34 @@ async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str
     except Exception as e:
         print(f"❌ Error enviando reacción: {e}")
         return False
+
+async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es") -> str | None:
+    """Envía un Message Template preaprobado por Meta."""
+    headers = {
+        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": numero_destino,
+        "type": "template",
+        "template": {
+            "name": template_name,
+            "language": {
+                "code": language_code
+            }
+        }
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
+            res.raise_for_status()
+            data = res.json()
+            return data.get("messages", [{}])[0].get("id")
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Error Meta Plantilla ({e.response.status_code}): {e.response.text}")
+        return None
+    except Exception as e:
+        print(f"❌ Error enviando plantilla: {e}")
+        return None

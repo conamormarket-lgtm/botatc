@@ -220,3 +220,30 @@ def cargar_stickers_de_bd(directorio: str):
         except Exception as e:
             print(f"Error cargando sticker {doc.id}: {e}")
     return count
+
+
+# ============================================================
+#  PERSISTENCIA DE PLANTILLAS EN FIRESTORE
+# ============================================================
+
+def guardar_plantilla_bd(nombre: str, idioma: str = "es"):
+    db = inicializar_firebase()
+    db.collection("bot_templates").document(nombre).set({
+        "name": nombre,
+        "language": idioma,
+        "createdAt": firestore.SERVER_TIMESTAMP
+    })
+
+def eliminar_plantilla_bd(nombre: str):
+    db = inicializar_firebase()
+    db.collection("bot_templates").document(nombre).delete()
+
+def cargar_plantillas_bd() -> list:
+    db = inicializar_firebase()
+    docs = db.collection("bot_templates").stream()
+    plantillas = []
+    for doc in docs:
+        data = doc.to_dict()
+        if "name" in data:
+            plantillas.append(data)
+    return plantillas

@@ -2,60 +2,270 @@
 > Dynamically loaded for active file: `serviceAccountKey.json` (Domain: **Config/Infrastructure**)
 
 ### 🔴 Config/Infrastructure Gotchas
-- **⚠️ GOTCHA: Fixed null crash in Response**: - # ─────────────────────────────────────────────
-+ from fastapi.responses import Response
-- #  Health check
-+ 
-- # ─────────────────────────────────────────────
-+ @app.get("/api/media/{media_id}")
-- 
-+ async def get_media_proxy(request: Request, media_id: str):
-- @app.get("/")
-+     """Proxy para obtener imágenes o stickers de WhatsApp sin exponer el token cliente."""
-- async def home_redirect():
-+     if not verificar_sesion(request):
--     return RedirectResponse("/inbox", status_code=303)
-+         raise HTTPException(status_code=403, detail="No autorizado")
-- 
-+         
-- @app.get("/health")
-+     from whatsapp_client import obtener_media_url, descargar_media
-- async def health():
-+     url = await obtener_media_url(media_id)
--     return {"status": "ok", "bot": "IA-ATC", "sesiones": len(sesiones)}
-+     if not url:
-- 
-+         return Response(content=b"", status_code=404)
-- 
-+         
-- @app.get("/admin/chat/{numero_wa}", response_class=HTMLResponse)
-+     contenido, mime_type = await descargar_media(url)
-- async def ver_chat(request: Request, numero_wa: str):
-+     if not contenido:
--     """Vista de conversación estilo WhatsApp para un número específico."""
-+         return Response(content=b"", status_code=404)
+- **⚠️ GOTCHA: Fixed null crash in ReaccionPayload**: - @app.post("/admin/toggle")
++ class ReaccionPayload(BaseModel):
+- async def toggle_bot_global(request: Request):
++     wa_id: str
+-     """Activa o desactiva el bot globalmente."""
++     message_id: str
+-     global BOT_GLOBAL_ACTIVO
++     emoji: str
 -     if not verificar_sesion(request):
-+         
--         return RedirectResponse(url=f"/admin", status_code=302)
-+     return Response(content=contenido, media_type=mime_type or "image/jpeg")
--     sesion = sesiones.get(numero_wa)
 + 
--     if not sesion:
-+ # ─────────────────────────────────────────────
--         return HTMLResponse("<h2 style='font-family:sans-serif;padding:2rem'>Sesión no encontrada o ya expiró.</h2>")
-+ #  Health check
+-         raise HTTPException(status_code=403, detail="No autorizado")
++ @app.post("/api/admin/reaccionar")
+-     BOT_GLOBAL_ACTIVO = not BOT_GLOBAL_ACTIVO
++ async def admin_reaccionar(payload: ReaccionPayload, request: Request):
+-     estado = "ACTIVADO" if BOT_GLOBAL_ACTIVO else "APAGADO"
++     """Permite al operador reaccionar a un mensaje del usuario."""
+-     print(f"  [\u26a1 Bot {estado} globalmente desde panel admin]")
++     if not verificar_sesion(request):
+-     return RedirectResponse(url=f"/admin", status_code=303)
++         return {"ok": False, "error": "No autorizado"}
 - 
-+ # ─────────────────────────────────────────────
--     nombre  = sesion.get("nombre_cliente", numero_wa)
-+ 
--     pedido  = sesion.get("datos_pedido", {}).get("id", "—") if sesion.get("datos_pedido") else "—"
-+ @app.get("/")
--     estado  = sesion.get("datos
++     
+- @app.get("/api/debug/historial/{wa_id}")
++     from whatsapp_client import enviar_reaccion_async
+- async def debug_historial(wa_id: str):
++     exito = await enviar_reaccion_async(payload.wa_id, payload.message_id, payload.emoji)
+-     if wa_id in sesiones:
++     
+-         return JSONResponse(sesiones[wa_id]["historial"])
++     if exito:
+-     return {"status": "none"}
++         # Añadir al historial local? (Opcional, pero para mantener registro)
+- 
++         s = sesiones.get(payload.wa_id)
+- 
++         if s:
+- 
++             s["historial"].append({"role": "assistant", "content": f"*[Reacción enviada: {payload.emoji}]*"})
+- from fastapi.responses import Response
++             s["ultima_actividad"] = datetime.utcnow()
+- 
++             try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(payload.wa_id, s)
+- @app.get("/api/media/{media_id}")
++             except: pass
+- async def get_media_proxy(request: Request, media_id: str):
++         return {"ok": True}
+-     """Proxy para obtener imágenes o stickers de WhatsApp sin e
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
+- **⚠️ GOTCHA: Fixed null crash in Stickers**: -             </div>
++                 <button type="button" onclick="toggleStickersMenu()" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">😎 Stickers Extras</button>
+-             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
++             </div>
+-                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
++             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
+-                 <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</button>
++                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
+-             </div>
++                 <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</butto
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
 
 ### 📐 Config/Infrastructure Conventions & Fixes
+- **[what-changed] what-changed in inbox.html**: - </html>
++ </html>
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[problem-fix] Fixed null crash in Inter — prevents null/undefined runtime crashes**: -     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
++     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+-     <style>
++     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+-         :root {
++     <style>
+-             /* 1. Nivel de Color Principal */
++         :root {
+-             --primary-color: #3b82f6;       
++             /* 1. Nivel de Color Principal */
+-             --primary-hover: #2563eb;       
++             --primary-color: #3b82f6;       
+-             /* 2. Nivel de Color de Acento */
++             --primary-hover: #2563eb;       
+-             --accent-bg: #1e293b;           
++             /* 2. Nivel de Color de Acento */
+-             --accent-border: #334155;       
++             --accent-bg: #1e293b;           
+-             --accent-hover-soft: #334155;   
++             --accent-border: #334155;       
+-             /* 3. Nivel de Color de Fondo General */
++             --accent-hover-soft: #334155;   
+-             --bg-main: #0f172a;             
++             /* 3. Nivel de Color de Fondo General */
+-             /* 4. Tipografías */
++             --bg-main: #0f172a;             
+-             --font-main: 'Inter', sans-serif;
++             /* 4. Tipografías */
+-             --font-heading: 'Outfit', sans-serif;
++             --font-main: 'Inter', sans-serif;
+-             /* Otros */
++             --font-heading: 'Outfit', sans-serif;
+-             --text-main: #f8fafc;           
++             /* Otros */
+-             --text-muted: #94a3b8;          
++             --text-main: #f8fafc;           
+-             --danger-color: #ef4444;        
++             --text-muted: #94a3b8;          
+-             --success-color: #10b981;       
++             --danger-c
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[problem-fix] Fixed null crash in True**: -     
++     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
+-     # SECCIÓN NUEVA: BUSCADOR / NUEVO CHAT en el HTML de admin (o inbox)
++     escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
+-     # Nota: La instrucción pide insertar esto en el div list-header de inbox.html
++     n_escalados = len(escalados)
+-     # Aquí se mantiene la lógica de sesiones existente.
++     n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
+-     
++ 
+-     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
++     def tiempo_relativo(dt):
+-     escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
++         diff = ahora - dt
+-     n_escalados = len(escalados)
++         m = int(diff.total_seconds() / 60)
+-     n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
++         if m < 1:   return "ahora"
+- 
++         if m < 60:  return f"hace {m}m"
+-     def tiempo_relativo(dt):
++         return f"hace {m//60}h {m%60}m"
+-         diff = ahora - dt
++ 
+-         m = int(diff.total_seconds() / 60)
++     def ultimo_msg(sesion):
+-         if m < 1:   return "ahora"
++         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
+-         if m < 60:  return f"hace {m}m"
++         if not hist: return "—"
+-         return f"hace {m//60}h {m%60}m"
++         return hist[-1]["content"][:60] + ("…" if len(hist[-1]["content"]) > 60 else "")
+-     def ultimo_msg(sesion):
++     # ── Tabla: Esperando humano ──────────────────────────
+-         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
++     filas_esc = ""
+-         if not hist: return "—"
++     for num, s in escalados:
+-         return hist[-1]["content"][:60] + ("…" if len(hist[-1]["content"]) > 60 else "")
++         hace   = tiempo_relativo(s["escalado_en"])
+- 
++         nombre = s.get("nombre_cliente", num)
+-     
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
+- **[decision] Optimized PERSISTENCIA**: + # ============================================================
++ #  PERSISTENCIA DE STICKERS EN FIRESTORE
++ # ============================================================
++ import base64
++ 
++ def guardar_sticker_en_bd(filename: str, file_bytes: bytes):
++     """Guarda físicamente un archivo en la base de datos convirtiéndolo a Base64."""
++     db = inicializar_firebase()
++     b64_data = base64.b64encode(file_bytes).decode('utf-8')
++     db.collection("bot_stickers").document(filename).set({
++         "filename": filename,
++         "base64": b64_data,
++         "updatedAt": firestore.SERVER_TIMESTAMP
++     })
++ 
++ def cargar_stickers_de_bd(directorio: str):
++     """Descarga todos los stickers desde Firestore al directorio temporal en memoria."""
++     db = inicializar_firebase()
++     docs = db.collection("bot_stickers").limit(300).stream()
++     import os
++     os.makedirs(directorio, exist_ok=True)
++     count = 0
++     for doc in docs:
++         try:
++             data = doc.to_dict()
++             filename = data.get("filename")
++             b64 = data.get("base64")
++             if filename and b64:
++                 filepath = os.path.join(directorio, filename)
++                 with open(filepath, "wb") as f:
++                     f.write(base64.b64decode(b64))
++                 count += 1
++         except Exception as e:
++             print(f"Error cargando sticker {doc.id}: {e}")
++     return count
++ 
+
+📌 IDE AST Context: Modified symbols likely include [inicializar_firebase, _buscar, buscar_pedido_por_telefono, buscar_pedido_por_id, guardar_sesion_chat]
+- **[convention] Fixed null crash in GICA — confirmed 4x**: -         };
++         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
+- 
++         const uploadMedia = async (file) => {
+-         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
++             const input = document.getElementById('manualMsgInput');
+-         const uploadMedia = async (file) => {
++             if(!input) return;
+-             const input = document.getElementById('manualMsgInput');
++             
+-             if(!input) return;
++             // UI Feedback
+-             
++             input.placeholder = "Subiendo imagen a WhatsApp... ⏳";
+-             // UI Feedback
++             input.disabled = true;
+-             input.placeholder = "Subiendo imagen a WhatsApp... ⏳";
++             
+-             input.disabled = true;
++             const formData = new FormData();
+-             
++             formData.append("file", file);
+-             const formData = new FormData();
++             
+-             formData.append("file", file);
++             try {
+-             
++                 const res = await fetch('/api/admin/upload_media', {
+-             try {
++                     method: 'POST',
+-                 const res = await fetch('/api/admin/upload_media', {
++                     body: formData
+-                     method: 'POST',
++                 });
+-                     body: formData
++                 const data = await res.json();
+-                 });
++                 
+-                 const data = await res.json();
++                 if(data.ok && data.media_id) {
+-                 
++                     input.value += `[imagen:${data.media_id}] `;
+-                 if(data.ok && data.media_id) {
++                 } else {
+-                     input.value += `[imagen:${data.media_id}] `;
++                     alert("Error subiendo: " + (data.error || "Desconocido"));
+-                 } else {
++                 }
+-                     alert("Error su
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in server.py**: -             burbujas += f'<div class="bubble {clase} {lado}" onclick="document.getElementById(\\'manualMsgInput\\').value = \\'> \\' + this.innerText.trim() + \\'\\\\n\\\\n\\' + document.getElementById(\\'manualMsgInput\\').value; document.getElementById(\\'manualMsgInput\\').focus();" style="cursor:pointer;" title="Click para citar este mensaje">{texto_renderizado}</div>'
++             burbujas += f"""<div class="bubble {clase} {lado}" onclick="document.getElementById('manualMsgInput').value = '> ' + this.innerText.trim() + '\\n\\n' + document.getElementById('manualMsgInput').value; document.getElementById('manualMsgInput').focus();" style="cursor:pointer;" title="Click para citar este mensaje">{texto_renderizado}</div>"""
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
+- **[problem-fix] problem-fix in server.py**: -                     return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
++                     return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/150x150?text=Sticker';"></div>"""
+-                     return f'<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';"></div>'
++                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
+- **[what-changed] what-changed in prompts.py**: -     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer)
++     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer y es su primer mensaje)
+-     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre)
++     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre y es su primer mensaje)
+
+📌 IDE AST Context: Modified symbols likely include [_GUIA_CACHE, _obtener_guia, get_system_prompt, MENSAJE_BIENVENIDA]
 - **[what-changed] what-changed in config.py**: - GEMINI_MODEL   = "gemini-1.5-flash"
 + GEMINI_MODEL   = "gemini-2.5-flash"
 
@@ -149,235 +359,3 @@
 + 
 
 📌 IDE AST Context: Modified symbols likely include [ORDEN_ETAPAS, cache_pedidos, notificar_whatsapp, _enviar_plantilla_1, _enviar_plantilla_2]
-- **[decision] Optimized Prevenir**: -     # deudaTotal podría no existir, asumimos 0 por defecto o extraemos de donde debe ser
-+     try: deuda_nueva = float(pedido.get("deudaTotal", 0))
--     try:
-+     except: deuda_nueva = 0
--         deuda_nueva = float(pedido.get("deudaTotal", 0))
-+         
--     except:
-+     estado_viejo = cache_pedidos.get(doc_id, {}).get("estadoGeneral", "")
--         deuda_nueva = 0
-+     deuda_vieja = cache_pedidos.get(doc_id, {}).get("deudaTotal", -1)
--         
-+     
--     estado_viejo = cache_pedidos.get(doc_id, {}).get("estadoGeneral", "")
-+     # Prevenir alertas al cargar por primera vez un documento modificado
--     deuda_vieja = cache_pedidos.get(doc_id, {}).get("deudaTotal", -1)
-+     if not estado_viejo or deuda_vieja == -1:
--     
-+         return
--     # Ignorar si es el mismo estado y misma deuda
-+ 
--     if estado_nuevo == estado_viejo and deuda_nueva == deuda_vieja:
-+     # Escenario 1: Acaba de pagar su deuda al 100% Y se encuentra en Preparación
--         return
-+     # (Puede haber llegado a Preparación en este instante, o ya estar allí y recién pagar)
-- 
-+     if estado_nuevo == "Preparación" and deuda_nueva == 0 and deuda_vieja > 0:
--     # Escenario 1: Pagó al 100% (deuda bajó a 0) Y pasó a Preparación
-+         _enviar_plantilla_1(pedido)
--     if estado_nuevo == "Preparación" and deuda_nueva == 0 and deuda_vieja > 0:
-+         return
--         _enviar_plantilla_1(pedido)
-+ 
--     
-+     # Escenario 2: Cambio hacia una etapa posterior en estadoGeneral
--     # Escenario 2: Cambio de etapa normal hacia un estado MAYOR
-+     if estado_nuevo != estado_viejo:
--     elif estado_nuevo != estado_viejo:
-+         peso_nuevo = ORDEN_ETAPAS.get(estado_nuevo, 0)
--         peso_nuevo = ORDEN_ETAPAS.get(estado_nuevo, 0)
-+         peso_viejo = ORDEN_ETAPAS.get(estado_viejo, 0)
--         peso_viejo = ORDEN_ETAPAS.get(estado_viejo, 0)
-+         
--         
-+         # Si avanza y es mayor que Diseño
--             # Excluimos "Preparación" si acaba de pasar de (deuda_
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [ORDEN_ETAPAS, cache_pedidos, notificar_whatsapp, _enviar_plantilla_1, _enviar_plantilla_2]
-- **[trade-off] trade-off in prompts.py**: -         prompt += "\n--- DATOS DE LOS PEDIDOS DEL CLIENTE (información real en tiempo real) ---\n"
-+         prompt += "\n--- DATOS DE LOS PEDIDOS DEL CLIENTE (información real del sistema) ---\n"
--         from firebase_client import calcular_cola_pedido
-+         for i, pedido in enumerate(datos_pedido):
--         
-+             nombre    = f"{pedido.get('clienteNombre', '')} {pedido.get('clienteApellidos', '')}".strip()
--         for i, pedido in enumerate(datos_pedido):
-+             estado    = pedido.get("estadoGeneral", "No disponible")
--             nombre    = f"{pedido.get('clienteNombre', '')} {pedido.get('clienteApellidos', '')}".strip()
-+             id_pedido = pedido.get("id", "N/A")
--             estado    = pedido.get("estadoGeneral", "No disponible")
-+             
--             id_pedido = pedido.get("id", "N/A")
-+             prompt += f"Pedido {i+1}:\n"
--             
-+             prompt += f"- Nombre del cliente : {nombre}\n"
--             # Nuevos datos (Provincia, Deuda, Puesto)
-+             prompt += f"- N° de pedido       : {id_pedido}\n"
--             provincia = pedido.get("clienteProvincia", "No especificada").strip()
-+             prompt += f"- Estado actual      : {estado}\n\n"
--             
-+         prompt += "--- FIN DE DATOS ---\n"
--             # Finanzas (deuda) -> Revisar el dict 'cobro'
-+         prompt += "IMPORTANTE: Si el cliente consulta sobre su pedido y tiene más de uno, pregúntale amable y explícitamente sobre cuál de los pedidos mencionados necesita ayuda, dándole los detalles por ID o producto.\n"
--             cobro = pedido.get("cobro", {})
-+     else:
--             restante = cobro.get("restante", -1)
-+         prompt += """
--             if restante == 0:
-+ --- DATOS DEL PEDIDO ---
--                 finanzas = "Pagado al 100% (Deuda cero)"
-+ Aún no tienes datos de ningún pedido específico.
--             elif restante > 0:
-+ Solo pide el identificador si el cliente pregunta por SU pedido en particular.
--       
-… [diff truncated]
-- **[problem-fix] problem-fix in firebase_client.py**: - def calcular_cola_pedido(pedido: dict) -> int:
--     """
--     Calcula el puesto exacto de un pedido comparando cuántos IDs 
--     (secuencias más antiguas) existen en la misma etapa (estadoGeneral).
--     """
--     estado = pedido.get("estadoGeneral")
--     pid = pedido.get("id")
--     if not estado or not pid: return 0
--     
--     db = inicializar_firebase()
--     try:
--         docs = db.collection(COLECCION_PEDIDOS).where(filter=FieldFilter("estadoGeneral", "==", estado)).get()
--         puesto = 1
--         for d in docs:
--             data = d.to_dict()
--             other_id = data.get("id", "")
--             if other_id and other_id < pid:
--                 puesto += 1
--         return puesto
--     except Exception as e:
--         print(f"Error cola: {e}")
--         return 0
-- 
-
-📌 IDE AST Context: Modified symbols likely include [inicializar_firebase, _buscar, buscar_pedido_por_telefono, buscar_pedido_por_id]
-- **[what-changed] Replaced auth server**: -             max_output_tokens=300,
-+             max_output_tokens=800,
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
-- **[convention] Fixed null crash in Mapeamos — protects against XSS and CSRF token theft — confirmed 4x**: -         # Mapeamos el historial resto a formato Gemini
-+         # Mapeamos el historialresto a formato Gemini, uniendo roles consecutivos si los hay
--             gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
-+             
--             
-+             # Si el último mensaje es del mismo rol, simplemente anexamos el texto para no romper la regla
--         config = types.GenerateContentConfig(
-+             if gemini_contents and gemini_contents[-1]["role"] == role:
--             system_instruction=system_text,
-+                 gemini_contents[-1]["parts"][0]["text"] += f"\n\n{msg['content']}"
--             temperature=TEMPERATURE,
-+             else:
--             max_output_tokens=300,
-+                 gemini_contents.append({"role": role, "parts": [{"text": msg["content"]}]})
--         )
-+             
--         
-+         config = types.GenerateContentConfig(
--         response = gemini_client.models.generate_content(
-+             system_instruction=system_text,
--             model=GEMINI_MODEL,
-+             temperature=TEMPERATURE,
--             contents=gemini_contents,
-+             max_output_tokens=300,
--             config=config,
-+         )
--         )
-+         
--         return response.text.strip()
-+         response = gemini_client.models.generate_content(
--     except Exception as e:
-+             model=GEMINI_MODEL,
--         import traceback
-+             contents=gemini_contents,
--         with open("error_gemini.txt", "w") as f:
-+             config=config,
--             f.write(traceback.format_exc())
-+         )
--         print(f"❌ Error Gemini: {e}")
-+         return response.text.strip()
--         return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
-+     except Exception as e:
-- 
-+         import traceback
-- 
-+         with open("error_gemini.txt", "w") as f:
-- def recortar_historial(historial: list[dict]) -> list[dict]:
-+             f.writ
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, sesiones, BOT_GLOBAL_ACTIVO, mensajes_pendientes]
-- **[problem-fix] problem-fix in test_groq.py**: File updated (external): test_groq.py
-
-Content summary (10 lines):
-﻿from dotenv import load_dotenv
-load_dotenv()
-import os, groq
-client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
-try:
-  resp = client.chat.completions.create(model='llama3-8b-8192', messages=[{'role': 'user', 'content': 'hola'}], max_tokens=10)
-  print('OK:', resp.choices[0].message.content)
-except Exception as e:
-  print('ERROR:', e)
-
-- **[what-changed] Replaced dependency server**: -     from whatsapp_client import enviar_mensaje_texto, enviar_media
-+     from whatsapp_client import enviar_mensaje, enviar_media
--             else: await enviar_mensaje_texto(wa_id, p)
-+             else: enviar_mensaje(wa_id, p)
-
-📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
-- **[convention] Fixed null crash in Procesar — protects against XSS and CSRF token theft — confirmed 3x**: -     sesion["historial"].append({"role": "user", "content": texto_modelo})
-+     if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
--     sesion["historial"] = recortar_historial(sesion["historial"])
-+         sesion["historial"][-1]["content"] = texto_modelo
-- 
-+     else:
--     respuesta_bot = llamar_groq(sesion["historial"])
-+         sesion["historial"].append({"role": "user", "content": texto_modelo})
-- 
-+         
--     # ── Procesar escalación si el modelo la detectó ───────
-+     sesion["historial"] = recortar_historial(sesion["historial"])
--     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
-+ 
-- 
-+     respuesta_bot = llamar_groq(sesion["historial"])
--     # ── Guardar respuesta en historial ────────────────────
-+ 
--     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
-+     # ── Procesar escalación si el modelo la detectó ───────
-- 
-+     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
--     # ── Enviar respuesta al cliente por WhatsApp ──────────
-+ 
--     print(f"🤖 María: {respuesta_final[:80]}...")
-+     # ── Guardar respuesta en historial ────────────────────
--     if not is_simulacion:
-+     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
--         from whatsapp_client import enviar_mensaje, enviar_media
-+ 
--         
-+     # ── Enviar respuesta al cliente por WhatsApp ──────────
--         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
-+     print(f"🤖 María: {respuesta_final[:80]}...")
--         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
-+     if not is_simulacion:
--         for p in partes:
-+         from whatsapp_client import enviar_mensaje, enviar_media
--             p = p.strip()
-+         
--             if not p: continue
-+         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
--             
-+         p
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, groq_client, sesiones, BOT_GLOBAL_ACTIVO, REGEX_ESCALAR]
-- **[convention] what-changed in .gitignore — confirmed 3x**: - 隧道_log.txt
-+ 隧道_log.txt
