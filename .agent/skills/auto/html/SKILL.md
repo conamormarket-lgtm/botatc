@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 18 conventions, 33 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 19 conventions, 35 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **90 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **98 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,43 @@ Auto-compiled from **90 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- <head>
++ 
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Inbox - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google: Inter para lectura,
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- 
++ <head>
+- <head>
++     <meta charset="UTF-8">
+-     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <title>Inbox - IA-ATC</title>
+-     <title>Inbox - IA-ATC</title>
++     <!-- F
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
 
 ### Fixed null crash in Inbox — prevents null/undefined runtime crashes
 - 
@@ -324,41 +361,5 @@ Auto-compiled from **90 real patterns** in **botatc**. This skill is auto-routed
 3. identifier: Configuraci
 4. identifier: Agente
 5. identifier: ATC
-
-### Fixed null crash in Custom — prevents null/undefined runtime crashes
--     </style>
-+     
-- </head>
-+         /* Custom Scrollbar for all */
-- <body class="{body_class}">
-+         ::-webkit-scrollbar {
-- 
-+             width: 8px;
--     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
-+             height: 8px;
--     <nav class="sidebar-nav">
-+         }
--         <!-- Inbox Icon -->
-+         ::-webkit-scrollbar-track {
--   
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Custom
-3. identifier: Scrollbar
-4. identifier: BARRA
-5. identifier: LATERAL
-
-### Fixed null crash in Crear — parallelizes async operations for speed
--                     <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-+                     <div style="padding:1.2rem 1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center; background:var(--accent-bg);">
--                         <h3 id="mo
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Crear
-3. identifier: Respuesta
-4. identifier: Atajo
-5. i
 
 ... [Truncated — see individual observations for full content]

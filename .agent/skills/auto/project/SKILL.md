@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 69 gotchas, 62 conventions, 23 fixes."
+description: "Project for botatc. 72 gotchas, 63 conventions, 23 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **305 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **311 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **305 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - Fixed null crash in Inbox — prevents null/undefined runtime cra |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Added JWT tokens authentication — evol |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 595 notes - Score threshold: >40 + > 648 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ G |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - Patched security issue K |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
@@ -65,9 +68,6 @@ Auto-compiled from **305 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - gotcha in shared-context.json - - ⚠️ GOTCHA: proble |
 | ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Fixed null  |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes + - problem-fix in sh |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes + - problem-fix in ag |
-| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (75 lines): # Project Intelligen |
-| Agent: follow existing project patterns — don't in | Agent: follow existing project patterns — don't introduce a different style |
 
 ## 🔧 Problem Playbooks
 
@@ -173,7 +173,6 @@ Auto-compiled from **305 real patterns** in **botatc**. This skill is auto-route
 + - Fixed null crash in Inbox — prevents null/undefined runtime crashes
 - - Patched security issue Kevin — hardens HTTP security headers
 + - problem-fix in shared-context.json
-- - problem-fix in patcher.py
-+ - Patched security issue Kevin — ha
+- - problem-fix in patch
 
 ... [Truncated — see individual observations for full content]

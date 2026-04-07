@@ -11,24 +11,26 @@
         rel="stylesheet">
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
     <style>
-        :root {
+                :root {
             /* 1. Nivel de Color Principal */
-            --primary-color: #3b82f6;
-            --primary-hover: #2563eb;
-            /* 2. Nivel de Color de Acento */
-            --accent-bg: #1e293b;
-            --accent-border: #334155;
-            --accent-hover-soft: #334155;
+            --primary-color: #3b82f6;       
+            --primary-hover: #2563eb;       
+            /* 2. Nivel de Color de Acento (translúcidos adaptables) */
+            --accent-bg: rgba(255, 255, 255, 0.05);           
+            --accent-border: rgba(255, 255, 255, 0.1);       
+            --accent-hover-soft: rgba(255, 255, 255, 0.08);   
             /* 3. Nivel de Color de Fondo General */
-            --bg-main: #213668;
+            --bg-main: #213668;             
+            --bg-sidebar: #17264a;
+            --bg-list: #1b2d56;
             /* 4. Tipografías */
             --font-main: 'Inter', sans-serif;
             --font-heading: 'Outfit', sans-serif;
-            /* Otros */
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --danger-color: #ef4444;
-            --success-color: #10b981;
+            /* 5. Texto y Estados */
+            --text-main: #f8fafc;           
+            --text-muted: #cbd5e1;          
+            --danger-color: #ef4444;        
+            --success-color: #10b981;       
         }
 
         /* RESET Y BASE */
@@ -56,7 +58,7 @@
         /* LAYOUT PRINCIPAL (3 Columnas en Desktop) */
         .sidebar-nav {
             width: 55px;
-            background-color: var(--bg-main);
+            background-color: var(--bg-sidebar);
             border-right: 1px solid var(--accent-border);
             display: flex;
             flex-direction: column;
@@ -67,7 +69,7 @@
 
         .chat-list-panel {
             width: 340px;
-            background-color: var(--bg-main);
+            background-color: var(--bg-list);
             border-right: 1px solid var(--accent-border);
             display: flex;
             flex-direction: column;
@@ -126,17 +128,9 @@
             height: 12px;
             border-radius: 50%;
 
-            background-color: {
-                color_global
-            }
+            background-color: {color_global};
 
-            ;
-
-            box-shadow: 0 0 10px {
-                color_global
-            }
-
-            ;
+            box-shadow: 0 0 10px {color_global};
             cursor: pointer;
         }
 
@@ -312,9 +306,7 @@
             color: var(--text-main);
         }
 
-            {
-            chat_view_css
-        }
+            {chat_view_css}
 
         /* ==================================================
            RESPONSIVE DESIGN (MÓVIL / TABLET)
@@ -335,9 +327,9 @@
                 order: 3;
                 /* Al final de la columna */
                 justify-content: space-around;
-                background-color: var(--bg-main);
+                background-color: var(--bg-sidebar);
                 /* para tapar info detrás si es necesario */
-            }
+        }
 
             .nav-item {
                 margin-bottom: 0;
@@ -366,11 +358,11 @@
             /* Si class="view-chat", muestra chat y oculta lista */
             body.view-chat .chat-list-panel {
                 display: none !important;
-            }
+        }
 
             body.view-chat .sidebar-nav {
                 display: none !important;
-            }
+        }
 
             /* Ocultar tab bar inferior en el chat si se desea más espacio */
 
@@ -1237,7 +1229,19 @@
                             });
                             element.style.boxShadow = `0 0 0 2px var(--bg-main), 0 0 0 4px ${color}`;
                         }
-                    </script>
+                    
+        // Pure ESC to exit chat
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const tab = urlParams.get('tab') || 'all';
+                    window.location.href = `/inbox?tab=${tab}`;
+                }
+            }
+        });
+
+</script>
                 </div>
 
                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
