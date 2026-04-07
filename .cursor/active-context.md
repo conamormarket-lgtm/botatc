@@ -1,361 +1,445 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `serviceAccountKey.json` (Domain: **Config/Infrastructure**)
+> Dynamically loaded for active file: `check_js2.py` (Domain: **Generic Logic**)
 
-### 🔴 Config/Infrastructure Gotchas
-- **⚠️ GOTCHA: Fixed null crash in ReaccionPayload**: - @app.post("/admin/toggle")
-+ class ReaccionPayload(BaseModel):
-- async def toggle_bot_global(request: Request):
-+     wa_id: str
--     """Activa o desactiva el bot globalmente."""
-+     message_id: str
--     global BOT_GLOBAL_ACTIVO
-+     emoji: str
--     if not verificar_sesion(request):
+### 🔴 Generic Logic Gotchas
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse**: -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
++     html = html.replace("{labels_filter_html}", labels_filter_html)
+-     html = html.replace("{chat_view_css}", chat_view_css)
++     html = html.replace("{chat_viewer_html}", chat_viewer_html)
+-     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
++     html = html.replace("{chat_view_css}", chat_view_css)
+-     
++     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
+-     return HTMLResponse(html)
++     
+- 
++     return HTMLResponse(html)
+- @app.get("/inbox", response_class=HTMLResponse)
 + 
--         raise HTTPException(status_code=403, detail="No autorizado")
-+ @app.post("/api/admin/reaccionar")
--     BOT_GLOBAL_ACTIVO = not BOT_GLOBAL_ACTIVO
-+ async def admin_reaccionar(payload: ReaccionPayload, request: Request):
--     estado = "ACTIVADO" if BOT_GLOBAL_ACTIVO else "APAGADO"
-+     """Permite al operador reaccionar a un mensaje del usuario."""
--     print(f"  [\u26a1 Bot {estado} globalmente desde panel admin]")
-+     if not verificar_sesion(request):
--     return RedirectResponse(url=f"/admin", status_code=303)
-+         return {"ok": False, "error": "No autorizado"}
+- async def inbox_main(request: Request, tab: str = "all"):
++ @app.get("/inbox", response_class=HTMLResponse)
+-     return renderizar_inbox(request, None, tab)
++ async def inbox_main(request: Request, tab: str = "all", label: str = None):
 - 
-+     
-- @app.get("/api/debug/historial/{wa_id}")
-+     from whatsapp_client import enviar_reaccion_async
-- async def debug_historial(wa_id: str):
-+     exito = await enviar_reaccion_async(payload.wa_id, payload.message_id, payload.emoji)
--     if wa_id in sesiones:
-+     
--         return JSONResponse(sesiones[wa_id]["historial"])
-+     if exito:
--     return {"status": "none"}
-+         # Añadir al historial local? (Opcional, pero para mantener registro)
++     return renderizar_inbox(request, None, tab, label)
+- from typing import List
++ 
 - 
-+         s = sesiones.get(payload.wa_id)
-- 
-+         if s:
-- 
-+             s["historial"].append({"role": "assistant", "content": f"*[Reacción enviada: {payload.emoji}]*"})
-- from fastapi.responses import Response
-+             s["ultima_actividad"] = datetime.utcnow()
-- 
-+             try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(payload.wa_id, s)
-- @app.get("/api/media/{media_id}")
-+             except: pass
-- async def get_media_proxy(request: Request, media_id: str):
-+         return {"ok": True}
--     """Proxy para obtener imágenes o stickers de WhatsApp sin e
++ from typing import List
+- @app.post("/api/admin/stickers/upload")
++ 
+- async def upload_stickers(files: List[UploadFile] = File(...)):
++ @app.post("/api/admin/stickers/upload")
+-     """Recibe múltiples archivos webp/png, los guarda en disco ephemeral y sincroniza a Firestore."""
++ async def upload_stickers(files: List[UploadFile] = File(...)):
+-     try:
++     """Recibe múltiples archivos webp/png, los guarda en disco ephemeral y sincroniza a Firestore."""
+-         import os
++     try:
+-         from firebase_client import guardar_sticker_en_bd
++         import os
+-         os.makedirs("static/stickers", exist_ok=True)
++         from firebase_client import guardar_sticker_en_bd
+-         count = 0
++         os.makedirs("static/stickers", exist_ok=True)
+-         for file in files:
++         count = 0
+-             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
++         for file in files:
+-                 # Extraemos solo el nombre del archivo, 
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
-- **⚠️ GOTCHA: Fixed null crash in Stickers**: -             </div>
-+                 <button type="button" onclick="toggleStickersMenu()" style="padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid var(--accent-border); background: var(--bg-main); cursor: pointer; font-size: 0.85rem; white-space: nowrap; color: var(--text-main); font-weight: 500; transition: background 0.2s;">😎 Stickers Extras</button>
--             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
-+             </div>
--                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
-+             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
--                 <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</button>
-+                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **⚠️ GOTCHA: Fixed null crash in None**: -         chat_viewer_html = f"""
++         session_tags = s.get("etiquetas", [])
+-         {status_bar}
++         tags_bar = ""
+-         <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
++         for tid in session_tags:
+-             <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
++             lbl = next((l for l in global_labels if l.get("id") == tid), None)
+-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
++             if lbl:
+-             </a>
++                 tags_bar += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
+-             <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
++ 
+-             <div style="min-width:0">
++         chat_viewer_html = f"""
+-                 <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{nombre_chat}</h3>
++         {status_bar}
+-                 <small style="color:var(--text-muted)">+{wa_id}</small>
++         <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
 -             </div>
-+                 <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</butto
++             <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
+-         </div>
++                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **⚠️ GOTCHA: Updated typing database schema**: - 
++ 
++ 
++ # ============================================================
++ #  API DE GESTOR DE ETIQUETAS Y ASIGNACIONES
++ # ============================================================
++ 
++ from typing import Optional
++ 
++ class LabelPayload(BaseModel):
++     id: str
++     name: Optional[str] = None
++     color: Optional[str] = None
++ 
++ @app.post("/api/admin/labels/save")
++ async def api_save_label(payload: LabelPayload, request: Request):
++     if not verificar_sesion(request):
++         raise HTTPException(status_code=403, detail="No autorizado")
++     from firebase_client import guardar_etiqueta_bd
++     guardar_etiqueta_bd(payload.id, payload.name, payload.color)
++     global global_labels
++     global_labels = [l for l in global_labels if l.get("id") != payload.id]
++     global_labels.append({"id": payload.id, "name": payload.name, "color": payload.color})
++     return {"ok": True}
++ 
++ @app.post("/api/admin/labels/delete")
++ async def api_delete_label(payload: LabelPayload, request: Request):
++     if not verificar_sesion(request):
++         raise HTTPException(status_code=403, detail="No autorizado")
++     from firebase_client import eliminar_etiqueta_bd
++     eliminar_etiqueta_bd(payload.id)
++     global global_labels
++     global_labels = [l for l in global_labels if l.get("id") != payload.id]
++     
++     # Quitar etiqueta de sesiones cargadas
++     for k, s in sesiones.items():
++         if "etiquetas" in s and payload.id in s["etiquetas"]:
++             s["etiquetas"].remove(payload.id)
++     return {"ok": True}
++ 
++ @app.get("/api/admin/labels/list")
++ async def api_list_labels(request: Request):
++     if not verificar_sesion(request):
++         raise HTTPException(status_code=403, detail="No autorizado")
++     return {"ok": True, "labels": global_labels}
++ 
++ class AssignLabelPayload(BaseModel):
++     wa_id: str
++     label_ids: list
++ 
++ @app.post("/api/admin/chats/labels")
++ async def api_assign_cha
+… [diff truncated]
 
-### 📐 Config/Infrastructure Conventions & Fixes
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+
+### 📐 Generic Logic Conventions & Fixes
+- **[what-changed] what-changed in .gitignore**: - 隧道_log.txt
++ 隧道_log.txt
+- **[problem-fix] Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes**: -     if not verificar_sesion(request):
++     # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
+-         return HTMLResponse(obtener_login_html(), status_code=401)
++     global global_labels
+- 
++     if not global_labels:
+-     import os
++         try:
+-     if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
++             from firebase_client import cargar_etiquetas_bd
+-         
++             global_labels = cargar_etiquetas_bd()
+-     with open("inbox.html", "r", encoding="utf-8") as f:
++         except: pass
+-         html = f.read()
++ 
+- 
++     if not verificar_sesion(request):
+-     ahora = datetime.utcnow()
++         return HTMLResponse(obtener_login_html(), status_code=401)
+-     
++ 
+-     def tiempo_relativo(dt):
++     import os
+-         diff = ahora - dt
++     if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
+-         m = int(diff.total_seconds() / 60)
++         
+-         if m < 1:   return "ahora"
++     with open("inbox.html", "r", encoding="utf-8") as f:
+-         if m < 60:  return f"{m}m"
++         html = f.read()
+-         if m < 1440: return f"{m//60}h"
++ 
+-         return f"{m//1440}d"
++     ahora = datetime.utcnow()
+- 
++     
+-     def ultimo_msg(sesion):
++     def tiempo_relativo(dt):
+-         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
++         diff = ahora - dt
+-         if not hist: return "—"
++         m = int(diff.total_seconds() / 60)
+-         return hist[-1]["content"][:50] + ("…" if len(hist[-1]["content"]) > 50 else "")
++         if m < 1:   return "ahora"
+- 
++         if m < 60:  return f"{m}m"
+-     # Procesar Lista de Chats
++         if m < 1440: return f"{m//60}h"
+-     todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True)
++         return f"{m//1440}d"
+-     lista_chats_html = ""
++ 
+-     
++     def ultimo_msg(ses
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[convention] Fixed null crash in Simular — confirmed 3x**: -                     document.getElementById('rightSidebar').style.display = 'none';
++                     
+-                     if (window.enviarMensajeManual) {{
++                     document.getElementById('rightSidebar').style.display = 'none';
+-                         window.enviarMensajeManual(new Event('submit'), '{wa_id}');
++                     
+-                     }}
++                     // Simular clic en el botón de "Enviar" del formulario
+-                 }}
++                     const form = input.closest('form');
+-             }}
++                     if(form) {{
+-             function checkQuickReplyTrigger(input) {{
++                         const btn = form.querySelector('button[type="submit"]');
+-                 if(input.value.endsWith("/")) {{
++                         if(btn) btn.click();
+-                     const side = document.getElementById('rightSidebar');
++                     }}
+-                     if(side){{
++                 }}
+-                         side.style.display = 'flex';
++             }}
+-                         cargarQuickReplies();
++             function checkQuickReplyTrigger(input) {{
+-                         setTimeout(()=> document.getElementById('qrSearchFilter').focus(), 50);
++                 if(input.value.endsWith("/")) {{
+-                     }}
++                     const side = document.getElementById('rightSidebar');
+-                 }}
++                     if(side){{
+-             }}
++                         side.style.display = 'flex';
+-             
++                         cargarQuickReplies();
+-             function abrirModalCrearQR() {{
++                         setTimeout(()=> document.getElementById('qrSearchFilter').focus(), 50);
+-                 const m = document.getElementById('qrCreateModal');
++                     }}
+-                 if(m) {{
++                 }}
+-                     document.getElementById('newQrTitle').value = '';
+
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[problem-fix] Added error handling Respuestas — wraps unsafe operation in error boundary**: -             async function cargarQuickReplies() {
++             async function cargarQuickReplies() {{
+-                 try {
++                 try {{
+-                 } catch(e) {
++                 }} catch(e) {{
+-                 }
++                 }}
+-             }
++             }}
+-             function renderQuickReplies(data) {
++             function renderQuickReplies(data) {{
+-                 if(data.length === 0) {
++                 if(data.length === 0) {{
+-                 }
++                 }}
+-                 data.forEach(qr => {
++                 data.forEach(qr => {{
+-                     btn.onmouseover = function() {this.style.background='var(--accent-hover-soft)';};
++                     btn.onmouseover = function() {{this.style.background='var(--accent-hover-soft)';}};
+-                     btn.onmouseout = function() {this.style.background='none';};
++                     btn.onmouseout = function() {{this.style.background='none';}};
+-                 });
++                 }});
+-             }
++             }}
+-             function filtrarQuickReplies(val) {
++             function filtrarQuickReplies(val) {{
+-             }
++             }}
+-             function aplicarQuickReply(text) {
++             function aplicarQuickReply(text) {{
+-                 if(input) {
++                 if(input) {{
+-                     const slashMatch = textBefore.match(/(?:^|\s)\/$/); 
++                     const slashMatch = textBefore.match(/(?:^|\\s)\/$/); 
+-                     if (slashMatch) {
++                     if (slashMatch) {{
+-                     } else {
++                     }} else {{
+-                     }
++                     }}
+-                 }
++                 }}
+-             }
++             }}
+-             function checkQuickReplyTrigger(input) {
++             function checkQuickReplyTrigger(input) {{
+-                 if(input.value.endsWith("/")) {
++                 if(in
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[what-changed] 🟢 Edited serviceAccountKey.json (19 changes, 474min)**: Active editing session on serviceAccountKey.json.
+19 content changes over 474 minutes.
+- **[convention] Fixed null crash in PLANTILLAS — confirmed 5x**: - 
++         });
+-             const filterMenu = document.getElementById('inboxFilterMenu');
++ 
+-             if(filterMenu && !e.target.closest('#inboxFilterMenu') && !e.target.closest('button') && !e.target.closest('svg')) {
++         // ================= PLANTILLAS LOGIC =================
+-                 filterMenu.style.display = 'none';
++         async function cargarPlantillas() {
+-             }
++             const list = document.getElementById("templateList");
+-         });
++             if(!list) return;
+- 
++             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
+-         // ================= PLANTILLAS LOGIC =================
++             try {
+-         async function cargarPlantillas() {
++                 const res = await fetch("/api/admin/templates/list");
+-             const list = document.getElementById("templateList");
++                 const data = await res.json();
+-             if(!list) return;
++                 if(data.ok) {
+-             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
++                     list.innerHTML = "";
+-             try {
++                     if(data.plantillas.length === 0) {
+-                 const res = await fetch("/api/admin/templates/list");
++                         list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
+-                 const data = await res.json();
++                     } else {
+-                 if(data.ok) {
++                         data.plantillas.forEach(p => {
+-                     list.innerHTML = "";
++                             const btn = document.createElement("div");
+-                     if(data.plantillas.length === 0) {
++                             btn.style.cssText = "
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in inbox.html**: - </html>
++ </html>
+
+📌 IDE AST Context: Modified symbols likely include [html, cargarChatLabels]
 - **[what-changed] what-changed in inbox.html**: - </html>
 + </html>
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[problem-fix] Fixed null crash in Inter — prevents null/undefined runtime crashes**: -     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
-+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
--     <style>
-+     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
--         :root {
-+     <style>
--             /* 1. Nivel de Color Principal */
-+         :root {
--             --primary-color: #3b82f6;       
-+             /* 1. Nivel de Color Principal */
--             --primary-hover: #2563eb;       
-+             --primary-color: #3b82f6;       
--             /* 2. Nivel de Color de Acento */
-+             --primary-hover: #2563eb;       
--             --accent-bg: #1e293b;           
-+             /* 2. Nivel de Color de Acento */
--             --accent-border: #334155;       
-+             --accent-bg: #1e293b;           
--             --accent-hover-soft: #334155;   
-+             --accent-border: #334155;       
--             /* 3. Nivel de Color de Fondo General */
-+             --accent-hover-soft: #334155;   
--             --bg-main: #0f172a;             
-+             /* 3. Nivel de Color de Fondo General */
--             /* 4. Tipografías */
-+             --bg-main: #0f172a;             
--             --font-main: 'Inter', sans-serif;
-+             /* 4. Tipografías */
--             --font-heading: 'Outfit', sans-serif;
-+             --font-main: 'Inter', sans-serif;
--             /* Otros */
-+             --font-heading: 'Outfit', sans-serif;
--             --text-main: #f8fafc;           
-+             /* Otros */
--             --text-muted: #94a3b8;          
-+             --text-main: #f8fafc;           
--             --danger-color: #ef4444;        
-+             --text-muted: #94a3b8;          
--             --success-color: #10b981;       
-+             --danger-c
-… [diff truncated]
+- **[convention] what-changed in inbox.html — confirmed 5x**: - </html>
++ </html>
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[problem-fix] Fixed null crash in True**: -     
-+     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
--     # SECCIÓN NUEVA: BUSCADOR / NUEVO CHAT en el HTML de admin (o inbox)
-+     escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
--     # Nota: La instrucción pide insertar esto en el div list-header de inbox.html
-+     n_escalados = len(escalados)
--     # Aquí se mantiene la lógica de sesiones existente.
-+     n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
--     
-+ 
--     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
-+     def tiempo_relativo(dt):
--     escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
-+         diff = ahora - dt
--     n_escalados = len(escalados)
-+         m = int(diff.total_seconds() / 60)
--     n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
-+         if m < 1:   return "ahora"
-- 
-+         if m < 60:  return f"hace {m}m"
--     def tiempo_relativo(dt):
-+         return f"hace {m//60}h {m%60}m"
--         diff = ahora - dt
-+ 
--         m = int(diff.total_seconds() / 60)
-+     def ultimo_msg(sesion):
--         if m < 1:   return "ahora"
-+         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
--         if m < 60:  return f"hace {m}m"
-+         if not hist: return "—"
--         return f"hace {m//60}h {m%60}m"
-+         return hist[-1]["content"][:60] + ("…" if len(hist[-1]["content"]) > 60 else "")
--     def ultimo_msg(sesion):
-+     # ── Tabla: Esperando humano ──────────────────────────
--         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
-+     filas_esc = ""
--         if not hist: return "—"
-+     for num, s in escalados:
--         return hist[-1]["content"][:60] + ("…" if len(hist[-1]["content"]) > 60 else "")
-+         hace   = tiempo_relativo(s["escalado_en"])
-- 
-+         nombre = s.get("nombre_cliente", num)
--     
+- **[convention] what-changed in server.py — confirmed 3x**: - async def inbox_chat(request: Request, wa_id: str, tab: str = "all"):
++ async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None):
+-     return renderizar_inbox(request, wa_id, tab)
++     return renderizar_inbox(request, wa_id, tab, label)
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[convention] Fixed null crash in None — confirmed 3x**: -         tags_html = ""
++         if session_tags is None: session_tags = []
+-         if session_tags:
++         tags_html = ""
+-             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
++         if session_tags:
+-             for tid in session_tags:
++             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
+-                 lbl = next((l for l in global_labels if l.get("id") == tid), None)
++             for tid in session_tags:
+-                 if lbl:
++                 lbl = next((l for l in global_labels if l.get("id") == tid), None)
+-                     tags_html += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
++                 if lbl:
+-             tags_html += '</div>'
++                     col = lbl.get("color", "#94a3b8")
+-             
++                     nm = lbl.get("name", "Etiqueta")
+-         lista_chats_html += f"""
++                     tags_html += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
+-         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
++             tags_html += '</div>'
+-             <div class="chat-row-header">
++             
+-                 <span class="chat-name">{nombre}</span>
++         lista_chats_html += f"""
+-                 <span class="chat-time">{time_str}</span>
++         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
+-             </div>
++             <div class="chat-row-header">
+-             <div class="chat-preview">{preview}</div>
++                 <span class="chat-name">{nombre}</span>
+-             <div class="chat-badges">{badge_html}</div>
++                 <span clas
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
-- **[decision] Optimized PERSISTENCIA**: + # ============================================================
-+ #  PERSISTENCIA DE STICKERS EN FIRESTORE
-+ # ============================================================
-+ import base64
-+ 
-+ def guardar_sticker_en_bd(filename: str, file_bytes: bytes):
-+     """Guarda físicamente un archivo en la base de datos convirtiéndolo a Base64."""
-+     db = inicializar_firebase()
-+     b64_data = base64.b64encode(file_bytes).decode('utf-8')
-+     db.collection("bot_stickers").document(filename).set({
-+         "filename": filename,
-+         "base64": b64_data,
-+         "updatedAt": firestore.SERVER_TIMESTAMP
-+     })
-+ 
-+ def cargar_stickers_de_bd(directorio: str):
-+     """Descarga todos los stickers desde Firestore al directorio temporal en memoria."""
-+     db = inicializar_firebase()
-+     docs = db.collection("bot_stickers").limit(300).stream()
-+     import os
-+     os.makedirs(directorio, exist_ok=True)
-+     count = 0
-+     for doc in docs:
-+         try:
-+             data = doc.to_dict()
-+             filename = data.get("filename")
-+             b64 = data.get("base64")
-+             if filename and b64:
-+                 filepath = os.path.join(directorio, filename)
-+                 with open(filepath, "wb") as f:
-+                     f.write(base64.b64decode(b64))
-+                 count += 1
-+         except Exception as e:
-+             print(f"Error cargando sticker {doc.id}: {e}")
-+     return count
-+ 
-
-📌 IDE AST Context: Modified symbols likely include [inicializar_firebase, _buscar, buscar_pedido_por_telefono, buscar_pedido_por_id, guardar_sesion_chat]
-- **[convention] Fixed null crash in GICA — confirmed 4x**: -         };
-+         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
-- 
-+         const uploadMedia = async (file) => {
--         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
-+             const input = document.getElementById('manualMsgInput');
--         const uploadMedia = async (file) => {
-+             if(!input) return;
--             const input = document.getElementById('manualMsgInput');
-+             
--             if(!input) return;
-+             // UI Feedback
--             
-+             input.placeholder = "Subiendo imagen a WhatsApp... ⏳";
--             // UI Feedback
-+             input.disabled = true;
--             input.placeholder = "Subiendo imagen a WhatsApp... ⏳";
-+             
--             input.disabled = true;
-+             const formData = new FormData();
--             
-+             formData.append("file", file);
--             const formData = new FormData();
-+             
--             formData.append("file", file);
-+             try {
--             
-+                 const res = await fetch('/api/admin/upload_media', {
--             try {
-+                     method: 'POST',
--                 const res = await fetch('/api/admin/upload_media', {
-+                     body: formData
--                     method: 'POST',
-+                 });
--                     body: formData
-+                 const data = await res.json();
--                 });
-+                 
--                 const data = await res.json();
-+                 if(data.ok && data.media_id) {
--                 
-+                     input.value += `[imagen:${data.media_id}] `;
--                 if(data.ok && data.media_id) {
-+                 } else {
--                     input.value += `[imagen:${data.media_id}] `;
-+                     alert("Error subiendo: " + (data.error || "Desconocido"));
--                 } else {
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[convention] Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x**: -                     }
++                     }
+-                 }
 +                 }
--                     alert("Error su
+-             } catch (e) {
++             } catch (e) {
+-                 console.warn('Error en Live Chat Polling:', e);
++                 console.warn('Error en Live Chat Polling:', e);
+-             }
++             }
+-         }, 1500);
++         }, 1500);
+- 
++ 
+-         // API CLIENT PARA RESPONDER
++         // API CLIENT PARA RESPONDER
+-         window.enviarMensajeManual = async function(e, wa_id) {
++         window.enviarMensajeManual = async function(e, wa_id) {
+-             e.preventDefault();
++             e.preventDefault();
+-             const input = document.getElementById('manualMsgInput');
++             const input = document.getElementById('manualMsgInput');
+-             if(!input) return;
++             if(!input) return;
+-             const msj = input.value.trim();
++             const msj = input.value.trim();
+-             if(!msj) return;
++             if(!msj) return;
+-             
++             
+-             // Vaciar y enfocar
++             // Vaciar y enfocar
+-             input.value = '';
++             input.value = '';
+-             input.focus();
++             input.focus();
+-             
++             
+-             // Dibujado optimista instantáneo
++             // Dibujado optimista instantáneo
+-             const scroll = document.getElementById('chatScroll');
++             const scroll = document.getElementById('chatScroll');
+-             if(scroll) {
++             if(scroll) {
+-                 const bubble = document.createElement('div');
++                 const bubble = document.createElement('div');
+-                 bubble.className = "bubble bubble-bot lado-izq";
++                 bubble.className = "bubble bubble-bot lado-izq";
+-                 bubble.style.border = "1px solid var(--primary-color)";
++                 bubble.style.border = "1px solid var(--primary-color)";
+-                 bubble.innerText 
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] what-changed in server.py**: -             burbujas += f'<div class="bubble {clase} {lado}" onclick="document.getElementById(\\'manualMsgInput\\').value = \\'> \\' + this.innerText.trim() + \\'\\\\n\\\\n\\' + document.getElementById(\\'manualMsgInput\\').value; document.getElementById(\\'manualMsgInput\\').focus();" style="cursor:pointer;" title="Click para citar este mensaje">{texto_renderizado}</div>'
-+             burbujas += f"""<div class="bubble {clase} {lado}" onclick="document.getElementById('manualMsgInput').value = '> ' + this.innerText.trim() + '\\n\\n' + document.getElementById('manualMsgInput').value; document.getElementById('manualMsgInput').focus();" style="cursor:pointer;" title="Click para citar este mensaje">{texto_renderizado}</div>"""
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
-- **[problem-fix] problem-fix in server.py**: -                     return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
-+                     return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/150x150?text=Sticker';"></div>"""
--                     return f'<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';"></div>'
-+                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
-- **[what-changed] what-changed in prompts.py**: -     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer)
-+     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer y es su primer mensaje)
--     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre)
-+     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre y es su primer mensaje)
-
-📌 IDE AST Context: Modified symbols likely include [_GUIA_CACHE, _obtener_guia, get_system_prompt, MENSAJE_BIENVENIDA]
-- **[what-changed] what-changed in config.py**: - GEMINI_MODEL   = "gemini-1.5-flash"
-+ GEMINI_MODEL   = "gemini-2.5-flash"
-
-📌 IDE AST Context: Modified symbols likely include [DOCUMENTOS_GUIA, LM_STUDIO_BASE_URL, LM_STUDIO_API_KEY, LM_STUDIO_MODEL, GEMINI_API_KEY]
-- **[convention] Fixed null crash in RedirectResponse — confirmed 3x**: - 
-+         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
--     form_data = await request.form()
-+         except: pass
--     redirect_url = form_data.get("redirect", "/admin")
-+ 
--     return RedirectResponse(url=redirect_url, status_code=303)
-+     form_data = await request.form()
-- 
-+     redirect_url = form_data.get("redirect", "/admin")
-- @app.post("/api/admin/pausar/{numero_wa}")
-+     return RedirectResponse(url=redirect_url, status_code=303)
-- async def pausar_bot_manual(request: Request, numero_wa: str):
-+ 
--     """Pausa al bot de forma manual para un WA específico."""
-+ @app.post("/api/admin/pausar/{numero_wa}")
--     if not verificar_sesion(request):
-+ async def pausar_bot_manual(request: Request, numero_wa: str):
--         return RedirectResponse(url="/login", status_code=303)
-+     """Pausa al bot de forma manual para un WA específico."""
-- 
-+     if not verificar_sesion(request):
--     if numero_wa in sesiones:
-+         return RedirectResponse(url="/login", status_code=303)
--         sesiones[numero_wa]["bot_activo"] = False
-+ 
--         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
-+     if numero_wa in sesiones:
--         sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
-+         sesiones[numero_wa]["bot_activo"] = False
--         print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
-+         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
--         
-+         sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
--     form_data = await request.form()
-+         print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
--     redirect_url = form_data.get("redirect", f"/inbox/{numero_wa}")
-+         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
--     return RedirectResponse(url=redirect_url, status_code=303)
-+         except: pass
--
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, BOT_GLOBAL_ACTIVO]
-- **[discovery] discovery in prompts.py**: - 10. USO DE STICKERS: Tienes la capacidad de usar stickers. Cuando sea útil ser dinámica 
-+ 10. USO DE STICKERS: Tienes un pequeño catálogo de stickers oficiales para ser más dinámica. 
--     (ej: agradecer, celebrar que llegó, lamentar retraso), agrega una etiqueta al final de tu respuesta: 
-+     ESTÁ ESTRICTAMENTE PROHIBIDO inventar URLs o usar imágenes que no estén en esta lista.
--     [sticker:https://dummyimage.com/150x150/000/fff.png&text=Sticker] o busca URLs válidas y graciosas (puedes inventar o usar links gif directos terminados en png/jpg o Giphy si crees que funcionan).
-+     Para usarlos, copia y pega EXACTAMENTE la etiqueta a continuación al final de tu respuesta:
-- 
-+     - [sticker:https://raw.githubusercontent.com/conamormarket lgtm/botatc/refs/heads/main/stickers/bendiciones.webp]  -> (Usa este para cuando el cliente se despide)
-- ESCALACIÓN A HUMANO — MUY IMPORTANTE:
-+     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenda.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de mujer)
-- Cuando detectes CUALQUIERA de estas situaciones, agrega [ESCALAR] al FINAL de tu respuesta:
-+     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bienvenido.webp]  -> (Usa este para darle la bienvenida al cliente si tiene nombre de hombre)
-- - El cliente pide explícitamente hablar con una persona, asesor, encargado o humano.
-+     - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/buenas%20tardes.webp]  -> (Usa este si el primer mensaje del cliente llega entre las 12pm y las 5:59pm y el cliente dijo buenas tardes)
-- - El cliente expresa frustración intensa, molestia fuerte o amenaza con queja formal.
-+     - [sticker:http://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/claro%20que%20si.webp]  -> (Usa este si tu respuesta es positiva para algo que el cliente te pida que
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [_GUIA_CACHE, _obtener_guia, get_system_prompt, MENSAJE_BIENVENIDA]
-- **[what-changed] Updated configuration OpenAI — externalizes configuration for environment fle...**: - from openai import OpenAI
-+ from dotenv import load_dotenv
-- client = OpenAI(api_key=os.getenv('GEMINI_API_KEY'), base_url='https://generativelanguage.googleapis.com/v1beta/openai/')
-+ load_dotenv()
-- try:
-+ from openai import OpenAI
--     resp = client.chat.completions.create(model='gemini-2.0-flash', messages=[{'role': 'user', 'content': 'hola'}])
-+ client = OpenAI(api_key=os.getenv('GEMINI_API_KEY'), base_url='https://generativelanguage.googleapis.com/v1beta/openai/')
--     print('OK', resp)
-+ try:
-- except Exception as e:
-+     resp = client.chat.completions.create(model='gemini-2.0-flash', messages=[{'role': 'user', 'content': 'hola'}])
--     import traceback
-+     print('OK', resp)
--     traceback.print_exc()
-+ except Exception as e:
-- 
-+     import traceback
-+     traceback.print_exc()
-+ 
-
-📌 IDE AST Context: Modified symbols likely include [client, resp]
-- **[discovery] discovery in pedidos_observer.py**: - from bot_atc import limpiar_telefono
-+ 
-
-📌 IDE AST Context: Modified symbols likely include [ORDEN_ETAPAS, cache_pedidos, notificar_whatsapp, _enviar_plantilla_1, _enviar_plantilla_2]

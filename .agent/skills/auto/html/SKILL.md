@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 8 conventions, 14 fixes."
+description: "Html for botatc. 8 conventions, 14 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -13,6 +13,12 @@ enabled: true
 Auto-compiled from **30 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## 🔧 Problem Playbooks
+
+### Known Error → Fix
+
+| Error Pattern | Fix | Seen |
+|-------|-----|------|
+| `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 3x |
 
 ### Fixed null crash in Backup — wraps unsafe operation in error boundary
 -                 <form method="post" action="/api/settings/save" id="settingsForm" style="display:flex; flex-direction:column; flex:1;">

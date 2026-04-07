@@ -1314,7 +1314,7 @@ async def ver_chat(request: Request, numero_wa: str):
 # INBOX MODERNO (Tipo Respond.io / SPA)
 # ==========================================
 
-def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None):
+def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None):
     # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
     global global_labels
     if not global_labels:
@@ -1356,15 +1356,24 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     active_label_name = active_label_obj.get("name") if active_label_obj else "Filtro: Ninguno"
     if active_label_name.endswith("Ninguno"): active_label_name = "Filtrar Etiquetas: Desactivado"
 
+    base_url = f"/inbox/{wa_id}" if wa_id else "/inbox"
+    is_unread = (unread == "true")
+    unread_btn_bg = "var(--primary-color)" if is_unread else "var(--accent-bg)"
+    unread_btn_text = "white" if is_unread else "var(--text-main)"
+
     labels_filter_html = f"""
-    <div style="position:relative; margin-top:1rem; text-align:left;">
+    <div style="position:relative; margin-top:1rem; text-align:left; display:flex; gap:0.5rem; align-items:center;">
         <button type="button" onclick="const m = document.getElementById('inboxFilterMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             {active_label_name}
         </button>
         
+        <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={'false' if is_unread else 'true'}" style="background:{unread_btn_bg}; border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:{unread_btn_text}; font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; text-decoration:none;">
+            No leídos
+        </a>
+        
         <div id="inboxFilterMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
-            <a href="/inbox?tab={tab}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
+            <a href="{base_url}?tab={tab}&unread={unread or ''}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
     """
     
     for l in global_labels:
@@ -1374,7 +1383,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         is_active = (label_filter == lid)
         bg = f"{lcolor}33" if is_active else "transparent"
         labels_filter_html += f"""
-            <a href="/inbox?tab={tab}&label={lid}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{bg};">
+            <a href="{base_url}?tab={tab}&label={lid}&unread={unread or ''}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{bg};">
                 <span style="width:12px; height:12px; border-radius:50%; background:{lcolor};"></span> {lnombre}
             </a>
         """
@@ -1395,6 +1404,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         # Filtro de Etiqueta (Label)
         if label_filter and label_filter not in session_tags:
             continue
+            
+        # Filtro de No leídos (Verifica si el último mensaje lo envió el usuario)
+        if is_unread:
+            hist_sin_sys = [m for m in s.get("historial", []) if m["role"] != "system"]
+            if not hist_sin_sys or hist_sin_sys[-1]["role"] != "user":
+                continue
 
         nombre   = s.get("nombre_cliente", num)
         if not nombre: nombre = num
@@ -1891,8 +1906,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     return HTMLResponse(html)
 
 @app.get("/inbox", response_class=HTMLResponse)
-async def inbox_main(request: Request, tab: str = "all", label: str = None):
-    return renderizar_inbox(request, None, tab, label)
+async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None):
+    return renderizar_inbox(request, None, tab, label, unread)
 
 from typing import List
 
@@ -1966,8 +1981,8 @@ def get_stickers():
         return {"ok": False, "error": str(e)}
 
 @app.get("/inbox/{wa_id}", response_class=HTMLResponse)
-async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None):
-    return renderizar_inbox(request, wa_id, tab, label)
+async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None):
+    return renderizar_inbox(request, wa_id, tab, label, unread)
 
 @app.get("/debug")
 async def debug_sesiones():

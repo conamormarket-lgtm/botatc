@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 227 notes | Score threshold: >40
+> 242 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,21 +20,12 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in HTMLResponse — prevents null/undefined runtime
 - **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 
 Content summary (7
 - **⚠️ GOTCHA: Fixed null crash in HTMLResponse** — -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
 +  
-- **⚠️ GOTCHA: Fixed null crash in None** — -         chat_viewer_html = f"""
-+         session_tags = s.get("eti
-- **⚠️ GOTCHA: Updated typing database schema** — - 
-+ 
-+ 
-+ # =======================================================
-- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     <!-- Botón Plantillas -->
-+                    
-- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     </div>
-+                     <!-- Botón Plantil
 
 ## Project Standards
 
@@ -49,11 +40,11 @@ Content summary (7
 
 ## Known Fixes
 
+- ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ +         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in RedirectResponse
 - ❌ -         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in UploadFile
 - ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
 - ❌ -     except Exception as e: → ✅ problem-fix in firebase_client.py
-- ❌ -                 console.warn('Error en Live Chat Polling:', e); → ✅ Fixed null crash in CERRAR
 
 ## Recent Decisions
 

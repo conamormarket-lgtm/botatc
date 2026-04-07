@@ -614,8 +614,14 @@
             const input = document.getElementById('manualMsgInput');
             if(input) {
                 input.value += `[sticker-local:${filename}] `;
-                input.focus();
                 document.getElementById('stickersDrawer').style.display = 'none';
+                
+                // Auto-enviar la etiqueta (sticker)
+                const form = input.closest('form');
+                if(form) {
+                    const btn = form.querySelector('button[type="submit"]');
+                    if(btn) btn.click();
+                }
             }
         };
 
