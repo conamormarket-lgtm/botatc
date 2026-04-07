@@ -18,14 +18,14 @@ Auto-compiled from **12 real patterns** in **botatc**. This skill is auto-routed
 - ✅ Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 3x)
-- ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 2x)
-- ✅ Avoid: ⚠️ GOTCHA: Updated schema GOTCHA (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 4x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 5x)
+- ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 3x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 6x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth Score (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 3x)
-- ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 3x)
+- ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 2x)
+- ✅ Avoid: ⚠️ GOTCHA: Updated schema GOTCHA (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Fixed null crash in Plantillas (seen 2x)
 
 ---

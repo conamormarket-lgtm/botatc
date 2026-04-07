@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 457 notes | Score threshold: >40
+> 499 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,34 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Reemplazar — parallelizes async operations for
-- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes** — -                 }
-+                     if(typeof window.aplicarFil
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Replaced auth Score
-+ - gotcha in shared-context.json
--
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "650b08ac776fc2ab",
-+
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 420 notes | Score threshold: >40
-+ > 428 notes | Score threshold: 
-- **⚠️ GOTCHA: Replaced auth Score** — - > 417 notes | Score threshold: >40
-+ > 420 notes | Score threshold: 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in patcher.py
+- - pr
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Replaced a
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Replaced a
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
++ - ⚠️ GOTCHA: problem-fix in agen
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in patcher.py
++ - problem-fix in agent-rules.md
+- - Ad
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Replaced auth GOTCHA
+
 
 ## Project Standards
 
-- Replaced auth Score — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Replaced auth GOTCHA — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
-- Optimized Fixed — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 3x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Patched security issue Kevin — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -59,8 +57,10 @@
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 - decision in dump.html
-- decision in task.md
 
 ## Learned Patterns
 

@@ -1634,9 +1634,24 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <button type="button" onclick="const m = document.getElementById('emojiMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Emojis">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
                     </button>
-                    <!-- Menú Flotante de Emojis -->
-                    <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:transparent; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15);">
-                        <emoji-picker class="light"></emoji-picker>
+                    <!-- Menú Flotante Unificado (Emojis + Stickers) -->
+                    <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.3); flex-direction:column; width:340px; overflow:hidden;">
+                        <div style="display:flex; background:var(--accent-bg); border-bottom:1px solid var(--accent-border);">
+                            <button type="button" onclick="document.getElementById('emojiTabContent').style.display='block'; document.getElementById('stickerTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.nextElementSibling.style.borderBottom='none'; this.nextElementSibling.style.color='var(--text-muted)';" style="flex:1; padding:0.8rem; background:transparent; border:none; border-bottom:2px solid var(--primary-color); color:var(--primary-color); cursor:pointer; font-weight:600; font-size:0.9rem; transition:color 0.2s;">🙂 Emojis</button>
+                            <button type="button" onclick="document.getElementById('stickerTabContent').style.display='block'; document.getElementById('emojiTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.previousElementSibling.style.borderBottom='none'; this.previousElementSibling.style.color='var(--text-muted)'; cargarStickers();" style="flex:1; padding:0.8rem; background:transparent; border:none; border-bottom:none; color:var(--text-muted); cursor:pointer; font-weight:600; font-size:0.9rem; transition:color 0.2s;">⭐ Stickers</button>
+                        </div>
+                        <div id="emojiTabContent" style="display:block;">
+                            <emoji-picker class="light" style="width:100%; border:none; --background:var(--bg-main);"></emoji-picker>
+                        </div>
+                        <div id="stickerTabContent" class="custom-scrollbar" style="display:none; padding:1rem; width:100%; height:330px; overflow-y:auto; box-sizing:border-box;">
+                            <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 0.8rem; justify-items: center;"></div>
+                            <div style="margin-top:1rem; text-align:center;">
+                                <label style="background:rgba(255,255,255,0.07); border:1px dashed var(--accent-border); color:var(--text-muted); font-size:0.75rem; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; display:inline-block; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'">
+                                    + Subir Nuevo Sticker (.webp/png)
+                                    <input type="file" accept="image/webp, image/png" style="display:none;" onchange="uploadStickerFromMenu(this)">
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Botón Clip (Adjuntos) -->
@@ -1654,9 +1669,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'audio'); document.getElementById('hiddenFileInput').accept='audio/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> Subir Audio
                         </button>
-                        <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; toggleStickersMenu();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Stickers
-                        </button>
+
                     </div>
 
                     <!-- Botón Plantillas -->
@@ -1719,12 +1732,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     {burbujas}
                 </div>
                 
-                <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:220px; overflow-y:auto; overflow-x:hidden;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                        <span style="font-weight:600; color:var(--text-main);">Librería de Stickers Locales</span>
-                    </div>
-                    <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem; justify-items: center;"></div>
-                </div>
+
                 
                 <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
                     {chat_box}

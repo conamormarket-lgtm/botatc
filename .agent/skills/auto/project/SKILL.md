@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 50 gotchas, 52 conventions, 12 fixes."
+description: "Project for botatc. 58 gotchas, 54 conventions, 14 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **238 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **258 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,14 @@ Auto-compiled from **238 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in patcher.py - - problem-fix in agent-rules.md +  |
+| ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Repl |
+| ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Repl |
+| ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Replaced auth GOTCHA + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - gotcha in share |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in patcher.py + - problem-fix in agent-rules.md - - Added error handling Respuestas  |
+| ⚠️ GOTCHA: Replaced auth GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Optimized Fixed |
+| ⚠️ GOTCHA: Replaced auth GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Optimized Fixed |
+| ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Optimized Fixed + - gotcha in shared-context.json - - ⚠️ GOTCHA: Fixed null crash in  |
 | ⚠️ GOTCHA: Optimized Fixed | - - Fixed null crash in Reemplazar — parallelizes async operations for speed + - Fixed null crash in |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Replaced auth Score + - gotcha in shared-context.json - - ⚠️ GOTCHA: Replaced auth Sc |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 420 notes - Score threshold: >40 + > 428 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
@@ -60,16 +68,35 @@ Auto-compiled from **238 real patterns** in **botatc**. This skill is auto-route
 | Never store session tokens in localStorage — use h | Never store session tokens in localStorage — use httpOnly cookies |
 | Use parameterized queries — never string concatena | Use parameterized queries — never string concatenation for SQL |
 | Don't store passwords in plain text — use bcrypt,  | Don't store passwords in plain text — use bcrypt, argon2, or scrypt |
-| Don't use innerHTML — use textContent or sanitized | Don't use innerHTML — use textContent or sanitized rendering |
-| Sanitize ALL user input before database queries —  | Sanitize ALL user input before database queries — prevent SQL injection |
-| Never use eval(), exec(), or Function() with user  | Never use eval(), exec(), or Function() with user input |
-| Don't hardcode API keys, passwords, database URLs, | Don't hardcode API keys, passwords, database URLs, or secrets anywhere |
-| Don't leave console.log, print(), debugger, or TOD | Don't leave console.log, print(), debugger, or TODO in production code |
-| Don't commit .env, secrets, API keys, or credentia | Don't commit .env, secrets, API keys, or credentials — add to .gitignore |
-| Never force push to main, master, or production br | Never force push to main, master, or production branches |
-| gotcha in .gitignore | File updated (external): .gitignore  Content summary (24 lines): # ⚠️ SEGURIDAD — Archivos que NUNCA |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - problem-fix in patcher.py
++ - problem-fix in agent-rules.md
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem-fix in patcher.py
+- - problem-fix in server.py
++ - Added error handling Respuestas — wraps unsafe operation in error boundary
+- - problem-fix in firebase_client.py
++ - problem-fix in server.py
+- - problem-fix in test_groq.py
++ - problem-fix in f
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in POST — parallelizes async operations for speed
++ - problem-fix in patcher.py
+- - Fixed null crash in Acci — parallelizes async operations for speed
++ - Added error handling Respuestas — wraps unsafe operation in error boundary
+- - Fixed null crash in Reemplazar — parallelizes async operations for speed
++ - problem-fix in server.py
+- - Fixed null crash in Sube — parallelizes
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Title — prevents null/undefined runtime crashes
@@ -170,34 +197,6 @@ Auto-compiled from **238 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
-- - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
-+ - problem-fix in shared-context.json
-- - problem-fix in shared-context.json
-+ - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-- - problem-fix in agent-rules.md
-+ - Added error handling Re
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - Fixed null crash i
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-- - problem-fix in agent-rules.md
-+ - Added error handling Respuestas — wraps unsafe operation in error bou
++ - Fixed null crash in DOCTYPE — prevents n
 
 ... [Truncated — see individual observations for full content]
