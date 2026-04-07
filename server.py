@@ -1767,9 +1767,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             </div>
                         </div>
                         <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                            <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.5rem;">
                                 <label style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Mensajes (Secuencia)</label>
-                                <div style="display:flex; gap:0.4rem;">
+                                <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
                                     <button onclick="addQrMessageField('text')" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:var(--success-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">+ Texto</button>
                                     <button onclick="addQrMessageField('image')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🖼 Img</button>
                                     <button onclick="addQrMessageField('video')" style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.3); color:#a78bfa; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🎬 Vid</button>
@@ -1846,7 +1846,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                                 await fetch("/api/admin/chats/labels/toggle", {{
                                     method: "POST",
                                     headers: {{"Content-Type":"application/json"}},
-                                    body: JSON.stringify({{ wa_id: "{wa_id}", label_id: msgObj.media_id }})
+                                    body: JSON.stringify({{ wa_id: "{wa_id}", label_id: msgObj.media_id, action: "toggle" }})
                                 }});
                             }} catch(e) {{}}
                         }}

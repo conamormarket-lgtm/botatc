@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 446 notes | Score threshold: >40
+> 457 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,7 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Reemplazar — parallelizes async operations for
 - **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes** — -                 }
 +                     if(typeof window.aplicarFil
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Replaced auth Score
@@ -36,11 +37,10 @@
 + > 428 notes | Score threshold: 
 - **⚠️ GOTCHA: Replaced auth Score** — - > 417 notes | Score threshold: >40
 + > 420 notes | Score threshold: 
-- **⚠️ GOTCHA: Replaced auth Score** — - > 414 notes | Score threshold: >40
-+ > 417 notes | Score threshold: 
 
 ## Project Standards
 
+- Replaced auth Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
@@ -48,7 +48,6 @@
 - Replaced auth GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - Optimized Fixed — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

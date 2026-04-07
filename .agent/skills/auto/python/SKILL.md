@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 13 conventions, 36 fixes."
+description: "Python for botatc. 10 gotchas, 14 conventions, 37 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **89 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **91 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,19 @@ Auto-compiled from **89 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Acci — parallelizes async operations for speed
+-                                 </div>
++                                     <button onclick="addQrMessageField('action_label')" style="background:rgba(236,72,153,0.15); border:1px solid rgba(236,72,153,0.3); color:#ec4899; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🏷 Acción Tag</button>
+-                             </div>
++               
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Acci
+3. identifier: Tag
+4. identifier: Categor
+5. identifier: General
 
 ### Fixed null crash in Reemplazar — parallelizes async operations for speed
 -                 elif tipo == "audio":
@@ -287,23 +300,6 @@ Auto-compiled from **89 real patterns** in **botatc**. This skill is auto-routed
 1. Modified 1 files
 2. identifier: UploadFile
 3. identifier: File
-4. identifier: Sube
-5. identifier: Web
 
-### Fixed null crash in Enviar — protects against XSS and CSRF token theft
--     # ── Guardar respuesta en historial ────────────────────
-+     # ── Enviar respuesta al cliente por WhatsApp ──────────
--     sesion["historial"].append({"role": "assistant", "content": respuesta_final})
-+     print(f"🤖 María: {respuesta_final[:80]}...")
-- 
-+     wamid_out = None
--     # ── Enviar respuesta al cliente por WhatsApp ──────────
-+     if not is_simulacion:
--     print(f
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Enviar
-3. identifier: Whats
 
 ... [Truncated — see individual observations for full content]

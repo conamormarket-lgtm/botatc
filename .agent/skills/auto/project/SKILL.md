@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 49 gotchas, 51 conventions, 12 fixes."
+description: "Project for botatc. 50 gotchas, 52 conventions, 12 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **233 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **238 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **233 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Fixed | - - Fixed null crash in Reemplazar — parallelizes async operations for speed + - Fixed null crash in |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Replaced auth Score + - gotcha in shared-context.json - - ⚠️ GOTCHA: Replaced auth Sc |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 420 notes - Score threshold: >40 + > 428 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 | ⚠️ GOTCHA: Replaced auth Score | - > 417 notes - Score threshold: >40 + > 420 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
@@ -197,9 +198,6 @@ Auto-compiled from **233 real patterns** in **botatc**. This skill is auto-route
 - - problem-fix in agent-rules.md
 + - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
 - - problem-fix in agent-rules.md
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-- - Fixed null crash in HTMLResponse — prevents null/undefined ru
++ - Added error handling Respuestas — wraps unsafe operation in error bou
 
 ... [Truncated — see individual observations for full content]
