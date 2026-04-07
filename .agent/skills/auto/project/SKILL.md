@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 58 gotchas, 55 conventions, 14 fixes."
+description: "Project for botatc. 59 gotchas, 57 conventions, 14 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **261 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **269 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **261 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score | - > 508 notes - Score threshold: >40 + > 513 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in patcher.py - - problem-fix in agent-rules.md +  |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Repl |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Repl |
@@ -67,7 +68,6 @@ Auto-compiled from **261 real patterns** in **botatc**. This skill is auto-route
 | Don't swallow errors silently — empty catch blocks | Don't swallow errors silently — empty catch blocks hide bugs |
 | Never store session tokens in localStorage — use h | Never store session tokens in localStorage — use httpOnly cookies |
 | Use parameterized queries — never string concatena | Use parameterized queries — never string concatenation for SQL |
-| Don't store passwords in plain text — use bcrypt,  | Don't store passwords in plain text — use bcrypt, argon2, or scrypt |
 
 ## 🔧 Problem Playbooks
 
@@ -197,6 +197,6 @@ Auto-compiled from **261 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Fixed null crash in DOCTYPE — prevents n
++ - Fixed null crash in DOCTYPE — p
 
 ... [Truncated — see individual observations for full content]

@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 10 conventions, 17 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 13 conventions, 19 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **40 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **51 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,43 @@ Auto-compiled from **40 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Configuraci — wraps unsafe operation in error boundary
+- 
++ <head>
+- <head>
++     <meta charset="UTF-8">
+-     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <title>Configuración de Agente IA - IA-ATC</title>
+-     <title>Configuración de Agente
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Configuraci
+4. identifier: Agente
+5. identifier: ATC
+
+### Fixed null crash in Configuraci — wraps unsafe operation in error boundary
+- <head>
++ 
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Configuración de Agente IA - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google -->
++  
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Configuraci
+4. identifier: Agente
+5. identifier: ATC
 
 ### Fixed null crash in Custom — prevents null/undefined runtime crashes
 -     </style>
@@ -325,32 +362,6 @@ Auto-compiled from **40 real patterns** in **botatc**. This skill is auto-routed
 ### Fixed null crash in Prevenir
 -                 const res = await fetch(window.location.href);
 +                 // Prevenir caché del navegador
--                 const text = await res.text();
-+                 const url = window.location.href;
--                 const doc = new DOMParser().parseFromString(text, 'text/html');
-+                 const fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getT
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Prevenir
-3. identifier: Date
-4. identifier: Cache
-5. identifier: Control
-
-## 📐 Conventions & Best Practices
-
-### Project Conventions
-- 📐 **Fixed null crash in Title — prevents null/undefined runtime crashes — confirmed 5x** — -                     container.style.cssText = "display:flex; flex-direction:column; background:var
-- 📐 **Fixed null crash in RESPONSIVE — prevents null/undefined runtime crashes — confirmed 3x** — - 
-+         .bubble { max-width:80%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; l
-- 📐 **Fixed null crash in PLANTILLAS — confirmed 5x** — - 
-+         });
--             const filterMenu = document.getElementById('inboxFilterMenu');
-+ 
-- 📐 **what-changed in inbox.html — confirmed 5x** — - </html>
-+ </html>
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- 📐 **Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x** — - 
+-                 const text = await 
 
 ... [Truncated — see individual observations for full content]

@@ -1,5 +1,5 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `settings.html` (Domain: **Generic Logic**)
+> Dynamically loaded for active file: `inbox.html` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
 - **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes**: -                 }
@@ -45,73 +45,64 @@
 📌 IDE AST Context: Modified symbols likely include [html]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] 🟢 Edited check_js2.py (9 changes, 355min)**: Active editing session on check_js2.py.
-9 content changes over 355 minutes.
-- **[problem-fix] Fixed null crash in Custom — prevents null/undefined runtime crashes**: -     </style>
-+     
-- </head>
-+         /* Custom Scrollbar for all */
-- <body class="{body_class}">
-+         ::-webkit-scrollbar {
-- 
-+             width: 8px;
--     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
-+             height: 8px;
--     <nav class="sidebar-nav">
-+         }
--         <!-- Inbox Icon -->
-+         ::-webkit-scrollbar-track {
--         <a href="/inbox" class="nav-item active" title="Bandeja de Entrada (Inbox)">
-+             background: transparent; 
--             <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
-+         }
--         </a>
-+         ::-webkit-scrollbar-thumb {
--         <!-- Agent Settings Icon -->
-+             background: var(--accent-border); 
--         <a href="/settings" class="nav-item" title="Personalizar Agente IA">
-+             border-radius: 4px;
--             <svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-+         }
--         </a>
-+         ::-webkit-scrollbar-thumb:hover {
--         <!-- System Settings Icon -->
-+             background: var(--text-muted); 
--         <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
-+         }
--             <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+- **[convention] what-changed in inbox.html — confirmed 4x**: -             width: 280px;
++             width: 340px;
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] 🟢 Edited settings.html (1267 changes, 5min)**: Active editing session on settings.html.
+1267 content changes over 5 minutes.
+- **[convention] what-changed in settings.html — confirmed 6x**: -             --bg-main: #5574bb;
++             --bg-main: #0f172a;
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in Configuraci — wraps unsafe operation in error boundary — confirmed 5x**: - <head>
 + 
--         </a>
-+ </style>
-- 
-+ </head>
--         <!-- Indicador global abajo -->
-+ <body class="{body_class}">
--         <div class="bot-status-indicator" title="Estado Global del Bot"></div>
-+ 
--     </nav>
-+     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
-- 
-+     <nav class="sidebar-nav">
--     <!-- 2. PANEL CENTRAL (Lista de Chats) -->
-+         <!-- Inbox Icon -->
--     <div class="chat-
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Configuración de Agente IA - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google -->
++     <title>Configuración de Agente IA - IA-ATC</title>
+-     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
++     <!-- Fuentes de Google -->
+-     <style>
++     <link
+-         :root {
++         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+-             /* 1. Nivel de Color Principal */
++         rel="stylesheet">
+-             --primary-color: #3b82f6;       
++     <style>
+-             --primary-hover: #2563eb;       
++         :root {
+-             /* 2. Nivel de Color de Acento */
++             /* 1. Nivel de Color Principal */
+-             --accent-bg: #1e293b;           
++             --primary-color: #3b82f6;
+-             --accent-border: #334155;       
++             --primary-hover: #2563eb;
+-             --accent-hover-soft: #334155;   
++             /* 2. Nivel de Color de Acento */
+-             /* 3. Nivel de Color de Fondo General */
++             --accent-bg: #1e293b;
+-             --bg-main: #6278ac;             
++             --accent-border: #334155;
+-             /* 4. Tipografías */
++             --accent-hover-soft: #334155;
+-             --font-main: 'Inter', sans-serif;
++             /* 3. Nivel de Color de Fondo General */
+-             --font-heading: 'Outfit', sans-serif;
++             --bg-main: #5574bb;
+-             --font-mono: 'JetBrains Mono', monospace;
++             /* 4. Tipografías */
+-             /* Otros */
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[problem-fix] Fixed null crash in Flotante — parallelizes async operations for speed**: -                     <!-- Menú Flotante de Emojis -->
-+                     <!-- Menú Flotante Unificado (Emojis + Stickers) -->
--                     <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:transparent; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15);">
-+                     <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.3); flex-direction:column; width:340px; overflow:hidden;">
--                         <emoji-picker class="light"></emoji-picker>
-+                         <div style="display:flex; background:var(--accent-bg); border-bottom:1px solid var(--accent-border);">
--                     </div>
-+                             <button type="button" onclick="document.getElementById('emojiTabContent').style.display='block'; document.getElementById('stickerTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.nextElementSibling.style.borderBottom='none'; this.nextElementSibling.style.color='var(--text-muted)';" style="flex:1; padding:0.8rem; background:transparent; border:none; border-bottom:2px solid var(--primary-color); color:var(--primary-color); cursor:pointer; font-weight:600; font-size:0.9rem; transition:color 0.2s;">🙂 Emojis</button>
-- 
-+                             <button type="button" onclick="document.getElementById('stickerTabContent').style.display='block'; document.getElementById('emojiTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.previousElementSibling.style.borderBottom='none'; this.previousElementSibling.style.color='var(--text-muted)'; cargarStickers();" style="flex:1; padding:0.8rem; background:transparent; border:no
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[what-changed] 🟢 Edited check_js2.py (9 changes, 355min)**: Active editing session on check_js2.py.
+9 content changes over 355 minutes.
 - **[convention] Fixed null crash in POST — parallelizes async operations for speed — confirmed 4x**: -                     let finalMsg;
 +                     if(msgType === 'action_label') {{
 -                     if(msgType === 'text') {{
@@ -281,42 +272,3 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in None — prevents null/undefined runtime crashes — confirmed 3x**: -             </form>
-+             </form>            """
--             
-+ 
--             <script>
-+         session_tags = s.get("etiquetas", [])
--             let quickRepliesCache = [];
-+         if session_tags is None: session_tags = []
--             async function cargarQuickReplies() {{
-+         tags_bar = ""
--                 const list = document.getElementById("quickRepliesList");
-+         for tid in session_tags:
--                 if(!list) return;
-+             lbl = next((l for l in global_labels if l.get("id") == tid), None)
--                 list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
-+             if lbl:
--                 try {{
-+                 col = lbl.get("color", "#94a3b8")
--                     const res = await fetch("/api/quick-replies");
-+                 nm = lbl.get("name", "Etiqueta")
--                     if (!res.ok) throw new Error("HTTP " + res.status);
-+                 tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
--                     const data = await res.json();
-+ 
--                     quickRepliesCache = data;
-+         chat_viewer_html = f"""
--                     renderQuickReplies(data);
-+         <div style="display:flex; flex-direction:row; height:100%; width:100%;">
--                 }} catch(e) {{
-+             <!-- START CHAT MAIN COLUMN -->
--                     list.innerHTML = `<div style="font-size:0.85rem; color:red; padding:1rem; text-align:center; background:rgba(255,0,0,0.1); border-radius:8px;">Error: ${{e.message}}</div>`;
-+             <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-main);">
--                 }}
-+                 {status_bar}
--             }}
-+                 <div style="padding:1.5rem;border-bottom:
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]

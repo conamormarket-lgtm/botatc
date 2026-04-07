@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Inbox - IA-ATC</title>
     <!-- Fuentes de Google: Inter para lectura, Outfit para acentos audaces -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap"
+        rel="stylesheet">
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
     <style>
         :root {
             /* 1. Nivel de Color Principal */
-            --primary-color: #3b82f6;       
-            --primary-hover: #2563eb;       
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
             /* 2. Nivel de Color de Acento */
-            --accent-bg: #1e293b;           
-            --accent-border: #334155;       
-            --accent-hover-soft: #334155;   
+            --accent-bg: #1e293b;
+            --accent-border: #334155;
+            --accent-hover-soft: #334155;
             /* 3. Nivel de Color de Fondo General */
-            --bg-main: #0f172a;             
+            --bg-main: #253864;
             /* 4. Tipografías */
             --font-main: 'Inter', sans-serif;
             --font-heading: 'Outfit', sans-serif;
             /* Otros */
-            --text-main: #f8fafc;           
-            --text-muted: #94a3b8;          
-            --danger-color: #ef4444;        
-            --success-color: #10b981;       
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
         }
 
         /* RESET Y BASE */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: var(--font-main);
             background-color: var(--bg-main);
@@ -39,8 +47,11 @@
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
-        
-        a { text-decoration: none; color: inherit; }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
         /* LAYOUT PRINCIPAL (3 Columnas en Desktop) */
         .sidebar-nav {
@@ -55,7 +66,7 @@
         }
 
         .chat-list-panel {
-            width: 280px;
+            width: 340px;
             background-color: var(--bg-main);
             border-right: 1px solid var(--accent-border);
             display: flex;
@@ -71,7 +82,8 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            min-width: 0; /* previene desbordamiento en flex */
+            min-width: 0;
+            /* previene desbordamiento en flex */
         }
 
         /* ---------------- LEFT SIDEBAR ---------------- */
@@ -87,17 +99,44 @@
             transition: all 0.2s ease;
             cursor: pointer;
         }
-        .nav-item:hover { color: var(--text-main); background-color: var(--accent-hover-soft); }
-        .nav-item.active { color: var(--primary-color); background-color: rgba(59, 130, 246, 0.1); }
-        .nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        .nav-item:hover {
+            color: var(--text-main);
+            background-color: var(--accent-hover-soft);
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
 
         .bot-status-indicator {
             margin-top: auto;
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background-color: {color_global};
-            box-shadow: 0 0 10px {color_global};
+
+            background-color: {
+                color_global
+            }
+
+            ;
+
+            box-shadow: 0 0 10px {
+                color_global
+            }
+
+            ;
             cursor: pointer;
         }
 
@@ -106,6 +145,7 @@
             padding: 1.5rem 1.5rem 0 1.5rem;
             border-bottom: 1px solid var(--accent-border);
         }
+
         .list-header h2 {
             font-family: var(--font-heading);
             font-size: 1.35rem;
@@ -113,12 +153,13 @@
             color: var(--text-main);
             letter-spacing: 0.02em;
         }
-        
+
         .list-tabs {
             display: flex;
             gap: 1.25rem;
             margin-top: 1.25rem;
         }
+
         .tab {
             font-size: 0.85rem;
             font-weight: 500;
@@ -128,7 +169,11 @@
             border-bottom: 2px solid transparent;
             transition: color 0.2s;
         }
-        .tab:hover { color: var(--text-main); }
+
+        .tab:hover {
+            color: var(--text-main);
+        }
+
         .tab.active {
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
@@ -138,8 +183,15 @@
             flex: 1;
             overflow-y: auto;
         }
-        .chats-container::-webkit-scrollbar { width: 5px; }
-        .chats-container::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 10px; }
+
+        .chats-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chats-container::-webkit-scrollbar-thumb {
+            background: var(--accent-border);
+            border-radius: 10px;
+        }
 
         .chat-row {
             padding: 1.1rem 1.25rem;
@@ -148,15 +200,24 @@
             transition: background-color 0.2s;
             display: block;
         }
-        .chat-row:hover { background-color: var(--accent-hover-soft); }
-        .chat-row.active-row { background-color: var(--accent-bg); border-left: 3px solid var(--primary-color); padding-left: calc(1.25rem - 3px); }
-        
+
+        .chat-row:hover {
+            background-color: var(--accent-hover-soft);
+        }
+
+        .chat-row.active-row {
+            background-color: var(--accent-bg);
+            border-left: 3px solid var(--primary-color);
+            padding-left: calc(1.25rem - 3px);
+        }
+
         .chat-row-header {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
             margin-bottom: 0.4rem;
         }
+
         .chat-name {
             font-family: var(--font-heading);
             font-weight: 600;
@@ -167,11 +228,13 @@
             text-overflow: ellipsis;
             padding-right: 0.5rem;
         }
+
         .chat-time {
             font-size: 0.75rem;
             color: var(--text-muted);
             white-space: nowrap;
         }
+
         .chat-preview {
             font-size: 0.85rem;
             color: var(--text-muted);
@@ -179,11 +242,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .chat-badges {
             margin-top: 0.6rem;
             display: flex;
             gap: 0.4rem;
         }
+
         .badge {
             font-size: 0.65rem;
             padding: 0.25rem 0.5rem;
@@ -194,7 +259,11 @@
             text-transform: uppercase;
             letter-spacing: 0.03em;
         }
-        .badge-alert { background-color: rgba(239, 68, 68, 0.15); color: var(--danger-color); }
+
+        .badge-alert {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+        }
 
         /* ---------------- RIGHT CHAT VIEWER ---------------- */
         .empty-state {
@@ -207,9 +276,27 @@
             text-align: center;
             padding: 2rem;
         }
-        .empty-state svg { width: 70px; height: 70px; margin-bottom: 1.5rem; opacity: 0.4; stroke-width: 1.5; }
-        .empty-state h3 { font-family: var(--font-heading); font-size: 1.4rem; color: var(--text-main); margin-bottom: 0.5rem; }
-        .empty-state p { font-size: 0.95rem; max-width: 320px; line-height: 1.6; }
+
+        .empty-state svg {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 1.5rem;
+            opacity: 0.4;
+            stroke-width: 1.5;
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+            max-width: 320px;
+            line-height: 1.6;
+        }
 
         .btn-responsive-back {
             display: none;
@@ -220,9 +307,14 @@
             cursor: pointer;
             padding: 0.5rem;
         }
-        .btn-responsive-back:hover { color: var(--text-main); }
 
-        {chat_view_css}
+        .btn-responsive-back:hover {
+            color: var(--text-main);
+        }
+
+            {
+            chat_view_css
+        }
 
         /* ==================================================
            RESPONSIVE DESIGN (MÓVIL / TABLET)
@@ -231,7 +323,7 @@
             body {
                 flex-direction: column;
             }
-            
+
             /* Sidebar se convierte en Bottom Navigation Bar */
             .sidebar-nav {
                 flex-direction: row;
@@ -240,15 +332,25 @@
                 padding: 0;
                 border-right: none;
                 border-top: 1px solid var(--accent-border);
-                order: 3; /* Al final de la columna */
+                order: 3;
+                /* Al final de la columna */
                 justify-content: space-around;
-                background-color: var(--bg-main); /* para tapar info detrás si es necesario */
+                background-color: var(--bg-main);
+                /* para tapar info detrás si es necesario */
             }
-            .nav-item { margin-bottom: 0; }
-            .bot-status-indicator { margin: auto 0; margin-right: 1rem; }
+
+            .nav-item {
+                margin-bottom: 0;
+            }
+
+            .bot-status-indicator {
+                margin: auto 0;
+                margin-right: 1rem;
+            }
 
             /* Contenedor central (hijos directos order 1 y 2) */
-            .chat-list-panel, .chat-viewer-panel {
+            .chat-list-panel,
+            .chat-viewer-panel {
                 width: 100%;
                 flex: 1;
                 border-right: none;
@@ -257,52 +359,86 @@
 
             /* LOGICA DE VISIBILIDAD SPA MÓVIL */
             /* Si class="view-list", muestra lista y oculta chat */
-            body.view-list .chat-viewer-panel { display: none !important; }
+            body.view-list .chat-viewer-panel {
+                display: none !important;
+            }
+
             /* Si class="view-chat", muestra chat y oculta lista */
-            body.view-chat .chat-list-panel { display: none !important; }
-            
-            body.view-chat .sidebar-nav { display: none !important; } /* Ocultar tab bar inferior en el chat si se desea más espacio */
+            body.view-chat .chat-list-panel {
+                display: none !important;
+            }
+
+            body.view-chat .sidebar-nav {
+                display: none !important;
+            }
+
+            /* Ocultar tab bar inferior en el chat si se desea más espacio */
 
             /* Mostrar el botón de regresar en el Header del Chat */
-            .btn-responsive-back { display: flex; align-items: center; }
+            .btn-responsive-back {
+                display: flex;
+                align-items: center;
+            }
         }
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         /* Custom Scrollbar for all */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
+
         ::-webkit-scrollbar-track {
-            background: transparent; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-border); 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted); 
+            background: transparent;
         }
 
-</style>
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
 </head>
+
 <body class="{body_class}">
 
     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
     <nav class="sidebar-nav">
         <!-- Inbox Icon -->
         <a href="/inbox" class="nav-item active" title="Bandeja de Entrada (Inbox)">
-            <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+                <path
+                    d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+            </svg>
         </a>
         <!-- Agent Settings Icon -->
         <a href="/settings" class="nav-item" title="Personalizar Agente IA">
-            <svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="M12 8V4H8" />
+                <rect width="16" height="12" x="4" y="8" rx="2" />
+                <path d="M2 14h2" />
+                <path d="M20 14h2" />
+                <path d="M15 13v2" />
+                <path d="M9 13v2" />
+            </svg>
         </a>
         <!-- System Settings Icon -->
         <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
-            <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+            </svg>
         </a>
 
         <!-- Indicador global abajo -->
@@ -317,15 +453,23 @@
                 <a href="/inbox?tab=all" class="tab {tab_all_active}">Todos</a>
                 <a href="/inbox?tab=human" class="tab {tab_human_active}">Humanos</a>
             </div>
-            
+
             {labels_filter_html}
 
             <!-- BUSCADOR / NUEVO CHAT -->
             <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
-                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar número en 51..." style="width:100%; padding: 0.6rem 2.5rem; border-radius: 8px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.9rem; outline:none;" autocomplete="off">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                
-                <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()" style="display:none; position:absolute; right:0.4rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:6px; color:white; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight:bold; cursor:pointer;" title="Empezar un chat con este número">NUEVO</button>
+                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar número en 51..."
+                    style="width:100%; padding: 0.6rem 2.5rem; border-radius: 8px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.9rem; outline:none;"
+                    autocomplete="off">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"
+                    style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%);">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+
+                <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()"
+                    style="display:none; position:absolute; right:0.4rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:6px; color:white; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight:bold; cursor:pointer;"
+                    title="Empezar un chat con este número">NUEVO</button>
             </div>
         </div>
 
@@ -341,9 +485,11 @@
     </div>
 
     <!-- MENÚ CONTEXTUAL PERSONALIZADO (Click derecho PC o Mantener en Móvil) -->
-    <div id="bubbleContextMenu" style="display:none; position:fixed; z-index:9999; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.15); min-width:220px; font-family:var(--font-main); overflow:hidden;">
+    <div id="bubbleContextMenu"
+        style="display:none; position:fixed; z-index:9999; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.15); min-width:220px; font-family:var(--font-main); overflow:hidden;">
         <!-- BARRA DE REACCIONES -->
-        <div style="display:flex; justify-content:space-around; padding:0.6rem; border-bottom:1px solid var(--accent-border); background:var(--accent-bg);">
+        <div
+            style="display:flex; justify-content:space-around; padding:0.6rem; border-bottom:1px solid var(--accent-border); background:var(--accent-bg);">
             <div class="ctx-emoji" onclick="enviarReaccion('👍')">👍</div>
             <div class="ctx-emoji" onclick="enviarReaccion('❤️')">❤️</div>
             <div class="ctx-emoji" onclick="enviarReaccion('😂')">😂</div>
@@ -351,61 +497,93 @@
             <div class="ctx-emoji" onclick="enviarReaccion('😢')">😢</div>
             <div class="ctx-emoji" onclick="enviarReaccion('🙏')">🙏</div>
         </div>
-        
-        <div class="ctx-item" id="ctxReply" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v3a4 4 0 0 0 4 4h14"/><path d="m8 14-5-5 5-5"/></svg>
+
+        <div class="ctx-item" id="ctxReply"
+            style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11v3a4 4 0 0 0 4 4h14" />
+                <path d="m8 14-5-5 5-5" />
+            </svg>
             <strong>Responder Nativamente</strong>
         </div>
-        <div class="ctx-item" id="ctxSaveSticker" style="display:none; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--success-color); align-items:center; gap:0.5rem; transition:background 0.2s;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        <div class="ctx-item" id="ctxSaveSticker"
+            style="display:none; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--success-color); align-items:center; gap:0.5rem; transition:background 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
             Guardar en Favoritos
         </div>
-        <div class="ctx-item" id="ctxQuote" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="ctx-item" id="ctxQuote"
+            style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
             Citar (Modo Texto)
         </div>
-        <div class="ctx-item" id="ctxCopy" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        <div class="ctx-item" id="ctxCopy"
+            style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+            </svg>
             Copiar Texto
         </div>
     </div>
     <style>
-        .ctx-item:hover { background: var(--accent-bg); }
-        .ctx-emoji { cursor:pointer; font-size:1.3rem; padding:0.1rem 0.2rem; border-radius:50%; transition:transform 0.15s, background 0.15s; }
-        .ctx-emoji:hover { transform: scale(1.3); background: rgba(255,255,255,0.1); }
-    
+        .ctx-item:hover {
+            background: var(--accent-bg);
+        }
+
+        .ctx-emoji {
+            cursor: pointer;
+            font-size: 1.3rem;
+            padding: 0.1rem 0.2rem;
+            border-radius: 50%;
+            transition: transform 0.15s, background 0.15s;
+        }
+
+        .ctx-emoji:hover {
+            transform: scale(1.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         /* Custom Scrollbar for all */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
+
         ::-webkit-scrollbar-track {
-            background: transparent; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-border); 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted); 
+            background: transparent;
         }
 
-</style>
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
 
     <script>
         // LOGICA DE MENÚ CONTEXTUAL
         let ctxTargetWamid = "";
         let ctxTargetText = "";
         let ctxTargetMediaId = "";
-        
-        document.addEventListener("contextmenu", function(e) {
+
+        document.addEventListener("contextmenu", function (e) {
             const bubble = e.target.closest('.bubble');
-            if(bubble) {
+            if (bubble) {
                 e.preventDefault(); // Evitamos menú del navegador
-                
+
                 ctxTargetWamid = bubble.getAttribute('data-wamid');
                 ctxTargetText = bubble.innerText;
-                
+
                 // Check if it's a sticker
                 let stickerImg = bubble.querySelector('img[alt^="Sticker"]');
                 let ctxSaveSticker = document.getElementById("ctxSaveSticker");
@@ -416,21 +594,21 @@
                     ctxTargetMediaId = "";
                     ctxSaveSticker.style.display = 'none';
                 }
-                
+
                 const cm = document.getElementById("bubbleContextMenu");
                 cm.style.display = "block";
-                
+
                 let x = e.clientX;
                 let y = e.clientY;
-                
-                if(x + cm.offsetWidth > window.innerWidth) x = window.innerWidth - cm.offsetWidth - 10;
-                if(y + cm.offsetHeight > window.innerHeight) y = window.innerHeight - cm.offsetHeight - 10;
-                
+
+                if (x + cm.offsetWidth > window.innerWidth) x = window.innerWidth - cm.offsetWidth - 10;
+                if (y + cm.offsetHeight > window.innerHeight) y = window.innerHeight - cm.offsetHeight - 10;
+
                 cm.style.left = x + "px";
                 cm.style.top = y + "px";
-                
+
                 const ctxReply = document.getElementById("ctxReply");
-                if(ctxTargetWamid) {
+                if (ctxTargetWamid) {
                     ctxReply.style.opacity = "1";
                     ctxReply.style.pointerEvents = "auto";
                 } else {
@@ -439,20 +617,20 @@
                 }
             }
         });
-        
-        document.addEventListener("click", function(e) {
-            if(!e.target.closest('#bubbleContextMenu')) {
+
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest('#bubbleContextMenu')) {
                 document.getElementById("bubbleContextMenu").style.display = "none";
             }
         });
-        
-        document.getElementById("ctxReply").addEventListener("click", function() {
+
+        document.getElementById("ctxReply").addEventListener("click", function () {
             document.getElementById("bubbleContextMenu").style.display = "none";
-            if(ctxTargetWamid) {
+            if (ctxTargetWamid) {
                 const h = document.getElementById('replyToWamid');
                 const p = document.getElementById('replyPreviewContainer');
                 const t = document.getElementById('replyPreviewTxt');
-                if(h && p && t) {
+                if (h && p && t) {
                     h.value = ctxTargetWamid;
                     t.innerText = ctxTargetText.substring(0, 40) + '...';
                     p.style.display = 'flex';
@@ -460,62 +638,62 @@
                 }
             }
         });
-        
-        document.getElementById("ctxQuote").addEventListener("click", function() {
+
+        document.getElementById("ctxQuote").addEventListener("click", function () {
             document.getElementById("bubbleContextMenu").style.display = "none";
             const i = document.getElementById('manualMsgInput');
-            if(i) {
+            if (i) {
                 i.value = "> " + ctxTargetText.trim() + "\n\n" + i.value;
                 i.focus();
             }
         });
-        
-        document.getElementById("ctxCopy").addEventListener("click", function() {
+
+        document.getElementById("ctxCopy").addEventListener("click", function () {
             document.getElementById("bubbleContextMenu").style.display = "none";
             navigator.clipboard.writeText(ctxTargetText.trim());
         });
-        
+
         async function enviarReaccion(emojiStr) {
             document.getElementById("bubbleContextMenu").style.display = "none";
-            if(!ctxTargetWamid) return alert("❌ Este mensaje no se puede reaccionar");
+            if (!ctxTargetWamid) return alert("❌ Este mensaje no se puede reaccionar");
 
             const wa_id = window.location.pathname.split('/').pop(); // /inbox/519...
             try {
                 const res = await fetch('/api/admin/reaccionar', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({wa_id: wa_id, message_id: ctxTargetWamid, emoji: emojiStr})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wa_id: wa_id, message_id: ctxTargetWamid, emoji: emojiStr })
                 });
                 const data = await res.json();
-                if(!data.ok) {
+                if (!data.ok) {
                     alert("❌ Error: " + data.error);
                 }
-            } catch(e) {
+            } catch (e) {
                 alert("❌ Falla de conectividad");
             }
         }
-        
-        document.getElementById("ctxSaveSticker").addEventListener("click", async function() {
+
+        document.getElementById("ctxSaveSticker").addEventListener("click", async function () {
             document.getElementById("bubbleContextMenu").style.display = "none";
             if (!ctxTargetMediaId) return;
-            
+
             // Notification toast provisional
             let originalText = this.innerHTML;
-            
+
             try {
                 const res = await fetch('/api/admin/stickers/save_from_media', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({media_id: ctxTargetMediaId})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ media_id: ctxTargetMediaId })
                 });
                 const data = await res.json();
-                if(data.ok) {
+                if (data.ok) {
                     alert("⭐ Sticker guardado en tus favoritos extra (Firebase) con éxito!");
                     toggleStickersMenu(); toggleStickersMenu(); // refresh silently
                 } else {
                     alert("❌ Error guardando sticker: " + data.error);
                 }
-            } catch(e) {
+            } catch (e) {
                 alert("❌ Falla de conectividad");
             }
         });
@@ -525,34 +703,34 @@
                 // Prevenir caché del navegador
                 const url = window.location.href;
                 const fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
-                
+
                 const res = await fetch(fetchUrl, {
                     cache: 'no-store',
                     headers: { 'Cache-Control': 'no-cache' }
                 });
-                
+
                 const text = await res.text();
                 const doc = new DOMParser().parseFromString(text, 'text/html');
-                
+
                 // Actualizar Lista de Conversaciones
                 const newChats = doc.querySelector('.chats-container');
                 const oldChats = document.querySelector('.chats-container');
-                if(newChats && oldChats && oldChats.innerHTML !== newChats.innerHTML) {
+                if (newChats && oldChats && oldChats.innerHTML !== newChats.innerHTML) {
                     oldChats.innerHTML = newChats.innerHTML;
-                    if(typeof window.aplicarFiltroChats === 'function') {
+                    if (typeof window.aplicarFiltroChats === 'function') {
                         window.aplicarFiltroChats();
                     }
                 }
-                
+
                 // Actualizar visibilidad de Chat
                 const newScroll = doc.getElementById('chatScroll');
                 const oldScroll = document.getElementById('chatScroll');
-                if(newScroll && oldScroll) {
+                if (newScroll && oldScroll) {
                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
                         // Respetar scroll solo si el usuario no ha subido a leer
                         const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
                         oldScroll.innerHTML = newScroll.innerHTML;
-                        if(isAtBottom) {
+                        if (isAtBottom) {
                             oldScroll.scrollTop = oldScroll.scrollHeight;
                         }
                     }
@@ -563,20 +741,20 @@
         }, 1500);
 
         // API CLIENT PARA RESPONDER
-        window.enviarMensajeManual = async function(e, wa_id) {
+        window.enviarMensajeManual = async function (e, wa_id) {
             e.preventDefault();
             const input = document.getElementById('manualMsgInput');
-            if(!input) return;
+            if (!input) return;
             const msj = input.value.trim();
-            if(!msj) return;
-            
+            if (!msj) return;
+
             // Vaciar y enfocar
             input.value = '';
             input.focus();
-            
+
             // Dibujado optimista instantáneo
             const scroll = document.getElementById('chatScroll');
-            if(scroll) {
+            if (scroll) {
                 const bubble = document.createElement('div');
                 bubble.className = "bubble bubble-bot lado-izq";
                 bubble.style.border = "1px solid var(--primary-color)";
@@ -584,24 +762,24 @@
                 scroll.appendChild(bubble);
                 scroll.scrollTop = scroll.scrollHeight;
             }
-            
+
             const replyWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
-            if(document.getElementById('replyPreviewContainer')) {
+            if (document.getElementById('replyPreviewContainer')) {
                 document.getElementById('replyPreviewContainer').style.display = 'none';
-                if(document.getElementById('replyToWamid')) document.getElementById('replyToWamid').value = '';
+                if (document.getElementById('replyToWamid')) document.getElementById('replyToWamid').value = '';
             }
-            
+
             try {
                 const res = await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyWamid })
                 });
-                
+
                 const data = await res.json();
                 if (!data.ok) {
                     // Si falló (ej: ventana de 24h de Meta API)
-                    if(scroll && scroll.lastChild === bubble) {
+                    if (scroll && scroll.lastChild === bubble) {
                         scroll.removeChild(bubble);
                     }
                     if (data.error === "META_API_REJECTED") {
@@ -610,9 +788,9 @@
                         alert("❌ Error no controlado al enviar: " + data.error);
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error("Fallo al enviar:", e);
-                if(scroll && scroll.lastChild === bubble) {
+                if (scroll && scroll.lastChild === bubble) {
                     scroll.removeChild(bubble);
                 }
                 alert("Error de red conectando con el panel Web o timeout.");
@@ -620,50 +798,50 @@
         };
 
         // LIBRERÍA LOCAL DE STICKERS
-        window.cargarStickers = async function() {
+        window.cargarStickers = async function () {
             const grid = document.getElementById('stickersGrid');
-            if(!grid) return;
+            if (!grid) return;
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5;">Cargando...</div>';
             try {
                 const res = await fetch('/api/stickers');
                 const data = await res.json();
-                if(data.stickers && data.stickers.length > 0) {
-                    grid.innerHTML = data.stickers.map(s => 
+                if (data.stickers && data.stickers.length > 0) {
+                    grid.innerHTML = data.stickers.map(s =>
                         `<img src="/static/stickers/${s}" style="width:70px; height:70px; object-fit:contain; cursor:pointer; padding:5px; border-radius:8px; border:2px solid transparent; transition:border 0.2s;" onmouseover="this.style.border='2px solid var(--primary-color)'" onmouseout="this.style.border='2px solid transparent'" onclick="insertStickerLocal('${s}')" title="${s}">`
                     ).join('');
                 } else {
                     grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5; font-size:0.85rem; color:var(--text-muted);">Aún no tienes stickers guardados.</div>';
                 }
-            } catch(e) { grid.innerHTML = '<div style="grid-column: 1/-1; padding:2rem; color:var(--danger-color);">Error cargando.</div>'; }
+            } catch (e) { grid.innerHTML = '<div style="grid-column: 1/-1; padding:2rem; color:var(--danger-color);">Error cargando.</div>'; }
         };
 
         window.toggleStickersMenu = window.cargarStickers; // For backwards compat
-        
-        window.uploadStickerFromMenu = async function(input) {
+
+        window.uploadStickerFromMenu = async function (input) {
             const file = input.files[0];
-            if(!file) return;
+            if (!file) return;
             const grid = document.getElementById('stickersGrid');
             grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; opacity:0.5;">⏳ Subiendo...</div>';
             const fd = new FormData();
             fd.append('files', file);
             try {
                 const res = await fetch('/api/admin/stickers/upload', { method: 'POST', body: fd });
-                if(res.ok) cargarStickers();
-            } catch(e) { grid.innerHTML = '<div style="grid-column:1/-1; color:red;">Fallo al subir</div>'; }
+                if (res.ok) cargarStickers();
+            } catch (e) { grid.innerHTML = '<div style="grid-column:1/-1; color:red;">Fallo al subir</div>'; }
         };
 
-        window.insertStickerLocal = function(filename) {
+        window.insertStickerLocal = function (filename) {
             const input = document.getElementById('manualMsgInput');
-            if(input) {
+            if (input) {
                 input.value += `[sticker-local:${filename}] `;
                 const m = document.getElementById('emojiMenu');
-                if(m) m.style.display = 'none';
-                
+                if (m) m.style.display = 'none';
+
                 // Auto-enviar la etiqueta (sticker)
                 const form = input.closest('form');
-                if(form) {
+                if (form) {
                     const btn = form.querySelector('button[type="submit"]');
-                    if(btn) btn.click();
+                    if (btn) btn.click();
                 }
             }
         };
@@ -671,28 +849,28 @@
         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
         const uploadMedia = async (file, mode = 'imagen') => {
             const input = document.getElementById('manualMsgInput');
-            if(!input) return;
-            
+            if (!input) return;
+
             // UI Feedback
             input.placeholder = `Subiendo ${mode} a WhatsApp... ⏳`;
             input.disabled = true;
-            
+
             const formData = new FormData();
             formData.append("file", file);
-            
+
             try {
                 const res = await fetch('/api/admin/upload_media', {
                     method: 'POST',
                     body: formData
                 });
                 const data = await res.json();
-                
-                if(data.ok && data.media_id) {
+
+                if (data.ok && data.media_id) {
                     input.value += `[${mode}:${data.media_id}] `;
                 } else {
                     alert("Error subiendo: " + (data.error || "Desconocido"));
                 }
-            } catch(e) {
+            } catch (e) {
                 alert("Error de red subiendo archivo.");
             } finally {
                 input.placeholder = "Escribe tu respuesta aquí...";
@@ -702,7 +880,7 @@
         };
 
         // Pegar imagen directamente en el chat
-        document.addEventListener('paste', function(e) {
+        document.addEventListener('paste', function (e) {
             const items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let index in items) {
                 const item = items[index];
@@ -715,11 +893,11 @@
         });
 
         // Trigger de los inputs ocultos
-        document.addEventListener('change', async function(e) {
+        document.addEventListener('change', async function (e) {
             // Caso 1: Subida general (solo un archivo por click)
-            if(e.target && e.target.id === 'hiddenFileInput') {
+            if (e.target && e.target.id === 'hiddenFileInput') {
                 const mode = e.target.getAttribute('data-mode') || 'imagen';
-                if(e.target.files && e.target.files[0]) {
+                if (e.target.files && e.target.files[0]) {
                     uploadMedia(e.target.files[0], mode);
                 }
                 e.target.value = ''; // Reset
@@ -727,25 +905,25 @@
         });
 
         // Funcionalidad del Buscador Local y Nuevo Chat
-        window.aplicarFiltroChats = function() {
+        window.aplicarFiltroChats = function () {
             const input = document.getElementById('chatSearchInput');
-            if(!input) return;
+            if (!input) return;
             const val = input.value.toLowerCase().trim();
             const rows = document.querySelectorAll('.chat-row');
             let isPhoneNum = /^[0-9+ ]+$/.test(val) && val.replace(/\D/g, '').length >= 9;
-            
+
             rows.forEach(row => {
                 const name = row.querySelector('.chat-name').innerText.toLowerCase();
                 const phone = row.getAttribute('href') || "";
-                if(name.includes(val) || phone.includes(val)) {
+                if (name.includes(val) || phone.includes(val)) {
                     row.style.display = 'block';
                 } else {
                     row.style.display = 'none';
                 }
             });
-            
+
             const btn = document.getElementById('btnNewChat');
-            if(btn) {
+            if (btn) {
                 if (isPhoneNum) {
                     btn.style.display = 'block';
                 } else {
@@ -754,7 +932,7 @@
             }
         };
         document.getElementById('chatSearchInput')?.addEventListener('input', window.aplicarFiltroChats);
-        
+
         function iniciarNuevoChat() {
             let val = document.getElementById('chatSearchInput').value.trim();
             val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
@@ -762,40 +940,40 @@
             if (!val.startsWith("51")) val = "51" + val;
             window.location.href = `/inbox/${val}`;
         }
-        
+
         // EMOJI PICKER HOOK - Global event delegation
         document.addEventListener('emoji-click', event => {
             const input = document.getElementById('manualMsgInput');
-            if(input) {
+            if (input) {
                 input.value += event.detail.unicode;
                 input.focus();
             }
         });
 
         // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
-        document.addEventListener("click", function(e) {
+        document.addEventListener("click", function (e) {
             const emojiMenu = document.getElementById("emojiMenu");
-            if(emojiMenu && !e.target.closest('#emojiMenu') && !e.target.closest('button[title="Emojis"]')) {
+            if (emojiMenu && !e.target.closest('#emojiMenu') && !e.target.closest('button[title="Emojis"]')) {
                 emojiMenu.style.display = "none";
             }
-            
+
             const attachMenu = document.getElementById("attachMenu");
-            if(attachMenu && !e.target.closest('#attachMenu') && !e.target.closest('button[title="Adjuntar"]')) {
+            if (attachMenu && !e.target.closest('#attachMenu') && !e.target.closest('button[title="Adjuntar"]')) {
                 attachMenu.style.display = "none";
             }
 
             const templateMenu = document.getElementById("templateMenu");
-            if(templateMenu && !e.target.closest('#templateMenu') && !e.target.closest('button[title="Plantillas (24h)"]')) {
+            if (templateMenu && !e.target.closest('#templateMenu') && !e.target.closest('button[title="Plantillas (24h)"]')) {
                 templateMenu.style.display = "none";
             }
-            
+
             const chatLabelMenu = document.getElementById("chatLabelMenu");
-            if(chatLabelMenu && !e.target.closest('#chatLabelMenu') && !e.target.closest('button[title="Etiquetas del Chat"]')) {
+            if (chatLabelMenu && !e.target.closest('#chatLabelMenu') && !e.target.closest('button[title="Etiquetas del Chat"]')) {
                 chatLabelMenu.style.display = "none";
             }
-            
+
             const filterMenu = document.getElementById('inboxFilterMenu');
-            if(filterMenu && !e.target.closest('#inboxFilterMenu') && !e.target.closest('button') && !e.target.closest('svg')) {
+            if (filterMenu && !e.target.closest('#inboxFilterMenu') && !e.target.closest('button') && !e.target.closest('svg')) {
                 filterMenu.style.display = 'none';
             }
         });
@@ -803,93 +981,93 @@
         // ================= PLANTILLAS LOGIC =================
         async function cargarPlantillas() {
             const list = document.getElementById("templateList");
-            if(!list) return;
+            if (!list) return;
             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
             try {
                 const res = await fetch("/api/admin/templates/list");
                 const data = await res.json();
-                if(data.ok) {
+                if (data.ok) {
                     list.innerHTML = "";
-                    if(data.plantillas.length === 0) {
+                    if (data.plantillas.length === 0) {
                         list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
                     } else {
                         data.plantillas.forEach(p => {
                             const btn = document.createElement("div");
                             btn.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:0.5rem; background:var(--bg-main); border-radius:6px; font-size:0.85rem;";
-                            
+
                             const sendBtn = document.createElement("button");
                             sendBtn.type = "button";
                             sendBtn.innerText = p.name;
                             sendBtn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); font-weight:500; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
                             sendBtn.onclick = () => enviarPlantillaLoc(p.name, p.language);
-                            
+
                             const delBtn = document.createElement("button");
                             delBtn.type = "button";
                             delBtn.innerText = "×";
                             delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:#ef4444; font-size:1.1rem; padding:0 0.2rem;";
                             delBtn.onclick = () => eliminarPlantilla(p.name);
-                            
+
                             btn.appendChild(sendBtn);
                             btn.appendChild(delBtn);
                             list.appendChild(btn);
                         });
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 list.innerHTML = `<div style="font-size:0.8rem; color:red; padding:0.5rem; text-align:center;">Error al cargar</div>`;
             }
         }
 
         async function crearPlantilla() {
             const name = prompt("Escribe el NOMBRE EXACTO de la plantilla en Meta (ej: hola_cliente)");
-            if(!name) return;
+            if (!name) return;
             const lang = prompt("Esribe el código de idioma (ej: es, es_PE). Si no sabes, pon 'es'") || "es";
             try {
                 const res = await fetch("/api/admin/templates/save", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({name: name.trim(), language: lang.trim()})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: name.trim(), language: lang.trim() })
                 });
-                if(res.ok) cargarPlantillas();
-            } catch(e) {
+                if (res.ok) cargarPlantillas();
+            } catch (e) {
                 alert("Error guardando plantilla");
             }
         }
 
         async function eliminarPlantilla(name) {
-            if(!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
+            if (!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
             try {
                 const res = await fetch("/api/admin/templates/delete", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({name: name})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: name })
                 });
-                if(res.ok) cargarPlantillas();
-            } catch(e) {
+                if (res.ok) cargarPlantillas();
+            } catch (e) {
                 alert("Error eliminando plantilla");
             }
         }
 
         async function enviarPlantillaLoc(name, lang) {
             const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
-            if(!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
-            
-            if(!confirm(`Se le enviará la plantilla '${name}' al número +${wa_id}. ¿Deseas continuar?`)) return;
+            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+
+            if (!confirm(`Se le enviará la plantilla '${name}' al número +${wa_id}. ¿Deseas continuar?`)) return;
             document.getElementById("templateMenu").style.display = "none";
-            
+
             try {
                 const res = await fetch("/api/admin/enviar_plantilla", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({wa_id: wa_id, template_name: name, language_code: lang})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ wa_id: wa_id, template_name: name, language_code: lang })
                 });
                 const data = await res.json();
-                if(data.ok) {
+                if (data.ok) {
                     alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
                 } else {
                     alert("❌ Error: " + data.error);
                 }
-            } catch(e) {
+            } catch (e) {
                 alert("Falla de conectividad");
             }
         }
@@ -902,84 +1080,84 @@
                 document.getElementById("newLabelName").value = "";
                 // Reset a color por defecto
                 const firstColor = document.getElementById("color-grid-container").querySelector('.color-option');
-                if(firstColor) seleccionarColorEtiqueta("#3b82f6", firstColor);
+                if (firstColor) seleccionarColorEtiqueta("#3b82f6", firstColor);
                 modal.style.display = "flex";
             }
         }
-        
+
         async function guardarNuevaEtiquetaModal() {
             const nameInput = document.getElementById("newLabelName");
-            if(!nameInput) return;
+            if (!nameInput) return;
             const name = nameInput.value.trim();
-            if(!name) return alert("Por favor, ingresa un nombre para la etiqueta.");
-            
+            if (!name) return alert("Por favor, ingresa un nombre para la etiqueta.");
+
             const color = document.getElementById("newLabelColor").value || "#94a3b8";
             const id = 'lbl_' + Date.now();
-            
+
             try {
                 const res = await fetch("/api/admin/labels/save", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({id: id, name: name, color: color})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id, name: name, color: color })
                 });
-                if(res.ok) {
+                if (res.ok) {
                     document.getElementById("createLabelModal").style.display = "none";
                     cargarChatLabels();
                 } else {
                     alert("Error guardando etiqueta (Respuesta del servidor).");
                 }
-            } catch(e) {
+            } catch (e) {
                 alert("Error guardando etiqueta (Conectividad).");
             }
         }
 
         async function eliminarGlobalLabel(id, name, event) {
             event.stopPropagation();
-            if(!confirm(`¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminará de todos los chats asignados).`)) return;
+            if (!confirm(`¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminará de todos los chats asignados).`)) return;
             try {
                 const res = await fetch("/api/admin/labels/delete", {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({id: id})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id })
                 });
-                if(res.ok) window.location.reload();
-            } catch(e) {
+                if (res.ok) window.location.reload();
+            } catch (e) {
                 alert("Error eliminando etiqueta");
             }
         }
 
         async function cargarChatLabels() {
             const list = document.getElementById("chatLabelList");
-            if(!list) return;
+            if (!list) return;
             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
-            
+
             try {
                 const res = await fetch("/api/admin/labels/list");
                 const data = await res.json();
-                
-                if(data.ok) {
+
+                if (data.ok) {
                     list.innerHTML = "";
-                    if(data.labels.length === 0) {
+                    if (data.labels.length === 0) {
                         list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin etiquetas. Apreta (+) para añadir.</div>`;
                     } else {
                         data.labels.forEach(lbl => {
                             const btn = document.createElement("div");
                             btn.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:0.4rem; background:var(--bg-main); border-radius:6px; font-size:0.85rem; cursor:pointer;";
                             btn.onclick = () => alternarChatLabel(lbl.id);
-                            
+
                             const colorDot = document.createElement("div");
                             colorDot.style.cssText = `width:12px; height:12px; border-radius:50%; background:${lbl.color}; margin-right:0.5rem;`;
-                            
+
                             const nameSpan = document.createElement("span");
                             nameSpan.innerText = lbl.name;
                             nameSpan.style.cssText = "flex:1; color:var(--text-main); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
-                            
+
                             const delBtn = document.createElement("button");
                             delBtn.type = "button";
                             delBtn.innerText = "×";
                             delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.1rem; padding:0 0.2rem;";
                             delBtn.onclick = (e) => eliminarGlobalLabel(lbl.id, lbl.name, e);
-                            
+
                             btn.appendChild(colorDot);
                             btn.appendChild(nameSpan);
                             btn.appendChild(delBtn);
@@ -987,51 +1165,60 @@
                         });
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 list.innerHTML = `<div style="font-size:0.8rem; color:red; padding:0.5rem; text-align:center;">Error al cargar</div>`;
             }
         }
-        
+
         async function alternarChatLabel(lbl_id) {
             const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
-            if(!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
-            
+            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+
             try {
                 const res = await fetch(`/api/admin/chats/labels/toggle`, {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({wa_id: wa_id, label_id: lbl_id, action: "toggle"})
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ wa_id: wa_id, label_id: lbl_id, action: "toggle" })
                 });
-                
+
                 const data = await res.json();
-                if(data.ok) {
+                if (data.ok) {
                     window.location.reload();
                 } else {
                     alert("Error: " + data.error);
                 }
-            } catch(e) {
+            } catch (e) {
                 alert("Error de conexión al alternar etiqueta.");
             }
         }
 
 
     </script>
-    
+
     <!-- Modal de Creación de Etiqueta (Tipo WhatsApp Business) -->
-    <div id="createLabelModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; width:350px; flex-direction:column; box-shadow:0 10px 25px rgba(0,0,0,0.5); overflow:hidden;">
-            <div style="padding:1rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+    <div id="createLabelModal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; width:350px; flex-direction:column; box-shadow:0 10px 25px rgba(0,0,0,0.5); overflow:hidden;">
+            <div
+                style="padding:1rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                 <h3 style="margin:0; font-family:var(--font-heading); font-size:1.1rem;">Añadir etiqueta</h3>
-                <button onclick="document.getElementById('createLabelModal').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.5rem;">&times;</button>
+                <button onclick="document.getElementById('createLabelModal').style.display='none'"
+                    style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.5rem;">&times;</button>
             </div>
-            
+
             <div style="padding:1.5rem;">
-                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:500;">Nombre de etiqueta</label>
-                <input type="text" id="newLabelName" placeholder="Ej: Nuevo Cliente" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); font-size:0.9rem; outline:none; margin-bottom:1.5rem;">
-                
-                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:500;">Color</label>
+                <label
+                    style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:500;">Nombre
+                    de etiqueta</label>
+                <input type="text" id="newLabelName" placeholder="Ej: Nuevo Cliente"
+                    style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); font-size:0.9rem; outline:none; margin-bottom:1.5rem;">
+
+                <label
+                    style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:500;">Color</label>
                 <input type="hidden" id="newLabelColor" value="#3b82f6"> <!-- default: blue -->
-                <div id="color-grid-container" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:0.6rem; margin-bottom:1.5rem;">
+                <div id="color-grid-container"
+                    style="display:grid; grid-template-columns:repeat(5, 1fr); gap:0.6rem; margin-bottom:1.5rem;">
                     <script>
                         const predefinedColors = ["#ef4444", "#f97316", "#f59e0b", "#eab308", "#84cc16", "#22c55e", "#10b981", "#14b8a6", "#06b6d4", "#0ea5e9", "#3b82f6", "#6366f1", "#8b5cf6", "#a855f7", "#d946ef", "#ec4899", "#f43f5e", "#64748b", "#78716c", "#52525b"];
                         let colorsHtml = '';
@@ -1040,7 +1227,7 @@
                             colorsHtml += `<button type="button" class="color-option" style="width:100%; aspect-ratio:1; border-radius:50%; background:${color}; cursor:pointer; ${isSelected} transition:transform 0.1s;" onclick="seleccionarColorEtiqueta('${color}', this)"></button>`;
                         });
                         document.write(colorsHtml);
-                        
+
                         function seleccionarColorEtiqueta(color, element) {
                             document.getElementById("newLabelColor").value = color;
                             const options = document.querySelectorAll('.color-option');
@@ -1052,10 +1239,12 @@
                         }
                     </script>
                 </div>
-                
+
                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
-                    <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'" style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
-                    <button type="button" onclick="guardarNuevaEtiquetaModal()" style="padding:0.6rem 1rem; border-radius:6px; background:var(--primary-color); border:none; color:white; font-weight:600; cursor:pointer;">Guardar</button>
+                    <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'"
+                        style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
+                    <button type="button" onclick="guardarNuevaEtiquetaModal()"
+                        style="padding:0.6rem 1rem; border-radius:6px; background:var(--primary-color); border:none; color:white; font-weight:600; cursor:pointer;">Guardar</button>
                 </div>
             </div>
         </div>
@@ -1064,4 +1253,5 @@
     <!-- Elementos ocultos para selectores del sistema -->
     <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
 </body>
+
 </html>

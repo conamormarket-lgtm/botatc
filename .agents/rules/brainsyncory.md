@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 513 notes | Score threshold: >40
+> 539 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -38,21 +38,21 @@
 ## Active: `.`
 
 - **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes**
+- **what-changed in inbox.html — confirmed 4x**
 - **⚠️ GOTCHA: Fixed null crash in HTMLResponse**
 - **⚠️ GOTCHA: Fixed null crash in None**
 - **⚠️ GOTCHA: Updated typing database schema**
-- **⚠️ GOTCHA: Fixed null crash in Plantillas**
 
 ## Project Standards
 
-- Fixed null crash in POST — parallelizes async operations for speed — confirmed 4x
-- Fixed null crash in Title — prevents null/undefined runtime crashes — confirmed 5x
-- Fixed null crash in RESPONSIVE — prevents null/undefined runtime crashes — confirmed 3x
-- Fixed null crash in None — prevents null/undefined runtime crashes — confirmed 3x
-- what-changed in server.py — confirmed 3x
-- convention in .gitignore
-- Fixed null crash in Simular — confirmed 3x
+- what-changed in inbox.html — confirmed 4x
 - Fixed null crash in PLANTILLAS — confirmed 5x
+- what-changed in inbox.html — confirmed 5x
+- Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
+- Fixed null crash in EMOJI — confirmed 3x
+- what-changed in settings.html — confirmed 6x
+- Fixed null crash in Configuraci — wraps unsafe operation in error boundary — confirmed 5x
+- Fixed null crash in POST — parallelizes async operations for speed — confirmed 4x
 
 ## Known Fixes
 
@@ -65,7 +65,7 @@
 ## Recent Decisions
 
 - decision in dump.html
-- Optimized Score — evolves the database schema to support new requirements
+- decision in inbox.html
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 

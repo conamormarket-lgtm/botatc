@@ -1706,7 +1706,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <!-- START CHAT MAIN COLUMN -->
             <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-main);">
                 {status_bar}
-                <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
+                <div style="padding:0.8rem 1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
                     <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
