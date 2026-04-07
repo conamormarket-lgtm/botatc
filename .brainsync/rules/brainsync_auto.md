@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 257 notes | Score threshold: >40
+> 263 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -38,14 +38,14 @@
 
 ## Project Standards
 
+- Replaced auth Score — confirmed 3x
+- what-changed in server.py — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - problem-fix in agent-rules.md — confirmed 3x
 - convention in .gitignore
 - Fixed null crash in Simular — confirmed 3x
-- Fixed null crash in PLANTILLAS — confirmed 5x
-- what-changed in inbox.html — confirmed 5x
 
 ## Known Fixes
 

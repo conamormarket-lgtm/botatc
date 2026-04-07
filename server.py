@@ -1659,7 +1659,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     titleWrap.appendChild(title);
                     if(catBadge.innerText) titleWrap.appendChild(catBadge);
                     
-                    const msgCount = (qr.mensajes && qr.mensajes.length > 1) ? ` (${qr.mensajes.length} msgs)` : "";
+                    const msgCount = (qr.mensajes && qr.mensajes.length > 1) ? ` (${{qr.mensajes.length}} msgs)` : "";
                     
                     const editBtn = document.createElement("button");
                     editBtn.innerHTML = "✎"; // Icono editar
