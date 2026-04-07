@@ -33,3 +33,11 @@ CLAUDE.md
 *.exe
 *.log
 隧道_log.txt
+
+# Auto-generated AI agent exclusions
+.cursorrules
+.clineRules
+.agent/
+.windsurfrules
+.gemini/
+.cline/

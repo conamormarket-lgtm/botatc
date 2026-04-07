@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 223 notes | Score threshold: >40
+> 227 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (7
 - **⚠️ GOTCHA: Fixed null crash in HTMLResponse** — -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
 +  
 - **⚠️ GOTCHA: Fixed null crash in None** — -         chat_viewer_html = f"""
@@ -35,6 +38,7 @@
 
 ## Project Standards
 
+- convention in .gitignore
 - Fixed null crash in Simular — confirmed 3x
 - Fixed null crash in PLANTILLAS — confirmed 5x
 - what-changed in inbox.html — confirmed 5x
@@ -42,7 +46,6 @@
 - Fixed null crash in None — confirmed 3x
 - Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
 - Fixed null crash in EMOJI — confirmed 3x
-- Fixed null crash in GICA — confirmed 4x
 
 ## Known Fixes
 
