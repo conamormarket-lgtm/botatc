@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 443 notes | Score threshold: >40
+> 446 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -41,6 +41,7 @@
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
 - Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
@@ -48,7 +49,6 @@
 - what-changed in shared-context.json — confirmed 5x
 - Optimized Fixed — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
-- Replaced auth GOTCHA — confirmed 3x
 
 ## Known Fixes
 

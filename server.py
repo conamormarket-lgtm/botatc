@@ -1774,6 +1774,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                                     <button onclick="addQrMessageField('image')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🖼 Img</button>
                                     <button onclick="addQrMessageField('video')" style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.3); color:#a78bfa; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🎬 Vid</button>
                                     <button onclick="addQrMessageField('audio')" style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:#fbbf24; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🎵 Audio</button>
+                                    <button onclick="addQrMessageField('action_label')" style="background:rgba(236,72,153,0.15); border:1px solid rgba(236,72,153,0.3); color:#ec4899; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🏷 Acción Tag</button>
                                 </div>
                             </div>
                             <div id="qrMessagesContainer" style="display:flex; flex-direction:column; gap:0.6rem;"></div>
@@ -1839,6 +1840,20 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     }}
                     
                     // Compose the tag/text to put in input
+                    if(msgType === 'action_label') {{
+                        if (msgObj.media_id) {{
+                            try {{
+                                await fetch("/api/admin/chats/labels/toggle", {{
+                                    method: "POST",
+                                    headers: {{"Content-Type":"application/json"}},
+                                    body: JSON.stringify({{ wa_id: "{wa_id}", label_id: msgObj.media_id }})
+                                }});
+                            }} catch(e) {{}}
+                        }}
+                        if (i < msgs.length - 1) await new Promise(r => setTimeout(r, delay / 2));
+                        continue;
+                    }}
+
                     let finalMsg;
                     if(msgType === 'text') {{
                         finalMsg = (msgObj.content || '').replace(/#nombre/gi, nombreCliente);
@@ -1978,6 +1993,20 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
                 if(type === 'text') {{
                     inner += `<textarea rows="2" class="qr-msg-input" style="width:100%; padding:0.5rem; border-radius:5px; border:1px solid var(--accent-border); background:var(--bg-main); color:var(--text-main); outline:none; font-size:0.85rem; resize:vertical; box-sizing:border-box;" placeholder="Escribe el mensaje...">${{content}}</textarea>`;
+                }} else if(type === 'action_label') {{
+                    const selId = mediaId || '';
+                    let opts = `<option value="">-- Seleccionar Etiqueta --</option>`;
+                    (window._globalLabels||[]).forEach(l => {{
+                        opts += `<option value="${{l.id}}" ${{l.id===selId?'selected':''}}>${{l.name}}</option>`;
+                    }});
+                    inner += `
+                    <div style="display:flex; flex-direction:column; gap:0.4rem; padding:0.4rem; background:rgba(0,0,0,0.1); border-radius:6px; margin-top:0.3rem;">
+                        <span style="font-size:0.8rem; color:var(--text-main); font-weight:600;">Acción Automática: Poner/Quitar Etiqueta</span>
+                        <span style="font-size:0.7rem; color:var(--text-muted); line-height:1.2;">Al ejecutarse este paso, la etiqueta seleccionada se añadirá al chat (o se quitará si ya existe en él).</span>
+                        <select class="qr-action-select qr-media-id" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem; cursor:pointer;">
+                            ${{opts}}
+                        </select>
+                    </div>`;
                 }} else {{
                     const hasMedia = mediaId && mediaId !== '';
                     const displayName = filename || mediaId || '';
