@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 263 notes | Score threshold: >40
+> 286 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,24 +20,26 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Strengthened types Recent** — - 
++ - decision in dump.html
+- ## Recent fixes
++ 
+- 
++ ## Recent fixes
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth Score
++ - ⚠️ GOTCHA: Replaced auth GOTCHA
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Updated schema GOTCHA
++ - ⚠️ GOTCHA: Replaced auth Scor
+- **⚠️ GOTCHA: Replaced auth Score** — - > 262 notes | Score threshold: >40
++ > 263 notes | Score threshold: 
 - **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
 + - ⚠️ GOTCHA: Updated schema GOTCHA
 - **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - gotcha in shared-cont
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "5f9d65e3d3b381bd",
-+
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in agent-rules.md
-+ - ⚠️ GOTCHA: problem-fix in agent-rules
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in HTMLResponse — prevents null/undefined runtime
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in HTMLResponse — prevents null/undefined runtime
 
 ## Project Standards
 
+- what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in server.py — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
@@ -45,7 +47,6 @@
 - what-changed in shared-context.json — confirmed 3x
 - problem-fix in agent-rules.md — confirmed 3x
 - convention in .gitignore
-- Fixed null crash in Simular — confirmed 3x
 
 ## Known Fixes
 
@@ -57,13 +58,14 @@
 
 ## Recent Decisions
 
+- decision in dump.html
 - decision in task.md
 
 ## Learned Patterns
 
 - Avoid: ⚠️ GOTCHA: Updated schema GOTCHA (seen 2x)
+- Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 2x)
 - Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 2x)
-- Avoid: ⚠️ GOTCHA: Fixed null crash in Plantillas (seen 2x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed
 

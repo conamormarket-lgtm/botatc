@@ -743,14 +743,14 @@ async def get_media_endpoint(media_id: str):
     return Response(content=b"", status_code=404)
 
 @app.get("/api/quick-replies")
-async def get_quick_replies(request: Request):
+def get_quick_replies(request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     from firebase_client import cargar_quick_replies_bd
     return cargar_quick_replies_bd()
 
 @app.post("/api/quick-replies")
-async def create_quick_reply(request: Request, data: dict):
+def create_quick_reply(request: Request, data: dict):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     from firebase_client import guardar_quick_reply_bd
@@ -768,7 +768,7 @@ async def create_quick_reply(request: Request, data: dict):
     return {"status": "ok", "id": new_id}
 
 @app.delete("/api/quick-replies/{qr_id}")
-async def delete_quick_reply(request: Request, qr_id: str):
+def delete_quick_reply(request: Request, qr_id: str):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     from firebase_client import eliminar_quick_reply_bd
