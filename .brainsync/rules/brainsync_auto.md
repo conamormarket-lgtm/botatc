@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 595 notes | Score threshold: >40
+> 648 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,40 +20,41 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: problem-
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 567 notes | Score threshold: >40
++ > 595 notes | Score threshold: 
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in NAVEGACI — prevents null/undefined runtime cra
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in URLSearchParams — prevents null/undefined runt
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 539 notes | Score threshold: >40
-+ > 567 notes | Score threshold: 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 513 notes | Score threshold: >40
-+ > 535 notes | Score threshold: 
 
 ## Project Standards
 
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 8x
+- problem-fix in agent-rules.md — confirmed 5x
+- Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes — confirmed 5x
 - what-changed in inbox.html — confirmed 5x
 - Replaced auth GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 4x
-- discovery in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in inbox.html — confirmed 4x
-- what-changed in settings.html — confirmed 6x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ - - Fixed null crash in Title — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ + - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in Title — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
+- decision in inbox.html
+- decision in inbox.html
+- decision in inbox.html
+- decision in inbox.html
 
 ## Learned Patterns
 

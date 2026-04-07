@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 15 conventions, 23 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 18 conventions, 33 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **63 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **90 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,190 @@ Auto-compiled from **63 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- 
++ <head>
+- <head>
++     <meta charset="UTF-8">
+-     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <title>Inbox - IA-ATC</title>
+-     <title>Inbox - IA-ATC</title>
++     <!-- F
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- <head>
++ 
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Inbox - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google: Inter para lectura,
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- 
++ <head>
+- <head>
++     <meta charset="UTF-8">
+-     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <title>Inbox - IA-ATC</title>
+-     <title>Inbox - IA-ATC</title>
++     <!-- F
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- <head>
++ 
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Inbox - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google: Inter para lectura,
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- 
++ <head>
+- <head>
++     <meta charset="UTF-8">
+-     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <title>Inbox - IA-ATC</title>
+-     <title>Inbox - IA-ATC</title>
++     <!-- F
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Nivel — prevents null/undefined runtime crashes
+-             --accent-bg: #436aa8;
++             --accent-border: #334155;
+-             --accent-border: #334155;
++             --accent-hover-soft: #334155;
+-             --accent-hover-soft: #334155;
++             /* 3. Nivel de Color de Fondo General */
+-             /* 3. Nivel de Color de Fondo General */
++             --bg-main: #213668;
+-             --bg-main: #213668;
++        
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Nivel
+3. identifier: Color
+4. identifier: Fondo
+5. identifier: General
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- <head>
++ 
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Inbox - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google: Inter para lectura,
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- 
++ <head>
+- <head>
++     <meta charset="UTF-8">
+-     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <title>Inbox - IA-ATC</title>
+-     <title>Inbox - IA-ATC</title>
++     <!-- F
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- <head>
++ 
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Inbox - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google: Inter para lectura,
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Nivel — prevents null/undefined runtime crashes
+-     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
++     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+-         // --- NAVEGACIÓN Y SKELETONS ---
++     <style>
+-         document.addEventListener('keydown', function(event) {
++         :root {
+-             if (event.key === 'Escape') {
++    
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Nivel
+3. identifier: Color
+4. identifier: Principal
+5. identifier: Acento
 
 ### Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
 -     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
@@ -175,198 +359,6 @@ Auto-compiled from **63 real patterns** in **botatc**. This skill is auto-routed
 2. identifier: Crear
 3. identifier: Respuesta
 4. identifier: Atajo
-5. identifier: Espera
-
-### Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
-- 
-+ <!DOCTYPE html>
--     <html><head><title>Acceso Restringido — IA-ATC</title>
-+ <html lang="es">
--     <meta name="viewport" content="width=device-width,initial-scale=1">
-+ <head>
--     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
-+     <meta charset="UTF-8">
--     <style>
-+     <meta name="viewp
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: DOCTYPE
-3. identifier: UTF
-4. identifier: Inbox
-5. identifier: ATC
-
-### Fixed null crash in Backup — wraps unsafe operation in error boundary
--                 <form method="post" action="/api/settings/save" id="settingsForm" style="display:flex; flex-direction:column; flex:1;">
-+                 <div class="backup-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;">
--                     <div class="editor-card">
-+                     <h3 style="margin-bottom:0.5rem;color:v
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Backup
-3. identifier: Portabilidad
-4. identifier: JSON
-5. identifier: Exporta
-
-### Fixed null crash in GICA — prevents null/undefined runtime crashes
--             const input = document.getElementById('manualMsgInput');
-+             const input = document.getElementById('manualMsgInput');
--             if(input) {
-+             if(input) {
--                 input.value += `[sticker-local:${filename}] `;
-+                 input.value += `[sticker-local:${filename}] `;
--                 input.focus();
-+                 input.focus();
--     
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: GICA
-3. identifier: SUBIDA
-4. identifier: GENES
-5. identifier: STICKERS
-
-### Fixed null crash in GICA — prevents null/undefined runtime crashes
--                     method: "POST",
-+             const input = document.getElementById('manualMsgInput');
--                     headers: {"Content-Type": "application/json"},
-+             if(input) {
--                     body: JSON.stringify({name: name})
-+                 input.value += `[sticker-local:${filename}] `;
--                 });
-+                 input.focus();
--              
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: GICA
-3. identifier: SUBIDA
-4. identifier: GENES
-5. identifier: STICKERS
-
-### Fixed null crash in BARRA — prevents null/undefined runtime crashes
--     </style>
-+         .hide-scrollbar::-webkit-scrollbar { display: none; }
-- </head>
-+         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-- <body class="{body_class}">
-+     </style>
-- 
-+ </head>
--     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
-+ <body class="{body_class}">
--     <nav class="sidebar-nav">
-+ 
--         <!-- Inb
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: BARRA
-3. identifier: LATERAL
-4. identifier: IZQUIERDA
-5. identifier: Navegaci
-
-### Fixed null crash in BUSCADOR — prevents null/undefined runtime crashes
--             {labels_filter_html}
-+             
--         </div>
-+             {labels_filter_html}
--         
-+ 
--         <div class="chats-container">
-+             <!-- BUSCADOR / NUEVO CHAT -->
--             <div style="margin-top: 1rem; position: relative;">
-+             <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
--         <div class="chats-containe
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: BUSCADOR
-3. identifier: NUEVO
-4. identifier: CHAT
-5. identifier: PANEL
-
-### Fixed null crash in Etiquetas
--         });
-+             
-- 
-+             const chatLabelMenu = document.getElementById("chatLabelMenu");
--         // ================= PLANTILLAS LOGIC =================
-+             if(chatLabelMenu && !e.target.closest('#chatLabelMenu') && !e.target.closest('button[title="Etiquetas del Chat"]')) {
--         async function cargarPlantillas() {
-+                 chatLabelMenu.style.d
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Etiquetas
-3. identifier: Chat
-4. identifier: PLANTILLAS
-5. identifier: LOGIC
-
-### Fixed null crash in CERRAR
--                     }
-+                 input.value += event.detail.unicode;
--                 }
-+                 input.focus();
--             } catch (e) {
-+             }
--                 console.warn('Error en Live Chat Polling:', e);
-+         });
--             }
-+ 
--         }, 1500);
-+         // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
-- 
-+         document.addEventList
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: CERRAR
-3. identifier: MEN
-4. identifier: FLOTANTES
-5. identifier: HACER
-
-### Fixed null crash in Error — prevents null/undefined runtime crashes
--                 input.value += event.detail.unicode;
-+                     }
--                 input.focus();
-+                 }
--             }
-+             } catch (e) {
--         });
-+                 console.warn('Error en Live Chat Polling:', e);
-- 
-+             }
--         // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
-+         }, 1500);
--         document.addEventListener("clic
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Error
-3. identifier: Live
-4. identifier: Chat
-5. identifier: Polling
-
-### Fixed null crash in EMOJI
--         // EMOJI PICKER HOOK - Global event delegation
-+         // EMOJI PICKER HOOK - Global event delegation
--         document.addEventListener('emoji-click', event => {
-+         document.addEventListener('emoji-click', event => {
--             const input = document.getElementById('manualMsgInput');
-+             const input = document.getElementById('manualMsgInput');
--             if(
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: EMOJI
-3. identifier: PICKER
-4. identifier: HOOK
-5. identifier: Global
-
-### Fixed null crash in ETIQUETAS
-- 
-+         // ==
+5. i
 
 ... [Truncated — see individual observations for full content]

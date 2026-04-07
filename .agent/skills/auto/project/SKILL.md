@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 65 gotchas, 61 conventions, 21 fixes."
+description: "Project for botatc. 69 gotchas, 62 conventions, 23 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **296 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **305 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **296 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ G |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - Patched security issue K |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 567 notes - Score threshold: >40 + > 595 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes + - problem-fix in agent- |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes + - problem-fix in |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 539 notes - Score threshold: >40 + > 567 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
@@ -64,12 +68,33 @@ Auto-compiled from **296 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes + - problem-fix in ag |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (75 lines): # Project Intelligen |
 | Agent: follow existing project patterns — don't in | Agent: follow existing project patterns — don't introduce a different style |
-| Agent: don't generate code with "any" type — defin | Agent: don't generate code with "any" type — define proper TypeScript types |
-| Agent: always handle loading/error states — don't  | Agent: always handle loading/error states — don't just render data |
-| Agent: don't use deprecated APIs — check library v | Agent: don't use deprecated APIs — check library version, use current API |
-| Agent: check existing code before creating utility | Agent: check existing code before creating utility functions — avoid duplicates |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Nivel — prevents null/undefined runtime crashes
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- - Patched security issue Kevin —
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
+- - Patched security issue Kevin — hardens HTTP security headers
++ - problem-fix in shared-context.json
+- - problem-fix in patcher.py
++ - Patched security issue Kevin — hardens HTTP security headers
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
@@ -149,35 +174,6 @@ Auto-compiled from **296 real patterns** in **botatc**. This skill is auto-route
 - - Patched security issue Kevin — hardens HTTP security headers
 + - problem-fix in shared-context.json
 - - problem-fix in patcher.py
-+ - Patched security issue Kevin — hardens HTTP security headers
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in patcher.py
-+ - problem-fix in agent-rules.md
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem-fix in patcher.py
-- - problem-fix in server.py
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-- - problem-fix in firebase_client.py
-+ - problem-fix in server.py
-- - problem-fix in test_groq.py
-+ - problem-fix in f
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in POST — parallelizes async operations for speed
-+ - problem-fix in patcher.py
-- - Fixed null crash in Acci — parallelizes async operations for speed
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-- - Fixed null crash in Reemplazar — parallelizes async operations for speed
-+ - problem-fix in server.py
-- - Fi
++ - Patched security issue Kevin — ha
 
 ... [Truncated — see individual observations for full content]
