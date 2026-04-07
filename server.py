@@ -1549,6 +1549,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             def reemplazar_archivos_inline(match):
                 tipo = match.group(1)
                 media_id = match.group(2)
+                
+                if tipo == "sticker-local":
+                    src_url = f"/static/stickers/{media_id}"
+                    return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: transparent; margin-bottom: 5px; display:inline-block;" alt="Sticker Local {media_id}"></div>"""
+                    
                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
                 
                 if tipo == "sticker":
@@ -1563,7 +1568,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
             # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
             # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
-            texto_renderizado = re.sub(r"\[(sticker|imagen|audio|video):([^\]]+)\]", reemplazar_archivos_inline, texto)
+            texto_renderizado = re.sub(r"\[(sticker-local|sticker|imagen|audio|video):([^\]]+)\]", reemplazar_archivos_inline, texto)
             
             # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")

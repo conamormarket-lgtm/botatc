@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 499 notes | Score threshold: >40
+> 513 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,39 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in patcher.py
-- - pr
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Replaced a
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Replaced a
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
-+ - ⚠️ GOTCHA: problem-fix in agen
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in patcher.py
-+ - problem-fix in agent-rules.md
-- - Ad
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Replaced auth GOTCHA
+- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes** — -                 }
++                     if(typeof window.aplicarFil
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse** — -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
++  
+- **⚠️ GOTCHA: Fixed null crash in None** — -         chat_viewer_html = f"""
++         session_tags = s.get("eti
+- **⚠️ GOTCHA: Updated typing database schema** — - 
++ 
++ 
++ # =======================================================
+- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     <!-- Botón Plantillas -->
++                    
+- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     </div>
++                     <!-- Botón Plantil
 
+## Active: `.`
+
+- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes**
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse**
+- **⚠️ GOTCHA: Fixed null crash in None**
+- **⚠️ GOTCHA: Updated typing database schema**
+- **⚠️ GOTCHA: Fixed null crash in Plantillas**
 
 ## Project Standards
 
-- discovery in shared-context.json — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- problem-fix in agent-rules.md — confirmed 3x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
+- Fixed null crash in POST — parallelizes async operations for speed — confirmed 4x
+- Fixed null crash in Title — prevents null/undefined runtime crashes — confirmed 5x
+- Fixed null crash in RESPONSIVE — prevents null/undefined runtime crashes — confirmed 3x
+- Fixed null crash in None — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in server.py — confirmed 3x
+- convention in .gitignore
+- Fixed null crash in Simular — confirmed 3x
+- Fixed null crash in PLANTILLAS — confirmed 5x
 
 ## Known Fixes
 
@@ -57,10 +64,10 @@
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
 - decision in dump.html
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

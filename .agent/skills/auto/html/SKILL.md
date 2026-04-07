@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 10 conventions, 16 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 10 conventions, 17 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **39 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **40 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,30 @@ Auto-compiled from **39 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Custom — prevents null/undefined runtime crashes
+-     </style>
++     
+- </head>
++         /* Custom Scrollbar for all */
+- <body class="{body_class}">
++         ::-webkit-scrollbar {
+- 
++             width: 8px;
+-     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
++             height: 8px;
+-     <nav class="sidebar-nav">
++         }
+-         <!-- Inbox Icon -->
++         ::-webkit-scrollbar-track {
+-   
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Custom
+3. identifier: Scrollbar
+4. identifier: BARRA
+5. identifier: LATERAL
 
 ### Fixed null crash in Crear — parallelizes async operations for speed
 -                     <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
@@ -327,21 +351,6 @@ Auto-compiled from **39 real patterns** in **botatc**. This skill is auto-routed
 + </html>
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- 📐 **Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x** — -                     }
-+                     }
--                 }
-+                 }
--         
-- 📐 **Fixed null crash in EMOJI — confirmed 3x** — -         // EMOJI PICKER HOOK - Global event delegation
-+         // EMOJI PICKER HOOK - Global ev
-- 📐 **Fixed null crash in GICA — confirmed 4x** — -         };
-+         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
-- 
-+    
-- 📐 **Strengthened types Documentos** — -         .container {
-+             <div class="container" style="gap:2rem;">
--             padding
-- 📐 **Strengthened types DOCTYPE** — - <!DOCTYPE html>
-+ <!DOC
+- 📐 **Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x** — - 
 
 ... [Truncated — see individual observations for full content]

@@ -1,445 +1,322 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `check_js2.py` (Domain: **Generic Logic**)
+> Dynamically loaded for active file: `settings.html` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
-- **⚠️ GOTCHA: Fixed null crash in HTMLResponse**: -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
-+     html = html.replace("{labels_filter_html}", labels_filter_html)
--     html = html.replace("{chat_view_css}", chat_view_css)
-+     html = html.replace("{chat_viewer_html}", chat_viewer_html)
--     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
-+     html = html.replace("{chat_view_css}", chat_view_css)
--     
-+     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
--     return HTMLResponse(html)
-+     
-- 
-+     return HTMLResponse(html)
-- @app.get("/inbox", response_class=HTMLResponse)
-+ 
-- async def inbox_main(request: Request, tab: str = "all"):
-+ @app.get("/inbox", response_class=HTMLResponse)
--     return renderizar_inbox(request, None, tab)
-+ async def inbox_main(request: Request, tab: str = "all", label: str = None):
-- 
-+     return renderizar_inbox(request, None, tab, label)
-- from typing import List
-+ 
-- 
-+ from typing import List
-- @app.post("/api/admin/stickers/upload")
-+ 
-- async def upload_stickers(files: List[UploadFile] = File(...)):
-+ @app.post("/api/admin/stickers/upload")
--     """Recibe múltiples archivos webp/png, los guarda en disco ephemeral y sincroniza a Firestore."""
-+ async def upload_stickers(files: List[UploadFile] = File(...)):
--     try:
-+     """Recibe múltiples archivos webp/png, los guarda en disco ephemeral y sincroniza a Firestore."""
--         import os
-+     try:
--         from firebase_client import guardar_sticker_en_bd
-+         import os
--         os.makedirs("static/stickers", exist_ok=True)
-+         from firebase_client import guardar_sticker_en_bd
--         count = 0
-+         os.makedirs("static/stickers", exist_ok=True)
--         for file in files:
-+         count = 0
--             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
-+         for file in files:
--                 # Extraemos solo el nombre del archivo, 
+- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes**: -                 }
++                     if(typeof window.aplicarFiltroChats === 'function') {
+-                 
++                         window.aplicarFiltroChats();
+-                 // Actualizar visibilidad de Chat
++                     }
+-                 const newScroll = doc.getElementById('chatScroll');
++                 }
+-                 const oldScroll = document.getElementById('chatScroll');
++                 
+-                 if(newScroll && oldScroll) {
++                 // Actualizar visibilidad de Chat
+-                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
++                 const newScroll = doc.getElementById('chatScroll');
+-                         // Respetar scroll solo si el usuario no ha subido a leer
++                 const oldScroll = document.getElementById('chatScroll');
+-                         const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
++                 if(newScroll && oldScroll) {
+-                         oldScroll.innerHTML = newScroll.innerHTML;
++                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
+-                         if(isAtBottom) {
++                         // Respetar scroll solo si el usuario no ha subido a leer
+-                             oldScroll.scrollTop = oldScroll.scrollHeight;
++                         const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
+-                         }
++                         oldScroll.innerHTML = newScroll.innerHTML;
+-                     }
++                         if(isAtBottom) {
+-                 }
++                             oldScroll.scrollTop = oldScroll.scrollHeight;
+-             } catch (e) {
++                         }
+-                 console.warn('Error en Live Chat Polling:', e);
++                     }
+-             }
++                 }
+-         }, 1500);
++             } catch (e) 
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **⚠️ GOTCHA: Fixed null crash in None**: -         chat_viewer_html = f"""
-+         session_tags = s.get("etiquetas", [])
--         {status_bar}
-+         tags_bar = ""
--         <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
-+         for tid in session_tags:
--             <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
-+             lbl = next((l for l in global_labels if l.get("id") == tid), None)
--                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-+             if lbl:
--             </a>
-+                 tags_bar += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
--             <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
-+ 
--             <div style="min-width:0">
-+         chat_viewer_html = f"""
--                 <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{nombre_chat}</h3>
-+         {status_bar}
--                 <small style="color:var(--text-muted)">+{wa_id}</small>
-+         <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
--             </div>
-+             <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
--         </div>
-+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **⚠️ GOTCHA: Updated typing database schema**: - 
-+ 
-+ 
-+ # ============================================================
-+ #  API DE GESTOR DE ETIQUETAS Y ASIGNACIONES
-+ # ============================================================
-+ 
-+ from typing import Optional
-+ 
-+ class LabelPayload(BaseModel):
-+     id: str
-+     name: Optional[str] = None
-+     color: Optional[str] = None
-+ 
-+ @app.post("/api/admin/labels/save")
-+ async def api_save_label(payload: LabelPayload, request: Request):
-+     if not verificar_sesion(request):
-+         raise HTTPException(status_code=403, detail="No autorizado")
-+     from firebase_client import guardar_etiqueta_bd
-+     guardar_etiqueta_bd(payload.id, payload.name, payload.color)
-+     global global_labels
-+     global_labels = [l for l in global_labels if l.get("id") != payload.id]
-+     global_labels.append({"id": payload.id, "name": payload.name, "color": payload.color})
-+     return {"ok": True}
-+ 
-+ @app.post("/api/admin/labels/delete")
-+ async def api_delete_label(payload: LabelPayload, request: Request):
-+     if not verificar_sesion(request):
-+         raise HTTPException(status_code=403, detail="No autorizado")
-+     from firebase_client import eliminar_etiqueta_bd
-+     eliminar_etiqueta_bd(payload.id)
-+     global global_labels
-+     global_labels = [l for l in global_labels if l.get("id") != payload.id]
-+     
-+     # Quitar etiqueta de sesiones cargadas
-+     for k, s in sesiones.items():
-+         if "etiquetas" in s and payload.id in s["etiquetas"]:
-+             s["etiquetas"].remove(payload.id)
-+     return {"ok": True}
-+ 
-+ @app.get("/api/admin/labels/list")
-+ async def api_list_labels(request: Request):
-+     if not verificar_sesion(request):
-+         raise HTTPException(status_code=403, detail="No autorizado")
-+     return {"ok": True, "labels": global_labels}
-+ 
-+ class AssignLabelPayload(BaseModel):
-+     wa_id: str
-+     label_ids: list
-+ 
-+ @app.post("/api/admin/chats/labels")
-+ async def api_assign_cha
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+📌 IDE AST Context: Modified symbols likely include [html]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] what-changed in .gitignore**: - 隧道_log.txt
-+ 隧道_log.txt
-- **[problem-fix] Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes**: -     if not verificar_sesion(request):
-+     # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
--         return HTMLResponse(obtener_login_html(), status_code=401)
-+     global global_labels
-- 
-+     if not global_labels:
--     import os
-+         try:
--     if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
-+             from firebase_client import cargar_etiquetas_bd
--         
-+             global_labels = cargar_etiquetas_bd()
--     with open("inbox.html", "r", encoding="utf-8") as f:
-+         except: pass
--         html = f.read()
-+ 
-- 
-+     if not verificar_sesion(request):
--     ahora = datetime.utcnow()
-+         return HTMLResponse(obtener_login_html(), status_code=401)
--     
-+ 
--     def tiempo_relativo(dt):
-+     import os
--         diff = ahora - dt
-+     if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
--         m = int(diff.total_seconds() / 60)
-+         
--         if m < 1:   return "ahora"
-+     with open("inbox.html", "r", encoding="utf-8") as f:
--         if m < 60:  return f"{m}m"
-+         html = f.read()
--         if m < 1440: return f"{m//60}h"
-+ 
--         return f"{m//1440}d"
-+     ahora = datetime.utcnow()
-- 
+- **[what-changed] 🟢 Edited check_js2.py (9 changes, 355min)**: Active editing session on check_js2.py.
+9 content changes over 355 minutes.
+- **[problem-fix] Fixed null crash in Custom — prevents null/undefined runtime crashes**: -     </style>
 +     
--     def ultimo_msg(sesion):
-+     def tiempo_relativo(dt):
--         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
-+         diff = ahora - dt
--         if not hist: return "—"
-+         m = int(diff.total_seconds() / 60)
--         return hist[-1]["content"][:50] + ("…" if len(hist[-1]["content"]) > 50 else "")
-+         if m < 1:   return "ahora"
+- </head>
++         /* Custom Scrollbar for all */
+- <body class="{body_class}">
++         ::-webkit-scrollbar {
 - 
-+         if m < 60:  return f"{m}m"
--     # Procesar Lista de Chats
-+         if m < 1440: return f"{m//60}h"
--     todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True)
-+         return f"{m//1440}d"
--     lista_chats_html = ""
++             width: 8px;
+-     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
++             height: 8px;
+-     <nav class="sidebar-nav">
++         }
+-         <!-- Inbox Icon -->
++         ::-webkit-scrollbar-track {
+-         <a href="/inbox" class="nav-item active" title="Bandeja de Entrada (Inbox)">
++             background: transparent; 
+-             <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
++         }
+-         </a>
++         ::-webkit-scrollbar-thumb {
+-         <!-- Agent Settings Icon -->
++             background: var(--accent-border); 
+-         <a href="/settings" class="nav-item" title="Personalizar Agente IA">
++             border-radius: 4px;
+-             <svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
++         }
+-         </a>
++         ::-webkit-scrollbar-thumb:hover {
+-         <!-- System Settings Icon -->
++             background: var(--text-muted); 
+-         <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
++         }
+-             <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
 + 
--     
-+     def ultimo_msg(ses
+-         </a>
++ </style>
+- 
++ </head>
+-         <!-- Indicador global abajo -->
++ <body class="{body_class}">
+-         <div class="bot-status-indicator" title="Estado Global del Bot"></div>
++ 
+-     </nav>
++     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
+- 
++     <nav class="sidebar-nav">
+-     <!-- 2. PANEL CENTRAL (Lista de Chats) -->
++         <!-- Inbox Icon -->
+-     <div class="chat-
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[problem-fix] Fixed null crash in Flotante — parallelizes async operations for speed**: -                     <!-- Menú Flotante de Emojis -->
++                     <!-- Menú Flotante Unificado (Emojis + Stickers) -->
+-                     <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:transparent; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15);">
++                     <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.3); flex-direction:column; width:340px; overflow:hidden;">
+-                         <emoji-picker class="light"></emoji-picker>
++                         <div style="display:flex; background:var(--accent-bg); border-bottom:1px solid var(--accent-border);">
+-                     </div>
++                             <button type="button" onclick="document.getElementById('emojiTabContent').style.display='block'; document.getElementById('stickerTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.nextElementSibling.style.borderBottom='none'; this.nextElementSibling.style.color='var(--text-muted)';" style="flex:1; padding:0.8rem; background:transparent; border:none; border-bottom:2px solid var(--primary-color); color:var(--primary-color); cursor:pointer; font-weight:600; font-size:0.9rem; transition:color 0.2s;">🙂 Emojis</button>
+- 
++                             <button type="button" onclick="document.getElementById('stickerTabContent').style.display='block'; document.getElementById('emojiTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.previousElementSibling.style.borderBottom='none'; this.previousElementSibling.style.color='var(--text-muted)'; cargarStickers();" style="flex:1; padding:0.8rem; background:transparent; border:no
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[convention] Fixed null crash in Simular — confirmed 3x**: -                     document.getElementById('rightSidebar').style.display = 'none';
-+                     
--                     if (window.enviarMensajeManual) {{
-+                     document.getElementById('rightSidebar').style.display = 'none';
--                         window.enviarMensajeManual(new Event('submit'), '{wa_id}');
-+                     
+- **[convention] Fixed null crash in POST — parallelizes async operations for speed — confirmed 4x**: -                     let finalMsg;
++                     if(msgType === 'action_label') {{
+-                     if(msgType === 'text') {{
++                         if (msgObj.media_id) {{
+-                         finalMsg = (msgObj.content || '').replace(/#nombre/gi, nombreCliente);
++                             try {{
+-                     }} else if(msgType === 'image') {{
++                                 await fetch("/api/admin/chats/labels/toggle", {{
+-                         finalMsg = `[imagen:${{msgObj.media_id}}]`;
++                                     method: "POST",
+-                     }} else if(msgType === 'video') {{
++                                     headers: {{"Content-Type":"application/json"}},
+-                         finalMsg = `[video:${{msgObj.media_id}}]`;
++                                     body: JSON.stringify({{ wa_id: "{wa_id}", label_id: msgObj.media_id }})
+-                     }} else if(msgType === 'audio') {{
++                                 }});
+-                         finalMsg = `[audio:${{msgObj.media_id}}]`;
++                             }} catch(e) {{}}
+-                     }} else {{
++                         }}
+-                         finalMsg = msgObj.content || '';
++                         if (i < msgs.length - 1) await new Promise(r => setTimeout(r, delay / 2));
 -                     }}
-+                     // Simular clic en el botón de "Enviar" del formulario
--                 }}
-+                     const form = input.closest('form');
--             }}
-+                     if(form) {{
--             function checkQuickReplyTrigger(input) {{
-+                         const btn = form.querySelector('button[type="submit"]');
--                 if(input.value.endsWith("/")) {{
-+                         if(btn) btn.click();
--                     const side = document.getElementById('rightSidebar');
++                         continue;
+-                     
 +                     }}
--                     if(side){{
-+                 }}
--                         side.style.display = 'flex';
-+             }}
--                         cargarQuickReplies();
-+             function checkQuickReplyTrigger(input) {{
--                         setTimeout(()=> document.getElementById('qrSearchFilter').focus(), 50);
-+                 if(input.value.endsWith("/")) {{
--                     }}
-+                     const side = document.getElementById('rightSidebar');
--                 }}
-+                     if(side){{
--             }}
-+                         side.style.display = 'flex';
--             
-+                         cargarQuickReplies();
--             function abrirModalCrearQR() {{
-+                         setTimeout(()=> document.getElementById('qrSearchFilter').focus(), 50);
--                 const m = document.getElementById('qrCreateModal');
-+                     }}
--                 if(m) {{
-+                 }}
--                     document.getElementById('newQrTitle').value = '';
-
+-                     if(!finalMsg) {{ i < msgs.length-1 && await new Promise(r=>setTimeout(r, delay)); continue; }}
++ 
+-                     
++                     let finalMsg;
+-                     const endsWithSlash = input.value.trimEnd().endsWith("/");
++                     if(msgType === 'text') {{
+-                     input.value = (endsWithSlash && i===0) ? input.value.trimEnd().slice(0,-1) + finalMsg : finalMsg;
++                         finalMsg = (msgObj.content || '').replace(/#nombre/gi, nombr
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[problem-fix] Added error handling Respuestas — wraps unsafe operation in error boundary**: -             async function cargarQuickReplies() {
-+             async function cargarQuickReplies() {{
--                 try {
-+                 try {{
--                 } catch(e) {
-+                 }} catch(e) {{
--                 }
-+                 }}
--             }
-+             }}
--             function renderQuickReplies(data) {
-+             function renderQuickReplies(data) {{
--                 if(data.length === 0) {
-+                 if(data.length === 0) {{
--                 }
-+                 }}
--                 data.forEach(qr => {
-+                 data.forEach(qr => {{
--                     btn.onmouseover = function() {this.style.background='var(--accent-hover-soft)';};
-+                     btn.onmouseover = function() {{this.style.background='var(--accent-hover-soft)';}};
--                     btn.onmouseout = function() {this.style.background='none';};
-+                     btn.onmouseout = function() {{this.style.background='none';}};
--                 });
-+                 }});
--             }
-+             }}
--             function filtrarQuickReplies(val) {
-+             function filtrarQuickReplies(val) {{
--             }
-+             }}
--             function aplicarQuickReply(text) {
-+             function aplicarQuickReply(text) {{
--                 if(input) {
-+                 if(input) {{
--                     const slashMatch = textBefore.match(/(?:^|\s)\/$/); 
-+                     const slashMatch = textBefore.match(/(?:^|\\s)\/$/); 
+- **[convention] Fixed null crash in Title — prevents null/undefined runtime crashes — confirmed 5x**: -                     container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
++                     container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.65rem 0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
+-                     btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column;";
++                     btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column; gap:0.25rem;";
+-                     const headerRow = document.createElement("div");
++                     // Title row
+-                     headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:0.2rem;";
++                     const headerRow = document.createElement("div");
+-                     const titleWrap = document.createElement("div");
++                     headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%;";
+-                     titleWrap.style.cssText = "display:flex; align-items:center; gap:0.5rem;";
++                     const titleWrap = document.createElement("div");
+-                     const titleEl = document.createElement("strong");
++                     titleWrap.style.cssText = "display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;";
+-                     titleEl.innerText = qr.title || qr.category || '(sin título)';
++                     const titleEl = document.createElement("strong");
+-                     titleEl.style.fontSize = "0.9rem";
++                     t
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in dump.html**: -                     const slashMatch = input.value.match(/(?:^|\\s)\\/$/); 
++                     const endsWithSlash = input.value.trimEnd().endsWith("/");
 -                     if (slashMatch) {
-+                     if (slashMatch) {{
--                     } else {
-+                     }} else {{
--                     }
-+                     }}
--                 }
-+                 }}
--             }
-+             }}
--             function checkQuickReplyTrigger(input) {
-+             function checkQuickReplyTrigger(input) {{
--                 if(input.value.endsWith("/")) {
-+                 if(in
-… [diff truncated]
++                     if (endsWithSlash) {
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in server.py**: -                     const slashMatch = input.value.match(/(?:^|\\\\s)\\\\/$/); 
++                     const endsWithSlash = input.value.trimEnd().endsWith("/");
+-                     if (slashMatch) {{
++                     if (endsWithSlash) {{
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[what-changed] 🟢 Edited serviceAccountKey.json (19 changes, 474min)**: Active editing session on serviceAccountKey.json.
-19 content changes over 474 minutes.
-- **[convention] Fixed null crash in PLANTILLAS — confirmed 5x**: - 
-+         });
--             const filterMenu = document.getElementById('inboxFilterMenu');
+- **[problem-fix] problem-fix in patcher.py**: - """
++ """Fix the broken regex line"""
+- FINAL FIX: Completely rewrite the broken section of server.py
++ code = open('server.py', 'r', encoding='utf-8').read()
+- The JS code is broken across lines without proper <script> tags.
 + 
--             if(filterMenu && !e.target.closest('#inboxFilterMenu') && !e.target.closest('button') && !e.target.closest('svg')) {
-+         // ================= PLANTILLAS LOGIC =================
--                 filterMenu.style.display = 'none';
-+         async function cargarPlantillas() {
--             }
-+             const list = document.getElementById("templateList");
--         });
-+             if(!list) return;
+- """
++ # The broken regex line - find it and replace it
 - 
-+             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
--         // ================= PLANTILLAS LOGIC =================
-+             try {
--         async function cargarPlantillas() {
-+                 const res = await fetch("/api/admin/templates/list");
--             const list = document.getElementById("templateList");
-+                 const data = await res.json();
--             if(!list) return;
-+                 if(data.ok) {
--             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
-+                     list.innerHTML = "";
--             try {
-+                     if(data.plantillas.length === 0) {
--                 const res = await fetch("/api/admin/templates/list");
-+                         list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
--                 const data = await res.json();
-+                     } else {
--                 if(data.ok) {
-+                         data.plantillas.forEach(p => {
--                     list.innerHTML = "";
-+                             const btn = document.createElement("div");
--                     if(data.plantillas.length === 0) {
-+                             btn.style.cssText = "
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] what-changed in inbox.html**: - </html>
-+ </html>
-
-📌 IDE AST Context: Modified symbols likely include [html, cargarChatLabels]
-- **[what-changed] what-changed in inbox.html**: - </html>
-+ </html>
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] what-changed in inbox.html — confirmed 5x**: - </html>
-+ </html>
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] what-changed in server.py — confirmed 3x**: - async def inbox_chat(request: Request, wa_id: str, tab: str = "all"):
-+ async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None):
--     return renderizar_inbox(request, wa_id, tab)
-+     return renderizar_inbox(request, wa_id, tab, label)
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[convention] Fixed null crash in None — confirmed 3x**: -         tags_html = ""
-+         if session_tags is None: session_tags = []
--         if session_tags:
-+         tags_html = ""
--             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
-+         if session_tags:
--             for tid in session_tags:
-+             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
--                 lbl = next((l for l in global_labels if l.get("id") == tid), None)
-+             for tid in session_tags:
--                 if lbl:
-+                 lbl = next((l for l in global_labels if l.get("id") == tid), None)
--                     tags_html += f'<span style="background:{lbl["color"]}22; color:{lbl["color"]}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {lbl["color"]}44;">{lbl["name"]}</span>'
-+                 if lbl:
--             tags_html += '</div>'
-+                     col = lbl.get("color", "#94a3b8")
++ old = "                    const slashMatch = input.value.match(/(?:^|\\\\\\\\s)\\\\\\\\/$/); \r\n                    if (slashMatch) {{"
+- code = open('server.py', 'r', encoding='utf-8').read()
++ new = "                    const endsWithSlash = input.value.trimEnd().endsWith(\"/\");\r\n                    if (endsWithSlash) {{"
+- # The broken section starts with the orphan JS sticking to </div>
++ if old in code:
+- BROKEN_START = """            <!-- END RIGHT SIDEBAR -->
++     code = code.replace(old, new)
+-         </div>            let isSendingSequence = false;
++     print("Fixed regex line!")
 -             
-+                     nm = lbl.get("name", "Etiqueta")
--         lista_chats_html += f"""
-+                     tags_html += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
--         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
-+             tags_html += '</div>'
--             <div class="chat-row-header">
-+             
--                 <span class="chat-name">{nombre}</span>
-+         lista_chats_html += f"""
--                 <span class="chat-time">{time_str}</span>
-+         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
--             </div>
-+             <div class="chat-row-header">
--             <div class="chat-preview">{preview}</div>
-+                 <span class="chat-name">{nombre}</span>
--             <div class="chat-badges">{badge_html}</div>
-+                 <span clas
++ else:
+-             async function aplicarQuickReply(qrId) {{"""
++     # Try without \r
+- 
++     old2 = old.replace('\r\n', '\n')
+- BROKEN_END = """            function checkQuickReplyTrigger(input) {{"""
++     new2 = new.replace('\r\n', '\n')
+- 
++     if old2 in code:
+- # Verify positions
++         code = code.replace(old2, new2)
+- si = code.find(BROKEN_START)
++         print("Fixed regex line (LF)!")
+- ei = code.find(BROKEN_END)
++     else:
+- print(f"Broken section start: {si}")
++         # Find the line another way
+- print(f"checkQuickReplyTrigger starts at: {ei}")
++         lines = code.split('\n')
+- 
++         for i, line in enumerate(lines):
+- if si == -1:
++             if 'slashMatch' in line and 'regex' not in line:
+-     print("ERROR: Could not find broken section start")
++                 print(f"Found at line {i+1}: {repr(line)}")
+-     exit(1)
++                 lines[i] = '                    const endsWithSlash = input.value.trimEnd().endsWith("/");'
+- 
++                 # Fix next line too
+- # We'll replace everything from BROKEN_START up to (but not inclu
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[convention] Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x**: -                     }
-+                     }
--                 }
-+                 }
--             } catch (e) {
-+             } catch (e) {
--                 console.warn('Error en Live Chat Polling:', e);
-+                 console.warn('Error en Live Chat Polling:', e);
+📌 IDE AST Context: Modified symbols likely include [code, old, new, code, old2]
+- **[convention] Fixed null crash in RESPONSIVE — prevents null/undefined runtime crashes — confirmed 3x**: - 
++         .bubble { max-width:80%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; }
+-         /* ==================================================
++         .lado-izq { align-self:flex-start; }
+-            RESPONSIVE DESIGN (MÓVIL / TABLET)
++         .lado-der { align-self:flex-end; }
+-            ================================================== */
++         .bubble-bot { background:var(--accent-bg); color:var(--text-main); border-bottom-left-radius:4px; border:1px solid var(--accent-border); }
+-         @media (max-width: 768px) {
++         .bubble-user { background:var(--primary-color); color:#ffffff; border-bottom-right-radius:4px; }
+-             body {
++         
+-                 flex-direction: column;
++ 
 -             }
++         /* ==================================================
+-             
++            RESPONSIVE DESIGN (MÓVIL / TABLET)
+-             /* Sidebar se convierte en Bottom Navigation Bar */
++            ================================================== */
+-             .sidebar-nav {
++         @media (max-width: 768px) {
+-                 flex-direction: row;
++             body {
+-                 width: 100%;
++                 flex-direction: column;
+-                 height: 65px;
 +             }
--         }, 1500);
-+         }, 1500);
-- 
-+ 
--         // API CLIENT PARA RESPONDER
-+         // API CLIENT PARA RESPONDER
--         window.enviarMensajeManual = async function(e, wa_id) {
-+         window.enviarMensajeManual = async function(e, wa_id) {
--             e.preventDefault();
-+             e.preventDefault();
--             const input = document.getElementById('manualMsgInput');
-+             const input = document.getElementById('manualMsgInput');
--             if(!input) return;
-+             if(!input) return;
--             const msj = input.value.trim();
-+             const msj = input.value.trim();
--             if(!msj) return;
-+             if(!msj) return;
--             
+-                 padding: 0;
 +             
--             // Vaciar y enfocar
-+             // Vaciar y enfocar
--             input.value = '';
-+             input.value = '';
--             input.focus();
-+             input.focus();
--             
-+             
--             // Dibujado optimista instantáneo
-+             // Dibujado optimista instantáneo
--             const scroll = document.getElementById('chatScroll');
-+             const scroll = document.getElementById('chatScroll');
--             if(scroll) {
-+             if(scroll) {
--                 const bubble = document.createElement('div');
-+                 const bubble = document.createElement('div');
--                 bubble.className = "bubble bubble-bot lado-izq";
-+                 bubble.className = "bubble bubble-bot lado-izq";
--                 bubble.style.border = "1px solid var(--primary-color)";
-+                 bubble.style.border = "1px solid var(--primary-color)";
--                 bubble.innerText 
+-                 border-right: none;
++             /* Sidebar se convierte en Bottom Navigation Bar */
+-                 border-top: 1px solid var(--accent-border);
++             .sidebar-nav {
+-                 order: 3; /* Al final de la columna */
++                 flex-direction: row;
+-                 justify-content: space-around;
++                 width: 100%;
+-                 background-color: var(--bg-main); /* para tapar info detrás si es necesario */
++                 height: 65px;
+-             }
++                 padding: 0;
+-             .nav-item { margin-bottom: 0; }
++                 
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in None — prevents null/undefined runtime crashes — confirmed 3x**: -             </form>
++             </form>            """
+-             
++ 
+-             <script>
++         session_tags = s.get("etiquetas", [])
+-             let quickRepliesCache = [];
++         if session_tags is None: session_tags = []
+-             async function cargarQuickReplies() {{
++         tags_bar = ""
+-                 const list = document.getElementById("quickRepliesList");
++         for tid in session_tags:
+-                 if(!list) return;
++             lbl = next((l for l in global_labels if l.get("id") == tid), None)
+-                 list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
++             if lbl:
+-                 try {{
++                 col = lbl.get("color", "#94a3b8")
+-                     const res = await fetch("/api/quick-replies");
++                 nm = lbl.get("name", "Etiqueta")
+-                     if (!res.ok) throw new Error("HTTP " + res.status);
++                 tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
+-                     const data = await res.json();
++ 
+-                     quickRepliesCache = data;
++         chat_viewer_html = f"""
+-                     renderQuickReplies(data);
++         <div style="display:flex; flex-direction:row; height:100%; width:100%;">
+-                 }} catch(e) {{
++             <!-- START CHAT MAIN COLUMN -->
+-                     list.innerHTML = `<div style="font-size:0.85rem; color:red; padding:1rem; text-align:center; background:rgba(255,0,0,0.1); border-radius:8px;">Error: ${{e.message}}</div>`;
++             <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-main);">
+-                 }}
++                 {status_bar}
+-             }}
++                 <div style="padding:1.5rem;border-bottom:
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]

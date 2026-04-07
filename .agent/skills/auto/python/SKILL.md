@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 14 conventions, 37 fixes."
+description: "Python for botatc. 10 gotchas, 14 conventions, 38 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **91 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **92 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,19 @@ Auto-compiled from **91 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Flotante — parallelizes async operations for speed
+-                     <!-- Menú Flotante de Emojis -->
++                     <!-- Menú Flotante Unificado (Emojis + Stickers) -->
+-                     <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:transparent; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15);">
++                     <div id="emojiMenu" style="display:none; p
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Men
+3. identifier: Flotante
+4. identifier: Unificado
+5. identifier: Emojis
 
 ### Fixed null crash in Acci — parallelizes async operations for speed
 -                                 </div>
@@ -281,25 +294,6 @@ Auto-compiled from **91 real patterns** in **botatc**. This skill is auto-routed
 
 **Actionable Steps:**
 1. Modified 1 files
-2. identifier: True
-3. identifier: Tabla
-4. identifier: Esperando
-5. identifier: Inbox
-
-### Fixed null crash in UploadFile
-- @app.post("/api/admin/enviar_manual")
-+ @app.post("/api/admin/upload_media")
-- async def enviar_manual_endpoint(request: Request):
-+ async def admin_upload_media(file: UploadFile = File(...)):
--     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
-+     """Sube una imagen directamente desde la interfaz Web a Meta Graph."""
--     if not verificar_sesion(request):
-+ 
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UploadFile
-3. identifier: File
-
+2. 
 
 ... [Truncated — see individual observations for full content]
