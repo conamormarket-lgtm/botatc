@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 42 gotchas, 46 conventions, 12 fixes."
+description: "Project for botatc. 43 gotchas, 47 conventions, 12 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **206 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **206 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 361 notes - Score threshold: >40 + > 398 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replace |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Title — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
 | ⚠️ GOTCHA: Optimized Patched | - - problem-fix in shared-context.json + - Patched security issue Clean - - Fixed null crash in Crea |
@@ -215,13 +216,6 @@ Auto-compiled from **206 real patterns** in **botatc**. This skill is auto-route
 - - Don't commit node_modules, __pycache__, build/, dist/ — add to .gitignore
 + - Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-## 📐 Conventions & Best Practices
-
-### Project C
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), #
 
 ... [Truncated — see individual observations for full content]

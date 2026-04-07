@@ -1050,11 +1050,18 @@ async def pausar_bot_manual(request: Request, numero_wa: str):
 
 @app.post("/api/admin/upload_media")
 async def admin_upload_media(file: UploadFile = File(...)):
-    """Sube una imagen directamente desde la interfaz Web a Meta Graph."""
+    """Sube media directamente desde la interfaz Web a Meta Graph."""
     try:
         from whatsapp_client import subir_media
         content = await file.read()
-        media_id = await subir_media(content, file.content_type, file.filename or "upload.png")
+        
+        fallback_name = "upload.bin"
+        if file.content_type:
+            if "image" in file.content_type: fallback_name = "upload.png"
+            elif "video" in file.content_type: fallback_name = "upload.mp4"
+            elif "audio" in file.content_type: fallback_name = "upload.ogg"
+
+        media_id = await subir_media(content, file.content_type, file.filename or fallback_name)
         
         if media_id:
             return {"ok": True, "media_id": media_id}
@@ -1542,13 +1549,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/150x150?text=Sticker';"></div>"""
                 elif tipo == "imagen":
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+                elif tipo == "video":
+                    return f"""<div style="text-align:center;"><video controls src="{src_url}" style="max-width: 250px; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px;"></video></div>"""
                 elif tipo == "audio":
                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
                 return match.group(0)
 
             # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
             # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
-            texto_renderizado = re.sub(r"\[(sticker|imagen|audio):([^\]]+)\]", reemplazar_archivos_inline, texto)
+            texto_renderizado = re.sub(r"\[(sticker|imagen|audio|video):([^\]]+)\]", reemplazar_archivos_inline, texto)
             
             # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
@@ -1632,6 +1641,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <div id="attachMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:190px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.2rem; z-index:100;">
                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Subir Imagen
+                        </button>
+                        <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'video'); document.getElementById('hiddenFileInput').accept='video/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg> Subir Video
+                        </button>
+                        <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'audio'); document.getElementById('hiddenFileInput').accept='audio/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> Subir Audio
                         </button>
                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; toggleStickersMenu();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Stickers

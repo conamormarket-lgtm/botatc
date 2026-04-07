@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 398 notes | Score threshold: >40
+> 402 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 361 notes | Score threshold: >40
++ > 398 notes | Score threshold: 
 - **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Optimized Patched
 + - ⚠️ GOTCHA: problem-fix in agent-r
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Title — prevents null/undefined runtime crashe
@@ -28,19 +30,17 @@
 - **⚠️ GOTCHA: Replaced auth Score** — - > 349 notes | Score threshold: >40
 + > 361 notes | Score threshold: 
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in None — prevents null/undefined runtime crashes
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 342 notes | Score threshold: >40
-+ > 349 notes | Score threshold: 
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 14x
+- problem-fix in shared-context.json — confirmed 4x
+- problem-fix in agent-rules.md — confirmed 5x
+- Fixed null crash in Title — prevents null/undefined runtime crashes — confirmed 5x
+- Patched security issue Kevin — confirmed 3x
 - Replaced auth GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - what-changed in shared-context.json — confirmed 6x
-- Patched security issue Kevin — confirmed 6x
-- Fixed null crash in RESPONSIVE — prevents null/undefined runtime crashes — confirmed 3x
-- Replaced auth GOTCHA — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
