@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 13 conventions, 29 fixes."
+description: "Python for botatc. 10 gotchas, 13 conventions, 34 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **81 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **87 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,75 @@ Auto-compiled from **81 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
+-                     prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + (msgs.length > 1 ? ` (${{{msgs.length}}} msgs)` : '');
++                     prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + (msgs.length > 1 ? ` (${{msgs.length}} msgs)` : '');
+-                     container.onmouseout = function() {{this.style.borderColor='var(--ac
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Reemplazos
+3. identifier: HTMLResponse
+4. identifier: Request
+5. identifier: None
+
+### Patched security issue Clean
+- """Replace both instances of the old renderQuickReplies with the new one that shows label badges"""
++ """Clean up server.py:
+- 
++ 1. Remove the orphaned old renderQuickReplies duplicate code (lines 2173-2215)  
+- code = open('server.py', 'r', encoding='utf-8').read()
++ 2. Fix the {{{msgs.length}}} which causes AttributeError (should be msgs.length in JS, escaped as {{msgs.length}} in f-string)
+-
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Clean
+3. identifier: Remove
+4. identifier: Fix
+5. identifier: AttributeError
+
+### Fixed null crash in Crear — parallelizes async operations for speed
+-                     <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
++                     <div style="padding:1.2rem 1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center; background:var(--accent-bg);">
+-                         <h3 id="mo
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Crear
+3. identifier: Respuesta
+4. identifier: Atajo
+5. identifier: Espera
+
+### Fixed null crash in None — prevents null/undefined runtime crashes
+-         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
++         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[video:[^\]]+\]|\[audio:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
+-             match_sticker_local = re.match(r"^\[sticker-local:([^\]]+)\]$", p)
++             match_video = re.match(r"^\[video:([^\]]+)\]$", p)
+-         
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: None
+3. identifier: True
+4. identifier: Wait
+5. identifier: API
+
+### problem-fix in patcher.py
+- """
++ """Fix the broken regex line"""
+- FINAL FIX: Completely rewrite the broken section of server.py
++ code = open('server.py', 'r', encoding='utf-8').read()
+- The JS code is broken across lines without proper <script> tags.
++ 
+- """
++ # The broken regex line - find it and replace it
+- 
++ old = "                    const slashMatch = input.value.match(/(?:^|\\\\\\\\s)\\\\\\\\/$/); \r\n         
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in Enviando — prevents null/undefined runtime crashes
 -         </div>            let isSendingSequence = false;
@@ -234,97 +303,6 @@ Auto-compiled from **81 real patterns** in **botatc**. This skill is auto-routed
 1. Modified 1 files
 
 ### problem-fix in firebase_client.py
-- def calcular_cola_pedido(pedido: dict) -> int:
--     """
--     Calcula el puesto exacto de un pedido comparando cuántos IDs 
--     (secuencias más antiguas) existen en la misma etapa (estadoGeneral).
--     """
--     estado = pedido.get("estadoGeneral")
--     pid = pedido.get("id")
--     if not estado or not pid: return 0
--     
--     db = inicializar_firebase()
--     try:
--         docs = db.col
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Sticker
--             
-+             match_audio = re.match(r"^\[audio:([^\]]+)\]$", texto.strip())
--             if match_sticker:
-+             
--                 media_id = match_sticker.group(1)
-+             if match_sticker:
--                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
-+                 media_id = match_sticker.group(1)
--                 t
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Sticker
-3. identifier: Imagen
-4. identifier: Nota
-5. identifier: Voz
-
-### Fixed null crash in Regex — protects against XSS and CSRF token theft
-- 
-+ mensajes_procesados_ids = set()
-- # Regex para detectar escalación desde el mensaje del cliente
-+ 
-- REGEX_ESCALAR = re.compile(
-+ # Regex para detectar escalación desde el mensaje del cliente
--     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
-+ REGEX_ESCALAR = re.compile(
--     r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
-+     r"\b(hablar con|c
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Regex
-3. identifier: IGNORECASE
-4. identifier: Gesti
-5. identifier: Retorna
-
-### Fixed null crash in Error — protects against XSS and CSRF token theft
--         print(f"❌ Error Gemini: {e}")
-+         import traceback
--         return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
-+         with open("error_gemini.txt", "w") as f:
-- 
-+             f.write(traceback.format_exc())
-- 
-+         print(f"❌ Error Gemini: {e}")
-- def recortar_historial(historial: list[dict]) -> list[dict]:
-+         return "Disculpa, tuve un p
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Error
-3. identifier: Gemini
-4. identifier: Disculpa
-5. identifier: Intenta
-
-### Fixed null crash in Procesar — protects against XSS and CSRF token theft
--     try:
-+     respuesta_bot = llamar_gemini(sesion["historial"])
--         respuesta_bot = llamar_gemini(sesion["historial"])
-+ 
-- 
-+     # ── Procesar escalación si el modelo la detectó ───────
--     # ── Procesar escalación si el modelo la detectó ───────
-+     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
--     respuesta_final = procesar_escalacion(numero_wa
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Procesar
-3. identifier: Guardar
-4. identifier: Enviar
-5. identifier: WhatsApp
-
-### problem-fix in test_groq.py
-File updated (external): t
+- def calcular_cola_pedido(pedido
 
 ... [Truncated — see individual observations for full content]

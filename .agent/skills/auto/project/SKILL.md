@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 35 gotchas, 44 conventions, 8 fixes."
+description: "Project for botatc. 42 gotchas, 46 conventions, 12 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **184 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **206 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,13 @@ Auto-compiled from **184 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replace |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Title — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
+| ⚠️ GOTCHA: Optimized Patched | - - problem-fix in shared-context.json + - Patched security issue Clean - - Fixed null crash in Crea |
+| ⚠️ GOTCHA: Replaced auth Score | - > 349 notes - Score threshold: >40 + > 361 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in None — prevents null/undefined runtime crashes + - problem-fix in agent-rule |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 342 notes - Score threshold: >40 + > 349 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 315 notes - Score threshold: >40 + > 342 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Enviando — prevents null/undefined runtime crashes + - problem-fix in agent- |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 308 notes - Score threshold: >40 + > 315 notes - Score threshold: >40 - - **⚠️ GOTCHA: Strengthe |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes + - Fixed null crash in No |
@@ -55,6 +62,63 @@ Auto-compiled from **184 real patterns** in **botatc**. This skill is auto-route
 | gotcha in .gitignore | File updated (external): .gitignore  Content summary (24 lines): # ⚠️ SEGURIDAD — Archivos que NUNCA |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Title — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
++ - Fixed null crash in Title — prevents null/undefined runtime crashes
+- - Patched security issue Kevin
++ - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
+- - Patched security issue Clean
++ 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
++ - Fixed null crash in Title — prevents null/undefined runtime crashes
+- - Patched security issue Kevin
++ - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
+- - Patched security issue Clean
++ - Patched security issue Kevin
+- - problem-fix in shared-context.json
++ - Patched security issue Clean
+- -
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in None — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in patcher.py
++ - Fixed null crash in None — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - problem-fix in patcher.py
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem-fix in shared-context.json
+
+📌 IDE
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in patcher.py
++ - Fixed null crash in None — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - problem-fix in patcher.py
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem-fix in shared-context.json
+- - problem-fix in server.py
++ - Added error handling Respuestas — wraps unsafe operation in error boundary
+
+📌 
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Patched security issue Kevin
@@ -158,61 +222,6 @@ Auto-compiled from **184 real patterns** in **botatc**. This skill is auto-route
 
 ## 📐 Conventions & Best Practices
 
-### Project Conventions
-- 📐 **Replaced auth GOTCHA — confirmed 4x** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: problem-fix in agent-rules.md
-- - ⚠️ GOTCHA: Replac
-- 📐 **problem-fix in agent-rules.md — confirmed 3x** — - - problem-fix in shared-context.json
-+ - Fixed null crash in Enviando — prevents null/undefined ru
-- 📐 **what-changed in brainsync_auto.md — confirmed 3x** — - > 305 notes | Score threshold: >40
-+ > 306 notes | Score threshold: >40
-
-📌 IDE AST Context: Modif
-- 📐 **Replaced auth GOTCHA — confirmed 3x** — - - ⚠️ GOTCHA: Strengthened types Recent
-+ - ⚠️ GOTCHA: problem-fix in agent-rules.md
-- - ⚠️ GOTCHA:
-- 📐 **problem-fix in agent-rules.md — confirmed 3x** — - - **project**: Read `.agent/skills/auto/project/SKILL.md`
-+ - **problem-fix**: Read `.agent/skills
-- 📐 **Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x** — - > 286 notes | Score threshold: >40
-+ > 295 notes | Score threshold: >40
-- - **⚠️ GOTCHA: Strengthe
-- 📐 **problem-fix in agent-rules.md — confirmed 3x** — - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
-+ - problem-fix in agent-r
-- 📐 **what-changed in brainsync_auto.md — confirmed 3x** — - > 261 notes | Score threshold: >40
-+ > 262 notes | Score threshold: >40
-
-📌 IDE AST Context: Modif
-- 📐 **Replaced auth Score — confirmed 3x** — - > 260 notes | Score threshold: >40
-+ > 261 notes | Score threshold: >40
-- - what-changed in shared
-- 📐 **Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x** — - > 230 notes | Score threshold: >40
-+ > 242 notes | Score threshold: >40
-- - **⚠️ GOTCHA: Fixed nul
-- 📐 **problem-fix in agent-rules.md — confirmed 3x** — - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-+ - problem-fix in ag
-- 📐 **convention in .gitignore** — - 隧道_log.txt
-+ 隧道_log.txt
-+ # Auto-generated AI agent exclusions
-+ .cursorrules
-+ .clineRules
-+ .ag
-- 📐 **Git Commit: sistema de respuestas rapidas — confirmed 3x** — Captured via Git commit.
-Message: sistema de respuestas rapidas
-Branch: main
-- 📐 **Git Commit: plantillas — confirmed 3x** — Captured via Git commit.
-Message: plantillas
-Branch: main
-- 📐 **Git Commit: stickers — confirmed 3x** — Captured via Git commit.
-Message: stickers
-Branch: main
-- 📐 **Git Commit: stickers — confirmed 3x** — Captured via Git commit.
-Message: stickers
-Branch: main
-- 📐 **what-changed in .gitignore — confirmed 3x** — - 隧道_log.txt
-+ 隧道_log.txt
-- 📐 **Version your API from day 1 (/api/v1/)** — Version your API from day 1 (/api/v1/)
-- 📐 **Use consistent response format across all endpoints** — Use consistent response format across all endpoints
-- 📐 **Implement soft delete for important data — don't hard delete without confirmation** — Implement soft delete for important data — don't hard delete without confirmation
-- 📐 **Handle timezone correctly — store UTC, display in user's timezone**
+### Project C
 
 ... [Truncated — see individual observations for full content]
