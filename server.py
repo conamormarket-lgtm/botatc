@@ -1734,10 +1734,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     if(progressBarFill) {{
                         const pct = ((i) / msgs.length) * 100;
                         progressBarFill.style.width = pct + "%";
-                        progressText.innerText = `Enviando ${i+1}/${msgs.length}...`;
+                        progressText.innerText = `Enviando ${{i+1}}/${{msgs.length}}...`;
                     }}
                     
-                    const slashMatch = input.value.match(/(?:^|\\s)\/$/); 
+                    const slashMatch = input.value.match(/(?:^|\\\\s)\\\\/$/); 
                     if (slashMatch) {{
                         input.value = input.value.substring(0, input.value.length - 1) + finalMsg;
                     }} else {{
@@ -1753,7 +1753,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
                 if(progressBarFill) {{
                     progressBarFill.style.width = "100%";
-                    progressText.innerText = `Envío completado (${msgs.length}/${msgs.length})`;
+                    progressText.innerText = `Envío completado (${{msgs.length}}/${{msgs.length}})`;
                     setTimeout(() => {{
                         progressBarContainer.style.display = 'none';
                     }}, 2000);
