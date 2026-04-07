@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 286 notes | Score threshold: >40
+> 295 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,7 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE — prevents null/undefined runtime cras
 - **⚠️ GOTCHA: Strengthened types Recent** — - 
 + - decision in dump.html
 - ## Recent fixes
@@ -34,27 +35,25 @@
 + > 263 notes | Score threshold: 
 - **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
 + - ⚠️ GOTCHA: Updated schema GOTCHA
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - gotcha in shared-cont
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in server.py — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 3x
-- convention in .gitignore
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ +         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in RedirectResponse
 - ❌ -         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in UploadFile
 - ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
-- ❌ -     except Exception as e: → ✅ problem-fix in firebase_client.py
 
 ## Recent Decisions
 
