@@ -77,7 +77,7 @@
             --accent-border: #334155;       
             --accent-hover-soft: #334155;   
             /* 3. Nivel de Color de Fondo General */
-            --bg-main: #0f172a;             
+            --bg-main: #213668;             
             /* 4. Tipografías */
             --font-main: 'Inter', sans-serif;
             --font-heading: 'Outfit', sans-serif;
@@ -1248,6 +1248,18 @@
                         </div>
                     </div>
                     `;
+                }
+            }
+        });
+
+
+        // Pure ESC to exit chat
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const tab = urlParams.get('tab') || 'all';
+                    window.location.href = `/inbox?tab=${tab}`;
                 }
             }
         });
