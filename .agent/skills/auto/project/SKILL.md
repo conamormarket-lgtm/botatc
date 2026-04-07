@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 31 gotchas, 38 conventions, 6 fixes."
+description: "Project for botatc. 32 gotchas, 41 conventions, 6 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **170 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes + - problem-fix in agent-r |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes + - problem-fix in agent-r |
 | ⚠️ GOTCHA: Strengthened types Recent | -  + - decision in dump.html - ## Recent fixes +  -  + ## Recent fixes - - problem-fix in shared-con |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Replaced auth Score + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Updated schema |
@@ -127,6 +128,14 @@ Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-route
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Replaced auth GOTCHA — confirmed 3x** — - - ⚠️ GOTCHA: Strengthened types Recent
++ - ⚠️ GOTCHA: problem-fix in agent-rules.md
+- - ⚠️ GOTCHA:
+- 📐 **problem-fix in agent-rules.md — confirmed 3x** — - - **project**: Read `.agent/skills/auto/project/SKILL.md`
++ - **problem-fix**: Read `.agent/skills
+- 📐 **Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x** — - > 286 notes | Score threshold: >40
++ > 295 notes | Score threshold: >40
+- - **⚠️ GOTCHA: Strengthe
 - 📐 **problem-fix in agent-rules.md — confirmed 3x** — - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
 + - problem-fix in agent-r
 - 📐 **what-changed in brainsync_auto.md — confirmed 3x** — - > 261 notes | Score threshold: >40
@@ -178,11 +187,6 @@ Branch: main
 - 📐 **Use pagination for lists over 100 items** — Use pagination for lists over 100 items
 - 📐 **Implement retry logic for transient failures with exponential backoff** — Implement retry logic for transient failures with exponential backoff
 - 📐 **Return proper HTTP status codes — not 500 for everything** — Return proper HTTP status codes — not 500 for everything
-- 📐 **Always wrap async/await in try/catch** — Always wrap async/await in try/catch
-- 📐 **Hash passwords with cost factor ≥12 (bcrypt) or memory ≥64MB (argon2)** — Hash passwords with cost factor ≥12 (bcrypt) or memory ≥64MB (argon2)
-- 📐 **Implement rate limiting on login endpoints to prevent brute force** — Implement rate limiting on login endpoints to prevent brute force
-- 📐 **Use constants for magic numbers and strings** — Use constants for magic numbers and strings
-- 📐 **Handle edge cases: empty arrays, empty strings, null, undefined, 0, NaN** — Handle edge cases: empty arrays, empty strings, null, undefined, 0, NaN
-- 📐 **Keep functions under 50 line
+- 📐 **Alw
 
 ... [Truncated — see individual observations for full content]

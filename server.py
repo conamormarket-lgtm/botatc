@@ -1615,13 +1615,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             async function cargarQuickReplies() {{
                 const list = document.getElementById("quickRepliesList");
                 if(!list) return;
+                list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
                 try {{
                     const res = await fetch("/api/quick-replies");
+                    if (!res.ok) throw new Error("HTTP " + res.status);
                     const data = await res.json();
                     quickRepliesCache = data;
                     renderQuickReplies(data);
                 }} catch(e) {{
-                    list.innerHTML = `<div style="font-size:0.8rem; color:red; padding:0.5rem; text-align:center;">Error al cargar</div>`;
+                    list.innerHTML = `<div style="font-size:0.85rem; color:red; padding:1rem; text-align:center; background:rgba(255,0,0,0.1); border-radius:8px;">Error: ${{e.message}}</div>`;
                 }}
             }}
             function renderQuickReplies(data) {{

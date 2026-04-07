@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 295 notes | Score threshold: >40
+> 306 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -21,6 +21,7 @@
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE — prevents null/undefined runtime cras
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE — prevents null/undefined runtime cras
 - **⚠️ GOTCHA: Strengthened types Recent** — - 
 + - decision in dump.html
 - ## Recent fixes
@@ -33,27 +34,25 @@
 + - ⚠️ GOTCHA: Replaced auth Scor
 - **⚠️ GOTCHA: Replaced auth Score** — - > 262 notes | Score threshold: >40
 + > 263 notes | Score threshold: 
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Updated schema GOTCHA
 
 ## Project Standards
 
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- problem-fix in agent-rules.md — confirmed 3x
+- Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
-- what-changed in server.py — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ + - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ +         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in RedirectResponse
 - ❌ -         raise HTTPException(status_code=403, detail="No autorizado") → ✅ Fixed null crash in UploadFile
-- ❌ -                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style=" → ✅ Fixed null crash in Sticker
 
 ## Recent Decisions
 
@@ -62,9 +61,9 @@
 
 ## Learned Patterns
 
-- Avoid: ⚠️ GOTCHA: Updated schema GOTCHA (seen 2x)
-- Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 2x)
+- When encountering this, fix by: problem-fix in agent-rules.md (seen 2x)
 - Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 2x)
+- Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 2x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed
 

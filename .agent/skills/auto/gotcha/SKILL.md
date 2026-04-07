@@ -15,9 +15,9 @@ Auto-compiled from **4 real patterns** in **botatc**. This skill is auto-routed 
 ## 📐 Conventions & Best Practices
 
 ### Compiled Rules
-- ✅ Avoid: ⚠️ GOTCHA: Updated schema GOTCHA (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 2x)
+- ✅ Avoid: ⚠️ GOTCHA: Updated schema GOTCHA (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Fixed null crash in Plantillas (seen 2x)
 
 ---
