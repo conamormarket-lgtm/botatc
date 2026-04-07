@@ -736,13 +736,16 @@
         
         window.enviarMensajeDirecto = async function(wa_id, msj) {
             if (!msj) return;
-            const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
+            const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
             try {
-                await fetch('/enviar_mensaje', {
+                const res = await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: `wa_id=${wa_id}&mensaje=${encodeURIComponent(msj)}&reply_to=${replyToWamid}`
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid })
                 });
+                
+                const data = await res.json();
+                if(!data.ok) { console.error("Error direct send json", data); }
             } catch(e) {
                 console.error("Error direct send", e);
             }

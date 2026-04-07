@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 14 conventions, 40 fixes."
+description: "Python for botatc. 10 gotchas, 14 conventions, 41 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **96 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **98 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,22 @@ Auto-compiled from **96 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Promise — parallelizes async operations for speed
+-                     const endsWithSlash = input.value.trimEnd().endsWith("/");
++                     if (window.enviarMensajeDirecto) {
+-                     input.value = (endsWithSlash && i===0) ? input.value.trimEnd().slice(0,-1) + finalMsg : finalMsg;
++                         await window.enviarMensajeDirecto("{wa_id}", finalMsg);
+-                     
++                     } else {
+
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Promise
+3. identifier: Secuencia
+4. identifier: Set
+5. identifier: General
 
 ### Fixed null crash in Support — parallelizes async operations for speed
 -             let isSendingSequence = false;
@@ -269,24 +285,6 @@ Auto-compiled from **96 real patterns** in **botatc**. This skill is auto-routed
 ### Fixed null crash in Quick — prevents null/undefined runtime crashes
 -                     <!-- Menú Flotante de Plantillas -->
 +                     <!-- Botón Quick Replies -->
--                     <div id="templateMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direct
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Bot
-3. identifier: Quick
-4. identifier: Replies
-5. identifier: Respuestas
-
-### Fixed null crash in None
--         lista_chats_html += f"""
-+         session_tags = s.get("etiquetas", [])
--         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
-+         tags_html = ""
--             <div class="chat-row-header">
-+         if session_tags:
--                 <span class="chat-name">{nombre}</span>
-+             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3r
-
+-                     <div id="templateMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px
 
 ... [Truncated — see individual observations for full content]
