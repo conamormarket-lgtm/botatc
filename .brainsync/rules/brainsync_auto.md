@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 438 notes | Score threshold: >40
+> 443 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes** — -                 }
++                     if(typeof window.aplicarFil
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Replaced auth Score
 + - gotcha in shared-context.json
 -
@@ -36,8 +38,6 @@
 + > 420 notes | Score threshold: 
 - **⚠️ GOTCHA: Replaced auth Score** — - > 414 notes | Score threshold: >40
 + > 417 notes | Score threshold: 
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 402 notes | Score threshold: >40
-+ > 414 notes | Score threshold: 
 
 ## Project Standards
 
