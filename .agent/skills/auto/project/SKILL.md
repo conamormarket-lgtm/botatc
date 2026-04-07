@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 72 gotchas, 63 conventions, 23 fixes."
+description: "Project for botatc. 76 gotchas, 65 conventions, 25 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **311 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **323 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **311 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 683 notes - Score threshold: >40 + > 689 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 668 notes - Score threshold: >40 + > 683 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in LEFT — prevents null/undefined runtime crashes + - problem-fix in agent-rule |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - Fixed null crash in Inbox — prevents null/undefined runtime cra |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Added JWT tokens authentication — evol |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 595 notes - Score threshold: >40 + > 648 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
@@ -64,12 +68,32 @@ Auto-compiled from **311 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Replaced auth Score + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Updated schema |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Updated schema GOTCHA + - ⚠️ GOTCHA: Replaced auth Score - - gotcha in shared-context |
 | ⚠️ GOTCHA: Replaced auth Score | - > 262 notes - Score threshold: >40 + > 263 notes - Score threshold: >40 - - what-changed in server |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - ⚠️ GOTCHA: Updated schema |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - gotcha in shared-context.json - - ⚠️ GOTCHA: proble |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Fixed null  |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes + - problem-fix in sh |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in LEFT — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Nivel — prevents null/undefined runtime crashes
++ - Fixed null crash in LEFT — prevents null/undefined runtime crashes
+- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
++ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
+- - Patc
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Nivel — prevents null/undefined runtime crashes
++ - Fixed null crash in LEFT — prevents null/undefined runtime crashes
+- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
++ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
+- - Patched security issue Kevin
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- - prob
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Nivel — prevents null/undefined runtime crashes
@@ -146,33 +170,6 @@ Auto-compiled from **311 real patterns** in **botatc**. This skill is auto-route
 - - Fixed null crash in Inbox — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (a
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - problem-fix in shared-context.json
-- - problem-fix in patcher.py
-+ - Patched security issue Kevin — hardens HTTP s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - problem-fix in shared-context.json
-- - problem-fix in patch
++ - Fixed null crash in Inbox — prevents null/un
 
 ... [Truncated — see individual observations for full content]

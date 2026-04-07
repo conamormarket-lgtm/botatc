@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 668 notes | Score threshold: >40
+> 692 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,28 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 683 notes | Score threshold: >40
++ > 689 notes | Score threshold: 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 668 notes | Score threshold: >40
++ > 683 notes | Score threshold: 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LEFT — prevents null/undefined runtime crashes
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - Fixed null crash in Inbox — preve
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
 + - ⚠️ GOTCHA: Added JW
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 595 notes | Score threshold: >40
-+ > 648 notes | Score threshold: 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: problem-
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Added JWT 
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in agent-rules.md — confirmed 5x
+- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 4x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in inbox.html — confirmed 5x
 - what-changed in inbox.html — confirmed 7x
-- what-changed in shared-context.json — confirmed 13x
-- decision in inbox.html — confirmed 9x
-- Added JWT tokens authentication — confirmed 5x
-- Fixed null crash in Inbox — prevents null/undefined runtime crashes — confirmed 11x
-- Patched security issue Kevin — confirmed 3x
-- Replaced auth GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 8x
 
 ## Known Fixes
 
@@ -60,9 +60,9 @@
 
 ## Learned Patterns
 
-- When encountering this, fix by: problem-fix in agent-rules.md (seen 2x)
 - Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 2x)
 - Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 3x)
+- Always: Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x (seen 2x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed
 

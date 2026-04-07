@@ -1573,6 +1573,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
             
+            if texto.startswith('[sticker') and texto.endswith(']'):
+                clase += " bubble-sticker"
+                
             # Formatear el indicador de respuesta nativa
             import re
             match = re.match(r"^\[\[REPLY\|(.*?)\]\](.*)$", texto_renderizado, flags=re.DOTALL)
@@ -2252,6 +2255,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         .lado-der { align-self:flex-end; }
         .bubble-bot { background:var(--accent-bg); color:var(--text-main); border-bottom-left-radius:4px; border:1px solid var(--accent-border); }
         .bubble-user { background:var(--primary-color); color:#ffffff; border-bottom-right-radius:4px; }
+        .bubble-sticker { background:transparent !important; border:none !important; padding:0 !important; box-shadow:none !important; }
         """
 
     # Reemplazos finales en la plantilla

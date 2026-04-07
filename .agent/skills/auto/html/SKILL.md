@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 19 conventions, 35 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 20 conventions, 36 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **98 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **101 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,25 @@ Auto-compiled from **98 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Nivel — prevents null/undefined runtime crashes
+-         :root {
++                 :root {
+-             --primary-color: #3b82f6;
++             --primary-color: #3b82f6;       
+-             --primary-hover: #2563eb;
++             --primary-hover: #2563eb;       
+-             /* 2. Nivel de Color de Acento */
++             /* 2. Nivel de Color de Acento (translúcidos adaptables) */
+-             --accent-bg: #1e293b;
++             -
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Nivel
+3. identifier: Color
+4. identifier: Acento
+5. identifier: Tipograf
 
 ### Fixed null crash in Inbox — prevents null/undefined runtime crashes
 - <head>
@@ -343,23 +362,6 @@ Auto-compiled from **98 real patterns** in **botatc**. This skill is auto-routed
 4. identifier: Agente
 5. identifier: ATC
 
-### Fixed null crash in Configuraci — wraps unsafe operation in error boundary
-- <head>
-+ 
--     <meta charset="UTF-8">
-+ <head>
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UTF-8">
--     <title>Configuración de Agente IA - IA-ATC</title>
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google -->
-+  
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Configuraci
-4. identifier: Agente
-5. identifier: ATC
+###
 
 ... [Truncated — see individual observations for full content]
