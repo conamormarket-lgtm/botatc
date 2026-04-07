@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 32 gotchas, 41 conventions, 6 fixes."
+description: "Project for botatc. 32 gotchas, 42 conventions, 6 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **170 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **172 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -128,6 +128,10 @@ Auto-compiled from **170 real patterns** in **botatc**. This skill is auto-route
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **what-changed in brainsync_auto.md — confirmed 3x** — - > 305 notes | Score threshold: >40
++ > 306 notes | Score threshold: >40
+
+📌 IDE AST Context: Modif
 - 📐 **Replaced auth GOTCHA — confirmed 3x** — - - ⚠️ GOTCHA: Strengthened types Recent
 + - ⚠️ GOTCHA: problem-fix in agent-rules.md
 - - ⚠️ GOTCHA:
@@ -185,8 +189,6 @@ Branch: main
 - 📐 **Close resources (streams, connections, handles) when done** — Close resources (streams, connections, handles) when done
 - 📐 **Debounce user input handlers (search, resize, scroll)** — Debounce user input handlers (search, resize, scroll)
 - 📐 **Use pagination for lists over 100 items** — Use pagination for lists over 100 items
-- 📐 **Implement retry logic for transient failures with exponential backoff** — Implement retry logic for transient failures with exponential backoff
-- 📐 **Return proper HTTP status codes — not 500 for everything** — Return proper HTTP status codes — not 500 for everything
-- 📐 **Alw
+- 📐 **Implement retry logic for transient failures with exponential backoff** — Implement retry logic for transient failures
 
 ... [Truncated — see individual observations for full content]

@@ -1608,7 +1608,124 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
                 <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
                 <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;height:44px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
-            </form>
+            </form>            """
+
+        session_tags = s.get("etiquetas", [])
+        if session_tags is None: session_tags = []
+        tags_bar = ""
+        for tid in session_tags:
+            lbl = next((l for l in global_labels if l.get("id") == tid), None)
+            if lbl:
+                col = lbl.get("color", "#94a3b8")
+                nm = lbl.get("name", "Etiqueta")
+                tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
+
+        chat_viewer_html = f"""
+        <div style="display:flex; flex-direction:row; height:100%; width:100%;">
+            <!-- START CHAT MAIN COLUMN -->
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-main);">
+                {status_bar}
+                <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
+                    <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </a>
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
+                    <div style="min-width:0; flex:1;">
+                        <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;">
+                            {nombre_chat} {tags_bar}
+                        </h3>
+                        <small style="color:var(--text-muted)">+{wa_id}</small>
+                    </div>
+                    <!-- Botón de gestionar etiquetas -->
+                    <div style="position:relative;">
+                        <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        </button>
+                        <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
+                            <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                                Etiquetas 
+                                <button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>
+                            </div>
+                            <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:220px; overflow-y:auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
+                    {burbujas}
+                </div>
+                
+                <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:220px; overflow-y:auto; overflow-x:hidden;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                        <span style="font-weight:600; color:var(--text-main);">Librería de Stickers Locales</span>
+                    </div>
+                    <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem; justify-items: center;"></div>
+                </div>
+                
+                <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
+                    {chat_box}
+                </div>
+            </div>
+            <!-- END CHAT MAIN COLUMN -->
+
+            <!-- START RIGHT SIDEBAR (CRM Tools) -->
+            <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
+                <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
+                    <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
+                </div>
+                <div style="padding:1rem 1.5rem; border-bottom:1px solid var(--accent-border); background:var(--bg-main);">
+                    <div style="display:flex; gap:0.5rem; justify-content:space-between;">
+                        <input type="text" id="qrSearchFilter" placeholder="Buscar... (/)" onkeyup="filtrarQuickReplies(this.value)" style="flex:1; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem;">
+                        <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:6px; padding:0 0.8rem; cursor:pointer;" title="Crear nueva respuesta rápida">NUEVA</button>
+                    </div>
+                </div>
+                <div id="quickRepliesList" style="flex:1; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:0.6rem;">
+                    <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando...</div>
+                </div>
+
+                <!-- Hidden section / Sub-panel for Creating QR -->
+                <div id="qrCreateModal" style="display:none; position:absolute; inset:0; background:var(--bg-main); flex-direction:column; z-index:10; border-left:1px solid var(--accent-border);">
+                    <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                        <h3 id="modalTitleText" style="font-family:var(--font-heading); font-size:1.1rem; flex:1; margin:0;">Crear Respuesta</h3>
+                        <input type="hidden" id="newQrId" value="">
+                        <button onclick="document.getElementById('qrCreateModal').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
+                    </div>
+                    <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.2rem; flex:1; overflow-y:auto;">
+                        <div style="display:flex; gap:1rem;">
+                            <div style="flex:2;">
+                                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Atajo / Título</label>
+                                <input type="text" id="newQrTitle" placeholder="ej: saludo" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                            </div>
+                            <div style="flex:1;">
+                                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Espera (ms)</label>
+                                <input type="number" id="newQrDelay" placeholder="1500" value="1500" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Mensajes (Secuencia)</label>
+                            <div id="qrMessagesContainer" style="display:flex; flex-direction:column;"></div>
+                            
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <button onclick="addQrMessageField()" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:var(--success-color); font-size:0.8rem; padding:0.4rem 0.8rem; border-radius:6px; font-weight:600; cursor:pointer;" title="Añadir otro mensaje a la secuencia">+ Añadir Mensaje</button>
+                                <div style="width:1px; height:15px; background:var(--accent-border); margin:0 0.5rem;"></div>
+                                <button onclick="insertarVariableQR('#nombre')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.8rem; padding:0.4rem 0.8rem; border-radius:6px; font-weight:600; cursor:pointer;" title="Inserta el nombre del contacto en el cuadro activo">+#nombre</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Categoría (Opcional)</label>
+                            <input type="text" id="newQrCat" placeholder="General" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                        </div>
+                    </div>
+                    <div style="padding:1.5rem; border-top:1px solid var(--accent-border);">
+                        <button onclick="guardarNuevoQR()" style="width:100%; background:var(--primary-color); color:white; border:none; padding:0.8rem; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.95rem;">Guardar Respuesta</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END RIGHT SIDEBAR -->
+        </div>
+        
             
             <script>
             let quickRepliesCache = [];
@@ -1888,124 +2005,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             }}
 
             </script>
-            """
-
-        session_tags = s.get("etiquetas", [])
-        if session_tags is None: session_tags = []
-        tags_bar = ""
-        for tid in session_tags:
-            lbl = next((l for l in global_labels if l.get("id") == tid), None)
-            if lbl:
-                col = lbl.get("color", "#94a3b8")
-                nm = lbl.get("name", "Etiqueta")
-                tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
-
-        chat_viewer_html = f"""
-        <div style="display:flex; flex-direction:row; height:100%; width:100%;">
-            <!-- START CHAT MAIN COLUMN -->
-            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-main);">
-                {status_bar}
-                <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
-                    <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    </a>
-                    <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
-                    <div style="min-width:0; flex:1;">
-                        <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;">
-                            {nombre_chat} {tags_bar}
-                        </h3>
-                        <small style="color:var(--text-muted)">+{wa_id}</small>
-                    </div>
-                    <!-- Botón de gestionar etiquetas -->
-                    <div style="position:relative;">
-                        <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                        </button>
-                        <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
-                            <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                                Etiquetas 
-                                <button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>
-                            </div>
-                            <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:220px; overflow-y:auto;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
-                    {burbujas}
-                </div>
-                
-                <div id="stickersDrawer" style="display:none; padding:1.5rem; background:var(--bg-main); border-top:1px solid var(--accent-border); height:220px; overflow-y:auto; overflow-x:hidden;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                        <span style="font-weight:600; color:var(--text-main);">Librería de Stickers Locales</span>
-                    </div>
-                    <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 1rem; justify-items: center;"></div>
-                </div>
-                
-                <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
-                    {chat_box}
-                </div>
-            </div>
-            <!-- END CHAT MAIN COLUMN -->
-
-            <!-- START RIGHT SIDEBAR (CRM Tools) -->
-            <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
-                <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
-                    <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
-                </div>
-                <div style="padding:1rem 1.5rem; border-bottom:1px solid var(--accent-border); background:var(--bg-main);">
-                    <div style="display:flex; gap:0.5rem; justify-content:space-between;">
-                        <input type="text" id="qrSearchFilter" placeholder="Buscar... (/)" onkeyup="filtrarQuickReplies(this.value)" style="flex:1; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem;">
-                        <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:6px; padding:0 0.8rem; cursor:pointer;" title="Crear nueva respuesta rápida">NUEVA</button>
-                    </div>
-                </div>
-                <div id="quickRepliesList" style="flex:1; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:0.6rem;">
-                    <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando...</div>
-                </div>
-
-                <!-- Hidden section / Sub-panel for Creating QR -->
-                <div id="qrCreateModal" style="display:none; position:absolute; inset:0; background:var(--bg-main); flex-direction:column; z-index:10; border-left:1px solid var(--accent-border);">
-                    <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                        <h3 id="modalTitleText" style="font-family:var(--font-heading); font-size:1.1rem; flex:1; margin:0;">Crear Respuesta</h3>
-                        <input type="hidden" id="newQrId" value="">
-                        <button onclick="document.getElementById('qrCreateModal').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
-                    </div>
-                    <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.2rem; flex:1; overflow-y:auto;">
-                        <div style="display:flex; gap:1rem;">
-                            <div style="flex:2;">
-                                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Atajo / Título</label>
-                                <input type="text" id="newQrTitle" placeholder="ej: saludo" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
-                            </div>
-                            <div style="flex:1;">
-                                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Espera (ms)</label>
-                                <input type="number" id="newQrDelay" placeholder="1500" value="1500" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
-                            </div>
-                        </div>
-                        <div>
-                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Mensajes (Secuencia)</label>
-                            <div id="qrMessagesContainer" style="display:flex; flex-direction:column;"></div>
-                            
-                            <div style="display:flex; gap:0.5rem; align-items:center;">
-                                <button onclick="addQrMessageField()" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:var(--success-color); font-size:0.8rem; padding:0.4rem 0.8rem; border-radius:6px; font-weight:600; cursor:pointer;" title="Añadir otro mensaje a la secuencia">+ Añadir Mensaje</button>
-                                <div style="width:1px; height:15px; background:var(--accent-border); margin:0 0.5rem;"></div>
-                                <button onclick="insertarVariableQR('#nombre')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.8rem; padding:0.4rem 0.8rem; border-radius:6px; font-weight:600; cursor:pointer;" title="Inserta el nombre del contacto en el cuadro activo">+#nombre</button>
-                            </div>
-                        </div>
-                        <div>
-                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Categoría (Opcional)</label>
-                            <input type="text" id="newQrCat" placeholder="General" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
-                        </div>
-                    </div>
-                    <div style="padding:1.5rem; border-top:1px solid var(--accent-border);">
-                        <button onclick="guardarNuevoQR()" style="width:100%; background:var(--primary-color); color:white; border:none; padding:0.8rem; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.95rem;">Guardar Respuesta</button>
-                    </div>
-                </div>
-            </div>
-            <!-- END RIGHT SIDEBAR -->
-        </div>
-        <script>
+            <script>
             var c = document.getElementById('chatScroll');
             if(c) c.scrollTop = c.scrollHeight;
         </script>
