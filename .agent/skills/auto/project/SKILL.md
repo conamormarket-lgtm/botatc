@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 62 gotchas, 59 conventions, 17 fixes."
+description: "Project for botatc. 65 gotchas, 61 conventions, 21 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **283 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **296 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **283 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes + - problem-fix in agent- |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes + - problem-fix in |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 539 notes - Score threshold: >40 + > 567 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 513 notes - Score threshold: >40 + > 535 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
@@ -65,11 +68,54 @@ Auto-compiled from **283 real patterns** in **botatc**. This skill is auto-route
 | Agent: always handle loading/error states — don't  | Agent: always handle loading/error states — don't just render data |
 | Agent: don't use deprecated APIs — check library v | Agent: don't use deprecated APIs — check library version, use current API |
 | Agent: check existing code before creating utility | Agent: check existing code before creating utility functions — avoid duplicates |
-| Don't expose database errors to clients — map to u | Don't expose database errors to clients — map to user-friendly messages |
-| Always validate data on the SERVER — client valida | Always validate data on the SERVER — client validation is for UX only |
-| Don't fetch data inside render loops or hot paths | Don't fetch data inside render loops or hot paths |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
+- - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
++ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
+
+📌 IDE AST Contex
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
++ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
+- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
++ - Fixed null crash in NAVEGACI — prevents null/undefi
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
++ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
+- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
++ - Fixed null crash in NAVEGACI — prevents null/undefi
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
++ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
+- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
++ - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - Fixed null crash in Inbox — prevents null/undefined r
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Inbox — prevents null/undefined runtime crashes
@@ -132,68 +178,6 @@ Auto-compiled from **283 real patterns** in **botatc**. This skill is auto-route
 + - Added error handling Respuestas — wraps unsafe operation in error boundary
 - - Fixed null crash in Reemplazar — parallelizes async operations for speed
 + - problem-fix in server.py
-- - Fixed null crash in Sube — parallelizes
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Title — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
-+ - Fixed null crash in Title — prevents null/undefined runtime crashes
-- - Patched security issue Kevin
-+ - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
-- - Patched security issue Clean
-+ 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
-+ - Fixed null crash in Title — prevents null/undefined runtime crashes
-- - Patched security issue Kevin
-+ - Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
-- - Patched security issue Clean
-+ - Patched security issue Kevin
-- - problem-fix in shared-context.json
-+ - Patched security issue Clean
-- -
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in None — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in patcher.py
-+ - Fixed null crash in None — prevents null/undefined runtime crashes
-- - problem-fix in shared-context.json
-+ - problem-fix in patcher.py
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem-fix in shared-context.json
-
-📌 IDE
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in patcher.py
-+ - Fixed null crash in None — prevents null/undefined runtime crashes
-- - problem-fix in shared-context.json
-+ - problem-fix in patcher.py
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem-fix in shared-context.json
-- - problem-fix in server.py
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-
-📌 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### proble
+- - Fi
 
 ... [Truncated — see individual observations for full content]

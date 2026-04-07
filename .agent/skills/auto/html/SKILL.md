@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 14 conventions, 21 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 15 conventions, 23 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **59 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **63 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,37 @@ Auto-compiled from **59 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
+-     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
++     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">// Si no se cerró ningún menú y estamos dentro de un chat, ir al inicio
+-         // --- NAVEGACIÓN Y SKELETONS ---
++                 if(!closedModal && window.location.pathname.match(/^\/inbox\/.+/)) {
+
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: URLSearchParams
+3. identifier: Muestra
+4. identifier: URL
+5. identifier: Header
+
+### Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
+-     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
++     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
+-     <style>
++         // --- NAVEGACIÓN Y SKELETONS ---
+-         :root {
++         document.addEventListener('keydown', function(event) {
+-             /* 1. Nivel de Color Principal */
++
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: NAVEGACI
+3. identifier: SKELETONS
+4. identifier: Escape
+5. identifier: URLSearchParams
 
 ### Fixed null crash in Inbox — prevents null/undefined runtime crashes
 - 
@@ -336,38 +367,6 @@ Auto-compiled from **59 real patterns** in **botatc**. This skill is auto-routed
 
 ### Fixed null crash in ETIQUETAS
 - 
-+         // ================= ETIQUETAS (LABELS) LOGIC =================
--     </script>
-+         async function crearGlobalLabel() {
--     <!-- Elementos ocultos para selectores del sistema -->
-+             const name = prompt("Escribe el nombre de la nueva etiqueta (ej: Nuevo Cliente, Venta Cerrada):");
--     <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
-+
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: ETIQUETAS
-3. identifier: LABELS
-4. identifier: LOGIC
-5. identifier: Escribe
-
-### Fixed null crash in EMOJI
--         // EMOJI PICKER HOOK - Global event delegation
-+         // EMOJI PICKER HOOK - Global event delegation
--         document.addEventListener('emoji-click', event => {
-+         document.addEventListener('emoji-click', event => {
--             const input = document.getElementById('manualMsgInput');
-+             const input = document.getElementById('manualMsgInput');
--             if(
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: EMOJI
-3. identifier: PICKER
-4. identifier: HOOK
-5. identifier: Global
-
-### Fixed null crash in Inter — prevents null/undefined runtime crashes
--     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfi
++         // ==
 
 ... [Truncated — see individual observations for full content]

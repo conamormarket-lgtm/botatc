@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 567 notes | Score threshold: >40
+> 595 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,25 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in NAVEGACI — prevents null/undefined runtime cra
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in URLSearchParams — prevents null/undefined runt
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 539 notes | Score threshold: >40
++ > 567 notes | Score threshold: 
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 513 notes | Score threshold: >40
 + > 535 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score** — - > 508 notes | Score threshold: >40
-+ > 513 notes | Score threshold: 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in patcher.py
-- - pr
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Replaced a
 
 ## Project Standards
 
+- what-changed in inbox.html — confirmed 5x
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 4x
+- discovery in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in inbox.html — confirmed 4x
 - what-changed in settings.html — confirmed 6x
-- Fixed null crash in Configuraci — wraps unsafe operation in error boundary — confirmed 5x
-- what-changed in shared-context.json — confirmed 6x
-- Optimized Fixed — confirmed 4x
-- Replaced auth GOTCHA — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -61,8 +58,8 @@
 ## Learned Patterns
 
 - When encountering this, fix by: problem-fix in agent-rules.md (seen 2x)
-- Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 2x)
 - Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 2x)
+- Avoid: ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements (seen 3x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed
 
