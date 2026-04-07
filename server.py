@@ -1536,7 +1536,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         import re
         burbujas = ""
         if len(all_msgs) > MAX_MENSAJES and not load_all:
-            burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><a href="#" onclick="const u=new URL(window.location); u.searchParams.set(\'history\',\'all\'); window.location=u.toString(); return false;" style="color:var(--primary-color);font-weight:600;text-decoration:none;display:inline-block;margin-top:0.4rem;">Cargar historial completo (⚠️ Puede ser lento)</a></div>'
+            burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo (⚠️ Más lento)</button></div>'
         for m in msgs:
             es_bot = m["role"] == "assistant"
             clase  = "bubble-bot" if es_bot else "bubble-user"
