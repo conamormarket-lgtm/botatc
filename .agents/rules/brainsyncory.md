@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 242 notes | Score threshold: >40
+> 257 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,23 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Updated schema GOTCHA
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - gotcha in shared-cont
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "5f9d65e3d3b381bd",
++
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in agent-rules.md
++ - ⚠️ GOTCHA: problem-fix in agent-rules
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in HTMLResponse — prevents null/undefined runtime
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (7
-- **⚠️ GOTCHA: Fixed null crash in HTMLResponse** — -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
-+  
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in HTMLResponse — prevents null/undefined runtime
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 3x
 - convention in .gitignore
 - Fixed null crash in Simular — confirmed 3x
 - Fixed null crash in PLANTILLAS — confirmed 5x
 - what-changed in inbox.html — confirmed 5x
-- what-changed in server.py — confirmed 3x
-- Fixed null crash in None — confirmed 3x
-- Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
-- Fixed null crash in EMOJI — confirmed 3x
 
 ## Known Fixes
 
@@ -52,9 +61,9 @@ Content summary (7
 
 ## Learned Patterns
 
+- Avoid: ⚠️ GOTCHA: Updated schema GOTCHA (seen 2x)
+- Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 2x)
 - Avoid: ⚠️ GOTCHA: Fixed null crash in Plantillas (seen 2x)
-- Always: Git Commit: stickers — confirmed 3x (seen 2x)
-- Always: Strengthened types DOCTYPE (seen 2x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed
 

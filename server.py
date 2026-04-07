@@ -755,13 +755,15 @@ async def create_quick_reply(request: Request, data: dict):
         raise HTTPException(status_code=403, detail="No autorizado")
     from firebase_client import guardar_quick_reply_bd
     import uuid
-    new_id = str(uuid.uuid4())
+    new_id = data.get("id") or str(uuid.uuid4())
     guardar_quick_reply_bd(
         id_qr=new_id,
         titulo=data.get("title", ""),
         contenido=data.get("content", ""),
         categoria=data.get("category", "General"),
-        tipo=data.get("type", "text")
+        tipo=data.get("type", "text"),
+        mensajes=data.get("mensajes", None),
+        delay_ms=int(data.get("delay_ms", 1500))
     )
     return {"status": "ok", "id": new_id}
 
@@ -1549,11 +1551,19 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         chat_box = ""
         if activo_chat:
             chat_box = """
+            <div id="qrProgressContainer" style="display:none; align-items:center; background:var(--accent-bg); padding:0.5rem 1rem; margin-bottom:0.5rem; border-radius:8px; gap:0.5rem; font-size:0.8rem; flex-direction:column; border:1px solid var(--accent-border);">
+                <div style="width:100%; display:flex; justify-content:space-between; color:var(--text-main); font-weight:600;"><span id="qrProgressText">Procesando...</span></div>
+                <div style="width:100%; height:6px; background:var(--bg-main); border-radius:4px; overflow:hidden;"><div id="qrProgressFill" style="height:100%; width:0%; background:var(--primary-color); transition:width 0.3s;"></div></div>
+            </div>
             <div style="opacity:0.6;font-size:0.85rem;color:var(--text-muted);display:flex;align-items:center;justify-content:center;padding:0.5rem;">
                 El Bot IA está controlando este chat. Pausa al bot para intervenir.
             </div>"""
         else:
             chat_box = f"""
+            <div id="qrProgressContainer" style="display:none; align-items:center; background:var(--accent-bg); padding:0.5rem 1rem; margin-bottom:0.5rem; border-radius:8px; gap:0.5rem; font-size:0.8rem; flex-direction:column; border:1px solid var(--accent-border);">
+                <div style="width:100%; display:flex; justify-content:space-between; color:var(--text-main); font-weight:600;"><span id="qrProgressText">Procesando...</span></div>
+                <div style="width:100%; height:6px; background:var(--bg-main); border-radius:4px; overflow:hidden;"><div id="qrProgressFill" style="height:100%; width:0%; background:var(--primary-color); transition:width 0.3s;"></div></div>
+            </div>
             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
                 <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</button>
@@ -1635,6 +1645,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const headerRow = document.createElement("div");
                     headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:0.2rem;";
                     
+                    const titleWrap = document.createElement("div");
+                    titleWrap.style.cssText = "display:flex; align-items:center; gap:0.5rem;";
+                    
                     const title = document.createElement("strong");
                     title.innerText = qr.title || qr.category;
                     title.style.fontSize = "0.9rem";
@@ -1643,14 +1656,25 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     catBadge.innerText = (qr.category && qr.category!==qr.title) ? qr.category : "";
                     catBadge.style.cssText = "font-size:0.65rem; background:rgba(255,255,255,0.1); padding:0.1rem 0.4rem; border-radius:4px;";
                     
-                    headerRow.appendChild(title);
-                    if(catBadge.innerText) headerRow.appendChild(catBadge);
+                    titleWrap.appendChild(title);
+                    if(catBadge.innerText) titleWrap.appendChild(catBadge);
+                    
+                    const msgCount = (qr.mensajes && qr.mensajes.length > 1) ? ` (${qr.mensajes.length} msgs)` : "";
+                    
+                    const editBtn = document.createElement("button");
+                    editBtn.innerHTML = "✎"; // Icono editar
+                    editBtn.title = "Editar";
+                    editBtn.style.cssText = "background:none; border:none; color:var(--primary-color); cursor:pointer; padding:0 0.2rem; font-size:1rem; margin-right:1.5rem;";
+                    editBtn.onclick = (e) => {{ e.stopPropagation(); abrirModalCrearQR(qr.id); }};
+                    
+                    headerRow.appendChild(titleWrap);
+                    headerRow.appendChild(editBtn);
                     
                     const prev = document.createElement("span");
                     prev.style.cssText = "font-size:0.8rem; color:var(--text-muted); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; line-height:1.4;";
-                    prev.innerText = qr.content;
+                    prev.innerText = qr.content + msgCount;
                     
-                    btn.onclick = () => aplicarQuickReply(qr.content);
+                    btn.onclick = () => aplicarQuickReply(qr.id);
                     btn.appendChild(headerRow);
                     btn.appendChild(prev);
                     
@@ -1676,32 +1700,68 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const filt = quickRepliesCache.filter(q => q.title?.toLowerCase().includes(valLower) || q.content?.toLowerCase().includes(valLower));
                 renderQuickReplies(filt);
             }}
-            function aplicarQuickReply(text) {{
+            let isSendingSequence = false;
+            
+            async function aplicarQuickReply(qrId) {{
+                if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
+                
+                const qr = quickRepliesCache.find(q => q.id === qrId);
+                if(!qr) return;
+                
+                let msgs = (qr.mensajes && qr.mensajes.length > 0) ? qr.mensajes : [qr.content];
+                let delay = isNaN(parseInt(qr.delay_ms)) ? 1500 : parseInt(qr.delay_ms);
+                
                 let nombreCliente = "{nombre_chat}";
-                let finalMsg = text.replace(/#nombre/gi, nombreCliente);
                 const input = document.getElementById("manualMsgInput");
-                if(input) {{
-                    const cursorPos = input.selectionStart;
-                    const textBefore = input.value.substring(0, cursorPos);
-                    const textAfter  = input.value.substring(cursorPos, input.value.length);
-                    const slashMatch = textBefore.match(/(?:^|\\s)\/$/); 
+                if(!input) return;
+                
+                document.getElementById('rightSidebar').style.display = 'none';
+                
+                const form = input.closest('form');
+                const btn = form.querySelector('button[type="submit"]');
+                
+                const progressBarContainer = document.getElementById('qrProgressContainer');
+                const progressBarFill = document.getElementById('qrProgressFill');
+                const progressText = document.getElementById('qrProgressText');
+                
+                if(progressBarContainer) progressBarContainer.style.display = 'flex';
+                isSendingSequence = true;
+                
+                for (let i = 0; i < msgs.length; i++) {{
+                    let text = msgs[i];
+                    let finalMsg = text.replace(/#nombre/gi, nombreCliente);
                     
-                    if (slashMatch) {{
-                        input.value = textBefore.substring(0, textBefore.length - 1) + finalMsg + textAfter;
-                    }} else {{
-                        input.value += finalMsg;
+                    if(progressBarFill) {{
+                        const pct = ((i) / msgs.length) * 100;
+                        progressBarFill.style.width = pct + "%";
+                        progressText.innerText = `Enviando ${i+1}/${msgs.length}...`;
                     }}
                     
-                    document.getElementById('rightSidebar').style.display = 'none';
+                    const slashMatch = input.value.match(/(?:^|\\s)\/$/); 
+                    if (slashMatch) {{
+                        input.value = input.value.substring(0, input.value.length - 1) + finalMsg;
+                    }} else {{
+                        input.value = finalMsg; // Overwrite current for sequence
+                    }}
                     
-                    // Simular clic en el botón de "Enviar" del formulario
-                    const form = input.closest('form');
-                    if(form) {{
-                        const btn = form.querySelector('button[type="submit"]');
-                        if(btn) btn.click();
+                    if(btn) btn.click();
+                    
+                    if (i < msgs.length - 1) {{
+                        await new Promise(r => setTimeout(r, delay));
                     }}
                 }}
+                
+                if(progressBarFill) {{
+                    progressBarFill.style.width = "100%";
+                    progressText.innerText = `Envío completado (${msgs.length}/${msgs.length})`;
+                    setTimeout(() => {{
+                        progressBarContainer.style.display = 'none';
+                    }}, 2000);
+                }}
+                
+                isSendingSequence = false;
             }}
+            
             function checkQuickReplyTrigger(input) {{
                 if(input.value.endsWith("/")) {{
                     const side = document.getElementById('rightSidebar');
@@ -1713,40 +1773,95 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 }}
             }}
             
-            function abrirModalCrearQR() {{
+            function abrirModalCrearQR(idElement = null) {{
                 const m = document.getElementById('qrCreateModal');
-                if(m) {{
-                    document.getElementById('newQrTitle').value = '';
-                    document.getElementById('newQrContent').value = '';
-                    document.getElementById('newQrCat').value = 'General';
-                    m.style.display = 'flex';
-                    setTimeout(()=> document.getElementById('newQrTitle').focus(), 50);
+                if(!m) return;
+                
+                document.getElementById('newQrId').value = idElement ? idElement : '';
+                document.getElementById('newQrTitle').value = '';
+                document.getElementById('newQrCat').value = 'General';
+                document.getElementById('newQrDelay').value = '1500';
+                
+                const msgContainer = document.getElementById('qrMessagesContainer');
+                msgContainer.innerHTML = '';
+                
+                if (idElement) {{
+                    const qr = quickRepliesCache.find(q => q.id === idElement);
+                    if(qr) {{
+                        document.getElementById('newQrTitle').value = qr.title || '';
+                        document.getElementById('newQrCat').value = qr.category || 'General';
+                        document.getElementById('newQrDelay').value = qr.delay_ms || 1500;
+                        
+                        const msgs = (qr.mensajes && qr.mensajes.length > 0) ? qr.mensajes : [qr.content];
+                        msgs.forEach(txt => addQrMessageField(txt));
+                    }}
+                }} else {{
+                    addQrMessageField('');
                 }}
+                
+                document.getElementById('modalTitleText').innerText = idElement ? 'Editar Respuesta' : 'Crear Respuesta';
+                
+                m.style.display = 'flex';
+                setTimeout(()=> document.getElementById('newQrTitle').focus(), 50);
+            }}
+            
+            function addQrMessageField(text = '') {{
+                const msgContainer = document.getElementById('qrMessagesContainer');
+                const div = document.createElement('div');
+                div.style.cssText = "display:flex; gap:0.5rem; margin-bottom:0.8rem; position:relative; align-items:flex-start;";
+                
+                const ta = document.createElement('textarea');
+                ta.rows = 3;
+                ta.value = text;
+                ta.className = 'qr-msg-input';
+                ta.style.cssText = "flex:1; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem; resize:vertical;";
+                ta.placeholder = "Mensaje de la secuencia...";
+                
+                const delBtn = document.createElement('button');
+                delBtn.innerHTML = "×";
+                delBtn.type = "button";
+                delBtn.style.cssText = "background:rgba(239, 68, 68, 0.1); border:1px solid var(--accent-border); border-radius:6px; color:#ef4444; font-size:1.2rem; cursor:pointer; padding:0 0.5rem; height:40px; transition:background 0.2s;";
+                delBtn.onclick = () => {{ if(msgContainer.children.length > 1) {{ div.remove(); }} else {{ ta.value = ''; }} }};
+                
+                div.appendChild(ta);
+                div.appendChild(delBtn);
+                msgContainer.appendChild(div);
             }}
             
             function insertarVariableQR(variable) {{
-                const ta = document.getElementById('newQrContent');
-                if(!ta) return;
-                const pos = ta.selectionStart;
-                const txt = ta.value;
-                ta.value = txt.slice(0, pos) + variable + txt.slice(ta.selectionEnd);
-                ta.selectionStart = ta.selectionEnd = pos + variable.length;
-                ta.focus();
+                let activeElem = document.activeElement;
+                if(!activeElem || !activeElem.classList.contains('qr-msg-input')) {{
+                    const textareas = document.querySelectorAll('.qr-msg-input');
+                    if(textareas.length === 0) return;
+                    activeElem = textareas[textareas.length - 1];
+                }}
+                const pos = activeElem.selectionStart;
+                const txt = activeElem.value;
+                activeElem.value = txt.slice(0, pos) + variable + txt.slice(activeElem.selectionEnd);
+                activeElem.selectionStart = activeElem.selectionEnd = pos + variable.length;
+                activeElem.focus();
             }}
 
             async function guardarNuevoQR() {{
+                const id = document.getElementById('newQrId').value || null;
                 const title = document.getElementById('newQrTitle').value.trim();
-                const content = document.getElementById('newQrContent').value.trim();
                 const cat = document.getElementById('newQrCat').value.trim() || "General";
+                const delay = parseInt(document.getElementById('newQrDelay').value) || 1500;
                 
-                if(!title || !content) return alert("Se requiere Título y Mensaje para continuar.");
+                const inputs = document.querySelectorAll('.qr-msg-input');
+                const mensajes = [];
+                inputs.forEach(input => {{
+                    const val = input.value.trim();
+                    if(val) mensajes.push(val);
+                }});
                 
-                const id_qr = "qr_" + Date.now();
+                if(!title || mensajes.length === 0) return alert("Se requiere Título y al menos un Mensaje.");
+                
                 try {{
                     const res = await fetch("/api/quick-replies", {{
                         method: "POST",
                         headers: {{ "Content-Type": "application/json" }},
-                        body: JSON.stringify({{ id: id_qr, title: title, content: content, category: cat, type: "text" }})
+                        body: JSON.stringify({{ id: id, title: title, content: mensajes[0], mensajes: mensajes, delay_ms: delay, category: cat, type: "text" }})
                     }});
                     const d = await res.json();
                     if(d.ok || res.ok) {{
@@ -1756,7 +1871,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         alert("Hubo un error guardando.");
                     }}
                 }} catch(e) {{
-                    alert("Error enviando red");
+                    alert("Error guardando QR");
                 }}
             }}
 
@@ -1851,19 +1966,29 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <!-- Hidden section / Sub-panel for Creating QR -->
                 <div id="qrCreateModal" style="display:none; position:absolute; inset:0; background:var(--bg-main); flex-direction:column; z-index:10; border-left:1px solid var(--accent-border);">
                     <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                        <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; margin:0;">Crear Respuesta</h3>
+                        <h3 id="modalTitleText" style="font-family:var(--font-heading); font-size:1.1rem; flex:1; margin:0;">Crear Respuesta</h3>
+                        <input type="hidden" id="newQrId" value="">
                         <button onclick="document.getElementById('qrCreateModal').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
                     </div>
                     <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.2rem; flex:1; overflow-y:auto;">
-                        <div>
-                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Atajo / Título</label>
-                            <input type="text" id="newQrTitle" placeholder="ej: saludo" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                        <div style="display:flex; gap:1rem;">
+                            <div style="flex:2;">
+                                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Atajo / Título</label>
+                                <input type="text" id="newQrTitle" placeholder="ej: saludo" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                            </div>
+                            <div style="flex:1;">
+                                <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Espera (ms)</label>
+                                <input type="number" id="newQrDelay" placeholder="1500" value="1500" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem;">
+                            </div>
                         </div>
                         <div>
-                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Mensaje</label>
-                            <textarea id="newQrContent" rows="6" placeholder="Escribe el bloque de texto..." style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.9rem; resize:vertical;"></textarea>
-                            <div style="margin-top:0.5rem; display:flex; gap:0.5rem;">
-                                <button onclick="insertarVariableQR('#nombre')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:4px; font-weight:600; cursor:pointer;" title="Inserta el nombre del contacto">+#nombre</button>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem; font-weight:600;">Mensajes (Secuencia)</label>
+                            <div id="qrMessagesContainer" style="display:flex; flex-direction:column;"></div>
+                            
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <button onclick="addQrMessageField()" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:var(--success-color); font-size:0.8rem; padding:0.4rem 0.8rem; border-radius:6px; font-weight:600; cursor:pointer;" title="Añadir otro mensaje a la secuencia">+ Añadir Mensaje</button>
+                                <div style="width:1px; height:15px; background:var(--accent-border); margin:0 0.5rem;"></div>
+                                <button onclick="insertarVariableQR('#nombre')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.8rem; padding:0.4rem 0.8rem; border-radius:6px; font-weight:600; cursor:pointer;" title="Inserta el nombre del contacto en el cuadro activo">+#nombre</button>
                             </div>
                         </div>
                         <div>

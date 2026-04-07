@@ -18,7 +18,7 @@ Auto-compiled from **30 real patterns** in **botatc**. This skill is auto-routed
 
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
-| `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 3x |
+| `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 4x |
 
 ### Fixed null crash in Backup — wraps unsafe operation in error boundary
 -                 <form method="post" action="/api/settings/save" id="settingsForm" style="display:flex; flex-direction:column; flex:1;">

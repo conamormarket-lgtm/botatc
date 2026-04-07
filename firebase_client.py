@@ -282,16 +282,25 @@ def cargar_etiquetas_bd() -> list:
 #  PERSISTENCIA DE RESPUESTAS RÁPIDAS (QUICK REPLIES)
 # ============================================================
 
-def guardar_quick_reply_bd(id_qr: str, titulo: str, contenido: str, categoria: str = "General", tipo: str = "text"):
+def guardar_quick_reply_bd(id_qr: str, titulo: str, contenido: str, categoria: str = "General", tipo: str = "text", mensajes: list = None, delay_ms: int = 1500):
     db = inicializar_firebase()
-    db.collection("bot_quick_replies").document(id_qr).set({
+    
+    data = {
         "id": id_qr,
         "title": titulo,
         "content": contenido,
         "category": categoria,
         "type": tipo,
-        "createdAt": firestore.SERVER_TIMESTAMP
-    })
+        "delay_ms": delay_ms
+    }
+    if mensajes is not None:
+        data["mensajes"] = mensajes
+    else:
+        # Fallback para no perder compatibilidad
+        data["mensajes"] = [contenido] if contenido else []
+        
+    data["createdAt"] = firestore.SERVER_TIMESTAMP
+    db.collection("bot_quick_replies").document(id_qr).set(data, merge=True)
 
 def eliminar_quick_reply_bd(id_qr: str):
     db = inicializar_firebase()
