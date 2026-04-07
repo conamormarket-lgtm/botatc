@@ -505,6 +505,9 @@
                 const oldChats = document.querySelector('.chats-container');
                 if(newChats && oldChats && oldChats.innerHTML !== newChats.innerHTML) {
                     oldChats.innerHTML = newChats.innerHTML;
+                    if(typeof window.aplicarFiltroChats === 'function') {
+                        window.aplicarFiltroChats();
+                    }
                 }
                 
                 // Actualizar visibilidad de Chat
@@ -684,8 +687,10 @@
         });
 
         // Funcionalidad del Buscador Local y Nuevo Chat
-        document.getElementById('chatSearchInput')?.addEventListener('input', function(e) {
-            const val = e.target.value.toLowerCase().trim();
+        window.aplicarFiltroChats = function() {
+            const input = document.getElementById('chatSearchInput');
+            if(!input) return;
+            const val = input.value.toLowerCase().trim();
             const rows = document.querySelectorAll('.chat-row');
             let isPhoneNum = /^[0-9+ ]+$/.test(val) && val.replace(/\D/g, '').length >= 9;
             
@@ -700,12 +705,15 @@
             });
             
             const btn = document.getElementById('btnNewChat');
-            if (isPhoneNum) {
-                btn.style.display = 'block';
-            } else {
-                btn.style.display = 'none';
+            if(btn) {
+                if (isPhoneNum) {
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
             }
-        });
+        };
+        document.getElementById('chatSearchInput')?.addEventListener('input', window.aplicarFiltroChats);
         
         function iniciarNuevoChat() {
             let val = document.getElementById('chatSearchInput').value.trim();

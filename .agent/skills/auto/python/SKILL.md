@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 13 conventions, 34 fixes."
+description: "Python for botatc. 10 gotchas, 13 conventions, 36 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **87 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **89 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,37 @@ Auto-compiled from **87 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Reemplazar — parallelizes async operations for speed
+-                 elif tipo == "audio":
++                 elif tipo == "video":
+-                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
++                     return f"""<div style="text-align:center;"><video controls src="{src_url}" style="max-width: 250px; max-heigh
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Reemplazar
+3. identifier: Hola
+4. identifier: Limpiar
+5. identifier: HTML
+
+### Fixed null crash in Sube — parallelizes async operations for speed
+-     """Sube una imagen directamente desde la interfaz Web a Meta Graph."""
++     """Sube media directamente desde la interfaz Web a Meta Graph."""
+-         media_id = await subir_media(content, file.content_type, file.filename or "upload.png")
++         
+-         
++         fallback_name = "upload.bin"
+-         if media_id:
++         if file.content_type:
+-             return {"ok": T
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Sube
+3. identifier: Web
+4. identifier: Meta
+5. identifier: Graph
 
 ### Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
 -                     prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + (msgs.length > 1 ? ` (${{{msgs.length}}} msgs)` : '');
@@ -273,36 +304,6 @@ Auto-compiled from **87 real patterns** in **botatc**. This skill is auto-routed
 **Actionable Steps:**
 1. Modified 1 files
 2. identifier: Enviar
-3. identifier: WhatsApp
-4. identifier: Mar
-5. identifier: None
-
-### Fixed null crash in KeyError — protects against XSS and CSRF token theft
--     # Detectar si el cliente está usando la función de deslizar/responder
-+     except (KeyError, IndexError):
--     contexto = changes["messages"][0].get("context", {})
-+         return {"status": "ok"}   # payload inesperado → ignorar sin error
--     if "id" in contexto:
-+ 
--         reply_id = contexto["id"]
-+     # Detectar si el cliente está usando la función de deslizar/responder
--
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: KeyError
-3. identifier: IndexError
-4. identifier: Detectar
-5. identifier: Buscar
-
-### problem-fix in server.py
--                     return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
-+                     return f"""<div style=
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in firebase_client.py
-- def calcular_cola_pedido(pedido
+3. identifier: Whats
 
 ... [Truncated — see individual observations for full content]

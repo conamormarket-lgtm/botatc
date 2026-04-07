@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 402 notes | Score threshold: >40
+> 438 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,35 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 361 notes | Score threshold: >40
-+ > 398 notes | Score threshold: 
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Optimized Patched
-+ - ⚠️ GOTCHA: problem-fix in agent-r
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Title — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: Optimized Patched** — - - problem-fix in shared-context.json
-+ - Patched security issue Clea
-- **⚠️ GOTCHA: Replaced auth Score** — - > 349 notes | Score threshold: >40
-+ > 361 notes | Score threshold: 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in None — prevents null/undefined runtime crashes
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Replaced auth Score
++ - gotcha in shared-context.json
+-
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "650b08ac776fc2ab",
++
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 420 notes | Score threshold: >40
++ > 428 notes | Score threshold: 
+- **⚠️ GOTCHA: Replaced auth Score** — - > 417 notes | Score threshold: >40
++ > 420 notes | Score threshold: 
+- **⚠️ GOTCHA: Replaced auth Score** — - > 414 notes | Score threshold: >40
++ > 417 notes | Score threshold: 
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 402 notes | Score threshold: >40
++ > 414 notes | Score threshold: 
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 14x
-- problem-fix in shared-context.json — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 5x
-- Fixed null crash in Title — prevents null/undefined runtime crashes — confirmed 5x
+- Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
 - Replaced auth GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
-- what-changed in shared-context.json — confirmed 6x
+- Optimized Fixed — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- Replaced auth GOTCHA — confirmed 3x
 
 ## Known Fixes
 

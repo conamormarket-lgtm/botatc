@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 43 gotchas, 47 conventions, 12 fixes."
+description: "Project for botatc. 49 gotchas, 50 conventions, 12 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **227 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,12 @@ Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Replaced auth Score + - gotcha in shared-context.json - - ⚠️ GOTCHA: Replaced auth Sc |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 420 notes - Score threshold: >40 + > 428 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
+| ⚠️ GOTCHA: Replaced auth Score | - > 417 notes - Score threshold: >40 + > 420 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
+| ⚠️ GOTCHA: Replaced auth Score | - > 414 notes - Score threshold: >40 + > 417 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 402 notes - Score threshold: >40 + > 414 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
+| ⚠️ GOTCHA: Replaced auth Score | - > 398 notes - Score threshold: >40 + > 402 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 361 notes - Score threshold: >40 + > 398 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replace |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Title — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
@@ -194,28 +200,6 @@ Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-route
 + - Added error handling Respuestas — wraps unsafe operation in error boundary
 - - problem-fix in agent-rules.md
 + - problem-fix in server.py
-- - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-+ - problem-fix in firebase_clie
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-- - problem-fix in server.py
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-- - problem-fix in fi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Don't commit node_modules, __pycache__, build/, dist/ — add to .gitignore
-+ - Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), #
+- - Fixed null crash in HTMLResponse — prevents null/undefined ru
 
 ... [Truncated — see individual observations for full content]

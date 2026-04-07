@@ -1527,10 +1527,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         s = sesiones[wa_id]
         nombre_chat = s.get("nombre_cliente", wa_id)
         activo_chat = s.get("bot_activo", True)
-        msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
+        all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
+        MAX_MENSAJES = 70
+        msgs = all_msgs[-MAX_MENSAJES:]
         
         import re
         burbujas = ""
+        if len(all_msgs) > MAX_MENSAJES:
+            burbujas = f'<div style="text-align:center; opacity:0.5; margin: 1rem 0; font-size:0.8rem; background:rgba(0,0,0,0.05); padding:0.4rem; border-radius:8px;">Mostrando los últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes (Por desempeño)</div>'
         for m in msgs:
             es_bot = m["role"] == "assistant"
             clase  = "bubble-bot" if es_bot else "bubble-user"
