@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 539 notes | Score threshold: >40
+> 567 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,52 +20,41 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes** — -                 }
-+                     if(typeof window.aplicarFil
-- **⚠️ GOTCHA: Fixed null crash in HTMLResponse** — -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
-+  
-- **⚠️ GOTCHA: Fixed null crash in None** — -         chat_viewer_html = f"""
-+         session_tags = s.get("eti
-- **⚠️ GOTCHA: Updated typing database schema** — - 
-+ 
-+ 
-+ # =======================================================
-- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     <!-- Botón Plantillas -->
-+                    
-- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     </div>
-+                     <!-- Botón Plantil
-
-## Active: `.`
-
-- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes**
-- **what-changed in inbox.html — confirmed 4x**
-- **⚠️ GOTCHA: Fixed null crash in HTMLResponse**
-- **⚠️ GOTCHA: Fixed null crash in None**
-- **⚠️ GOTCHA: Updated typing database schema**
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Inbox — prevents null/undefined runtime crashe
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 513 notes | Score threshold: >40
++ > 535 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score** — - > 508 notes | Score threshold: >40
++ > 513 notes | Score threshold: 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in patcher.py
+- - pr
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Replaced a
 
 ## Project Standards
 
 - what-changed in inbox.html — confirmed 4x
-- Fixed null crash in PLANTILLAS — confirmed 5x
-- what-changed in inbox.html — confirmed 5x
-- Fixed null crash in Error — prevents null/undefined runtime crashes — confirmed 7x
-- Fixed null crash in EMOJI — confirmed 3x
 - what-changed in settings.html — confirmed 6x
 - Fixed null crash in Configuraci — wraps unsafe operation in error boundary — confirmed 5x
-- Fixed null crash in POST — parallelizes async operations for speed — confirmed 4x
+- what-changed in shared-context.json — confirmed 6x
+- Optimized Fixed — confirmed 4x
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Title — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ + - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ - - Fixed null crash in None — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 
 ## Recent Decisions
 
-- decision in dump.html
-- decision in inbox.html
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 

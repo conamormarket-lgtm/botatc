@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 59 gotchas, 57 conventions, 14 fixes."
+description: "Project for botatc. 62 gotchas, 59 conventions, 17 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **269 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **283 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **269 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 513 notes - Score threshold: >40 + > 535 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
 | ⚠️ GOTCHA: Optimized Score | - > 508 notes - Score threshold: >40 + > 513 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in patcher.py - - problem-fix in agent-rules.md +  |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Repl |
@@ -65,11 +68,47 @@ Auto-compiled from **269 real patterns** in **botatc**. This skill is auto-route
 | Don't expose database errors to clients — map to u | Don't expose database errors to clients — map to user-friendly messages |
 | Always validate data on the SERVER — client valida | Always validate data on the SERVER — client validation is for UX only |
 | Don't fetch data inside render loops or hot paths | Don't fetch data inside render loops or hot paths |
-| Don't swallow errors silently — empty catch blocks | Don't swallow errors silently — empty catch blocks hide bugs |
-| Never store session tokens in localStorage — use h | Never store session tokens in localStorage — use httpOnly cookies |
-| Use parameterized queries — never string concatena | Use parameterized queries — never string concatenation for SQL |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- - Patched security issue Kevin — hardens HTTP security headers
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (a
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- - Patched security issue Kevin — hardens HTTP security headers
++ - problem-fix in shared-context.json
+- - problem-fix in patcher.py
++ - Patched security issue Kevin — hardens HTTP s
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- - Patched security issue Kevin — hardens HTTP security headers
++ - problem-fix in shared-context.json
+- - problem-fix in patcher.py
++ - Patched security issue Kevin — hardens HTTP security headers
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - problem-fix in patcher.py
@@ -155,48 +194,6 @@ Auto-compiled from **269 real patterns** in **botatc**. This skill is auto-route
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in Enviando — prevents null/undefined runtime crashes
-+ - Patched security issue Kevin
-- - Patched security issue Kevin
-+ - Fixed null crash in Enviando — prevents null/undefined runtime crashes
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Propert
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - Patched security issue Kevin
-- - problem-fix in server.py
-+ - Fixed null crash in Enviando — prevents null/undefined runtime crashes
-- - problem-fix in firebase_client.py
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols lik
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
-- - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
-+ - problem-fix in shared-context.json
-- - Added error handling Respuestas — wraps unsafe operation 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in DOCTYPE — p
+### proble
 
 ... [Truncated — see individual observations for full content]

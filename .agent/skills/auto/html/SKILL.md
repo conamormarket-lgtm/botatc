@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 13 conventions, 19 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 14 conventions, 21 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **51 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **59 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,43 @@ Auto-compiled from **51 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- 
++ <head>
+- <head>
++     <meta charset="UTF-8">
+-     <meta charset="UTF-8">
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <title>Inbox - IA-ATC</title>
+-     <title>Inbox - IA-ATC</title>
++     <!-- F
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
+
+### Fixed null crash in Inbox — prevents null/undefined runtime crashes
+- <head>
++ 
+-     <meta charset="UTF-8">
++ <head>
+-     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
++     <meta charset="UTF-8">
+-     <title>Inbox - IA-ATC</title>
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+-     <!-- Fuentes de Google: Inter para lectura,
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: UTF
+3. identifier: Inbox
+4. identifier: ATC
+5. identifier: Fuentes
 
 ### Fixed null crash in Configuraci — wraps unsafe operation in error boundary
 - 
@@ -331,37 +368,6 @@ Auto-compiled from **51 real patterns** in **botatc**. This skill is auto-routed
 5. identifier: Global
 
 ### Fixed null crash in Inter — prevents null/undefined runtime crashes
--     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
-+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
--     <style>
-+     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Inter
-3. identifier: Plus
-4. identifier: Jakarta
-5. identifier: Sans
-
-### Patched security issue RESPONSIVE
--             <div class="container" style="gap:2rem;">
-+         .container {
--                 
-+             padding: 2.5rem;
--                 <div class="pdf-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;">
-+             max-width: 1000px;
--                     <h3 style="margin-bottom:1rem;color:var(--text-main);font-family:v
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: RESPONSIVE
-3. identifier: BARRA
-4. identifier: LATERAL
-5. identifier: Bandeja
-
-### Fixed null crash in Prevenir
--                 const res = await fetch(window.location.href);
-+                 // Prevenir caché del navegador
--                 const text = await 
+-     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfi
 
 ... [Truncated — see individual observations for full content]
