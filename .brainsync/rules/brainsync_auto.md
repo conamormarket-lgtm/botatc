@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 692 notes | Score threshold: >40
+> 700 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 689 notes | Score threshold: >40
++ > 692 notes | Score threshold: 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 683 notes | Score threshold: >40
 + > 689 notes | Score threshold: 
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
@@ -29,11 +31,10 @@
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LEFT — prevents null/undefined runtime crashes
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - Fixed null crash in Inbox — preve
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Added JW
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - problem-fix in agent-rules.md — confirmed 5x
@@ -41,7 +42,6 @@
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - what-changed in inbox.html — confirmed 5x
-- what-changed in inbox.html — confirmed 7x
 
 ## Known Fixes
 

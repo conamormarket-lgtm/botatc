@@ -1816,7 +1816,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <!-- END RIGHT SIDEBAR -->
         </div>
         <script>
-            let isSendingSequence = false;
+            window.isSendingSequence = false; window.isSendingSequence = false;
+            let isSendingSequence = false; window.isSendingSequence = false;
             
             async function aplicarQuickReply(qrId) {{
                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
@@ -1842,7 +1843,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const progressText = document.getElementById('qrProgressText');
                 
                 if(progressBarContainer) progressBarContainer.style.display = 'flex';
-                isSendingSequence = true;
+                isSendingSequence = true; window.isSendingSequence = true;
                 
                 for (let i = 0; i < msgs.length; i++) {{
                     const msgObj = typeof msgs[i] === 'string' ? {{type:'text', content: msgs[i]}} : msgs[i];
@@ -1903,7 +1904,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     }}, 2500);
                 }}
                 
-                isSendingSequence = false;
+                isSendingSequence = false; window.isSendingSequence = false;
             }}
             
             function checkQuickReplyTrigger(input) {{

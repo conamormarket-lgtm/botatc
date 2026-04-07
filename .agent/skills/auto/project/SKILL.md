@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 76 gotchas, 65 conventions, 25 fixes."
+description: "Project for botatc. 77 gotchas, 65 conventions, 25 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **323 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **327 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **323 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 689 notes - Score threshold: >40 + > 692 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 683 notes - Score threshold: >40 + > 689 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 668 notes - Score threshold: >40 + > 683 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
@@ -67,7 +68,6 @@ Auto-compiled from **323 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Strengthened types Recent | -  + - decision in dump.html - ## Recent fixes +  -  + ## Recent fixes - - problem-fix in shared-con |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Replaced auth Score + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Updated schema |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Updated schema GOTCHA + - ⚠️ GOTCHA: Replaced auth Score - - gotcha in shared-context |
-| ⚠️ GOTCHA: Replaced auth Score | - > 262 notes - Score threshold: >40 + > 263 notes - Score threshold: >40 - - what-changed in server |
 
 ## 🔧 Problem Playbooks
 
@@ -170,6 +170,6 @@ Auto-compiled from **323 real patterns** in **botatc**. This skill is auto-route
 - - Fixed null crash in Inbox — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
-+ - Fixed null crash in Inbox — prevents null/un
++ - Fixed null crash in Inbox — prev
 
 ... [Truncated — see individual observations for full content]

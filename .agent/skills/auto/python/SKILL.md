@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 14 conventions, 38 fixes."
+description: "Python for botatc. 10 gotchas, 14 conventions, 39 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **94 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **95 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,23 @@ Auto-compiled from **94 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Formatear — parallelizes async operations for speed
+-             # Formatear el indicador de respuesta nativa
++             if texto.startswith('[sticker') and texto.endswith(']'):
+-             import re
++                 clase += " bubble-sticker"
+-             match = re.match(r"^\[\[REPLY\|(.*?)\]\](.*)$", texto_renderizado, flags=re.DOTALL)
++                 
+-             if match:
++             # Formatear el indicador de respuesta n
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Formatear
+3. identifier: REPLY
+4. identifier: DOTALL
+5. identifier: Respondi
 
 ### Fixed null crash in Flotante — parallelizes async operations for speed
 -                     <!-- Menú Flotante de Emojis -->
@@ -274,26 +291,6 @@ Auto-compiled from **94 real patterns** in **botatc**. This skill is auto-routed
 - # Cola para debouncing (acumular múltiples mensajes rápidos del mismo usuario)
 + 
 - mensajes_pendientes: dict[str, list[str]] = {}
-+ # Cola para debouncing (acumular m
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Interruptor
-3. identifier: False
-4. identifier: True
-5. identifier: Cola
-
-### Fixed null crash in True
--     
-+     escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
--     # SECCIÓN NUEVA: BUSCADOR / NUEVO CHAT en el HTML de admin (o inbox)
-+     escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
--     # Nota: La instrucción pide insertar esto en el div list-header de inbox.html
-+     n_escalados = len(escalados)
--     # Aquí se m
-
-**Actionable Steps:**
-1. Modified 1 files
-2. 
++ # Cola para debouncing (acumul
 
 ... [Truncated — see individual observations for full content]
