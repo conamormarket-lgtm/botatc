@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 700 notes | Score threshold: >40
+> 719 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,34 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 700 notes | Score threshold: >40
++ > 716 notes | Score threshold: 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "023d38542f42de4b",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 692 notes | Score threshold: >40
++ > 700 notes | Score threshold: 
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 689 notes | Score threshold: >40
 + > 692 notes | Score threshold: 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 683 notes | Score threshold: >40
 + > 689 notes | Score threshold: 
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 668 notes | Score threshold: >40
-+ > 683 notes | Score threshold: 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LEFT — prevents null/undefined runtime crashes
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - Fixed null crash in Inbox — preve
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 5x
+- Optimized Fixed — confirmed 4x
+- Added JWT tokens authentication — confirmed 3x
+- Fixed null crash in POST — prevents null/undefined runtime crashes — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
-- problem-fix in agent-rules.md — confirmed 5x
-- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 4x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in inbox.html — confirmed 5x
 
 ## Known Fixes
 

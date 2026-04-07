@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 14 conventions, 39 fixes."
+description: "Python for botatc. 10 gotchas, 14 conventions, 40 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **95 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **96 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,22 @@ Auto-compiled from **95 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Support — parallelizes async operations for speed
+-             let isSendingSequence = false;
++             window.isSendingSequence = false; window.isSendingSequence = false;
+-             
++             let isSendingSequence = false; window.isSendingSequence = false;
+-             async function aplicarQuickReply(qrId) {{
++             
+-                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera."
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Hay
+3. identifier: Support
+4. identifier: Enviando
+5. identifier: Compose
 
 ### Fixed null crash in Formatear — parallelizes async operations for speed
 -             # Formatear el indicador de respuesta nativa
@@ -272,25 +288,5 @@ Auto-compiled from **95 real patterns** in **botatc**. This skill is auto-routed
 -                 <span class="chat-name">{nombre}</span>
 +             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3r
 
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: None
-3. identifier: Procesar
-4. identifier: Panel
-5. identifier: Derecho
-
-### Fixed null crash in Interruptor — protects against XSS and CSRF token theft
-- 
-+ global_labels: list = []
-- # Interruptor global — False = bot completamente apagado
-+ 
-- BOT_GLOBAL_ACTIVO: bool = True
-+ # Interruptor global — False = bot completamente apagado
-- 
-+ BOT_GLOBAL_ACTIVO: bool = True
-- # Cola para debouncing (acumular múltiples mensajes rápidos del mismo usuario)
-+ 
-- mensajes_pendientes: dict[str, list[str]] = {}
-+ # Cola para debouncing (acumul
 
 ... [Truncated — see individual observations for full content]

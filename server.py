@@ -1886,10 +1886,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     
                     if(!finalMsg) {{ i < msgs.length-1 && await new Promise(r=>setTimeout(r, delay)); continue; }}
                     
-                    const endsWithSlash = input.value.trimEnd().endsWith("/");
-                    input.value = (endsWithSlash && i===0) ? input.value.trimEnd().slice(0,-1) + finalMsg : finalMsg;
-                    
-                    if(btn) btn.click();
+                    if (window.enviarMensajeDirecto) {
+                        await window.enviarMensajeDirecto("{wa_id}", finalMsg);
+                    } else {
+                        const endsWithSlash = input.value.trimEnd().endsWith("/");
+                        input.value = (endsWithSlash && i===0) ? input.value.trimEnd().slice(0,-1) + finalMsg : finalMsg;
+                        if(btn) btn.click();
+                    }
                     
                     if (i < msgs.length - 1) {{
                         await new Promise(r => setTimeout(r, delay));
