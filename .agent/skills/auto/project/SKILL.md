@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 32 gotchas, 42 conventions, 6 fixes."
+description: "Project for botatc. 35 gotchas, 44 conventions, 8 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **172 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **184 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **172 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Enviando — prevents null/undefined runtime crashes + - problem-fix in agent- |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 308 notes - Score threshold: >40 + > 315 notes - Score threshold: >40 - - **⚠️ GOTCHA: Strengthe |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes + - Fixed null crash in No |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes + - problem-fix in agent-r |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes + - problem-fix in agent-r |
 | ⚠️ GOTCHA: Strengthened types Recent | -  + - decision in dump.html - ## Recent fixes +  -  + ## Recent fixes - - problem-fix in shared-con |
@@ -52,6 +55,34 @@ Auto-compiled from **172 real patterns** in **botatc**. This skill is auto-route
 | gotcha in .gitignore | File updated (external): .gitignore  Content summary (24 lines): # ⚠️ SEGURIDAD — Archivos que NUNCA |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Enviando — prevents null/undefined runtime crashes
++ - Patched security issue Kevin
+- - Patched security issue Kevin
++ - Fixed null crash in Enviando — prevents null/undefined runtime crashes
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Propert
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - Fixed null crash in Enviando — prevents null/undefined runtime crashes
+- - problem-fix in firebase_client.py
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols lik
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes
@@ -128,6 +159,11 @@ Auto-compiled from **172 real patterns** in **botatc**. This skill is auto-route
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Replaced auth GOTCHA — confirmed 4x** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: problem-fix in agent-rules.md
+- - ⚠️ GOTCHA: Replac
+- 📐 **problem-fix in agent-rules.md — confirmed 3x** — - - problem-fix in shared-context.json
++ - Fixed null crash in Enviando — prevents null/undefined ru
 - 📐 **what-changed in brainsync_auto.md — confirmed 3x** — - > 305 notes | Score threshold: >40
 + > 306 notes | Score threshold: >40
 
@@ -177,18 +213,6 @@ Branch: main
 - 📐 **Version your API from day 1 (/api/v1/)** — Version your API from day 1 (/api/v1/)
 - 📐 **Use consistent response format across all endpoints** — Use consistent response format across all endpoints
 - 📐 **Implement soft delete for important data — don't hard delete without confirmation** — Implement soft delete for important data — don't hard delete without confirmation
-- 📐 **Handle timezone correctly — store UTC, display in user's timezone** — Handle timezone correctly — store UTC, display in user's timezone
-- 📐 **Make layouts responsive from the start — mobile-first approach** — Make layouts responsive from the start — mobile-first approach
-- 📐 **Disable submit button during form submission — prevent double-submit** — Disable submit button during form submission — prevent double-submit
-- 📐 **Always add empty states ("No items yet" with call-to-action)** — Always add empty states ("No items yet" with call-to-action)
-- 📐 **Always add error states with retry button — not just blank screen** — Always add error states with retry button — not just blank screen
-- 📐 **Always add loading states for async operations (skeleton, spinner)** — Always add loading states for async operations (skeleton, spinner)
-- 📐 **Test edge cases: empty input, null, boundary values, error scenarios** — Test edge cases: empty input, null, boundary values, error scenarios
-- 📐 **Each test should be independent — no shared mutable state between tests** — Each test should be independent — no shared mutable state between tests
-- 📐 **Write tests for business logic — test behavior/output, not implementation details** — Write tests for business logic — test behavior/output, not implementation details
-- 📐 **Close resources (streams, connections, handles) when done** — Close resources (streams, connections, handles) when done
-- 📐 **Debounce user input handlers (search, resize, scroll)** — Debounce user input handlers (search, resize, scroll)
-- 📐 **Use pagination for lists over 100 items** — Use pagination for lists over 100 items
-- 📐 **Implement retry logic for transient failures with exponential backoff** — Implement retry logic for transient failures
+- 📐 **Handle timezone correctly — store UTC, display in user's timezone**
 
 ... [Truncated — see individual observations for full content]

@@ -1725,100 +1725,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             </div>
             <!-- END RIGHT SIDEBAR -->
         </div>
-        
-            
-            <script>
-            let quickRepliesCache = [];
-            async function cargarQuickReplies() {{
-                const list = document.getElementById("quickRepliesList");
-                if(!list) return;
-                list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
-                try {{
-                    const res = await fetch("/api/quick-replies");
-                    if (!res.ok) throw new Error("HTTP " + res.status);
-                    const data = await res.json();
-                    quickRepliesCache = data;
-                    renderQuickReplies(data);
-                }} catch(e) {{
-                    list.innerHTML = `<div style="font-size:0.85rem; color:red; padding:1rem; text-align:center; background:rgba(255,0,0,0.1); border-radius:8px;">Error: ${{e.message}}</div>`;
-                }}
-            }}
-            function renderQuickReplies(data) {{
-                const list = document.getElementById("quickRepliesList");
-                if(!list) return;
-                if(data.length === 0) {{
-                    list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:1rem; text-align:center; height:100%; display:flex; align-items:center; justify-content:center;">Sin respuestas rápidas en el sistema.</div>`;
-                    return;
-                }}
-                list.innerHTML = "";
-                data.forEach(qr => {{
-                    const container = document.createElement("div");
-                    container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
-                    container.onmouseover = function() {{this.style.borderColor='var(--primary-color)';}};
-                    container.onmouseout = function() {{this.style.borderColor='var(--accent-border)';}};
-                    
-                    const btn = document.createElement("button");
-                    btn.type = "button";
-                    btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column;";
-                    
-                    const headerRow = document.createElement("div");
-                    headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:0.2rem;";
-                    
-                    const titleWrap = document.createElement("div");
-                    titleWrap.style.cssText = "display:flex; align-items:center; gap:0.5rem;";
-                    
-                    const title = document.createElement("strong");
-                    title.innerText = qr.title || qr.category;
-                    title.style.fontSize = "0.9rem";
-                    
-                    const catBadge = document.createElement("span");
-                    catBadge.innerText = (qr.category && qr.category!==qr.title) ? qr.category : "";
-                    catBadge.style.cssText = "font-size:0.65rem; background:rgba(255,255,255,0.1); padding:0.1rem 0.4rem; border-radius:4px;";
-                    
-                    titleWrap.appendChild(title);
-                    if(catBadge.innerText) titleWrap.appendChild(catBadge);
-                    
-                    const msgCount = (qr.mensajes && qr.mensajes.length > 1) ? ` (${{qr.mensajes.length}} msgs)` : "";
-                    
-                    const editBtn = document.createElement("button");
-                    editBtn.innerHTML = "✎"; // Icono editar
-                    editBtn.title = "Editar";
-                    editBtn.style.cssText = "background:none; border:none; color:var(--primary-color); cursor:pointer; padding:0 0.2rem; font-size:1rem; margin-right:1.5rem;";
-                    editBtn.onclick = (e) => {{ e.stopPropagation(); abrirModalCrearQR(qr.id); }};
-                    
-                    headerRow.appendChild(titleWrap);
-                    headerRow.appendChild(editBtn);
-                    
-                    const prev = document.createElement("span");
-                    prev.style.cssText = "font-size:0.8rem; color:var(--text-muted); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; line-height:1.4;";
-                    prev.innerText = qr.content + msgCount;
-                    
-                    btn.onclick = () => aplicarQuickReply(qr.id);
-                    btn.appendChild(headerRow);
-                    btn.appendChild(prev);
-                    
-                    const delBtn = document.createElement("button");
-                    delBtn.innerHTML = "×";
-                    delBtn.title = "Eliminar";
-                    delBtn.style.cssText = "position:absolute; top:0.5rem; right:0.5rem; background:rgba(0,0,0,0.3); border:none; color:#ef4444; border-radius:50%; width:20px; height:20px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0; transition:opacity 0.2s;";
-                    container.onmouseenter = () => delBtn.style.opacity = "1";
-                    container.onmouseleave = () => delBtn.style.opacity = "0";
-                    
-                    delBtn.onclick = (e) => {{
-                        e.stopPropagation();
-                        eliminarQR(qr.id);
-                    }};
-                    
-                    container.appendChild(btn);
-                    container.appendChild(delBtn);
-                    list.appendChild(container);
-                }});
-            }}
-            function filtrarQuickReplies(val) {{
-                const valLower = val.toLowerCase();
-                const filt = quickRepliesCache.filter(q => q.title?.toLowerCase().includes(valLower) || q.content?.toLowerCase().includes(valLower));
-                renderQuickReplies(filt);
-            }}
+        <script>
             let isSendingSequence = false;
             
             async function aplicarQuickReply(qrId) {{
@@ -1856,8 +1763,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         progressText.innerText = `Enviando ${{i+1}}/${{msgs.length}}...`;
                     }}
                     
-                    const slashMatch = input.value.match(/(?:^|\\\\s)\\\\/$/); 
-                    if (slashMatch) {{
+                    const endsWithSlash = input.value.trimEnd().endsWith("/");
+                    if (endsWithSlash) {{
                         input.value = input.value.substring(0, input.value.length - 1) + finalMsg;
                     }} else {{
                         input.value = finalMsg; // Overwrite current for sequence
@@ -2006,6 +1913,158 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
             </script>
             <script>
+            let quickRepliesCache = [];
+            async function cargarQuickReplies() {{
+                const list = document.getElementById("quickRepliesList");
+                if(!list) return;
+                list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
+                try {{
+                    const res = await fetch("/api/quick-replies");
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+                    const data = await res.json();
+                    quickRepliesCache = data;
+                    renderQuickReplies(data);
+                }} catch(e) {{
+                    list.innerHTML = `<div style="font-size:0.85rem; color:red; padding:1rem; text-align:center; background:rgba(255,0,0,0.1); border-radius:8px;">Error: ${{e.message}}</div>`;
+                }}
+            }}
+            function renderQuickReplies(data) {{
+                const list = document.getElementById("quickRepliesList");
+                if(!list) return;
+                if(data.length === 0) {{
+                    list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:1rem; text-align:center;">Sin respuestas rápidas en el sistema.</div>`;
+                    return;
+                }}
+                list.innerHTML = "";
+                data.forEach(qr => {{
+                    const container = document.createElement("div");
+                    container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
+                    container.onmouseover = function() {{this.style.borderColor='var(--primary-color)';}};
+                    container.onmouseout = function() {{this.style.borderColor='var(--accent-border)';}};
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column;";
+                    const headerRow = document.createElement("div");
+                    headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:0.2rem;";
+                    const titleWrap = document.createElement("div");
+                    titleWrap.style.cssText = "display:flex; align-items:center; gap:0.5rem;";
+                    const titleEl = document.createElement("strong");
+                    titleEl.innerText = qr.title || qr.category || '(sin título)';
+                    titleEl.style.fontSize = "0.9rem";
+                    const catBadge = document.createElement("span");
+                    catBadge.innerText = (qr.category && qr.category!==qr.title) ? qr.category : "";
+                    catBadge.style.cssText = "font-size:0.65rem; background:rgba(255,255,255,0.1); padding:0.1rem 0.4rem; border-radius:4px;";
+                    titleWrap.appendChild(titleEl);
+                    if(catBadge.innerText) titleWrap.appendChild(catBadge);
+                    const msgCount = (qr.mensajes && qr.mensajes.length > 1) ? ` (${{qr.mensajes.length}} msgs)` : "";
+                    const editBtn = document.createElement("button");
+                    editBtn.innerHTML = "✎";
+                    editBtn.title = "Editar";
+                    editBtn.style.cssText = "background:none; border:none; color:var(--primary-color); cursor:pointer; padding:0 0.2rem; font-size:1rem; margin-right:1.5rem;";
+                    editBtn.onclick = (e) => {{ e.stopPropagation(); abrirModalCrearQR(qr.id); }};
+                    headerRow.appendChild(titleWrap);
+                    headerRow.appendChild(editBtn);
+                    const prev = document.createElement("span");
+                    prev.style.cssText = "font-size:0.8rem; color:var(--text-muted); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; line-height:1.4;";
+                    prev.innerText = (qr.content || '') + msgCount;
+                    btn.onclick = () => aplicarQuickReply(qr.id);
+                    btn.appendChild(headerRow);
+                    btn.appendChild(prev);
+                    const delBtn = document.createElement("button");
+                    delBtn.innerHTML = "×";
+                    delBtn.title = "Eliminar";
+                    delBtn.style.cssText = "position:absolute; top:0.5rem; right:0.5rem; background:rgba(0,0,0,0.3); border:none; color:#ef4444; border-radius:50%; width:20px; height:20px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0; transition:opacity 0.2s;";
+                    container.onmouseenter = () => delBtn.style.opacity = "1";
+                    container.onmouseleave = () => delBtn.style.opacity = "0";
+                    delBtn.onclick = (e) => {{ e.stopPropagation(); eliminarQR(qr.id); }};
+                    container.appendChild(btn);
+                    container.appendChild(delBtn);
+                    list.appendChild(container);
+                }});
+            }}
+            function filtrarQuickReplies(val) {{
+                const valLower = val.toLowerCase();
+                const filt = quickRepliesCache.filter(q => q.title?.toLowerCase().includes(valLower) || q.content?.toLowerCase().includes(valLower));
+                renderQuickReplies(filt);
+            }}
+            </script>
+            <script>
+            let quickRepliesCache = [];
+            async function cargarQuickReplies() {{
+                const list = document.getElementById("quickRepliesList");
+                if(!list) return;
+                list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
+                try {{
+                    const res = await fetch("/api/quick-replies");
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+                    const data = await res.json();
+                    quickRepliesCache = data;
+                    renderQuickReplies(data);
+                }} catch(e) {{
+                    list.innerHTML = `<div style="font-size:0.85rem; color:red; padding:1rem; text-align:center; background:rgba(255,0,0,0.1); border-radius:8px;">Error: ${{e.message}}</div>`;
+                }}
+            }}
+            function renderQuickReplies(data) {{
+                const list = document.getElementById("quickRepliesList");
+                if(!list) return;
+                if(data.length === 0) {{
+                    list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:1rem; text-align:center;">Sin respuestas r\u00e1pidas en el sistema.</div>`;
+                    return;
+                }}
+                list.innerHTML = "";
+                data.forEach(qr => {{
+                    const container = document.createElement("div");
+                    container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
+                    container.onmouseover = function() {{this.style.borderColor='var(--primary-color)';}}; 
+                    container.onmouseout = function() {{this.style.borderColor='var(--accent-border)';}};
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column;";
+                    const headerRow = document.createElement("div");
+                    headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:0.2rem;";
+                    const titleWrap = document.createElement("div");
+                    titleWrap.style.cssText = "display:flex; align-items:center; gap:0.5rem;";
+                    const titleEl = document.createElement("strong");
+                    titleEl.innerText = qr.title || qr.category || "(sin t\u00edtulo)";
+                    titleEl.style.fontSize = "0.9rem";
+                    const catBadge = document.createElement("span");
+                    catBadge.innerText = (qr.category && qr.category!==qr.title) ? qr.category : "";
+                    catBadge.style.cssText = "font-size:0.65rem; background:rgba(255,255,255,0.1); padding:0.1rem 0.4rem; border-radius:4px;";
+                    titleWrap.appendChild(titleEl);
+                    if(catBadge.innerText) titleWrap.appendChild(catBadge);
+                    const msgCount = (qr.mensajes && qr.mensajes.length > 1) ? ` (${{qr.mensajes.length}} msgs)` : "";
+                    const editBtn = document.createElement("button");
+                    editBtn.innerHTML = "\u270e";
+                    editBtn.title = "Editar";
+                    editBtn.style.cssText = "background:none; border:none; color:var(--primary-color); cursor:pointer; padding:0 0.2rem; font-size:1rem; margin-right:1.5rem;";
+                    editBtn.onclick = (e) => {{ e.stopPropagation(); abrirModalCrearQR(qr.id); }};
+                    headerRow.appendChild(titleWrap);
+                    headerRow.appendChild(editBtn);
+                    const prev = document.createElement("span");
+                    prev.style.cssText = "font-size:0.8rem; color:var(--text-muted); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; line-height:1.4;";
+                    prev.innerText = (qr.content || "") + msgCount;
+                    btn.onclick = () => aplicarQuickReply(qr.id);
+                    btn.appendChild(headerRow);
+                    btn.appendChild(prev);
+                    const delBtn = document.createElement("button");
+                    delBtn.innerHTML = "\u00d7";
+                    delBtn.title = "Eliminar";
+                    delBtn.style.cssText = "position:absolute; top:0.5rem; right:0.5rem; background:rgba(0,0,0,0.3); border:none; color:#ef4444; border-radius:50%; width:20px; height:20px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0; transition:opacity 0.2s;";
+                    container.onmouseenter = () => delBtn.style.opacity = "1";
+                    container.onmouseleave = () => delBtn.style.opacity = "0";
+                    delBtn.onclick = (e) => {{ e.stopPropagation(); eliminarQR(qr.id); }};
+                    container.appendChild(btn);
+                    container.appendChild(delBtn);
+                    list.appendChild(container);
+                }});
+            }}
+            function filtrarQuickReplies(val) {{
+                const valLower = val.toLowerCase();
+                const filt = quickRepliesCache.filter(q => q.title?.toLowerCase().includes(valLower) || q.content?.toLowerCase().includes(valLower));
+                renderQuickReplies(filt);
+            }}
+            </script>
+                        <script>
             var c = document.getElementById('chatScroll');
             if(c) c.scrollTop = c.scrollHeight;
         </script>

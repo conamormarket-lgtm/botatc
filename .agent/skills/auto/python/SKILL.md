@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 12 conventions, 27 fixes."
+description: "Python for botatc. 10 gotchas, 13 conventions, 29 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **78 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **81 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -30,6 +30,45 @@ Auto-compiled from **78 real patterns** in **botatc**. This skill is auto-routed
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Enviando — prevents null/undefined runtime crashes
+-         </div>            let isSendingSequence = false;
++         </div>
+-             
++         <script>
+-             async function aplicarQuickReply(qrId) {{
++             let isSendingSequence = false;
+-                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
++             
+-                 
++             async function aplicarQuick
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Hay
+3. identifier: Enviando
+4. identifier: Overwrite
+5. identifier: Promise
+
+### Fixed null crash in Enviando — prevents null/undefined runtime crashes
+-         </div>
++         </div>            let isSendingSequence = false;
+-         
++             
+-             
++             async function aplicarQuickReply(qrId) {{
+-             <script>
++                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
+-             let quickRepliesCache = [];
++                 
+-             async function
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Hay
+3. identifier: Enviando
+4. identifier: Overwrite
+5. identifier: Promise
 
 ### Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
 -     if not verificar_sesion(request):
@@ -286,39 +325,6 @@ Auto-compiled from **78 real patterns** in **botatc**. This skill is auto-routed
 5. identifier: WhatsApp
 
 ### problem-fix in test_groq.py
-File updated (external): test_groq.py
-
-Content summary (10 lines):
-﻿from dotenv import load_dotenv
-load_dotenv()
-import os, groq
-client = groq.Groq(api_key=os.getenv('GROQ_API_KEY'))
-try:
-  resp = client.chat.completions.create(model='llama3-8b-8192', messages=[{'role': 'user', 'content': 'hola'}], max_tokens=10)
-  print('OK:', resp.choices[0].message.content)
-except Exception as e:
-  print('ERROR
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Parsear — protects against XSS and CSRF token theft
--         from whatsapp_client import enviar_mensaje, enviar_media
-+         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
--         
-+         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
--         # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
-+         for p in partes:
--         partes = re.split(r'(\[sticker:[^\]]+\]
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Parsear
-3. identifier: Panel
-4. identifier: Response
-5. identifier: Request
-
-### Fixed null crash in Sticker
--                 texto = f'<div style="text-align:center;"><img src="/api/media/{media_id}" style="width: 150px; height: 150px; object-fit: cover; border-radi
+File updated (external): t
 
 ... [Truncated — see individual observations for full content]

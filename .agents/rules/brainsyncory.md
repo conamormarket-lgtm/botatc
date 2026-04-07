@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 308 notes | Score threshold: >40
+> 342 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,36 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Enviando — prevents null/undefined runtime cra
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "b3b4b49d6c019d7a",
++
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "d61f9638a663fa55",
++
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 308 notes | Score threshold: >40
++ > 315 notes | Score threshold: 
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE — prevents null/undefined runtime cras
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE — prevents null/undefined runtime cras
-- **⚠️ GOTCHA: Strengthened types Recent** — - 
-+ - decision in dump.html
-- ## Recent fixes
-+ 
-- 
-+ ## Recent fixes
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth Score
-+ - ⚠️ GOTCHA: Replaced auth GOTCHA
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Updated schema GOTCHA
-+ - ⚠️ GOTCHA: Replaced auth Scor
-- **⚠️ GOTCHA: Replaced auth Score** — - > 262 notes | Score threshold: >40
-+ > 263 notes | Score threshold: 
 
 ## Project Standards
 
+- Fixed null crash in None — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - problem-fix in agent-rules.md — confirmed 3x
 - Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Replaced auth Score — confirmed 3x
 
 ## Known Fixes
 
@@ -63,7 +68,7 @@
 
 - When encountering this, fix by: problem-fix in agent-rules.md (seen 2x)
 - Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 2x)
-- Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 2x)
+- Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 3x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed
 
