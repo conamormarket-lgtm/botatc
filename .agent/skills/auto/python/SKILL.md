@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 18 conventions, 48 fixes."
+description: "Python for botatc. 11 gotchas, 18 conventions, 49 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **112 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **113 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,22 @@ Auto-compiled from **112 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Show — parallelizes async operations for speed
+-             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr} title="Click derecho (PC) o mantener presionado (Móvil) para opciones">{texto_renderizado}</div>'
++             
+-             
++             import datetime
+-         if not burbujas:
++             meta_html = ""
+-             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciad
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Show
+3. identifier: Click
+4. identifier: Conversaci
+5. identifier: Cabecera
 
 ### Fixed null crash in Manejar — protects against XSS and CSRF token theft
 -         # Ignorar eventos que no sean mensajes (ej: estados de entrega)
@@ -261,19 +277,6 @@ Auto-compiled from **112 real patterns** in **botatc**. This skill is auto-route
 - """Replace both instances of the old renderQuickReplies with the new one that shows label badges"""
 + """Clean up server.py:
 - 
-+ 1. Remove the orphaned old renderQuickReplies duplicate code (lines 2173-2215)  
-- code = open('server.py', 'r', encoding='utf-8').read()
-+ 2. Fix the {{{msgs.length}}} which causes AttributeError (should be msgs.length in JS, escaped as {{msgs.length}} in f-string)
--
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Clean
-3. identifier: Remove
-4. identifier: Fix
-5. identifier: AttributeError
-
-### Fixed null crash in Crear — parallelizes async operations for speed
--                     <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-
++ 1.
 
 ... [Truncated — see individual observations for full content]

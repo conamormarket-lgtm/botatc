@@ -1729,7 +1729,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             wamid = m.get("msg_id", "")
             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
             
-            import datetime
             meta_html = ""
             ts_html = ""
             status_html = ""
@@ -1738,7 +1737,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 try:
                     ts_val = int(m["timestamp"])
                     if ts_val > 1e11: ts_val //= 1000
-                    ts_str = datetime.datetime.fromtimestamp(ts_val).strftime("%H:%M")
+                    ts_str = datetime.fromtimestamp(ts_val).strftime("%H:%M")
                     ts_html = f'<span class="msg-ts">{ts_str}</span>'
                 except:
                     pass
