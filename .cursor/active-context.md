@@ -1,78 +1,278 @@
 > **BrainSync Context Pumper** 🧠
 > Dynamically loaded for active file: `inbox.html` (Domain: **Generic Logic**)
 
-### 🔴 Generic Logic Gotchas
-- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes**: -                 }
-+                     if(typeof window.aplicarFiltroChats === 'function') {
--                 
-+                         window.aplicarFiltroChats();
--                 // Actualizar visibilidad de Chat
-+                     }
--                 const newScroll = doc.getElementById('chatScroll');
-+                 }
--                 const oldScroll = document.getElementById('chatScroll');
+### 📐 Generic Logic Conventions & Fixes
+- **[problem-fix] Fixed null crash in Content — prevents null/undefined runtime crashes**: -             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
++             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
+-                 await fetch('/enviar_mensaje', {
++                 const res = await fetch('/api/admin/enviar_manual', {
+-                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
++                     headers: { 'Content-Type': 'application/json' },
+-                     body: `wa_id=${wa_id}&mensaje=${encodeURIComponent(msj)}&reply_to=${replyToWamid}`
++                     body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid })
+-             } catch(e) {
 +                 
--                 if(newScroll && oldScroll) {
-+                 // Actualizar visibilidad de Chat
--                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
-+                 const newScroll = doc.getElementById('chatScroll');
--                         // Respetar scroll solo si el usuario no ha subido a leer
-+                 const oldScroll = document.getElementById('chatScroll');
--                         const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
-+                 if(newScroll && oldScroll) {
--                         oldScroll.innerHTML = newScroll.innerHTML;
-+                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
--                         if(isAtBottom) {
-+                         // Respetar scroll solo si el usuario no ha subido a leer
--                             oldScroll.scrollTop = oldScroll.scrollHeight;
-+                         const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
--                         }
-+                         oldScroll.innerHTML = newScroll.innerHTML;
--                     }
-+                         if(isAtBottom) {
--                 }
-+                             oldScroll.scrollTop = oldScroll.scrollHeight;
--             } catch (e) {
-+                         }
--                 console.warn('Error en Live Chat Polling:', e);
-+                     }
+-                 console.error("Error direct send", e);
++                 const data = await res.json();
 -             }
-+                 }
--         }, 1500);
-+             } catch (e) 
++                 if(!data.ok) { console.error("Error direct send json", data); }
+-         };
++             } catch(e) {
+- 
++                 console.error("Error direct send", e);
+-         window.enviarMensajeManual = async function (e, wa_id) {
++             }
+-             e.preventDefault();
++         };
+-             const input = document.getElementById('manualMsgInput');
++ 
+-             if (!input) return;
++         window.enviarMensajeManual = async function (e, wa_id) {
+-             const msj = input.value.trim();
++             e.preventDefault();
+-             if (!msj) return;
++             const input = document.getElementById('manualMsgInput');
+- 
++             if (!input) return;
+-             // Vaciar y enfocar
++             const msj = input.value.trim();
+-             input.value = '';
++             if (!msj) return;
+-             input.focus();
++ 
+- 
++             // Vaciar y enfocar
+-             // Dibujado optimista instantáneo
++             input.value = '';
+-             const scroll = document.getE
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in POST — prevents null/undefined runtime crashes — confirmed 3x**: -         window.enviarMensajeManual = async function (e, wa_id) {
++         
+-             e.preventDefault();
++         window.enviarMensajeDirecto = async function(wa_id, msj) {
+-             const input = document.getElementById('manualMsgInput');
++             if (!msj) return;
+-             if (!input) return;
++             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
+-             const msj = input.value.trim();
++             try {
+-             if (!msj) return;
++                 await fetch('/enviar_mensaje', {
+- 
++                     method: 'POST',
+-             // Vaciar y enfocar
++                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+-             input.value = '';
++                     body: `wa_id=${wa_id}&mensaje=${encodeURIComponent(msj)}&reply_to=${replyToWamid}`
+-             input.focus();
++                 });
+- 
++             } catch(e) {
+-             // Dibujado optimista instantáneo
++                 console.error("Error direct send", e);
+-             const scroll = document.getElementById('chatScroll');
++             }
+-             if (scroll) {
++         };
+-                 const bubble = document.createElement('div');
++ 
+-                 bubble.className = "bubble bubble-bot lado-izq";
++         window.enviarMensajeManual = async function (e, wa_id) {
+-                 bubble.style.border = "1px solid var(--primary-color)";
++             e.preventDefault();
+-                 bubble.innerText = msj;
++             const input = document.getElementById('manualMsgInput');
+-                 scroll.appendChild(bubble);
++             if (!input) return;
+-                 scroll.scrollTop = scroll.scrollHeight;
++             const msj = input.value.trim();
+-             }
++             if (!msj) return;
+-             const replyWamid = document.getElementById('replyToWamid') ? document.getElementById(
+… [diff truncated]
 
-### 📐 Generic Logic Conventions & Fixes
-- **[convention] what-changed in inbox.html — confirmed 4x**: -             width: 280px;
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] Updated schema Intercept**: -         // Smart ESC to exit chat without interrupting sequence
++         
+-         document.addEventListener('keydown', function(event) {
++         // Intercept clicks on other chats if a sequence is sending
+-             if (event.key === 'Escape') {
++         document.addEventListener('click', async function(e) {
+-                 if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
++             const chatRow = e.target.closest('.chat-row');
+-                     const urlParams = new URLSearchParams(window.location.search);
++             if (chatRow && window.isSendingSequence) {
+-                     const tab = urlParams.get('tab') || 'all';
++                 e.preventDefault();
+-                     
++                 const url = chatRow.href;
+-                     if (window.isSendingSequence) {
++                 
+-                         // Soft Virtual Exit to keep sequence sending in background
++                 // Soft Navigation (PJAX style)
+-                         window.history.pushState(null, '', `/inbox?tab=${tab}`);
++                 window.history.pushState(null, '', url);
+-                         
++                 document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
+-                         document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
++                 chatRow.classList.add('active-row');
+-                         
++                 
+-                         const viewer = document.querySelector('.chat-viewer-panel');
++                 const viewer = document.querySelector('.chat-viewer-panel');
+-                         if (viewer) {
++                 if (viewer) {
+-                             viewer.innerHTML = `
++                     viewer.innerHTML = '<div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; 
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] Updated schema Smart**: -         // Pure ESC to exit chat
++         // Smart ESC to exit chat without interrupting sequence
+-                     window.location.href = `/inbox?tab=${tab}`;
++                     
+-                 }
++                     if (window.isSendingSequence) {
+-             }
++                         // Soft Virtual Exit to keep sequence sending in background
+-         });
++                         window.history.pushState(null, '', `/inbox?tab=${tab}`);
+- 
++                         
+- </script>
++                         document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
+-                 </div>
++                         
+- 
++                         const viewer = document.querySelector('.chat-viewer-panel');
+-                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
++                         if (viewer) {
+-                     <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'"
++                             viewer.innerHTML = `
+-                         style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
++                             <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
+-                     <button type="button" onclick="guardarNuevaEtiquetaModal()"
++                                 <h3>Bandeja de Entrada</h3>
+-                         style="padding:0.6rem 1rem; border-radius:6px; background:var(--primary-color); border:none; color:white; font-weight:600; cursor:pointer;">Guardar</button>
++                                 <p style="font-size:0.9rem; max-width:400px;">Selecciona una conversación para empezar o continuar chateando.</p>
+-                 </div>
++                             </div>`;
+-          
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in inbox.html**: -             --bg-sidebar: #17264a;
++             --bg-sidebar: var(--bg-main);
+-             --bg-list: #1b2d56;
++             --bg-list: var(--bg-main);
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 4x**: -             background-color: var(--bg-main);
++             background-color: var(--bg-sidebar);
+-         
++         }
+-             background-color: var(--bg-sidebar);}
++ 
+- 
++         .chat-list-panel {
+-         .chat-list-panel {
 +             width: 340px;
+-             width: 340px;
++             background-color: var(--bg-list);
+-             background-color: var(--bg-main);
++             border-right: 1px solid var(--accent-border);
+-             border-right: 1px solid var(--accent-border);
++             display: flex;
+-             display: flex;
++             flex-direction: column;
+-             flex-direction: column;
++             z-index: 5;
+-             z-index: 5;
++             transition: all 0.3s ease;
+-             transition: all 0.3s ease;
++             min-height: 0;
+-             min-height: 0;
++         }
+-         
++ 
+-             background-color: var(--bg-list);}
++         .chat-viewer-panel {
+- 
++             flex: 1;
+-         .chat-viewer-panel {
++             background-color: var(--bg-main);
+-             flex: 1;
++             display: flex;
+-             background-color: var(--bg-main);
++             flex-direction: column;
+-             display: flex;
++             position: relative;
+-             flex-direction: column;
++             min-width: 0;
+-             position: relative;
++             /* previene desbordamiento en flex */
+-             min-width: 0;
++         }
+-             /* previene desbordamiento en flex */
++ 
+-         }
++         /* ---------------- LEFT SIDEBAR ---------------- */
+- 
++         .nav-item {
+-         /* ---------------- LEFT SIDEBAR ---------------- */
++             width: 44px;
+-         .nav-item {
++             height: 44px;
+-             width: 44px;
++             border-radius: 12px;
+-             height: 44px;
++             display: flex;
+-             border-radius: 12px;
++             align-items: center;
+-             
+… [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] 🟢 Edited settings.html (1267 changes, 5min)**: Active editing session on settings.html.
-1267 content changes over 5 minutes.
-- **[convention] what-changed in settings.html — confirmed 6x**: -             --bg-main: #5574bb;
-+             --bg-main: #0f172a;
+- **[convention] what-changed in inbox.html — confirmed 5x**: -             --bg-main: #1b2b4e;             
++             --bg-main: #213668;             
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in Configuraci — wraps unsafe operation in error boundary — confirmed 5x**: - <head>
+- **[decision] decision in inbox.html**: -             --primary-hover: #527ddb;
++             --primary-hover: #2857bd;
+-             --accent-bg: #374a68;
++             --accent-bg: #1e293b;
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] what-changed in inbox.html — confirmed 7x**: -             --accent-bg: #5173aa;
++             --accent-bg: #364e75;
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] decision in inbox.html — confirmed 9x**: -             --primary-hover: #2857bd;
++             --primary-hover: #527ddb;
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in Inbox — prevents null/undefined runtime crashes — confirmed 11x**: - <head>
 + 
 -     <meta charset="UTF-8">
 + <head>
 -     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 +     <meta charset="UTF-8">
--     <title>Configuración de Agente IA - IA-ATC</title>
+-     <title>Inbox - IA-ATC</title>
 +     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google -->
-+     <title>Configuración de Agente IA - IA-ATC</title>
--     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-+     <!-- Fuentes de Google -->
--     <style>
+-     <!-- Fuentes de Google: Inter para lectura, Outfit para acentos audaces -->
++     <title>Inbox - IA-ATC</title>
+-     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
++     <!-- Fuentes de Google: Inter para lectura, Outfit para acentos audaces -->
+-     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 +     <link
+-     <style>
++         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap"
 -         :root {
-+         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
--             /* 1. Nivel de Color Principal */
 +         rel="stylesheet">
+-             /* 1. Nivel de Color Principal */
++     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 -             --primary-color: #3b82f6;       
 +     <style>
 -             --primary-hover: #2563eb;       
@@ -87,188 +287,93 @@
 +             /* 2. Nivel de Color de Acento */
 -             /* 3. Nivel de Color de Fondo General */
 +             --accent-bg: #1e293b;
--             --bg-main: #6278ac;             
+-             --bg-main: #1b2b4e;             
 +             --accent-border: #334155;
 -             /* 4. Tipografías */
 +             --accent-hover-soft: #334155;
 -             --font-main: 'Inter', sans-serif;
-+             /* 3. Nivel de Color de Fondo General */
--             --font-heading: 'Outfit', sans-serif;
-+             --bg-main: #5574bb;
--             --font-mono: 'JetBrains Mono', monospace;
-+             /* 4. Tipografías */
--             /* Otros */
++     
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] 🟢 Edited check_js2.py (9 changes, 355min)**: Active editing session on check_js2.py.
-9 content changes over 355 minutes.
-- **[convention] Fixed null crash in POST — parallelizes async operations for speed — confirmed 4x**: -                     let finalMsg;
-+                     if(msgType === 'action_label') {{
--                     if(msgType === 'text') {{
-+                         if (msgObj.media_id) {{
--                         finalMsg = (msgObj.content || '').replace(/#nombre/gi, nombreCliente);
-+                             try {{
--                     }} else if(msgType === 'image') {{
-+                                 await fetch("/api/admin/chats/labels/toggle", {{
--                         finalMsg = `[imagen:${{msgObj.media_id}}]`;
-+                                     method: "POST",
--                     }} else if(msgType === 'video') {{
-+                                     headers: {{"Content-Type":"application/json"}},
--                         finalMsg = `[video:${{msgObj.media_id}}]`;
-+                                     body: JSON.stringify({{ wa_id: "{wa_id}", label_id: msgObj.media_id }})
--                     }} else if(msgType === 'audio') {{
-+                                 }});
--                         finalMsg = `[audio:${{msgObj.media_id}}]`;
-+                             }} catch(e) {{}}
--                     }} else {{
-+                         }}
--                         finalMsg = msgObj.content || '';
-+                         if (i < msgs.length - 1) await new Promise(r => setTimeout(r, delay / 2));
--                     }}
-+                         continue;
--                     
-+                     }}
--                     if(!finalMsg) {{ i < msgs.length-1 && await new Promise(r=>setTimeout(r, delay)); continue; }}
+- **[what-changed] 🟢 Edited inbox.html (4071 changes, 24min)**: Active editing session on inbox.html.
+4071 content changes over 24 minutes.
+- **[trade-off] trade-off in inbox.html**: -             --bg-main: #0f172a;             
++             --bg-main: #213668;             
+- </script>
 + 
--                     
-+                     let finalMsg;
--                     const endsWithSlash = input.value.trimEnd().endsWith("/");
-+                     if(msgType === 'text') {{
--                     input.value = (endsWithSlash && i===0) ? input.value.trimEnd().slice(0,-1) + finalMsg : finalMsg;
-+                         finalMsg = (msgObj.content || '').replace(/#nombre/gi, nombr
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[convention] Fixed null crash in Title — prevents null/undefined runtime crashes — confirmed 5x**: -                     container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
-+                     container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.65rem 0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
--                     btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column;";
-+                     btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column; gap:0.25rem;";
--                     const headerRow = document.createElement("div");
-+                     // Title row
--                     headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:0.2rem;";
-+                     const headerRow = document.createElement("div");
--                     const titleWrap = document.createElement("div");
-+                     headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%;";
--                     titleWrap.style.cssText = "display:flex; align-items:center; gap:0.5rem;";
-+                     const titleWrap = document.createElement("div");
--                     const titleEl = document.createElement("strong");
-+                     titleWrap.style.cssText = "display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;";
--                     titleEl.innerText = qr.title || qr.category || '(sin título)';
-+                     const titleEl = document.createElement("strong");
--                     titleEl.style.fontSize = "0.9rem";
-+                     t
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] what-changed in dump.html**: -                     const slashMatch = input.value.match(/(?:^|\\s)\\/$/); 
-+                     const endsWithSlash = input.value.trimEnd().endsWith("/");
--                     if (slashMatch) {
-+                     if (endsWithSlash) {
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] what-changed in server.py**: -                     const slashMatch = input.value.match(/(?:^|\\\\s)\\\\/$/); 
-+                     const endsWithSlash = input.value.trimEnd().endsWith("/");
--                     if (slashMatch) {{
-+                     if (endsWithSlash) {{
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[problem-fix] problem-fix in patcher.py**: - """
-+ """Fix the broken regex line"""
-- FINAL FIX: Completely rewrite the broken section of server.py
-+ code = open('server.py', 'r', encoding='utf-8').read()
-- The JS code is broken across lines without proper <script> tags.
-+ 
-- """
-+ # The broken regex line - find it and replace it
-- 
-+ old = "                    const slashMatch = input.value.match(/(?:^|\\\\\\\\s)\\\\\\\\/$/); \r\n                    if (slashMatch) {{"
-- code = open('server.py', 'r', encoding='utf-8').read()
-+ new = "                    const endsWithSlash = input.value.trimEnd().endsWith(\"/\");\r\n                    if (endsWithSlash) {{"
-- # The broken section starts with the orphan JS sticking to </div>
-+ if old in code:
-- BROKEN_START = """            <!-- END RIGHT SIDEBAR -->
-+     code = code.replace(old, new)
--         </div>            let isSendingSequence = false;
-+     print("Fixed regex line!")
--             
-+ else:
--             async function aplicarQuickReply(qrId) {{"""
-+     # Try without \r
-- 
-+     old2 = old.replace('\r\n', '\n')
-- BROKEN_END = """            function checkQuickReplyTrigger(input) {{"""
-+     new2 = new.replace('\r\n', '\n')
-- 
-+     if old2 in code:
-- # Verify positions
-+         code = code.replace(old2, new2)
-- si = code.find(BROKEN_START)
-+         print("Fixed regex line (LF)!")
-- ei = code.find(BROKEN_END)
-+     else:
-- print(f"Broken section start: {si}")
-+         # Find the line another way
-- print(f"checkQuickReplyTrigger starts at: {ei}")
-+         lines = code.split('\n')
-- 
-+         for i, line in enumerate(lines):
-- if si == -1:
-+             if 'slashMatch' in line and 'regex' not in line:
--     print("ERROR: Could not find broken section start")
-+                 print(f"Found at line {i+1}: {repr(line)}")
--     exit(1)
-+                 lines[i] = '                    const endsWithSlash = input.value.trimEnd().endsWith("/");'
-- 
-+                 # Fix next line too
-- # We'll replace everything from BROKEN_START up to (but not inclu
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [code, old, new, code, old2]
-- **[convention] Fixed null crash in RESPONSIVE — prevents null/undefined runtime crashes — confirmed 3x**: - 
-+         .bubble { max-width:80%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; }
--         /* ==================================================
-+         .lado-izq { align-self:flex-start; }
--            RESPONSIVE DESIGN (MÓVIL / TABLET)
-+         .lado-der { align-self:flex-end; }
--            ================================================== */
-+         .bubble-bot { background:var(--accent-bg); color:var(--text-main); border-bottom-left-radius:4px; border:1px solid var(--accent-border); }
--         @media (max-width: 768px) {
-+         .bubble-user { background:var(--primary-color); color:#ffffff; border-bottom-right-radius:4px; }
--             body {
-+         
--                 flex-direction: column;
-+ 
--             }
-+         /* ==================================================
--             
-+            RESPONSIVE DESIGN (MÓVIL / TABLET)
--             /* Sidebar se convierte en Bottom Navigation Bar */
-+            ================================================== */
--             .sidebar-nav {
-+         @media (max-width: 768px) {
--                 flex-direction: row;
-+             body {
--                 width: 100%;
-+                 flex-direction: column;
--                 height: 65px;
+-                 </div>
++         // Pure ESC to exit chat
+-                 
++         document.addEventListener('keydown', function(event) {
+-                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
++             if (event.key === 'Escape') {
+-                     <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'" style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
++                 if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
+-                     <button type="button" onclick="guardarNuevaEtiquetaModal()" style="padding:0.6rem 1rem; border-radius:6px; background:var(--primary-color); border:none; color:white; font-weight:600; cursor:pointer;">Guardar</button>
++                     const urlParams = new URLSearchParams(window.location.search);
+-                 </div>
++                     const tab = urlParams.get('tab') || 'all';
+-             </div>
++                     window.location.href = `/inbox?tab=${tab}`;
+-         </div>
++                 }
+-     </div>
 +             }
--                 padding: 0;
-+             
--                 border-right: none;
-+             /* Sidebar se convierte en Bottom Navigation Bar */
--                 border-top: 1px solid var(--accent-border);
-+             .sidebar-nav {
--                 order: 3; /* Al final de la columna */
-+                 flex-direction: row;
--                 justify-content: space-around;
-+                 width: 100%;
--                 background-color: var(--bg-main); /* para tapar info detrás si es necesario */
-+                 height: 65px;
--             }
-+                 padding: 0;
--             .nav-item { margin-bottom: 0; }
+- 
++         });
+-     <!-- Elementos ocultos para selectores del sistema -->
++ 
+-     <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
++ </script>
+- </body>
++                 </div>
+- </html>
 +                 
+- 
++                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
++                     <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'" style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
++                     <button t
 … [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes — confirmed 5x**: -     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">// Si no se cerró ningún menú y estamos dentro de un chat, ir al inicio
++     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
+-                 if(!closedModal && window.location.pathname.match(/^\/inbox\/.+/)) {
++         // --- NAVEGACIÓN Y SKELETONS ---
+-                     const urlParams = new URLSearchParams(window.location.search);
++         document.addEventListener('keydown', function(event) {
+-                     const tab = urlParams.get('tab') || 'all';
++             if (event.key === 'Escape') {
+-                     window.location.href = `/inbox?tab=${tab}`;
++                 let closedModal = false;
+-                 }
++                 ['qrCreateModal', 'rightSidebar', 'emojiMenu', 'attachMenu', 'inboxFilterMenu', 'bubbleContextMenu'].forEach(id => {
+-             }
++                     const el = document.getElementById(id);
+-         });
++                     if(el && el.style.display !== 'none' && el.style.display !== '') {
+- 
++                         el.style.display = 'none';
+-         document.addEventListener('click', function(e) {
++                         closedModal = true;
+-             const chatRow = e.target.closest('a.chat-row');
++                     }
+-             if(chatRow) {
++                 });
+-                 const chatViewer = document.querySelector('.chat-viewer-panel');
++                 
+-                 if(chatViewer) {
++                 // Si no se cerró ningún menú y estamos dentro de un chat, ir al inicio
+-                     // Muestra el skeleton layout simulando un chat mientras el navegador navega a la URL
++                 if(!closedModal && window.location.pathname.match(/^\/inbox\/.+/)) {
+-                     chatViewer.innerHTML = `
++                     const urlParams = new URLSearchParams(window.location.search);
+-                
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] what-changed in inbox.html — confirmed 5x**: -             --bg-main: #1b2b4e;             
++             --bg-main: #213668;             
 
 📌 IDE AST Context: Modified symbols likely include [html]

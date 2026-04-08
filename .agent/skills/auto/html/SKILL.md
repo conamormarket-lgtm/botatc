@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 21 conventions, 36 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 21 conventions, 37 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **104 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,20 @@ Auto-compiled from **104 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Content — prevents null/undefined runtime crashes
+-             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
++             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
+-                 await fetch('/enviar_mensaje', {
++                 const res = await fetch('/api/admin/enviar_manual', {
+-            
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Content
+3. identifier: Type
+4. identifier: JSON
+5. identifier: Error
 
 ### Fixed null crash in Nivel — prevents null/undefined runtime crashes
 -         :root {
@@ -344,24 +358,6 @@ Auto-compiled from **104 real patterns** in **botatc**. This skill is auto-route
 4. identifier: ATC
 5. identifier: Fuentes
 
-### Fixed null crash in Configuraci — wraps unsafe operation in error boundary
-- 
-+ <head>
-- <head>
-+     <meta charset="UTF-8">
--     <meta charset="UTF-8">
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <title>Configuración de Agente IA - IA-ATC</title>
--     <title>Configuración de Agente
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Configuraci
-4. identifier: Agente
-5. identifier: ATC
-
-###
+### Fixed n
 
 ... [Truncated — see individual observations for full content]

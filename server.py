@@ -607,7 +607,21 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
 from fastapi import Response
 
 VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
+import json, os
 active_sessions = {}
+if os.path.exists("sessions.json"):
+    try:
+        with open("sessions.json", "r") as f:
+            active_sessions = json.load(f)
+    except:
+        pass
+
+def save_sessions():
+    try:
+        with open("sessions.json", "w") as f:
+            json.dump(active_sessions, f)
+    except:
+        pass
 
 def verificar_sesion(request: Request):
     token = request.cookies.get("session_token")
@@ -623,13 +637,18 @@ async def login_post(response: Response, username: str = Form(...), password: st
         import uuid
         token = str(uuid.uuid4())
         active_sessions[token] = username
+        save_sessions()
         resp = RedirectResponse(url="/inbox", status_code=303)
         resp.set_cookie(key="session_token", value=token, httponly=True, max_age=86400)
         return resp
     return HTMLResponse(obtener_login_html(error="Usuario o clave incorrectos."), status_code=401)
 
 @app.get("/logout")
-async def logout():
+async def logout(request: Request):
+    token = request.cookies.get("session_token")
+    if token in active_sessions:
+        del active_sessions[token]
+        save_sessions()
     resp = RedirectResponse(url="/login", status_code=303)
     resp.delete_cookie("session_token")
     return resp

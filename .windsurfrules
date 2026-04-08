@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 728 observations
+# Auto-synced | 761 observations
 
 **Stack:** Python · FastAPI
 
@@ -35,14 +35,14 @@ Example:
 
 # 📐 Conventions
 
+- Git Commit: ui
+- Git Commit: fix
 - Git Commit: sistema de respuestas rapidas — confirmed 3x
 - Git Commit: plantillas — confirmed 3x
 - Git Commit: stickers — confirmed 3x
 - Git Commit: stickers — confirmed 3x
 - Version your API from day 1 (/api/v1/)
 - Use consistent response format across all endpoints
-- Implement soft delete for important data — don't hard delete without confirmation
-- Handle timezone correctly — store UTC, display in user's timezone
 
 # ⚡ Available Tools (ON-DEMAND only)
 - `save(title, content, category)` — Save a note + auto-detect conflicts
@@ -54,7 +54,7 @@ Example:
 > ℹ️ DO NOT call get_context() or get_gotchas() at startup — context above IS your context.
 
 ---
-*Auto-synced | 2026-04-07*
+*Auto-synced | 2026-04-08*
 
 # BrainSync Intelligence (Auto-Synced)
 [BrainSync Rules](.brainsync/agent-rules.md)
