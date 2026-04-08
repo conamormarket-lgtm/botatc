@@ -882,7 +882,7 @@
                                             c.scrollTop = c.scrollHeight;
                                         }
                                     } else {
-                                        alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.");
+                                        alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.\n\nDetalle técnico: " + (enviaRes?.error || "Desconocido"));
                                     }
                                 } else {
                                     alert("Error subiendo el audio a los servidores de WhatsApp");

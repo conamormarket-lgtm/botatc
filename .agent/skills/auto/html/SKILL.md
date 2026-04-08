@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 23 conventions, 41 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 24 conventions, 42 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **112 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,20 @@ Auto-compiled from **112 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Append — fixes memory leak from uncleared timers
+-                                     window.enviarMensajeDirecto(wa_id, `[audio:${data.media_id}]`, null);
++                                     const enviaRes = await window.enviarMensajeDirecto(wa_id, `[audio:${data.media_id}]`, null);
+-                                     // Append locally artificially just for UX
++                                     if(enviaRes && enviaRes.ok) {
+-       
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Append
+3. identifier: Audio
+4. identifier: WhatsApp
+5. identifier: Meta
 
 ### Fixed null crash in NATIVE — fixes memory leak from uncleared timers
 -         window.enviarMensajeDirecto = async function(wa_id, msj) {
@@ -338,23 +352,6 @@ Auto-compiled from **112 real patterns** in **botatc**. This skill is auto-route
 4. identifier: ATC
 5. identifier: Fuentes
 
-### Fixed null crash in Nivel — prevents null/undefined runtime crashes
--     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
-+     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
--         // --- NAVEGACIÓN Y SKELETONS ---
-+     <style>
--         document.addEventListener('keydown', function(event) {
-+         :root {
--             if (event.key === 'Escape') {
-+    
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Nivel
-3. identifier: Color
-4. identifier: Principal
-5. identifier: Acento
-
-### Fixed null crash in URLS
+### Fixed null crash in Nivel
 
 ... [Truncated — see individual observations for full content]

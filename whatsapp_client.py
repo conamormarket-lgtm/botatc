@@ -76,8 +76,9 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
         data = response.json()
         return data.get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
-        print(f"❌ Error Meta API ({e.response.status_code}): {e.response.text}")
-        return None
+        err_msg = e.response.text
+        print(f"❌ Error Meta API ({e.response.status_code}): {err_msg}")
+        return f"ERROR_META: {err_msg}"
     except Exception as e:
         print(f"❌ Error enviando media ({tipo_media}): {e}")
         return None

@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 15 conventions, 44 fixes."
+description: "Python for botatc. 11 gotchas, 16 conventions, 45 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **103 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,21 @@ Auto-compiled from **103 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Utiliza — parallelizes async operations for speed
+-                 tmp_out_name = tmp_in_name.replace(".webm", ".ogg")
++                 tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
+-                 # WhatsApp RECOMIENDA audio/ogg; codecs=opus para notas de voz perfectas
++                 # Utiliza codec aac compatible universal con .mp4
+-                     '-c:a', 'libopus', '-b:a', '32k',
++                     '-c:a', 'aac', '-b
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Utiliza
+3. identifier: True
+4. identifier: FFMPEG
+5. identifier: Exception
 
 ### Fixed null crash in Conversion — parallelizes async operations for speed
 -         if file.content_type:
@@ -258,26 +273,6 @@ Auto-compiled from **103 real patterns** in **botatc**. This skill is auto-route
 +         </div>
 -             
 +         <script>
--             async function aplicarQuickReply(qrId) {{
-+             let isSendingSequence = false;
--                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
-+             
--                 
-+             async function aplicarQuick
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Hay
-3. identifier: Enviando
-4. identifier: Overwrite
-5. identifier: Promise
-
-### Fixed null crash in Enviando — prevents null/undefined runtime crashes
--         </div>
-+         </div>            let isSendingSequence = false;
--         
-+             
--             
-+             async funct
+-             async function aplica
 
 ... [Truncated — see individual observations for full content]
