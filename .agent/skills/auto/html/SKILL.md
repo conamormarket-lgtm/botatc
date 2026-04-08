@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 22 conventions, 40 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 22 conventions, 41 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **111 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,24 @@ Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in NATIVE — fixes memory leak from uncleared timers
+-         window.enviarMensajeDirecto = async function(wa_id, msj) {
++         
+-             if (!msj) return;
++         // NATIVE AUDIO RECORDING LOGIC
+-             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
++         let mediaRecorder;
+-             try {
++         let audioChunks = [];
+-                 const re
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: NATIVE
+3. identifier: AUDIO
+4. identifier: RECORDING
+5. identifier: LOGIC
 
 ### Fixed null crash in PANEL — prevents null/undefined runtime crashes
 -         <div class="chats-container">
@@ -337,20 +355,6 @@ Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-route
 4. identifier: Principal
 5. identifier: Acento
 
-### Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
--     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
-+     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">// Si no se cerró ningún menú y estamos dentro de un chat, ir al inicio
--         // --- NAVEGACIÓN Y SKELETONS ---
-+                 if(!closedModal && window.location.pathname.match(/^\/inbox\/.+/)) {
-
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: URLSearchParams
-3. identifier: Muestra
-4. identifier: URL
-5. identifier: Header
-
-### Fixed nul
+### Fixed null crash in URLS
 
 ... [Truncated — see individual observations for full content]

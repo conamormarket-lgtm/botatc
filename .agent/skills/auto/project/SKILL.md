@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 93 gotchas, 82 conventions, 31 fixes."
+description: "Project for botatc. 95 gotchas, 83 conventions, 31 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **402 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **406 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **402 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Optimized Score — evolves the database |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 833 notes - Score threshold: >40 + > 842 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed + - ⚠️ GOTCHA:  |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Patched security issue  |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in PANEL — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
@@ -66,8 +68,6 @@ Auto-compiled from **402 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 420 notes - Score threshold: >40 + > 428 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 | ⚠️ GOTCHA: Replaced auth Score | - > 417 notes - Score threshold: >40 + > 420 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 | ⚠️ GOTCHA: Replaced auth Score | - > 414 notes - Score threshold: >40 + > 417 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 402 notes - Score threshold: >40 + > 414 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
-| ⚠️ GOTCHA: Replaced auth Score | - > 398 notes - Score threshold: >40 + > 402 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 
 ## 🔧 Problem Playbooks
 
@@ -180,6 +180,6 @@ Auto-compiled from **402 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-+ - Fixed null crash in Inbox — prevents null/undefined runtime cras
++ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
 
 ... [Truncated — see individual observations for full content]

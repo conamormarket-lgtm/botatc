@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 15 conventions, 42 fixes."
+description: "Python for botatc. 11 gotchas, 15 conventions, 43 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **101 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **102 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,17 @@ Auto-compiled from **101 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Grabar — parallelizes async operations for speed
+-                 <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;height:44px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
++                 <button type="button" id="btnRecordAudio" style="background:var(--accent-bg); color:var(--text-main); border:none; border-radius:12px; h
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Grabar
+3. identifier: Enviar
+4. identifier: None
+5. identifier: Etiqueta
 
 ### Fixed null crash in Procesar — parallelizes async operations for speed
 -         lista_chats_html += f"""
@@ -267,25 +278,6 @@ Auto-compiled from **101 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
 -     if not verificar_sesion(request):
 +     # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
--         return HTMLResponse(obtener_login_html(), status_code=401)
-+     global global_labels
-- 
-+     if not global_labels:
--     import os
-+         try:
--     if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
-+             from 
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: HTMLResponse
-3. identifier: Procesar
-4. identifier: Lista
-5. identifier: Chats
-
-### Added error handling Respuestas — wraps unsafe operation in error boundary
--             async function cargarQuickReplies() {
-+             async function cargarQuickReplies() {{
--                 try {
+-         return HTMLRe
 
 ... [Truncated — see individual observations for full content]
