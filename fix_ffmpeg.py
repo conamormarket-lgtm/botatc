@@ -1,53 +1,29 @@
 import re
+
 with open("server.py", "r", encoding="utf-8") as f:
     text = f.read()
 
-old_ff = '''                tmp_out_name = tmp_in_name.replace(".webm", ".ogg")
-                
-                # Ejecutar FFMPEG (disponible via Aptfile en Railway)
-                # WhatsApp RECOMIENDA audio/ogg; codecs=opus para notas de voz perfectas
-                result = subprocess.run([
-                    'ffmpeg', '-y', '-i', tmp_in_name,
-                    '-c:a', 'libopus', '-b:a', '32k',
-                    '-vbr', 'on', '-compression_level', '10',
-                    tmp_out_name
-                ], capture_output=True)
-                
-                if result.returncode == 0 and os.path.exists(tmp_out_name):
-                    with open(tmp_out_name, "rb") as f_out:
-                        content = f_out.read()
-                    final_mime = "audio/ogg; codecs=opus"
-                    fallback_name = "voice_note.ogg"
-                else:
-                    print("FFMPEG fallback ignorado o error:", result.stderr.decode('utf-8', 'ignore'))
-                    # Fallback si no hay ffmpeg: Meta API a veces acepta MP4 audio crudo
-                    final_mime = "audio/mp4" 
-                    fallback_name = "voice_note.mp4"'''
+new_block = """# Conversion nativa WebM -> MP4 para WhatsApp Voice Notes
+        if "webm" in final_mime.lower():
+            import subprocess, os, tempfile
+            import imageio_ffmpeg
+            ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+            try:
+                # Usar tmp para cross-platform compatibility
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp_in:
+                    tmp_in.write(content)
+                    tmp_in_name = tmp_in.name
+                tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
 
-new_ff = '''                tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
-                
-                # Ejecutar FFMPEG (disponible via Aptfile en Railway)
-                # Utiliza codec aac compatible universal con .mp4
+                # Ejecutar FFMPEG (via imageio-ffmpeg PIP)
                 result = subprocess.run([
-                    'ffmpeg', '-y', '-i', tmp_in_name,
+                    ffmpeg_exe, '-y', '-i', tmp_in_name,
                     '-c:a', 'aac', '-b:a', '64k',
                     tmp_out_name
-                ], capture_output=True)
-                
-                if result.returncode == 0 and os.path.exists(tmp_out_name):
-                    with open(tmp_out_name, "rb") as f_out:
-                        content = f_out.read()
-                    final_mime = "audio/mp4"
-                    fallback_name = "voice.mp4"
-                else:
-                    print("FFMPEG error detallado:", result.stderr.decode('utf-8', 'ignore') if result.stderr else "N/A")
-                    final_mime = "audio/mp4" 
-                    fallback_name = "voice.mp4"'''
+                ], capture_output=True)"""
 
-if 'libopus' in text:
-    text = text.replace(old_ff, new_ff)
-    with open("server.py", "w", encoding="utf-8") as f:
-        f.write(text)
-    print("Replaced libopus with aac for mp4")
-else:
-    print("libopus absent")
+text = re.sub(r'# Conversion nativa WebM.*?capture_output=True\)', new_block, text, flags=re.DOTALL)
+
+with open("server.py", "w", encoding="utf-8") as f:
+    f.write(text)
+print("Updated via re.sub successfully")

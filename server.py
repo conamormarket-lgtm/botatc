@@ -1082,20 +1082,21 @@ async def admin_upload_media(file: UploadFile = File(...)):
             elif "video" in final_mime: fallback_name = "upload.mp4"
             elif "audio" in final_mime: fallback_name = "upload.ogg"
 
-        # Conversion nativa WebM -> OGG para WhatsApp Voice Notes
-        if "webm" in final_mime.lower() or "audio" in final_mime.lower():
+        # Conversion nativa WebM -> MP4 para WhatsApp Voice Notes
+        if "webm" in final_mime.lower():
             import subprocess, os, tempfile
+            import imageio_ffmpeg
+            ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
             try:
                 # Usar tmp para cross-platform compatibility
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp_in:
                     tmp_in.write(content)
                     tmp_in_name = tmp_in.name
                 tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
-                
-                # Ejecutar FFMPEG (disponible via Aptfile en Railway)
-                # Utiliza codec aac compatible universal con .mp4
+
+                # Ejecutar FFMPEG (via imageio-ffmpeg PIP)
                 result = subprocess.run([
-                    'ffmpeg', '-y', '-i', tmp_in_name,
+                    ffmpeg_exe, '-y', '-i', tmp_in_name,
                     '-c:a', 'aac', '-b:a', '64k',
                     tmp_out_name
                 ], capture_output=True)

@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 102 gotchas, 97 conventions, 32 fixes."
+description: "Project for botatc. 103 gotchas, 97 conventions, 32 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **457 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **461 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **457 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Fixed | - - problem-fix in server.py + - Fixed null crash in Error - - Fixed null crash in Error + - Patched |
 | ⚠️ GOTCHA: Optimized Fixed | - - Fixed null crash in Error + - problem-fix in server.py - - problem-fix in server.py + - Fixed nu |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 921 notes - Score threshold: >40 + > 924 notes - Score threshold: >40 - - Added JWT tokens authe |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 904 notes - Score threshold: >40 + > 906 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
@@ -67,7 +68,6 @@ Auto-compiled from **457 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Repl |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Replaced auth GOTCHA + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - gotcha in share |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in patcher.py + - problem-fix in agent-rules.md - - Added error handling Respuestas  |
-| ⚠️ GOTCHA: Replaced auth GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Optimized Fixed |
 
 ## 🔧 Problem Playbooks
 
@@ -182,6 +182,6 @@ Auto-compiled from **457 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-+ - Fixed null crash 
++ - Fixed null crash in LE
 
 ... [Truncated — see individual observations for full content]
