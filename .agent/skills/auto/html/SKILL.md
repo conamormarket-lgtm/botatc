@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 24 conventions, 43 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 24 conventions, 44 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **116 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,18 @@ Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Error
+-                                     alert("Error subiendo el audio a los servidores de WhatsApp");
++                                     alert("Error procesando o subiendo el audio:\n\n" + (data.error || "Rechazo desconocido en el servidor."));
+
+📌 IDE AST Context: Modified symbols likely include [html]
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Error
+3. identifier: Rechazo
+4. identifier: WhatsApp
 
 ### Fixed null crash in Error — fixes memory leak from uncleared timers
 -             if (!msj) return;
@@ -342,19 +354,6 @@ Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-route
 - <head>
 +     <meta charset="UTF-8">
 -     <meta charset="UTF-8">
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <title>Inbox - IA-ATC</title>
--     <title>Inbox - IA-ATC</title>
-+     <!-- F
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in I
++     <meta name=
 
 ... [Truncated — see individual observations for full content]

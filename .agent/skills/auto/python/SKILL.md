@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 16 conventions, 45 fixes."
+description: "Python for botatc. 11 gotchas, 16 conventions, 46 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **106 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,16 @@ Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in server.py
+-                     print("FFMPEG error detallado:", result.stderr.decode('utf-8', 'ignore') if result.stderr else "N/A")
++                     err_msg = result.stderr.decode('utf-8', 'ignore') if result.stderr else "ExitCode!=0"
+-                     final_mime = "audio/mp4" 
++                     print("FFMPEG fallback ignorado o error:", err_msg)
+-                     fallback_name = "voi
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in Utiliza — parallelizes async operations for speed
 -                 tmp_out_name = tmp_in_name.replace(".webm", ".ogg")
@@ -258,21 +268,6 @@ Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-route
 + """Fix the broken regex line"""
 - FINAL FIX: Completely rewrite the broken section of server.py
 + code = open('server.py', 'r', encoding='utf-8').read()
-- The JS code is broken across lines without proper <script> tags.
-+ 
-- """
-+ # The broken regex line - find it and replace it
-- 
-+ old = "                    const slashMatch = input.value.match(/(?:^|\\\\\\\\s)\\\\\\\\/$/); \r\n         
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Enviando — prevents null/undefined runtime crashes
--         </div>            let isSendingSequence = false;
-+         </div>
--             
-+         <script>
--             async function aplica
+- The JS code is broken across lin
 
 ... [Truncated — see individual observations for full content]
