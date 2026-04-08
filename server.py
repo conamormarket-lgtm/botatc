@@ -310,12 +310,35 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         entry    = body["entry"][0]
         changes  = entry["changes"][0]["value"]
 
-        # Ignorar eventos que no sean mensajes (ej: estados de entrega)
+        # Manejar estados de entrega (palomitas)
+        if "statuses" in changes:
+            for st in changes["statuses"]:
+                msg_wamid = st.get("id")
+                status_val = st.get("status")
+                num_wa = st.get("recipient_id")
+                if num_wa and num_wa in sesiones:
+                    se = sesiones[num_wa]
+                    for it in reversed(se.get("historial", [])):
+                        if it.get("msg_id") == msg_wamid:
+                            # Evitar degradar el estado (ej. de read a delivered)
+                            jerarquia = {"sent": 1, "delivered": 2, "read": 3}
+                            old_st = it.get("status", "sent")
+                            if jerarquia.get(status_val, 0) >= jerarquia.get(old_st, 0):
+                                it["status"] = status_val
+                                try:
+                                    from firebase_client import guardar_sesion_chat
+                                    guardar_sesion_chat(num_wa, se)
+                                except: pass
+                            break
+            return {"status": "ok"}
+
+        # Si no hay mensajes, ignorar
         if "messages" not in changes:
             return {"status": "ok"}
 
         mensaje_data  = changes["messages"][0]
         mensaje_id    = mensaje_data.get("id", "")
+        mensaje_ts    = mensaje_data.get("timestamp", "")
         
         # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta
         if mensaje_id in mensajes_procesados_ids:
@@ -440,7 +463,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
 
     # 1) Guardar mensaje TEMPRANO para que SIEMPRE aparezca en el Inbox, sin duplicarse
     if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
-        sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
+        import time
+        ts = int(time.time()) # fallback
+        sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id, "timestamp": ts})
         # ¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
         try: 
             from firebase_client import guardar_sesion_chat
@@ -466,9 +491,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             if "[sticker:" in texto_cliente or "[imagen:" in texto_cliente:
                 pass # Already structured
                 
-        # Solo lo agregamos si no está ya como último mensaje (evitar duplicados lógicos)
-        if not sesion["historial"] or sesion["historial"][-1].get("content") != texto_cliente:
-            sesion["historial"].append({"role": "user", "content": texto_cliente})
+
 
         # ── MODO TESTER: preguntar N° de pedido manualmente ──
         if es_tester:
@@ -498,7 +521,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 # Primera vez: pedir el ID de pedido
                 sesion["esperando_pedido_tester"] = True
                 msg = "🧪 *Modo prueba activado.*\n\nEscríbeme el ID del pedido que deseas probar (tal como aparece en Firebase):"
-                sesion["historial"].append({"role": "assistant", "content": msg})
+                import time
+                ts = int(time.time())
+                sesion["historial"].append({"role": "assistant", "content": msg, "status": "sent", "timestamp": ts})
                 if not is_simulacion:
                     enviar_mensaje(numero_wa, msg)
                 return msg
@@ -595,7 +620,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             else: wamid_out = enviar_mensaje(numero_wa, p) or wamid_out
 
     # ── Guardar respuesta en historial ────────────────────
-    sesion["historial"].append({"role": "assistant", "content": respuesta_final, "msg_id": wamid_out})
+    import time
+    ts = int(time.time())
+    sesion["historial"].append({"role": "assistant", "content": respuesta_final, "msg_id": wamid_out, "status": "sent", "timestamp": ts})
 
     
     try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
@@ -1246,7 +1273,9 @@ async def enviar_manual_endpoint(request: Request):
     exito, msg_wamid = await process_and_send()
     
     if exito:
-        s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid})
+        import time
+        ts = int(time.time())
+        s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts})
         s["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Humano -> {wa_id}]: {texto}")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)

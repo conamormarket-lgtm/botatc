@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 953 notes | Score threshold: >40
+> 968 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,17 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Error
++ - Fixed null crash in Conversion — par
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "8ec866dc4f70b3fd",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 947 notes | Score threshold: >40
++ > 953 notes | Score threshold: 
 - **⚠️ GOTCHA: Optimized Fixed** — - - problem-fix in server.py
 + - Fixed null crash in Error
 - - Fixed n
@@ -28,15 +39,10 @@
 - - problem
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 921 notes | Score threshold: >40
 + > 924 notes | Score threshold: 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 904 notes | Score threshold: >40
-+ > 906 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score** — - > 902 notes | Score threshold: >40
-+ > 904 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 898 notes | Score threshold: >40
-+ > 902 notes | Score threshold: 
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - trade-off in shared-context.json — confirmed 3x
 - problem-fix in server.py — confirmed 3x
@@ -44,7 +50,6 @@
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in inbox.html — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
 
 ## Known Fixes
 

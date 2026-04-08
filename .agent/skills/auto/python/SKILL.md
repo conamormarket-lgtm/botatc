@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 17 conventions, 46 fixes."
+description: "Python for botatc. 11 gotchas, 18 conventions, 47 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **108 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,23 @@ Auto-compiled from **108 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Conversion — parallelizes async operations for speed
+-         # Conversion nativa WebM -> OGG para WhatsApp Voice Notes
++         # Conversion nativa WebM -> MP4 para WhatsApp Voice Notes
+-         if "webm" in final_mime.lower() or "audio" in final_mime.lower():
++         if "webm" in final_mime.lower():
+-             try:
++             import imageio_ffmpeg
+-                 # Usar tmp para cross-platform compatibility
++             ffmpeg
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Conversion
+3. identifier: WebM
+4. identifier: WhatsApp
+5. identifier: Voice
 
 ### problem-fix in server.py
 -                     print("FFMPEG error detallado:", result.stderr.decode('utf-8', 'ignore') if result.stderr else "N/A")
@@ -251,23 +268,6 @@ Auto-compiled from **108 real patterns** in **botatc**. This skill is auto-route
 
 ### Fixed null crash in None — prevents null/undefined runtime crashes
 -         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
-+         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[video:[^\]]+\]|\[audio:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
--             match_sticker_local = re.match(r"^\[sticker-local:([^\]]+)\]$", p)
-+             match_video = re.match(r"^\[video:([^\]]+)\]$", p)
--         
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: None
-3. identifier: True
-4. identifier: Wait
-5. identifier: API
-
-### problem-fix in patcher.py
-- """
-+ """Fix the broken regex line"""
-- FINAL FIX: Completely rewrite the broken section of server.py
-+ code = open('server.py', 'r', encoding='utf-8').read()
-- The JS code is broken across lin
++         partes = re.split(r'(\
 
 ... [Truncated — see individual observations for full content]
