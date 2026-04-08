@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 10 gotchas, 15 conventions, 41 fixes."
+description: "Python for botatc. 11 gotchas, 15 conventions, 41 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **99 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **100 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **99 real patterns** in **botatc**. This skill is auto-routed
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Request — paralleli | - @app.post("/api/admin/enviar_manual") +  - async def enviar_manual_endpoint(request: Request):  |
 | ⚠️ GOTCHA: Fixed null crash in HTMLResponse | -     html = html.replace("{chat_viewer_html}", chat_viewer_html) +     html = html.replace("{label |
 | ⚠️ GOTCHA: Fixed null crash in None | -         chat_viewer_html = f""" +         session_tags = s.get("etiquetas", []) -         {statu |
 | ⚠️ GOTCHA: Updated typing database schema | -  +  +  + # ============================================================ + #  API DE GESTOR DE E |
@@ -285,6 +286,6 @@ Auto-compiled from **99 real patterns** in **botatc**. This skill is auto-routed
 ### Fixed null crash in Quick — prevents null/undefined runtime crashes
 -                     <!-- Menú Flotante de Plantillas -->
 +                     <!-- Botón Quick Replies -->
--                     <div id="templateMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px
+-                     <div id="templateMenu" style="display:none; position:absolute;
 
 ... [Truncated — see individual observations for full content]

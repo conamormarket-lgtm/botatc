@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 83 gotchas, 76 conventions, 25 fixes."
+description: "Project for botatc. 89 gotchas, 79 conventions, 28 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **370 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **387 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,12 @@ Auto-compiled from **370 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 797 notes - Score threshold: >40 + > 800 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 788 notes - Score threshold: >40 + > 797 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ G |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Fixed null crash in Des |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - problem-fix in agent-ru |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 771 notes - Score threshold: >40 + > 772 notes - Score threshold: >40 - - what-changed in shared |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 741 notes - Score threshold: >40 + > 744 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 738 notes - Score threshold: >40 + > 741 notes - Score threshold: >40 - - **gotcha in agent-rule |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 736 notes - Score threshold: >40 + > 738 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
@@ -62,14 +68,48 @@ Auto-compiled from **370 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replace |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Title — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
 | ⚠️ GOTCHA: Optimized Patched | - - problem-fix in shared-context.json + - Patched security issue Clean - - Fixed null crash in Crea |
-| ⚠️ GOTCHA: Replaced auth Score | - > 349 notes - Score threshold: >40 + > 361 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in None — prevents null/undefined runtime crashes + - problem-fix in agent-rule |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 342 notes - Score threshold: >40 + > 349 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 315 notes - Score threshold: >40 + > 342 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Enviando — prevents null/undefined runtime crashes + - problem-fix in agent- |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 308 notes - Score threshold: >40 + > 315 notes - Score threshold: >40 - - **⚠️ GOTCHA: Strengthe |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
++ - problem-fix in patcher.py
+- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
+- - problem-fix in patcher.py
++ - problem-fix in shared-context.json
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem-fix in patcher.
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
+- - problem-fix in patcher.py
++ - problem-fix in shared-context.json
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem-fix in patcher.py
+- - problem-fix in server.py
++ - Added error handling Respuestas — wraps unsafe operation in error boundary
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in LEFT — prevents null/undefined runtime crashes
@@ -136,40 +176,6 @@ Auto-compiled from **370 real patterns** in **botatc**. This skill is auto-route
 ### problem-fix in agent-rules.md
 - - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
-- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
-+ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
-- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-+ - Fixed null crash in NAVEGACI — prevents null/undefi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
-+ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
-- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-+ - Fixed null crash in NAVEGACI — prevents null/undefi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
-+ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
-- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-+ - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Inbox — prevents null/undefined r
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - 
+- - Fixed null crash in NAVEGACI — pr
 
 ... [Truncated — see individual observations for full content]

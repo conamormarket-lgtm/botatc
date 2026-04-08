@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 772 notes | Score threshold: >40
+> 806 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,43 +20,38 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 741 notes | Score threshold: >40
-+ > 744 notes | Score threshold: 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 738 notes | Score threshold: >40
-+ > 741 notes | Score threshold: 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 736 notes | Score threshold: >40
-+ > 738 notes | Score threshold: 
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 700 notes | Score threshold: >40
-+ > 716 notes | Score threshold: 
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "023d38542f42de4b",
-+
+- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed** — - @app.post("/api/admin/enviar_manual")
++ 
+- async def enviar_manual
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 797 notes | Score threshold: >40
++ > 800 notes | Score threshold: 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 788 notes | Score threshold: >40
++ > 797 notes | Score threshold: 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: problem-
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - problem-fix in agent-rules.
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - problem-fix in agent-rules.
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 4x
+- problem-fix in agent-rules.md — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
-- Patched security issue Fixed — confirmed 3x
-- Fixed null crash in Request — protects against XSS and CSRF token theft — confirmed 4x
-- Optimized Fixed — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in Descargar — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Title — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ + - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 
 ## Recent Decisions
 

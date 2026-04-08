@@ -1089,6 +1089,52 @@ async def admin_upload_media(file: UploadFile = File(...)):
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
+
+@app.get("/api/admin/buscar_mensajes")
+async def buscar_mensajes(q: str, request: Request):
+    if not verificar_sesion(request):
+        return {"ok": False, "error": "No autorizado"}
+    
+    q = q.lower().strip()
+    if not q or len(q) < 2:
+        return {"ok": True, "resultados": []}
+    
+    resultados = []
+    # Usar dict para evitar iteraciones conflictivas
+    for wa_id, session in list(sesiones.items()):
+        historial = session.get("historial", [])
+        nombre = session.get("nombre_cliente", wa_id)
+        
+        matches_en_chat = []
+        # Inverso para los más recientes
+        for msg in reversed(historial):
+            content = msg.get("content", "")
+            if content and q in content.lower() and msg.get("role") != "system":
+                idx = content.lower().find(q)
+                start = max(0, idx - 25)
+                end = min(len(content), idx + len(q) + 25)
+                snippet = content[start:end].replace("\n", " ")
+                if start > 0: snippet = "..." + snippet
+                if end < len(content): snippet += "..."
+                
+                matches_en_chat.append({
+                    "role": msg.get("role"),
+                    "snippet": snippet,
+                    "wamid": msg.get("wamid", "")
+                })
+                # Max 3 matches por chat para no saturar
+                if len(matches_en_chat) >= 3:
+                    break
+        
+        if matches_en_chat:
+            resultados.append({
+                "wa_id": wa_id,
+                "nombre": nombre,
+                "matches": matches_en_chat
+            })
+            
+    return {"ok": True, "resultados": resultados}
+
 @app.post("/api/admin/enviar_manual")
 async def enviar_manual_endpoint(request: Request):
     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
@@ -1503,8 +1549,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     tags_html += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
             tags_html += '</div>'
             
+        extra_params = f"?tab={tab}"
+        if label_filter: extra_params += f"&label={label_filter}"
+        if unread: extra_params += f"&unread={unread}"
+        
         lista_chats_html += f"""
-        <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
+        <a href="/inbox/{num}{extra_params}" class="chat-row {active_class}">
             <div class="chat-row-header">
                 <span class="chat-name">{nombre}</span>
                 <span class="chat-time">{time_str}</span>

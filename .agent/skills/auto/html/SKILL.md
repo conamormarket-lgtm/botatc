@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 21 conventions, 38 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 21 conventions, 39 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **106 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **107 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,22 @@ Auto-compiled from **106 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Descargar — prevents null/undefined runtime crashes
+-         <div class="ctx-item" id="ctxCopyImage"
++         <div class="ctx-item" id="ctxDownloadImage"
+-                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
++                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+-                 <circle cx="8.5" cy="8.5" r="1.5"/>
++                 <polyline points="7 10 12 15 17 10"></polyline>
+-                
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Descargar
+3. identifier: Imagen
+4. identifier: Copiar
+5. identifier: Texto
 
 ### Fixed null crash in Copiar — prevents null/undefined runtime crashes
 -         <div class="ctx-item" id="ctxCopy"
@@ -332,27 +348,6 @@ Auto-compiled from **106 real patterns** in **botatc**. This skill is auto-route
 2. identifier: NAVEGACI
 3. identifier: SKELETONS
 4. identifier: Escape
-5. identifier: URLSearchParams
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- 
-+ <head>
-- <head>
-+     <meta charset="UTF-8">
--     <meta charset="UTF-8">
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <title>Inbox - IA-ATC</title>
--     <title>Inbox - IA-ATC</title>
-+     <!-- F
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### F
+5. identifier: URLSearchP
 
 ... [Truncated — see individual observations for full content]
