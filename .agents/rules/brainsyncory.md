@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 921 notes | Score threshold: >40
+> 929 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 921 notes | Score threshold: >40
++ > 924 notes | Score threshold: 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 904 notes | Score threshold: >40
 + > 906 notes | Score threshold: 
 - **⚠️ GOTCHA: Optimized Score** — - > 902 notes | Score threshold: >40
@@ -32,19 +34,17 @@
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in patcher.py
 + - problem-fix in agent-rules.md
 - - Ad
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Optimize
 
 ## Project Standards
 
 - Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Optimized Patched — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- Optimized Fixed — confirmed 4x
-- Fixed null crash in WhatsApp — prevents null/undefined runtime crashes — confirmed 4x
 
 ## Known Fixes
 

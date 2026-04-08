@@ -2365,8 +2365,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         .bubble { max-width:80%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; }
         .lado-izq { align-self:flex-start; }
         .lado-der { align-self:flex-end; }
-        .bubble-bot { background:var(--accent-bg); color:var(--text-main); border-bottom-left-radius:4px; border:1px solid var(--accent-border); }
-        .bubble-user { background:var(--primary-color); color:#ffffff; border-bottom-right-radius:4px; }
+        .bubble-bot { background:var(--accent-bg); color:var(--text-main); border-bottom-right-radius:4px; border:1px solid var(--accent-border); }
+        .bubble-user { background:var(--primary-color); color:#ffffff; border-bottom-left-radius:4px; }
         .bubble-sticker { background:transparent !important; border:none !important; padding:0 !important; box-shadow:none !important; }
         """
 
