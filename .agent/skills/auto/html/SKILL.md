@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 21 conventions, 37 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 21 conventions, 38 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **106 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,19 @@ Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Copiar — prevents null/undefined runtime crashes
+-         <div class="ctx-item" id="ctxCopy"
++         <div class="ctx-item" id="ctxCopyImage"
+-             style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
++             style="display:none; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; color:var(--text-main); align-item
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Copiar
+3. identifier: Imagen
+4. identifier: Texto
+5. identifier: Custom
 
 ### Fixed null crash in Content — prevents null/undefined runtime crashes
 -             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
@@ -340,24 +353,6 @@ Auto-compiled from **105 real patterns** in **botatc**. This skill is auto-route
 4. identifier: ATC
 5. identifier: Fuentes
 
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- <head>
-+ 
--     <meta charset="UTF-8">
-+ <head>
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UTF-8">
--     <title>Inbox - IA-ATC</title>
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google: Inter para lectura,
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed n
+### F
 
 ... [Truncated — see individual observations for full content]

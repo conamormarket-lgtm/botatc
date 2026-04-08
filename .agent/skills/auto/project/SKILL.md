@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 83 gotchas, 73 conventions, 25 fixes."
+description: "Project for botatc. 83 gotchas, 76 conventions, 25 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **360 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **370 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

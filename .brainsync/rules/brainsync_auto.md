@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 755 notes | Score threshold: >40
+> 772 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -42,12 +42,12 @@ Content summary (8
 ## Project Standards
 
 - what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Patched security issue Fixed — confirmed 3x
+- Fixed null crash in Request — protects against XSS and CSRF token theft — confirmed 4x
+- Optimized Fixed — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
