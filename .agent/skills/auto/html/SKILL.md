@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 24 conventions, 42 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 24 conventions, 43 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,27 @@ Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Error — fixes memory leak from uncleared timers
+-             if (!msj) return;
++             if (!msj) return {ok: false};
+-                 
++ 
+-             } catch(e) {
++                 return data;
+-                 console.error("Error direct send", e);
++             } catch(e) {
+-             }
++                 console.error("Error direct send", e);
+-         };
++                 return {ok: false, error: e.message || "Red E
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Error
+3. identifier: Red
+4. identifier: Vaciar
+5. identifier: Dibujado
 
 ### Fixed null crash in Append — fixes memory leak from uncleared timers
 -                                     window.enviarMensajeDirecto(wa_id, `[audio:${data.media_id}]`, null);
@@ -334,24 +355,6 @@ Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-route
 4. identifier: ATC
 5. identifier: Fuentes
 
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- <head>
-+ 
--     <meta charset="UTF-8">
-+ <head>
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UTF-8">
--     <title>Inbox - IA-ATC</title>
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google: Inter para lectura,
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Nivel
+### Fixed null crash in I
 
 ... [Truncated — see individual observations for full content]

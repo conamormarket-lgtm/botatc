@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 95 gotchas, 85 conventions, 32 fixes."
+description: "Project for botatc. 100 gotchas, 89 conventions, 32 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **419 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **433 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,11 @@ Auto-compiled from **419 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 904 notes - Score threshold: >40 + > 906 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
+| ⚠️ GOTCHA: Optimized Score | - > 902 notes - Score threshold: >40 + > 904 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 898 notes - Score threshold: >40 + > 902 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in patcher.py - - problem-fix in agent-rules.md +  |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in patcher.py + - problem-fix in agent-rules.md - - Added error handling Respuestas  |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Optimized Score — evolves the database |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 833 notes - Score threshold: >40 + > 842 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed + - ⚠️ GOTCHA:  |
@@ -63,11 +68,6 @@ Auto-compiled from **419 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Optimized Fixed |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Optimized Fixed |
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Optimized Fixed + - gotcha in shared-context.json - - ⚠️ GOTCHA: Fixed null crash in  |
-| ⚠️ GOTCHA: Optimized Fixed | - - Fixed null crash in Reemplazar — parallelizes async operations for speed + - Fixed null crash in |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Replaced auth Score + - gotcha in shared-context.json - - ⚠️ GOTCHA: Replaced auth Sc |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 420 notes - Score threshold: >40 + > 428 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
-| ⚠️ GOTCHA: Replaced auth Score | - > 417 notes - Score threshold: >40 + > 420 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
-| ⚠️ GOTCHA: Replaced auth Score | - > 414 notes - Score threshold: >40 + > 417 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 
 ## 🔧 Problem Playbooks
 
@@ -182,7 +182,6 @@ Auto-compiled from **419 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-+ - Fixed null crash in LEFT — prevents null/undefined runtime crashes
-
++ - Fixed null crash in LEF
 
 ... [Truncated — see individual observations for full content]

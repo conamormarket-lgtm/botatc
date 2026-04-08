@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 894 observations
+# Auto-synced | 920 observations
 
 **Stack:** Python · FastAPI
 
@@ -35,6 +35,7 @@ Example:
 
 # 📐 Conventions
 
+- Git Commit: fix audios — confirmed 3x
 - Git Commit: ui
 - Git Commit: fix
 - Git Commit: sistema de respuestas rapidas — confirmed 3x
@@ -42,7 +43,6 @@ Example:
 - Git Commit: stickers — confirmed 3x
 - Git Commit: stickers — confirmed 3x
 - Version your API from day 1 (/api/v1/)
-- Use consistent response format across all endpoints
 
 # ⚡ Available Tools (ON-DEMAND only)
 - `save(title, content, category)` — Save a note + auto-detect conflicts
@@ -55,6 +55,3 @@ Example:
 
 ---
 *Auto-synced | 2026-04-08*
-
-# BrainSync Intelligence (Auto-Synced)
-[BrainSync Rules](.brainsync/agent-rules.md)

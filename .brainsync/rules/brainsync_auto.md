@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 887 notes | Score threshold: >40
+> 912 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,31 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 904 notes | Score threshold: >40
++ > 906 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score** — - > 902 notes | Score threshold: >40
++ > 904 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 898 notes | Score threshold: >40
++ > 902 notes | Score threshold: 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in patcher.py
+- - pr
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in patcher.py
++ - problem-fix in agent-rules.md
+- - Ad
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Added JWT tokens authentication
 + - ⚠️ GOTCHA: Optimize
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 833 notes | Score threshold: >40
-+ > 842 notes | Score threshold: 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operat
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in PANEL — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - Patched security issue Kevi
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 5x
 - Added JWT tokens authentication — confirmed 3x
-- Fixed null crash in Audio — fixes memory leak from uncleared timers — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Optimized Fixed — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in shared-context.json — confirmed 11x
-- Fixed null crash in Wait — confirmed 4x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 6x
+- Optimized Fixed — confirmed 4x
+- Fixed null crash in WhatsApp — prevents null/undefined runtime crashes — confirmed 4x
 
 ## Known Fixes
 

@@ -885,7 +885,7 @@
                                         alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.\n\nDetalle técnico: " + (enviaRes?.error || "Desconocido"));
                                     }
                                 } else {
-                                    alert("Error subiendo el audio a los servidores de WhatsApp");
+                                    alert("Error procesando o subiendo el audio:\n\n" + (data.error || "Rechazo desconocido en el servidor."));
                                 }
                             } catch(err) {
                                 if(manualInput) manualInput.disabled = false;
