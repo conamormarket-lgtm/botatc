@@ -432,10 +432,6 @@ async def procesador_agregado(numero_wa: str, nombre: str):
 
 def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None) -> str | None:
     """Procesa un mensaje y devuelve la respuesta del bot (si la hay) sin enviarla si es simulación."""
-    global BOT_GLOBAL_ACTIVO
-    if not BOT_GLOBAL_ACTIVO:
-        print(f"  [⏹ Bot APAGADO globalmente → silencio]")
-        return None
 
     # ── Obtener/crear sesión ──────────────────────────────
     sesion = obtener_o_crear_sesion(numero_wa)
@@ -443,9 +439,19 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     sesion["nombre_cliente"]   = nombre
 
     # 1) Guardar mensaje TEMPRANO para que SIEMPRE aparezca en el Inbox, sin duplicarse
-    # Verificamos si no es exactamente el mismo último mensaje
     if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
         sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
+        # ¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
+        try: 
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(numero_wa, sesion)
+        except Exception as e:
+            print(f"  [⚠️ Error guardando sesión temprana: {e}]")
+
+    global BOT_GLOBAL_ACTIVO
+    if not BOT_GLOBAL_ACTIVO:
+        print(f"  [⏹ Bot APAGADO globalmente → silencio (guardado en BD)]")
+        return None
 
     # ── Buscar pedido en Firebase (con número del WA) ─────
     if sesion["datos_pedido"] is None:
