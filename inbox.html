@@ -934,7 +934,7 @@
 
 
         window.enviarMensajeDirecto = async function(wa_id, msj) {
-            if (!msj) return;
+            if (!msj) return {ok: false};
             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
             try {
                 const res = await fetch('/api/admin/enviar_manual', {
@@ -942,11 +942,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid })
                 });
-                
+
                 const data = await res.json();
                 if(!data.ok) { console.error("Error direct send json", data); }
+                return data;
             } catch(e) {
                 console.error("Error direct send", e);
+                return {ok: false, error: e.message || "Red Error"};
             }
         };
 
