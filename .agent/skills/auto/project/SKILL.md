@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 105 gotchas, 99 conventions, 32 fixes."
+description: "Project for botatc. 105 gotchas, 100 conventions, 33 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **468 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **473 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -70,6 +70,24 @@ Auto-compiled from **468 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Replaced auth GOTCHA - - ⚠️ GOTCHA: Repl |
 
 ## 🔧 Problem Playbooks
+
+### Patched security issue Fixed
+- - Patched security issue Kevin
++ - Fixed null crash in Manejar — protects against XSS and CSRF token theft
+- - problem-fix in patcher.py
++ - Patched security issue Kevin
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem-fix in patcher.py
+- - problem-fix in firebase_client.py
++ - Added error handling Respuestas — wraps unsafe operation in error boundary
+- 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Fixed
+3. identifier: Manejar
+4. identifier: XSS
+5. identifier: CSRF
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Audio — fixes memory leak from uncleared timers
@@ -169,19 +187,6 @@ Auto-compiled from **468 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Fixed null crash in LEFT — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-+ - Fixed null crash in LEFT — prevents null/undefined runtime crashes
-- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-+ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-- - Patc
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-+ - Fixed null crash in LEFT 
+- - Fixed null cra
 
 ... [Truncated — see individual observations for full content]

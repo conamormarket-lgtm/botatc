@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 18 conventions, 47 fixes."
+description: "Python for botatc. 11 gotchas, 18 conventions, 48 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **112 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,25 @@ Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Manejar — protects against XSS and CSRF token theft
+-         # Ignorar eventos que no sean mensajes (ej: estados de entrega)
++         # Manejar estados de entrega (palomitas)
+-         if "messages" not in changes:
++         if "statuses" in changes:
+-             return {"status": "ok"}
++             for st in changes["statuses"]:
+- 
++                 msg_wamid = st.get("id")
+-         mensaje_data  = changes["messages"][0]
++           
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Manejar
+3. identifier: Evitar
+4. identifier: Ignorar
+5. identifier: Meta
 
 ### Fixed null crash in Conversion — parallelizes async operations for speed
 -         # Conversion nativa WebM -> OGG para WhatsApp Voice Notes
@@ -255,19 +274,6 @@ Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-route
 5. identifier: AttributeError
 
 ### Fixed null crash in Crear — parallelizes async operations for speed
--                     <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-+                     <div style="padding:1.2rem 1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center; background:var(--accent-bg);">
--                         <h3 id="mo
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Crear
-3. identifier: Respuesta
-4. identifier: Atajo
-5. identifier: Espera
-
-### Fixed null crash in None — prevents null/undefined runtime crashes
--         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
-+         partes = re.split(r'(\
+-                     <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-
 
 ... [Truncated — see individual observations for full content]
