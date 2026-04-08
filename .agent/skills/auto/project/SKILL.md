@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 95 gotchas, 83 conventions, 31 fixes."
+description: "Project for botatc. 95 gotchas, 84 conventions, 32 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **406 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **412 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -70,6 +70,20 @@ Auto-compiled from **406 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth Score | - > 414 notes - Score threshold: >40 + > 417 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Audio — fixes memory leak from uncleared timers
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Grabar — parallelizes async operations for speed
++ - problem-fix in shared-context.json
+- - Fixed null crash in NATIVE — fixes memory leak from uncleared timers
++ - Patched security issue Kevin
+- - problem-fix in agent-rules.md
++ - problem-fix in patcher.py
+- - problem-
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Wait
@@ -169,17 +183,6 @@ Auto-compiled from **406 real patterns** in **botatc**. This skill is auto-route
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Nivel — prevents null/undefined runtime crashes
 + - Fixed null crash in LEFT — prevents null/undefined runtime crashes
-- - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-+ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-- - Patched security issue Kevin
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- - prob
 
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
 
 ... [Truncated — see individual observations for full content]

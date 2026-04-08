@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 15 conventions, 43 fixes."
+description: "Python for botatc. 11 gotchas, 15 conventions, 44 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **102 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **103 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,23 @@ Auto-compiled from **102 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Conversion — parallelizes async operations for speed
+-         if file.content_type:
++         final_mime = file.content_type or "application/octet-stream"
+-             if "image" in file.content_type: fallback_name = "upload.png"
++         
+-             elif "video" in file.content_type: fallback_name = "upload.mp4"
++         if final_mime:
+-             elif "audio" in file.content_type: fallback_name = "upload.ogg"
++             if "imag
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Conversion
+3. identifier: WebM
+4. identifier: OGG
+5. identifier: WhatsApp
 
 ### Fixed null crash in Grabar — parallelizes async operations for speed
 -                 <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;height:44px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
@@ -261,23 +278,6 @@ Auto-compiled from **102 real patterns** in **botatc**. This skill is auto-route
 -         
 +             
 -             
-+             async function aplicarQuickReply(qrId) {{
--             <script>
-+                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
--             let quickRepliesCache = [];
-+                 
--             async function
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Hay
-3. identifier: Enviando
-4. identifier: Overwrite
-5. identifier: Promise
-
-### Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes
--     if not verificar_sesion(request):
-+     # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
--         return HTMLRe
++             async funct
 
 ... [Truncated — see individual observations for full content]
