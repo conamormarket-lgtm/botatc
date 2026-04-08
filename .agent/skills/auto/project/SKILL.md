@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 89 gotchas, 79 conventions, 28 fixes."
+description: "Project for botatc. 93 gotchas, 82 conventions, 31 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **387 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **402 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **387 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed + - ⚠️ GOTCHA:  |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Patched security issue  |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in PANEL — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue Kevin - - Patched security issue K |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 797 notes - Score threshold: >40 + > 800 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 788 notes - Score threshold: >40 + > 797 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ G |
@@ -64,12 +68,51 @@ Auto-compiled from **387 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth Score | - > 414 notes - Score threshold: >40 + > 417 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 402 notes - Score threshold: >40 + > 414 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
 | ⚠️ GOTCHA: Replaced auth Score | - > 398 notes - Score threshold: >40 + > 402 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replaced  |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 361 notes - Score threshold: >40 + > 398 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: Replaced auth GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replace |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Title — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
-| ⚠️ GOTCHA: Optimized Patched | - - problem-fix in shared-context.json + - Patched security issue Clean - - Fixed null crash in Crea |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Wait
++ - Patched security issue Kevin
+- - Fixed null crash in Procesar — parallelizes async operations for speed
++ - problem-fix in patcher.py
+- - problem-fix in agent-rules.md
++ - Added error handling Respuestas — wraps unsafe operation in error boundary
+- - problem-fix in agent-rules.md
++ - problem-fix in server.py
+
+📌 IDE AST Context: Modified symbols likely include [# P
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in PANEL — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - Fixed null crash in PANEL — prevents null/undefined runtime crashes
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - Fixed null crash in PANEL — prevents null/undefined runtime crashes
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in patcher.py
++ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
+- - Added er
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
@@ -137,45 +180,6 @@ Auto-compiled from **387 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- - Patched security issue Kevin —
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - problem-fix in shared-context.json
-- - problem-fix in patcher.py
-+ - Patched security issue Kevin — hardens HTTP security headers
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
-- - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
-+ - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
-
-📌 IDE AST Contex
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in NAVEGACI — pr
++ - Fixed null crash in Inbox — prevents null/undefined runtime cras
 
 ... [Truncated — see individual observations for full content]

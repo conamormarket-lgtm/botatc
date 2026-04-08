@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 15 conventions, 41 fixes."
+description: "Python for botatc. 11 gotchas, 15 conventions, 42 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **100 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **101 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,24 @@ Auto-compiled from **100 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Procesar — parallelizes async operations for speed
+-         lista_chats_html += f"""
++         extra_params = f"?tab={tab}"
+-         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
++         if label_filter: extra_params += f"&label={label_filter}"
+-             <div class="chat-row-header">
++         if unread: extra_params += f"&unread={unread}"
+-                 <span class="chat-name">{nombre}</span>
++         
+-   
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Procesar
+3. identifier: Panel
+4. identifier: Derecho
+5. identifier: Chat
 
 ### Fixed null crash in Promise — parallelizes async operations for speed
 -                     const endsWithSlash = input.value.trimEnd().endsWith("/");
@@ -269,23 +287,5 @@ Auto-compiled from **100 real patterns** in **botatc**. This skill is auto-route
 -             async function cargarQuickReplies() {
 +             async function cargarQuickReplies() {{
 -                 try {
-+                 try {{
--                 } catch(e) {
-+                 }} catch(e) {{
--                 }
-+                 }}
--             }
-+             }}
--             function renderQuickReplies(data) {
-+             function renderQuickReplies(data)
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Respuestas
-
-### Fixed null crash in Quick — prevents null/undefined runtime crashes
--                     <!-- Menú Flotante de Plantillas -->
-+                     <!-- Botón Quick Replies -->
--                     <div id="templateMenu" style="display:none; position:absolute;
 
 ... [Truncated — see individual observations for full content]

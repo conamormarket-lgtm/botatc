@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 21 conventions, 39 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 22 conventions, 40 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **107 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **110 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,24 @@ Auto-compiled from **107 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in PANEL — prevents null/undefined runtime crashes
+-         <div class="chats-container">
++         <div class="chats-container" id="regularChatsContainer">
+-     </div>
++         <div class="chats-container" id="msgSearchResults" style="display:none; padding:1rem; flex-direction:column; gap:5px; background:var(--bg-main);">
+- 
++         </div>
+-     <!-- 3. PANEL DERECHO (Visor de Chat o Estado Vacío) -->
++     </div>
+-     <div class="c
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: PANEL
+3. identifier: DERECHO
+4. identifier: Visor
+5. identifier: Chat
 
 ### Fixed null crash in Descargar — prevents null/undefined runtime crashes
 -         <div class="ctx-item" id="ctxCopyImage"
@@ -333,21 +351,6 @@ Auto-compiled from **107 real patterns** in **botatc**. This skill is auto-route
 4. identifier: URL
 5. identifier: Header
 
-### Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes
--     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
-+     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
--     <style>
-+         // --- NAVEGACIÓN Y SKELETONS ---
--         :root {
-+         document.addEventListener('keydown', function(event) {
--             /* 1. Nivel de Color Principal */
-+
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: NAVEGACI
-3. identifier: SKELETONS
-4. identifier: Escape
-5. identifier: URLSearchP
+### Fixed nul
 
 ... [Truncated — see individual observations for full content]

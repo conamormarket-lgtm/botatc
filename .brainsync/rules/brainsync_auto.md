@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 806 notes | Score threshold: >40
+> 842 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,30 +20,28 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operat
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - problem-fix in agent-rules.
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in PANEL — prevents null/undefined runtime crashe
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - Patched security issue Kevi
 - **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed** — - @app.post("/api/admin/enviar_manual")
 + 
 - async def enviar_manual
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 797 notes | Score threshold: >40
 + > 800 notes | Score threshold: 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 788 notes | Score threshold: >40
-+ > 797 notes | Score threshold: 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: problem-
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 11x
+- Fixed null crash in Wait — confirmed 4x
 - Added JWT tokens authentication — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 4x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
+- problem-fix in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
@@ -55,8 +53,8 @@
 
 ## Recent Decisions
 
-- decision in inbox.html
-- decision in inbox.html
+- decision in shared-context.json
+- Optimized Score — evolves the database schema to support new requirements
 - decision in inbox.html
 - decision in inbox.html
 
