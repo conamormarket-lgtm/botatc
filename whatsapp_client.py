@@ -155,10 +155,10 @@ async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload
             return res.json().get("id")
     except httpx.HTTPStatusError as e:
         print(f"❌ Error HTTP subiendo media ({e.response.status_code}): {e.response.text}")
-        return None
+        return f"ERROR_META:{e.response.text}"
     except Exception as e:
         print(f"❌ Error subiendo media a Meta: {e}")
-        return None
+        return f"ERROR_META:{str(e)}"
 
 async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str) -> bool:
     """Envía una reacción a un mensaje específico."""

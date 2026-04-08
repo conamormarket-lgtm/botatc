@@ -805,7 +805,7 @@ async def qr_upload_media(request: Request, file: UploadFile = File(...)):
         from whatsapp_client import subir_media
         content = await file.read()
         media_id = await subir_media(content, file.content_type, file.filename or "upload")
-        if media_id:
+        if media_id and not media_id.startswith("ERROR_META:"):
             # Detect type from content_type
             ct = file.content_type or ""
             if "image" in ct:
