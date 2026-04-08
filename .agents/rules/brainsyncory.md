@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 982 notes | Score threshold: >40
+> 999 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,14 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 990 notes | Score threshold: >40
++ > 993 notes | Score threshold: 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 987 notes | Score threshold: >40
++ > 990 notes | Score threshold: 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 984 notes | Score threshold: >40
++ > 987 notes | Score threshold: 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 982 notes | Score threshold: >40
++ > 984 notes | Score threshold: 
 - **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Error
 + - Fixed null crash in Conversion — par
 - **gotcha in shared-context.json** — -     }
@@ -29,27 +37,17 @@
 - }
 +       "id": "8ec866dc4f70b3fd",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 947 notes | Score threshold: >40
-+ > 953 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Fixed** — - - problem-fix in server.py
-+ - Fixed null crash in Error
-- - Fixed n
-- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Error
-+ - problem-fix in server.py
-- - problem
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 921 notes | Score threshold: >40
-+ > 924 notes | Score threshold: 
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 - Replaced auth Patched — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Fixed null crash in Obtener — protects against XSS and CSRF token theft — confirmed 4x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- problem-fix in server.py — confirmed 3x
 
 ## Known Fixes
 

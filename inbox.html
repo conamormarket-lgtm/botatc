@@ -599,8 +599,21 @@
                 ctxTargetWamid = bubble.getAttribute('data-wamid');
                 ctxTargetText = bubble.innerText;
 
-                // Check if it's a sticker
-                let stickerImg = bubble.querySelector('img[alt^="Sticker"]');
+                let clickedImg = e.target.closest('img');
+                let stickerImg = null;
+                let regularImg = null;
+
+                if (clickedImg && clickedImg.getAttribute('alt')) {
+                    if (clickedImg.getAttribute('alt').startsWith("Sticker")) {
+                        stickerImg = clickedImg;
+                    } else if (clickedImg.getAttribute('alt').startsWith("Imagen")) {
+                        regularImg = clickedImg;
+                    }
+                } else {
+                    stickerImg = bubble.querySelector('img[alt^="Sticker"]');
+                    regularImg = bubble.querySelector('img[alt^="Imagen"]');
+                }
+
                 let ctxSaveSticker = document.getElementById("ctxSaveSticker");
                 if (stickerImg) {
                     ctxTargetMediaId = stickerImg.getAttribute('alt').replace('Sticker ', '').trim();
@@ -610,7 +623,6 @@
                     ctxSaveSticker.style.display = 'none';
                 }
 
-                let regularImg = bubble.querySelector('img[alt^="Imagen"]');
                 let ctxCopyImage = document.getElementById("ctxCopyImage");
                 let ctxDownloadImage = document.getElementById("ctxDownloadImage");
                 if (regularImg && !stickerImg) {

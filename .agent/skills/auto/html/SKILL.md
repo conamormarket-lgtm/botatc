@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 25 conventions, 44 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 26 conventions, 44 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **118 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

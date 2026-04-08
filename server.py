@@ -1737,7 +1737,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 try:
                     ts_val = int(m["timestamp"])
                     if ts_val > 1e11: ts_val //= 1000
-                    ts_str = datetime.fromtimestamp(ts_val).strftime("%H:%M")
+                    utc_dt = datetime.utcfromtimestamp(ts_val)
+                    lima_dt = utc_dt - timedelta(hours=5)
+                    ts_str = lima_dt.strftime("%H:%M")
                     ts_html = f'<span class="msg-ts">{ts_str}</span>'
                 except:
                     pass
