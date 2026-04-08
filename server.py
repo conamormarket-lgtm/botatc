@@ -1090,27 +1090,25 @@ async def admin_upload_media(file: UploadFile = File(...)):
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp_in:
                     tmp_in.write(content)
                     tmp_in_name = tmp_in.name
-                tmp_out_name = tmp_in_name.replace(".webm", ".ogg")
+                tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
                 
                 # Ejecutar FFMPEG (disponible via Aptfile en Railway)
-                # WhatsApp RECOMIENDA audio/ogg; codecs=opus para notas de voz perfectas
+                # Utiliza codec aac compatible universal con .mp4
                 result = subprocess.run([
                     'ffmpeg', '-y', '-i', tmp_in_name,
-                    '-c:a', 'libopus', '-b:a', '32k',
-                    '-vbr', 'on', '-compression_level', '10',
+                    '-c:a', 'aac', '-b:a', '64k',
                     tmp_out_name
                 ], capture_output=True)
                 
                 if result.returncode == 0 and os.path.exists(tmp_out_name):
                     with open(tmp_out_name, "rb") as f_out:
                         content = f_out.read()
-                    final_mime = "audio/ogg; codecs=opus"
-                    fallback_name = "voice_note.ogg"
+                    final_mime = "audio/mp4"
+                    fallback_name = "voice.mp4"
                 else:
-                    print("FFMPEG fallback ignorado o error:", result.stderr.decode('utf-8', 'ignore'))
-                    # Fallback si no hay ffmpeg: Meta API a veces acepta MP4 audio crudo
+                    print("FFMPEG error detallado:", result.stderr.decode('utf-8', 'ignore') if result.stderr else "N/A")
                     final_mime = "audio/mp4" 
-                    fallback_name = "voice_note.mp4"
+                    fallback_name = "voice.mp4"
                     
                 os.remove(tmp_in_name)
                 if os.path.exists(tmp_out_name): os.remove(tmp_out_name)

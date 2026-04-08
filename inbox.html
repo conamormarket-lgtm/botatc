@@ -870,15 +870,19 @@
                                     manualInput.disabled = false;
                                 }
                                 if(data.ok && data.media_id) {
-                                    window.enviarMensajeDirecto(wa_id, `[audio:${data.media_id}]`, null);
-                                    // Append locally artificially just for UX
-                                    const c = document.getElementById('chatScroll');
-                                    if(c) {
-                                        const div = document.createElement('div');
-                                        div.className = 'bubble bubble-out';
-                                        div.innerHTML = `<div class="bubble-content" style="background:var(--primary-color);color:white;padding:0.8rem;border-radius:12px;"><span style="font-size:1.5rem;">🎤</span> <span style="font-size:0.9rem;">Audio enviado</span></div>`;
-                                        c.appendChild(div);
-                                        c.scrollTop = c.scrollHeight;
+                                    const enviaRes = await window.enviarMensajeDirecto(wa_id, `[audio:${data.media_id}]`, null);
+                                    if(enviaRes && enviaRes.ok) {
+                                        // Append locally artificially just for UX
+                                        const c = document.getElementById('chatScroll');
+                                        if(c) {
+                                            const div = document.createElement('div');
+                                            div.className = 'bubble bubble-out';
+                                            div.innerHTML = `<div class="bubble-content" style="background:var(--primary-color);color:white;padding:0.8rem;border-radius:12px;"><span style="font-size:1.5rem;">🎤</span> <span style="font-size:0.9rem;">Audio enviado</span></div>`;
+                                            c.appendChild(div);
+                                            c.scrollTop = c.scrollHeight;
+                                        }
+                                    } else {
+                                        alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.");
                                     }
                                 } else {
                                     alert("Error subiendo el audio a los servidores de WhatsApp");

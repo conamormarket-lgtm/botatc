@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 866 notes | Score threshold: >40
+> 868 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -33,14 +33,14 @@
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 5x
+- Added JWT tokens authentication — confirmed 3x
 - Fixed null crash in Audio — fixes memory leak from uncleared timers — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized Fixed — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - what-changed in shared-context.json — confirmed 11x
 - Fixed null crash in Wait — confirmed 4x
-- Added JWT tokens authentication — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 4x
 
 ## Known Fixes
 
