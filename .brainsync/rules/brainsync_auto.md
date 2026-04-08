@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 940 notes | Score threshold: >40
+> 947 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Error
++ - problem-fix in server.py
+- - problem
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 921 notes | Score threshold: >40
 + > 924 notes | Score threshold: 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 904 notes | Score threshold: >40
@@ -31,9 +34,6 @@
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
 + - problem-fix in patcher.py
 - - pr
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in patcher.py
-+ - problem-fix in agent-rules.md
-- - Ad
 
 ## Project Standards
 

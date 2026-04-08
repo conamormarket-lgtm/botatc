@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 947 observations
+# Auto-synced | 952 observations
 
 **Stack:** Python · FastAPI
 
@@ -35,13 +35,13 @@ Example:
 
 # 📐 Conventions
 
+- Git Commit: fix audios — confirmed 3x
 - Git Commit: fix audios — confirmed 4x
 - Git Commit: fix audios — confirmed 3x
 - Git Commit: ui
 - Git Commit: fix
 - Git Commit: sistema de respuestas rapidas — confirmed 3x
 - Git Commit: plantillas — confirmed 3x
-- Git Commit: stickers — confirmed 3x
 - Git Commit: stickers — confirmed 3x
 
 # ⚡ Available Tools (ON-DEMAND only)
