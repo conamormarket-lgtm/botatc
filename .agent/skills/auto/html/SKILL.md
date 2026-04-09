@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 28 conventions, 50 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 28 conventions, 52 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **127 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **129 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,46 @@ Auto-compiled from **127 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in LEFT — prevents null/undefined runtime crashes
+-             /* previene desbordamiento en flex */
++             max-width: 100vw;
+-         }
++             overflow-x: hidden;
+- 
++             /* previene desbordamiento en flex */
+-         /* ---------------- LEFT SIDEBAR ---------------- */
++         }
+-         .nav-item {
++ 
+-             width: 44px;
++         /* ---------------- LEFT SIDEBAR ---------------- */
+-            
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: LEFT
+3. identifier: SIDEBAR
+4. identifier: MIDDLE
+5. identifier: CHAT
+
+### Fixed null crash in Nivel — prevents null/undefined runtime crashes
+-                 :root {
++         * { box-sizing: border-box; }
+-             /* 1. Nivel de Color Principal */
++         body { overflow-x: hidden; max-width: 100vw; }
+-             --primary-color: #3b82f6;       
++                 :root {
+-             --primary-hover: #2563eb;       
++             /* 1. Nivel de Color Principal */
+-             /* 2. Nivel de Color de Acento (translú
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Nivel
+3. identifier: Color
+4. identifier: Principal
+5. identifier: Acento
 
 ### Fixed null crash in Vaciar — wraps unsafe operation in error boundary
 -         // Manejar subida de archivos (cámara/galería)
@@ -299,44 +339,6 @@ Auto-compiled from **127 real patterns** in **botatc**. This skill is auto-route
 - <head>
 +     <meta charset="UTF-8">
 -     <meta charset="UTF-8">
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <title>Inbox - IA-ATC</title>
--     <title>Inbox - IA-ATC</title>
-+     <!-- F
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- 
-+ <head>
-- <head>
-+     <meta charset="UTF-8">
--     <meta charset="UTF-8">
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <title>Inbox - IA-ATC</title>
--     <title>Inbox - IA-ATC</title>
-+     <!-- F
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- <head>
-+ 
--     <meta charset="UTF-8">
-+ <head>
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UT
++     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user
 
 ... [Truncated — see individual observations for full content]

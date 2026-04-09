@@ -1770,9 +1770,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 elif tipo == "imagen":
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
                 elif tipo == "video":
-                    return f"""<div style="text-align:center;"><video controls src="{src_url}" style="width: 250px; max-width: 100%; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; box-sizing: border-box;"></video></div>"""
+                    return f"""<div style="text-align:center;"><video controls src="{src_url}" style="width: 100%; max-width: 250px; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; box-sizing: border-box; display: block;"></video></div>"""
                 elif tipo == "audio":
-                    return f'<div style="text-align:center;"><audio controls src="{src_url}" style="width: 250px; max-width: 100%; height: 40px; outline: none; margin-bottom: 5px; box-sizing: border-box;"></audio></div>'
+                    return f'<div style="text-align:center;"><audio controls src="{src_url}" style="width: 100%; max-width: 250px; height: 40px; outline: none; margin-bottom: 5px; box-sizing: border-box; display: block;"></audio></div>'
                 elif tipo == "documento":
                     partes = media_id.split("|", 1)
                     doc_id = partes[0]
@@ -1897,7 +1897,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</button>
             </div>
             
-            <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center;">
+            <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center; box-sizing:border-box; max-width:100%;">
                 <input type="hidden" id="replyToWamid" value="">
                 
                 <div style="position:relative; display:flex; gap:0.5rem;">
@@ -1956,7 +1956,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     </button>
                 </div>
 
-                <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
+                <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;min-width:0;width:100%;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);box-sizing:border-box;" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
                 <button type="button" id="btnCancelAudio" style="background:var(--danger-color); color:white; border:none; border-radius:12px; height:44px; width:44px; display:none; align-items:center; justify-content:center; cursor:pointer; margin-left: 0.5rem; transition: background 0.2s;" title="Cancelar grabación">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
@@ -2014,7 +2014,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
 
                 
-                <div style="padding:1rem 1.5rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);">
+                <div style="padding:1rem 1rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);width:100%;max-width:100vw;box-sizing:border-box;">
                     {chat_box}
                 </div>
             </div>
@@ -2576,7 +2576,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         """
         
         chat_view_css = """
-        .bubble { max-width:80%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; }
+        .bubble { max-width:85%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; word-wrap:break-word; overflow-wrap:anywhere; box-sizing:border-box; }
         .lado-izq { align-self:flex-start; }
         .lado-der { align-self:flex-end; }
         .bubble-bot { background:var(--primary-color); color:#ffffff; border-bottom-right-radius:4px; }

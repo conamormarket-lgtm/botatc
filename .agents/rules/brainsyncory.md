@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1388 notes | Score threshold: >40
+> 1419 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,35 +20,36 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Optimized Score — evolv
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1335 notes | Score threshold: >40
-+ > 1351 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score
-+ - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: problem-fix in agent-rul
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LEFT — prevents null/undefined runtime crashes
+- **⚠️ GOTCHA: Optimized Score** — - > 1388 notes | Score threshold: >40
++ > 1405 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nivel — prevents null/undefined runtime crashe
+- **⚠️ GOTCHA: Fixed null crash in Meta — parallelizes async operations for speed** — -             return {"ok": True, "media_id": media_id}
++            
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Optimized Score
 - - ⚠️ 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operat
 
 ## Project Standards
 
-- convention in shared-context.json
-- what-changed in shared-context.json — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
+- Optimized GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
-- Optimized Fixed — confirmed 4x
-- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 10x
+- problem-fix in agent-rules.md — confirmed 11x
+- Added JWT tokens authentication — confirmed 3x
+- convention in shared-context.json
+- problem-fix in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Descargar — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ - - Fixed null crash in Title — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 
 ## Recent Decisions
 

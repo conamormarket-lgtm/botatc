@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 18 gotchas, 23 conventions, 62 fixes."
+description: "Python for botatc. 19 gotchas, 24 conventions, 62 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **145 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Meta — parallelizes | -             return {"ok": True, "media_id": media_id} +             # Meta no permite descargar m |
 | ⚠️ GOTCHA: Fixed null crash in Request — paralleli | - @app.post("/api/admin/enviar_manual") + @app.post("/api/admin/enviar_media_manual") - async def  |
 | ⚠️ GOTCHA: Fixed null crash in Nuevo — parallelize | -     if not wa_id or wa_id not in sesiones: +     elif wa_id and (wa_id in sesiones) and len(sesio |
 | ⚠️ GOTCHA: Fixed null crash in Reacci — protects a | -         elif tipo_mensaje == "location": +         elif tipo_mensaje == "reaction": -            |
@@ -253,9 +254,6 @@ Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-route
 5. identifier: Cabecera
 
 ### Fixed null crash in Manejar — protects against XSS and CSRF token theft
--         # Ignorar eventos que no sean mensajes (ej: estados de entrega)
-+         # Manejar estados de entrega (palomitas)
--         if "messages" not in changes:
-+         if "s
+-         # Ignorar event
 
 ... [Truncated — see individual observations for full content]
