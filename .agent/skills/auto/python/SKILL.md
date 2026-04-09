@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 12 gotchas, 18 conventions, 49 fixes."
+description: "Python for botatc. 13 gotchas, 18 conventions, 49 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Object — prevents n | -             function renderQuickReplies(data) { +             function renderQuickReplies(data) { |
 | ⚠️ GOTCHA: Fixed null crash in Agrupar — prevents  | -             function renderQuickReplies(data) {{ +             function renderQuickReplies(data)  |
 | ⚠️ GOTCHA: Fixed null crash in Request — paralleli | - @app.post("/api/admin/enviar_manual") +  - async def enviar_manual_endpoint(request: Request):  |
 | ⚠️ GOTCHA: Fixed null crash in HTMLResponse | -     html = html.replace("{chat_viewer_html}", chat_viewer_html) +     html = html.replace("{label |
@@ -265,15 +266,6 @@ Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
 -                     prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + (msgs.length > 1 ? ` (${{{msgs.length}}} msgs)` : '');
 +                     prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + (msgs.length > 1 ? ` (${{msgs.length}} msgs)` : '');
--                     container.onmouseout = function() {{this.style.borderColor='var(--ac
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Reemplazos
-3. identifier: HTMLResponse
-4. identifier: Request
-5. identifier: None
-
-### Patch
+-                     container.onmouseout = function() {{this.style.borderColor='v
 
 ... [Truncated — see individual observations for full content]
