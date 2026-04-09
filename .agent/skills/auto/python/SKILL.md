@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 18 gotchas, 23 conventions, 61 fixes."
+description: "Python for botatc. 18 gotchas, 23 conventions, 62 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **139 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **140 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -38,6 +38,16 @@ Auto-compiled from **139 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Tomar — parallelizes async operations for speed
+-                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-ali
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Tomar
+3. identifier: Foto
+4. identifier: Subir
+5. identifier: Imagen
 
 ### Fixed null crash in Input — parallelizes async operations for speed
 -                 <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
@@ -246,24 +256,6 @@ Auto-compiled from **139 real patterns** in **botatc**. This skill is auto-route
 -         # Ignorar eventos que no sean mensajes (ej: estados de entrega)
 +         # Manejar estados de entrega (palomitas)
 -         if "messages" not in changes:
-+         if "statuses" in changes:
--             return {"status": "ok"}
-+             for st in changes["statuses"]:
-- 
-+                 msg_wamid = st.get("id")
--         mensaje_data  = changes["messages"][0]
-+           
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Manejar
-3. identifier: Evitar
-4. identifier: Ignorar
-5. identifier: Meta
-
-### Fixed null crash in Conversion — parallelizes async operations for speed
--         # Conversion nativa WebM -> OGG para WhatsApp Voice Notes
-+         # Conversion nativa WebM -> MP4 para WhatsApp Voice Notes
--         if "webm" in final_mime.lo
++         if "s
 
 ... [Truncated — see individual observations for full content]

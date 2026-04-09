@@ -1767,9 +1767,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 elif tipo == "imagen":
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
                 elif tipo == "video":
-                    return f"""<div style="text-align:center;"><video controls src="{src_url}" style="max-width: 250px; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px;"></video></div>"""
+                    return f"""<div style="text-align:center;"><video controls src="{src_url}" style="width: 250px; max-width: 100%; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; box-sizing: border-box;"></video></div>"""
                 elif tipo == "audio":
-                    return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
+                    return f'<div style="text-align:center;"><audio controls src="{src_url}" style="width: 250px; max-width: 100%; height: 40px; outline: none; margin-bottom: 5px; box-sizing: border-box;"></audio></div>'
                 elif tipo == "documento":
                     partes = media_id.split("|", 1)
                     doc_id = partes[0]

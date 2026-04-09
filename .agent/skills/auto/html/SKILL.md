@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 27 conventions, 49 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 28 conventions, 50 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **125 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **127 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,23 @@ Auto-compiled from **125 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Vaciar — wraps unsafe operation in error boundary
+-         // Manejar subida de archivos (cámara/galería)
++         window.enviarMensajeManual = async function (e, wa_id) {
+-         window.uploadAdminMedia = async function(inputElem, wa_id) {
++             e.preventDefault();
+-             if (!inputElem.files || inputElem.files.length === 0) return;
++             const input = document.getElementById('manualMsgInput');
+-             
++ 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Vaciar
+3. identifier: Dibujado
+4. identifier: POST
+5. identifier: Content
 
 ### Fixed null crash in Funcionalidad — wraps unsafe operation in error boundary
 -             height: 100vh;
@@ -320,25 +337,6 @@ Auto-compiled from **125 real patterns** in **botatc**. This skill is auto-route
 -     <meta charset="UTF-8">
 + <head>
 -     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UTF-8">
--     <title>Inbox - IA-ATC</title>
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google: Inter para lectura,
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- 
-+ <head>
-- <head>
-+     <meta charset="UTF-8">
--     <meta charset="UTF-8">
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-- 
++     <meta charset="UT
 
 ... [Truncated — see individual observations for full content]

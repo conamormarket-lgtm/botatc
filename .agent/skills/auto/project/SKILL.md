@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 142 gotchas, 139 conventions, 59 fixes."
+description: "Project for botatc. 145 gotchas, 140 conventions, 59 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **646 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **652 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **646 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in Re |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed + - ⚠️ GOTCHA:  |
+| ⚠️ GOTCHA: Optimized Score | - > 1316 notes - Score threshold: >40 + > 1335 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to su |
@@ -65,9 +68,6 @@ Auto-compiled from **646 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 898 notes - Score threshold: >40 + > 902 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in patcher.py - - problem-fix in agent-rules.md +  |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in patcher.py + - problem-fix in agent-rules.md - - Added error handling Respuestas  |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Optimized Score — evolves the database |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 833 notes - Score threshold: >40 + > 842 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed + - ⚠️ GOTCHA:  |
 
 ## 🔧 Problem Playbooks
 
@@ -198,6 +198,8 @@ Auto-compiled from **646 real patterns** in **botatc**. This skill is auto-route
 📌 IDE AST Context: Modified symbols likely include [# Project Intel
 
 **Actionable Steps:**
-1. Mod
+1. Modified 1 files
+
+### problem-fix in agent
 
 ... [Truncated — see individual observations for full content]
