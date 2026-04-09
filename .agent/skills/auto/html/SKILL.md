@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 27 conventions, 48 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 27 conventions, 49 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **124 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **125 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,24 @@ Auto-compiled from **124 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Funcionalidad — wraps unsafe operation in error boundary
+-             height: 100vh;
++             height: 100dvh;
+-         // Añadir estilo CSS de spin si no existe
++         // Funcionalidad de dropdown de clip
+-         if(!document.getElementById('spinStyle')) {
++         window.toggleClipMenu = function() {
+-             const style = document.createElement('style');
++             const menu = document.getElementById('clipActionMenu');
+- 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Funcionalidad
+3. identifier: Cerrar
+4. identifier: CSS
+5. identifier: Vaciar
 
 ### Fixed null crash in Manejar — wraps unsafe operation in error boundary
 -         window.enviarMensajeManual = async function (e, wa_id) {
@@ -321,25 +339,6 @@ Auto-compiled from **124 real patterns** in **botatc**. This skill is auto-route
 +     <meta charset="UTF-8">
 -     <meta charset="UTF-8">
 +     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <title>Inbox - IA-ATC</title>
--     <title>Inbox - IA-ATC</title>
-+     <!-- F
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- <head>
-+ 
--     <meta charset="UTF-8">
-+ <head>
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UTF-8">
--     <title>Inbox - 
+- 
 
 ... [Truncated — see individual observations for full content]

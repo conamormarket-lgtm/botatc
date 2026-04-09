@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1308 notes | Score threshold: >40
+> 1335 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -38,14 +38,14 @@
 
 ## Project Standards
 
+- Fixed null crash in Dropdown — parallelizes async operations for speed — confirmed 4x
+- what-changed in shared-context.json — confirmed 7x
+- Added JWT tokens authentication — confirmed 4x
+- discovery in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - Optimized GOTCHA — confirmed 4x
 - Patched security issue Kevin — confirmed 3x
 - problem-fix in agent-rules.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- problem-fix in agent-rules.md — confirmed 6x
-- what-changed in shared-context.json — confirmed 7x
-- problem-fix in agent-rules.md — confirmed 6x
 
 ## Known Fixes
 

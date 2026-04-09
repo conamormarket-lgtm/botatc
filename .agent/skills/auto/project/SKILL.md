@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 142 gotchas, 138 conventions, 52 fixes."
+description: "Project for botatc. 142 gotchas, 139 conventions, 59 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **634 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **646 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -72,6 +72,101 @@ Auto-compiled from **634 real patterns** in **botatc**. This skill is auto-route
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Archit
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Dropdown — parallelizes async operations for speed
++ - Patched security issue Kevin
+- - Fixed null crash in Funcionalidad — wraps unsafe operation in error boundary
++ - problem-fix in shared-context.json
+- - Fixed null crash in Manejar — wraps unsafe operation in error boundary
++ - problem-fix in shared-context.json
+- - Patched security issue Kevin
++ - problem-fix in server
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
 + - problem-fix in agent-rules.md
 - - Patched security issue Kevin
@@ -103,105 +198,6 @@ Auto-compiled from **634 real patterns** in **botatc**. This skill is auto-route
 📌 IDE AST Context: Modified symbols likely include [# Project Intel
 
 **Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-- - problem-fix in server.py
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-- - problem-fix in server.py
-+ - problem-fix in shared-context.json
-- - problem-fix in inbox.html
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-- - problem-fix in server.py
-+ - problem-fix in shared-context.json
-- - problem-fix in inbox.html
-+ - problem-fix in server.py
-- - problem-fix in patcher.py
-+ - problem-fix in inbox.html
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligen
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-- - problem-fix in agent-rules.md
-+ - problem-fix in inbox.html
-- - problem-fix in agent-rules.md
-+ - problem-fix in patcher.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intel
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-- - problem-fix in server.py
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-##
+1. Mod
 
 ... [Truncated — see individual observations for full content]
