@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 163 gotchas, 146 conventions, 82 fixes."
+description: "Project for botatc. 164 gotchas, 147 conventions, 82 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **708 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **713 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **708 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1445 notes - Score threshold: >40 + > 1483 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Interceptar — wraps unsafe operation in error boundary + - problem-fix in ag |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... + -  |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the databas |
@@ -67,7 +68,6 @@ Auto-compiled from **708 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1033 notes - Score threshold: >40 + > 1036 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1030 notes - Score threshold: >40 + > 1033 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: problem-fix in brainsync_auto.md | - > 1029 notes - Score threshold: >40 + > 1030 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1014 notes - Score threshold: >40 + > 1019 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 
 ## 🔧 Problem Playbooks
 
