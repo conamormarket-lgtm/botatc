@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1496 notes | Score threshold: >40
+> 1524 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1445 notes | Score threshold: >40
-+ > 1483 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1517 notes | Score threshold: >40
++ > 1518 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "b3392b7f6ff0f465",
++       "id": "602ab35b45066361",
 +
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Interceptar — wraps unsafe operation in error 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Added JWT tokens authen
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1423 notes | Score threshold: >40
-+ > 1431 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1507 notes | Score threshold: >40
++ > 1512 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1496 notes | Score threshold: >40
++ > 1507 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
 
 ## Project Standards
 
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 15x
-- problem-fix in agent-rules.md — confirmed 14x
-- what-changed in shared-context.json — confirmed 6x
-- Fixed null crash in Alternar — wraps unsafe operation in error boundary — confirmed 4x
-- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Optimized GOTCHA — confirmed 3x
+- problem-fix in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 4x
-- what-changed in shared-context.json — confirmed 5x
+- Optimized Patched — confirmed 3x
+- Patched security issue Kevin — hardens HTTP security headers — confirmed 3x
 
 ## Known Fixes
 

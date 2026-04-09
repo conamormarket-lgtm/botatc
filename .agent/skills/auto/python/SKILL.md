@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 19 gotchas, 25 conventions, 63 fixes."
+description: "Python for botatc. 21 gotchas, 25 conventions, 64 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
+| ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
 | ⚠️ GOTCHA: Fixed null crash in Meta — parallelizes | -             return {"ok": True, "media_id": media_id} +             # Meta no permite descargar m |
 | ⚠️ GOTCHA: Fixed null crash in Request — paralleli | - @app.post("/api/admin/enviar_manual") + @app.post("/api/admin/enviar_media_manual") - async def  |
 | ⚠️ GOTCHA: Fixed null crash in Nuevo — parallelize | -     if not wa_id or wa_id not in sesiones: +     elif wa_id and (wa_id in sesiones) and len(sesio |
@@ -39,6 +41,17 @@ Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Popover — parallelizes async operations for speed
+-             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center; box-sizing:border-box; max-width:100%;">
++             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.4rem; width:100%; margin:0; position:relative; align-it
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Popover
+3. identifier: Tab
+4. identifier: Headers
+5. identifier: Emojis
 
 ### Fixed null crash in IZQUIERDA — parallelizes async operations for speed
 -                 <div style="position:relative; display:flex; gap:0.5rem;">
@@ -224,34 +237,6 @@ Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-route
 - 
 +     # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en vez de 404 para evitar parpadeos y errores de javascript en el cliente
 - @app.get("/api/quick-replies")
-+     return RedirectResponse("https://placehold.co/250x150?text=
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Response
-3. identifier: RedirectResponse
-4. identifier: DEVUELVE
-5. identifier: PLACEHOLDER
-
-### Fixed null crash in KeyError — protects against XSS and CSRF token theft
--         else:
-+         elif tipo_mensaje == "location":
--             texto_cliente = f"[{tipo_mensaje}]"
-+             lat = mensaje_data.get("location", {}).get("latitude", "")
-- 
-+             lon = mensaje_data.get("location", {}).get("longitude", "")
--     except (KeyError, IndexError):
-+             addr = mensaje_data.get("location", {}).get("address", "")
--         return {"stat
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: KeyError
-3. identifier: IndexError
-4. identifier: Detectar
-5. identifier: Buscar
-
-### Fixed null crash in Show — parallelizes async operations for speed
--             burbujas +
++     return RedirectResponse("https:/
 
 ... [Truncated — see individual observations for full content]

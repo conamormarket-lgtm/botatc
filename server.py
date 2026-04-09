@@ -1768,9 +1768,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 if tipo == "sticker":
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/150x150?text=Sticker';"></div>"""
                 elif tipo == "imagen":
-                    return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 100%; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+                    return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><img src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
                 elif tipo == "video":
-                    return f"""<div style="text-align:center;"><video controls src="{src_url}" style="width: 100%; max-width: 250px; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; box-sizing: border-box; display: block;"></video></div>"""
+                    return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>"""
                 elif tipo == "audio":
                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="width: 100%; max-width: 250px; height: 40px; outline: none; margin-bottom: 5px; box-sizing: border-box; display: block;"></audio></div>'
                 elif tipo == "documento":
