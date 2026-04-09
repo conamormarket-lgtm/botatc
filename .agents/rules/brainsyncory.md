@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1216 notes | Score threshold: >40
+> 1286 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,30 +20,39 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "7c5fd917c03f87bf",
++
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "3d7e53a37c69f407",
++
+- **⚠️ GOTCHA: Optimized Score** — - > 1255 notes | Score threshold: >40
++ > 1269 notes | Score threshold
+- **⚠️ GOTCHA: Fixed null crash in Nuevo — parallelizes async operations for speed** — -     if not wa_id or wa_id not in sesiones:
++     elif wa_id and (wa
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1200 notes | Score threshold: >40
 + > 1204 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
 + - ⚠️ GOTCHA: Added JWT tokens authen
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1199 notes | Score threshold: >40
-+ > 1200 notes | Score threshold
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in agent-rules.md
-+ - ⚠️ GOTCHA: Replaced auth Score — evol
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 1192 notes | Score threshold: >40
-+ > 1193 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
 
 ## Project Standards
 
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 4x
+- what-changed in shared-context.json — confirmed 5x
+- problem-fix in agent-rules.md — confirmed 6x
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 6x
+- Optimized Score — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- problem-fix in agent-rules.md — confirmed 6x
+- discovery in shared-context.json — confirmed 4x
 
 ## Known Fixes
 
@@ -58,7 +67,7 @@ Content summary (8
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
-- decision in shared-context.json
+- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

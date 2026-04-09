@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 137 gotchas, 131 conventions, 35 fixes."
+description: "Project for botatc. 138 gotchas, 138 conventions, 52 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **595 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **626 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **595 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score | - > 1255 notes - Score threshold: >40 + > 1269 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1200 notes - Score threshold: >40 + > 1204 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Added JWT tokens authentication - - ⚠️ GOTCHA: Replac |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1199 notes - Score threshold: >40 + > 1200 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
@@ -67,131 +68,137 @@ Auto-compiled from **595 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in PANEL — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue Kevin - - Patched security issue K |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 797 notes - Score threshold: >40 + > 800 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 788 notes - Score threshold: >40 + > 797 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - problem-fix in inbox.html
-+ - problem-fix in server.py
-- - problem-fix in patcher.py
-+ - problem-fix in inbox.html
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (a
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Solo — parallelizes async operations for speed
-+ - problem-fix in server.py
-- - Fixed null crash in Phone — wraps unsafe operation in error boundary
-+ - problem-fix in inbox.html
-- - problem-fix in server.py
-+ - problem-fix in patcher.py
-- - problem-fix in inbox.html
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-- - Fixed null crash in Respo
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Patched security issue Fixed
-- - Patched security issue Kevin
-+ - Fixed null crash in Manejar — protects against XSS and CSRF token theft
-- - problem-fix in patcher.py
-+ - Patched security issue Kevin
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem-fix in patcher.py
-- - problem-fix in firebase_client.py
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-- 
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Fixed
-3. identifier: Manejar
-4. identifier: XSS
-5. identifier: CSRF
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Audio — fixes memory leak from uncleared timers
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in Grabar — parallelizes async operations for speed
-+ - problem-fix in shared-context.json
-- - Fixed null crash in NATIVE — fixes memory leak from uncleared timers
-+ - Patched security issue Kevin
-- - problem-fix in agent-rules.md
-+ - problem-fix in patcher.py
-- - problem-
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Wait
-+ - Patched security issue Kevin
-- - Fixed null crash in Procesar — parallelizes async operations for speed
-+ - problem-fix in patcher.py
-- - problem-fix in agent-rules.md
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# P
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in PANEL — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
 + - problem-fix in agent-rules.md
 - - Patched security issue Kevin
-+ - Fixed null crash in PANEL — prevents null/undefined runtime crashes
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - Fixed null crash in PANEL — prevents null/undefined runtime crashes
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in patcher.py
-+ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
-- - Added er
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
 + - problem-fix in shared-context.json
 - - problem-fix in shared-context.json
-+ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
-- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - problem-fix in server.py
 + - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - problem-fix in patcher.py
-- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+
+📌 IDE AST Context: Modified symbols likely include [# 
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Fixed null crash in Descargar — preven
+- - Patched security issue Kevin
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+- - problem-fix in patcher.py
++ - problem-fix in inbox.html
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intel
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+- - problem-fix in patcher.py
++ - problem-fix in inbox.html
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligen
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
++ - problem-fix in server.py
+- - problem-fix in agent-rules.md
++ - problem-fix in inbox.html
+- - problem-fix in agent-rules.md
++ - problem-fix in patcher.py
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intel
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable S
 
 ... [Truncated — see individual observations for full content]

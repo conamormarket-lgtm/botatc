@@ -1232,6 +1232,41 @@ async def buscar_mensajes(q: str, request: Request):
             
     return {"ok": True, "resultados": resultados}
 
+@app.post("/api/admin/enviar_media_manual")
+async def enviar_media_manual_endpoint(request: Request, wa_id: str = Form(...), file: UploadFile = File(...)):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+
+    if wa_id not in sesiones:
+        return {"ok": False, "error": "Chat no existe"}
+
+    contents = await file.read()
+    from whatsapp_client import subir_media, enviar_media
+    import anyio
+    
+    media_id = await anyio.to_thread.run_sync(subir_media, contents, file.content_type, file.filename)
+    if not media_id:
+        return {"ok": False, "error": "Error comunicando con Meta para subir archivo"}
+        
+    tipo_msg = "document"
+    if file.content_type.startswith("image/"): tipo_msg = "image"
+    elif file.content_type.startswith("video/"): tipo_msg = "video"
+    elif file.content_type.startswith("audio/"): tipo_msg = "audio"
+    
+    exito = await anyio.to_thread.run_sync(enviar_media, wa_id, tipo_msg, media_id)
+    if exito:
+        import time
+        ts = int(time.time())
+        txt_bot = f"[{tipo_msg}:{media_id}|{file.filename}]"
+        sesiones[wa_id]["historial"].append({"role": "assistant", "content": txt_bot, "timestamp": ts, "status": "sent"})
+        try: 
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(wa_id, sesiones[wa_id])
+        except: pass
+        return {"ok": True}
+    else:
+        return {"ok": False, "error": "Error enviando vía Meta"}
+
 @app.post("/api/admin/enviar_manual")
 async def enviar_manual_endpoint(request: Request):
     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
@@ -1915,6 +1950,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     </button>
                 </div>
 
+                <!-- Input oculto para subida de medios -->
+                <input type="file" id="adminMediaInput" accept="image/*,video/*,audio/*,application/pdf" style="display:none;" onchange="uploadAdminMedia(this, '{wa_id}')">
+                <button type="button" id="btnAttachMedia" onclick="document.getElementById('adminMediaInput').click();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:10px; display:flex; align-items:center; transition:color 0.2s;" title="Adjuntar (Foto, Video, Doc)">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                </button>
                 <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
                 <button type="button" id="btnCancelAudio" style="background:var(--danger-color); color:white; border:none; border-radius:12px; height:44px; width:44px; display:none; align-items:center; justify-content:center; cursor:pointer; margin-left: 0.5rem; transition: background 0.2s;" title="Cancelar grabación">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>

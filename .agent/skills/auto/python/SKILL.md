@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 16 gotchas, 21 conventions, 60 fixes."
+description: "Python for botatc. 17 gotchas, 22 conventions, 60 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **134 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **134 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Nuevo — parallelize | -     if not wa_id or wa_id not in sesiones: +     elif wa_id and (wa_id in sesiones) and len(sesio |
 | ⚠️ GOTCHA: Fixed null crash in Reacci — protects a | -         elif tipo_mensaje == "location": +         elif tipo_mensaje == "reaction": -            |
 | ⚠️ GOTCHA: Fixed null crash in KeyError — protects | -             texto_cliente = f"[📎 Archivo: {filename}]" +             media_id = mensaje_data.get |
 | ⚠️ GOTCHA: Fixed null crash in Esperando — paralle | -         burbujas += f""" +  -         <div class="mensaje {lado}"> +         def wrap_phone(mat |
@@ -270,12 +271,6 @@ Auto-compiled from **134 real patterns** in **botatc**. This skill is auto-route
 +                     err_msg = result.stderr.decode('utf-8', 'ignore') if result.stderr else "ExitCode!=0"
 -                     final_mime = "audio/mp4" 
 +                     print("FFMPEG fallback ignorado o error:", err_msg)
--                     fallback_name = "voi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Utiliza — parallelizes async operations for speed
--        
+-           
 
 ... [Truncated — see individual observations for full content]
