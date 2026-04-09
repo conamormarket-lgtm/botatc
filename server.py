@@ -381,11 +381,25 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             filename = mensaje_data.get("document", {}).get("filename", "archivo")
             media_id = mensaje_data.get("document", {}).get("id", "")
             texto_cliente = f"[documento:{media_id}|{filename}]"
-        elif tipo_mensaje == "location":
-            lat = mensaje_data.get("location", {}).get("latitude", "")
-            lon = mensaje_data.get("location", {}).get("longitude", "")
-            addr = mensaje_data.get("location", {}).get("address", "")
-            texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
+        elif tipo_mensaje == "reaction":
+            reaction_data = mensaje_data.get("reaction", {})
+            emoji = reaction_data.get("emoji", "")
+            msg_id_reacted = reaction_data.get("message_id", "")
+            
+            texto_original = "un mensaje"
+            if numero_wa in sesiones:
+                for m_hist in sesiones[numero_wa]["historial"]:
+                    if m_hist.get("msg_id") == msg_id_reacted:
+                        txt = m_hist.get("content", "")
+                        if txt.startswith("["): 
+                            txt = txt.split("]")[0] + "]"
+                        texto_original = (txt[:40] + '...') if len(txt) > 40 else txt
+                        break
+            
+            if emoji:
+                texto_cliente = f"[💬 Reacción: {emoji} a «{texto_original}»]"
+            else:
+                texto_cliente = f"[❌ Quitó reacción a «{texto_original}»]"
         elif tipo_mensaje == "location":
             lat = mensaje_data.get("location", {}).get("latitude", "")
             lon = mensaje_data.get("location", {}).get("longitude", "")
