@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1154 notes | Score threshold: >40
+> 1216 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,38 +20,29 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in KeyError — protects against XSS and CSRF token theft** — -             texto_cliente = f"[📎 Archivo: {filename}]"
-+          
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "712f7be11d3c1e3f",
-+
-- **⚠️ GOTCHA: Fixed null crash in Esperando — parallelizes async operations for speed** — -         burbujas += f"""
-+ 
--         <div class="mensaje {lado}">
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in KeyError — protects against XSS and CSRF token
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "41c32aec38f00d28",
-+
-- **⚠️ GOTCHA: Optimized Fixed** — - - problem-fix in shared-context.json
-+ - Fixed null crash in Esperan
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1200 notes | Score threshold: >40
++ > 1204 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Added JWT tokens authen
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1199 notes | Score threshold: >40
++ > 1200 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in agent-rules.md
++ - ⚠️ GOTCHA: Replaced auth Score — evol
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 1192 notes | Score threshold: >40
++ > 1193 notes | Score threshold
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 13x
-- Optimized GOTCHA — confirmed 5x
-- Fixed null crash in Archivo — protects against XSS and CSRF token theft — confirmed 8x
-- Added JWT tokens authentication — confirmed 7x
-- Patched security issue Fixed — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
+- Replaced auth Score — evolves the database schema to support new requirements — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 4x
 
 ## Known Fixes
@@ -67,7 +58,7 @@
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
+- decision in shared-context.json
 
 ## Learned Patterns
 

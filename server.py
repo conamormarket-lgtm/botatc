@@ -1673,8 +1673,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             # Add to the left side menu as well right now so it renders
             todas.insert(0, (wa_id, sesiones[wa_id]))
 
+    elif wa_id and (wa_id in sesiones) and len(sesiones[wa_id].get("historial", [])) == 0:
+        chat_viewer_html = f'''<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.95rem;flex-direction:column;gap:10px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <p>Nuevo chat inicializado.</p><p>Escribe tu primer mensaje abajo para saludar a <b>+{wa_id}</b>.</p>
+        </div>'''
+        
     if not wa_id or wa_id not in sesiones:
-        chat_viewer_html = """
+        chat_viewer_html = \"\"\"
         <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <h3>Tu Inbox está vacío</h3>

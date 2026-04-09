@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 129 gotchas, 124 conventions, 35 fixes."
+description: "Project for botatc. 137 gotchas, 131 conventions, 35 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **563 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **595 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,14 @@ Auto-compiled from **563 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1200 notes - Score threshold: >40 + > 1204 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Added JWT tokens authentication - - ⚠️ GOTCHA: Replac |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1199 notes - Score threshold: >40 + > 1200 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to sup |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 1192 notes - Score threshold: >40 + > 1193 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
+| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
+| ⚠️ GOTCHA: Replaced auth Score | - > 1177 notes - Score threshold: >40 + > 1187 notes - Score threshold: >40 - +       "id": "9dff0b4 |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1159 notes - Score threshold: >40 + > 1177 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Replaced auth Patched | - - Fixed null crash in KeyError — protects against XSS and CSRF token theft + - Patched security is |
 | ⚠️ GOTCHA: Optimized Fixed | - - problem-fix in shared-context.json + - Fixed null crash in Esperando — parallelizes async operat |
 | ⚠️ GOTCHA: Optimized Score | - > 1096 notes - Score threshold: >40 + > 1109 notes - Score threshold: >40 - - Added JWT tokens aut |
@@ -60,14 +68,6 @@ Auto-compiled from **563 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue Kevin - - Patched security issue K |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 797 notes - Score threshold: >40 + > 800 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 788 notes - Score threshold: >40 + > 797 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ G |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Fixed null crash in Des |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - problem-fix in agent-ru |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 771 notes - Score threshold: >40 + > 772 notes - Score threshold: >40 - - what-changed in shared |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 741 notes - Score threshold: >40 + > 744 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 738 notes - Score threshold: >40 + > 741 notes - Score threshold: >40 - - **gotcha in agent-rule |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 736 notes - Score threshold: >40 + > 738 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
-| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 
 ## 🔧 Problem Playbooks
 
@@ -192,6 +192,6 @@ Auto-compiled from **563 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Fixed null crash in Descargar —
+- - Fixed null crash in Descargar — preven
 
 ... [Truncated — see individual observations for full content]

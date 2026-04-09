@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 15 gotchas, 20 conventions, 59 fixes."
+description: "Python for botatc. 16 gotchas, 21 conventions, 60 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **129 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **134 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **129 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Reacci — protects a | -         elif tipo_mensaje == "location": +         elif tipo_mensaje == "reaction": -            |
 | ⚠️ GOTCHA: Fixed null crash in KeyError — protects | -             texto_cliente = f"[📎 Archivo: {filename}]" +             media_id = mensaje_data.get |
 | ⚠️ GOTCHA: Fixed null crash in Esperando — paralle | -         burbujas += f""" +  -         <div class="mensaje {lado}"> +         def wrap_phone(mat |
 | ⚠️ GOTCHA: Fixed null crash in Object — prevents n | -             function renderQuickReplies(data) { +             function renderQuickReplies(data) { |
@@ -35,6 +36,17 @@ Auto-compiled from **129 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Cancelar — parallelizes async operations for speed
+-                 <button type="button" id="btnRecordAudio" style="background:var(--accent-bg); color:var(--text-main); border:none; border-radius:12px; height:44px; width:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-left: 0.5rem; margin-right: 0.5rem; transition: background 0.2s, color 0.2s;" title="Grabar nota de voz">
++                 <button type="bu
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Cancelar
+3. identifier: Grabar
+4. identifier: Enviar
+5. identifier: None
 
 ### Fixed null crash in KeyError — protects against XSS and CSRF token theft
 -             texto_cliente = f"[📎 Archivo: {filename}]"
@@ -264,23 +276,6 @@ Auto-compiled from **129 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### Fixed null crash in Utiliza — parallelizes async operations for speed
--                 tmp_out_name = tmp_in_name.replace(".webm", ".ogg")
-+                 tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
--                 # WhatsApp RECOMIENDA audio/ogg; codecs=opus para notas de voz perfectas
-+                 # Utiliza codec aac compatible universal con .mp4
--                     '-c:a', 'libopus', '-b:a', '32k',
-+                     '-c:a', 'aac', '-b
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Utiliza
-3. identifier: True
-4. identifier: FFMPEG
-5. identifier: Exception
-
-### Fixed null crash in Conversion — parallelizes async operations for speed
--         if file.content_type:
-+         final_mime = file.content_type or "application/octet-stream"
--             if "image" in file.content_type: fallback_na
+-        
 
 ... [Truncated — see individual observations for full content]

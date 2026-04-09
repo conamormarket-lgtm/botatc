@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 26 conventions, 46 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 27 conventions, 47 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **121 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **123 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,20 @@ Auto-compiled from **121 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Blob — prevents null/undefined runtime crashes
+-                             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // WebM/OGG format for audio
++                             if (mediaRecorder.canceled) {
+-                             const formData = new FormData();
++                                 return; // Do not send audio if canceled
+-                             formData.append("file", audioBlob, "voice_no
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Blob
+3. identifier: WebM
+4. identifier: OGG
+5. identifier: FormData
 
 ### Fixed null crash in Phone — wraps unsafe operation in error boundary
 - </body>
@@ -327,24 +341,6 @@ Auto-compiled from **121 real patterns** in **botatc**. This skill is auto-route
 +     <meta charset="UTF-8">
 -     <meta charset="UTF-8">
 +     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <title>Inbox - IA-ATC</title>
--     <title>Inbox - IA-ATC</title>
-+     <!-- F
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Nivel — prevents null/undefined runtime crashes
--             --accent-bg: #436aa8;
-+             --accent-border: #334155;
--             --accent-border: #334155;
-+             --accent-hover-soft: #334155;
--             --accent-hover-soft: #334155;
-+             /* 3
+-     <meta name="viewport" 
 
 ... [Truncated — see individual observations for full content]
