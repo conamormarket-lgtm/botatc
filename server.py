@@ -1680,7 +1680,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         </div>'''
         
     if not wa_id or wa_id not in sesiones:
-        chat_viewer_html = \"\"\"
+        chat_viewer_html = """
         <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <h3>Tu Inbox está vacío</h3>
