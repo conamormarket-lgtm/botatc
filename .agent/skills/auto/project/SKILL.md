@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 126 gotchas, 118 conventions, 34 fixes."
+description: "Project for botatc. 129 gotchas, 124 conventions, 35 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **543 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **563 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **543 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth Patched | - - Fixed null crash in KeyError — protects against XSS and CSRF token theft + - Patched security is |
+| ⚠️ GOTCHA: Optimized Fixed | - - problem-fix in shared-context.json + - Fixed null crash in Esperando — parallelizes async operat |
+| ⚠️ GOTCHA: Optimized Score | - > 1096 notes - Score threshold: >40 + > 1109 notes - Score threshold: >40 - - Added JWT tokens aut |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - problem-fix in server.py + -  |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in server.py + - problem-fix in agent-rules.md - - problem-fix in inbox.html + - pro |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - gotcha in shared-context.json - - ⚠️ GOTCHA: Adde |
@@ -65,11 +68,25 @@ Auto-compiled from **543 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 738 notes - Score threshold: >40 + > 741 notes - Score threshold: >40 - - **gotcha in agent-rule |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 736 notes - Score threshold: >40 + > 738 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 700 notes - Score threshold: >40 + > 716 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 692 notes - Score threshold: >40 + > 700 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 689 notes - Score threshold: >40 + > 692 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in agent-rules.md
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+- - problem-fix in patcher.py
++ - problem-fix in inbox.html
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (a
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Solo — parallelizes async operations for speed
@@ -175,18 +192,6 @@ Auto-compiled from **543 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Fixed null crash in Descargar — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
-- - problem-fix in patcher.py
-+ - problem-fix in shared-context.json
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem-fix in patcher.
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in 
+- - Fixed null crash in Descargar —
 
 ... [Truncated — see individual observations for full content]

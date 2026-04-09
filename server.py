@@ -379,7 +379,8 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             texto_cliente = "[🎥 Video]"
         elif tipo_mensaje == "document":
             filename = mensaje_data.get("document", {}).get("filename", "archivo")
-            texto_cliente = f"[📎 Archivo: {filename}]"
+            media_id = mensaje_data.get("document", {}).get("id", "")
+            texto_cliente = f"[documento:{media_id}|{filename}]"
         elif tipo_mensaje == "location":
             lat = mensaje_data.get("location", {}).get("latitude", "")
             lon = mensaje_data.get("location", {}).get("longitude", "")
@@ -1388,6 +1389,13 @@ async def ver_chat(request: Request, numero_wa: str):
         lado      = "bot-lado" if es_bot else "user-lado"
         remitente = "🤖 María" if es_bot else f"👤 {nombre}"
         texto     = m["content"].replace("\n", "<br>")
+        def wrap_phone(match):
+            phone = match.group(1)
+            clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
+            if sum(c.isdigit() for c in clean_phone) >= 7:
+                return f'<span class="chat-phone" style="color:var(--primary-color); text-decoration:underline; cursor:pointer; font-weight:500;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
+            return phone
+        texto = __import__('re').sub(r'(?<![a-zA-Z0-9\:\-\/\.\=\_])(\+?\d[\d\s\-]{6,15}\d)(?![a-zA-Z0-9\.\-\/\=\_])', wrap_phone, texto)
         burbujas += f"""
         <div class="mensaje {lado}">
           <div class="remitente">{remitente}</div>
@@ -1678,6 +1686,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             clase  = "bubble-bot" if es_bot else "bubble-user"
             lado   = "lado-der" if es_bot else "lado-izq"
             texto  = m["content"].replace("\\n", "<br>")
+            def wrap_phone2(match):
+                phone = match.group(1)
+                clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
+                if sum(c.isdigit() for c in clean_phone) >= 7:
+                    return f'<span class="chat-phone" style="color:var(--primary-color); text-decoration:underline; cursor:pointer; font-weight:500;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
+                return phone
+            texto = __import__('re').sub(r'(?<![a-zA-Z0-9\:\-\/\.\=\_])(\+?\d[\d\s\-]{6,15}\d)(?![a-zA-Z0-9\.\-\/\=\_])', wrap_phone2, texto)
             
             # --- Renderizar media_id si es [sticker:ID] o [imagen:ID] ---
             import re
@@ -1700,11 +1715,17 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     return f"""<div style="text-align:center;"><video controls src="{src_url}" style="max-width: 250px; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px;"></video></div>"""
                 elif tipo == "audio":
                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
+                elif tipo == "documento":
+                    partes = media_id.split("|", 1)
+                    doc_id = partes[0]
+                    doc_name = partes[1] if len(partes) > 1 else "Documento"
+                    doc_url = f"/api/media/{doc_id}"
+                    return f'<div style="margin-bottom: 5px;"><a href="{doc_url}" download="{doc_name}" target="_blank" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-decoration: none; color: inherit; font-size: 0.9rem; border: 1px solid var(--accent-border);">📎 {doc_name} <span style="font-size:0.8rem; margin-left:auto; opacity:0.6;">📥 Bajar</span></a></div>' 
                 return match.group(0)
 
             # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
             # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
-            texto_renderizado = re.sub(r"\[(sticker-local|sticker|imagen|audio|video):([^\]]+)\]", reemplazar_archivos_inline, texto)
+            texto_renderizado = re.sub(r"\[(sticker-local|sticker|imagen|audio|video|documento):([^\]]+)\]", reemplazar_archivos_inline, texto)
 
             def reemplazar_ubicacion(match):
                 coords_str = match.group(1)

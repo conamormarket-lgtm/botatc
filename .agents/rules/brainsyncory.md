@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1096 notes | Score threshold: >40
+> 1154 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,36 +20,39 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- -
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - pro
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - gotcha in shared-co
+- **⚠️ GOTCHA: Fixed null crash in KeyError — protects against XSS and CSRF token theft** — -             texto_cliente = f"[📎 Archivo: {filename}]"
++          
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "67e4a5cd426ae349",
++       "id": "712f7be11d3c1e3f",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Added JW
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1042 notes | Score threshold: >40
-+ > 1053 notes | Score threshold
+- **⚠️ GOTCHA: Fixed null crash in Esperando — parallelizes async operations for speed** — -         burbujas += f"""
++ 
+-         <div class="mensaje {lado}">
+- **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in KeyError — protects against XSS and CSRF token
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "41c32aec38f00d28",
++
+- **⚠️ GOTCHA: Optimized Fixed** — - - problem-fix in shared-context.json
++ - Fixed null crash in Esperan
 
 ## Project Standards
 
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Optimized Fixed — confirmed 3x
-- Fixed null crash in Solo — parallelizes async operations for speed — confirmed 4x
-- Replaced auth Fixed — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 13x
+- Optimized GOTCHA — confirmed 5x
+- Fixed null crash in Archivo — protects against XSS and CSRF token theft — confirmed 8x
+- Added JWT tokens authentication — confirmed 7x
+- Patched security issue Fixed — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
-- what-changed in brainsync_auto.md — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
 
 ## Known Fixes
 
@@ -63,7 +66,7 @@
 
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
-- decision in shared-context.json
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns

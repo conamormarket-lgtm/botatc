@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 13 gotchas, 19 conventions, 52 fixes."
+description: "Python for botatc. 15 gotchas, 20 conventions, 59 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **129 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in KeyError — protects | -             texto_cliente = f"[📎 Archivo: {filename}]" +             media_id = mensaje_data.get |
+| ⚠️ GOTCHA: Fixed null crash in Esperando — paralle | -         burbujas += f""" +  -         <div class="mensaje {lado}"> +         def wrap_phone(mat |
 | ⚠️ GOTCHA: Fixed null crash in Object — prevents n | -             function renderQuickReplies(data) { +             function renderQuickReplies(data) { |
 | ⚠️ GOTCHA: Fixed null crash in Agrupar — prevents  | -             function renderQuickReplies(data) {{ +             function renderQuickReplies(data)  |
 | ⚠️ GOTCHA: Fixed null crash in Request — paralleli | - @app.post("/api/admin/enviar_manual") +  - async def enviar_manual_endpoint(request: Request):  |
@@ -33,6 +35,129 @@ Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in KeyError — protects against XSS and CSRF token theft
+-             texto_cliente = f"[📎 Archivo: {filename}]"
++             media_id = mensaje_data.get("document", {}).get("id", "")
+-         elif tipo_mensaje == "location":
++             texto_cliente = f"[documento:{media_id}|{filename}]" 
+-             lat = mensaje_data.get("location", {}).get("latitude", "")
++         elif tipo_mensaje == "location":
+-             lon = mensaje_data.get(
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: KeyError
+3. identifier: IndexError
+4. identifier: Detectar
+5. identifier: Buscar
+
+### Fixed null crash in Documento — parallelizes async operations for speed
+-                 return match.group(0)
++                 elif tipo == "documento":
+- 
++                     partes = media_id.split("|", 1)
+-             # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
++                     doc_id = partes[0]
+-             # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
++                     
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Documento
+3. identifier: Bajar
+4. identifier: Reemplazar
+5. identifier: Hola
+
+### Fixed null crash in Renderizar — parallelizes async operations for speed
+-             # --- Renderizar media_id si es [sticker:ID] o [imagen:ID] ---
++             # --- Renderizar números de teléfono clickeables ---
+-             
++             def wrap_phone(match):
+-             def reemplazar_archivos_inline(match):
++                 phone = match.group(1)
+-                 tipo = match.group(1)
++                 clean_phone = re.sub(r'[\s\-]', '', phone)
+-
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Renderizar
+3. identifier: Solo
+4. identifier: Escape
+5. identifier: Sticker
+
+### Fixed null crash in Esperando — parallelizes async operations for speed
+- 
++         burbujas += f"""
+-         def wrap_phone(match):
++         <div class="mensaje {lado}">
+-             phone = match.group(1)
++           <div class="remitente">{remitente}</div>
+-             clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
++           <div class="{clase}">{texto}</div>
+-             if sum(c.isdigit() for c in clean_phone) >= 7:
++         </div>"""
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Sin
+3. identifier: Bot
+4. identifier: Esperando
+5. identifier: Reactivar
+
+### Fixed null crash in Esperando — parallelizes async operations for speed
+-         burbujas += f"""
++ 
+-         <div class="mensaje {lado}">
++         def wrap_phone(match):
+-           <div class="remitente">{remitente}</div>
++             phone = match.group(1)
+-           <div class="{clase}">{texto}</div>
++             clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
+-         </div>"""
++             if sum(c.isdigit() for c in clean_phone) >= 7:
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Sin
+3. identifier: Bot
+4. identifier: Esperando
+5. identifier: Reactivar
+
+### Fixed null crash in Esperando — parallelizes async operations for speed
+-         remitente = "🤖 María" if es_bot else f"👤 {nombre}"        texto     = m["content"].replace("\n", "<br>")
++         remitente = "🤖 María" if es_bot else f"👤 {nombre}"
+-         burbujas += f"""
++         texto     = m["content"].replace("\n", "<br>")
+-         <div class="mensaje {lado}">
++         burbujas += f"""
+-           <div class="remitente">{remitente}</div>
++         
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Mar
+3. identifier: Sin
+4. identifier: Bot
+5. identifier: Esperando
+
+### Fixed null crash in Esperando — parallelizes async operations for speed
+-         remitente = "🤖 María" if es_bot else f"👤 {nombre}"
++         remitente = "🤖 María" if es_bot else f"👤 {nombre}"        texto     = m["content"].replace("\n", "<br>")
+-         texto     = m["content"].replace("\n", "<br>")
++         burbujas += f"""
+-             
++         <div class="mensaje {lado}">
+-             def wrap_phone(match):
++           <div class="remitente">{re
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Mar
+3. identifier: Sin
+4. identifier: Bot
+5. identifier: Esperando
 
 ### problem-fix in server.py
 -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
@@ -156,121 +281,6 @@ Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in Conversion — parallelizes async operations for speed
 -         if file.content_type:
 +         final_mime = file.content_type or "application/octet-stream"
--             if "image" in file.content_type: fallback_name = "upload.png"
-+         
--             elif "video" in file.content_type: fallback_name = "upload.mp4"
-+         if final_mime:
--             elif "audio" in file.content_type: fallback_name = "upload.ogg"
-+             if "imag
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Conversion
-3. identifier: WebM
-4. identifier: OGG
-5. identifier: WhatsApp
-
-### Fixed null crash in Grabar — parallelizes async operations for speed
--                 <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;height:44px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
-+                 <button type="button" id="btnRecordAudio" style="background:var(--accent-bg); color:var(--text-main); border:none; border-radius:12px; h
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Grabar
-3. identifier: Enviar
-4. identifier: None
-5. identifier: Etiqueta
-
-### Fixed null crash in Procesar — parallelizes async operations for speed
--         lista_chats_html += f"""
-+         extra_params = f"?tab={tab}"
--         <a href="/inbox/{num}?tab={tab}" class="chat-row {active_class}">
-+         if label_filter: extra_params += f"&label={label_filter}"
--             <div class="chat-row-header">
-+         if unread: extra_params += f"&unread={unread}"
--                 <span class="chat-name">{nombre}</span>
-+         
--   
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Procesar
-3. identifier: Panel
-4. identifier: Derecho
-5. identifier: Chat
-
-### Fixed null crash in Promise — parallelizes async operations for speed
--                     const endsWithSlash = input.value.trimEnd().endsWith("/");
-+                     if (window.enviarMensajeDirecto) {
--                     input.value = (endsWithSlash && i===0) ? input.value.trimEnd().slice(0,-1) + finalMsg : finalMsg;
-+                         await window.enviarMensajeDirecto("{wa_id}", finalMsg);
--                     
-+                     } else {
-
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Promise
-3. identifier: Secuencia
-4. identifier: Set
-5. identifier: General
-
-### Fixed null crash in Support — parallelizes async operations for speed
--             let isSendingSequence = false;
-+             window.isSendingSequence = false; window.isSendingSequence = false;
--             
-+             let isSendingSequence = false; window.isSendingSequence = false;
--             async function aplicarQuickReply(qrId) {{
-+             
--                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera."
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Hay
-3. identifier: Support
-4. identifier: Enviando
-5. identifier: Compose
-
-### Fixed null crash in Formatear — parallelizes async operations for speed
--             # Formatear el indicador de respuesta nativa
-+             if texto.startswith('[sticker') and texto.endswith(']'):
--             import re
-+                 clase += " bubble-sticker"
--             match = re.match(r"^\[\[REPLY\|(.*?)\]\](.*)$", texto_renderizado, flags=re.DOTALL)
-+                 
--             if match:
-+             # Formatear el indicador de respuesta n
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Formatear
-3. identifier: REPLY
-4. identifier: DOTALL
-5. identifier: Respondi
-
-### Fixed null crash in Flotante — parallelizes async operations for speed
--                     <!-- Menú Flotante de Emojis -->
-+                     <!-- Menú Flotante Unificado (Emojis + Stickers) -->
--                     <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:transparent; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.15);">
-+                     <div id="emojiMenu" style="display:none; p
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Men
-3. identifier: Flotante
-4. identifier: Unificado
-5. identifier: Emojis
-
-### Fixed null crash in Acci — parallelizes async operations for speed
--                                 </div>
-+                                     <button onclick="addQrMessageField('action_label')" style="background:rgba(236,72,153,0.15); border:1px solid rgba(236,72,153,0.3); color:#ec4899; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🏷 Acción Tag</button>
--                             </div>
-+               
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Acci
-3. identifier: Tag
-4. id
+-             if "image" in file.content_type: fallback_na
 
 ... [Truncated — see individual observations for full content]
