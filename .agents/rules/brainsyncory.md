@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1014 notes | Score threshold: >40
+> 1019 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,40 +20,30 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes** — -                 }
-+                     if(typeof window.aplicarFil
-- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed** — - @app.post("/api/admin/enviar_manual")
-+ 
-- async def enviar_manual
-- **⚠️ GOTCHA: Fixed null crash in HTMLResponse** — -     html = html.replace("{chat_viewer_html}", chat_viewer_html)
-+  
-- **⚠️ GOTCHA: Fixed null crash in None** — -         chat_viewer_html = f"""
-+         session_tags = s.get("eti
-- **⚠️ GOTCHA: Updated typing database schema** — - 
-+ 
-+ 
-+ # =======================================================
-- **⚠️ GOTCHA: Fixed null crash in Plantillas** — -                     <!-- Botón Plantillas -->
-+                    
+- **⚠️ GOTCHA: Fixed null crash in Agrupar — prevents null/undefined runtime crashes** — -             function renderQuickReplies(data) {{
++             func
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 
-## Active: `.`
-
-- **⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes**
-- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed**
-- **Fixed null crash in Sticker — prevents null/undefined runtime crashes — confirmed 3x**
-- **what-changed in inbox.html — confirmed 3x**
-- **Fixed null crash in WhatsApp — prevents null/undefined runtime crashes — confirmed 4x**
+Content summary (8
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1003 notes | Score threshold: >40
++ > 1006 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 999 notes | Score threshold: >40
++ > 1003 notes | Score threshold:
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 993 notes | Score threshold: >40
++ > 999 notes | Score threshold: 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 990 notes | Score threshold: >40
++ > 993 notes | Score threshold: 
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - Fixed null crash in Sticker — prevents null/undefined runtime crashes — confirmed 3x
-- what-changed in inbox.html — confirmed 3x
-- Fixed null crash in WhatsApp — prevents null/undefined runtime crashes — confirmed 4x
-- Fixed null crash in Audio — fixes memory leak from uncleared timers — confirmed 3x
-- Fixed null crash in Wait — confirmed 4x
-- Fixed null crash in POST — prevents null/undefined runtime crashes — confirmed 3x
-- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 4x
-- what-changed in inbox.html — confirmed 5x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -65,9 +55,9 @@
 
 ## Recent Decisions
 
-- decision in inbox.html
-- decision in inbox.html
-- decision in inbox.html
+- Optimized Score — evolves the database schema to support new requirements
+- decision in shared-context.json
+- Optimized Score — evolves the database schema to support new requirements
 - decision in inbox.html
 
 ## Learned Patterns

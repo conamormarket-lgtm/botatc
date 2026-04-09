@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 11 gotchas, 18 conventions, 49 fixes."
+description: "Python for botatc. 12 gotchas, 18 conventions, 49 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **113 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **114 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **113 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Agrupar — prevents  | -             function renderQuickReplies(data) {{ +             function renderQuickReplies(data)  |
 | ⚠️ GOTCHA: Fixed null crash in Request — paralleli | - @app.post("/api/admin/enviar_manual") +  - async def enviar_manual_endpoint(request: Request):  |
 | ⚠️ GOTCHA: Fixed null crash in HTMLResponse | -     html = html.replace("{chat_viewer_html}", chat_viewer_html) +     html = html.replace("{label |
 | ⚠️ GOTCHA: Fixed null crash in None | -         chat_viewer_html = f""" +         session_tags = s.get("etiquetas", []) -         {statu |
@@ -273,10 +274,6 @@ Auto-compiled from **113 real patterns** in **botatc**. This skill is auto-route
 4. identifier: Request
 5. identifier: None
 
-### Patched security issue Clean
-- """Replace both instances of the old renderQuickReplies with the new one that shows label badges"""
-+ """Clean up server.py:
-- 
-+ 1.
+### Patch
 
 ... [Truncated — see individual observations for full content]
