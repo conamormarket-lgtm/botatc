@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1419 notes | Score threshold: >40
+> 1445 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score
-+ - ⚠️ GOTCHA: problem-fix in agent-rul
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LEFT — prevents null/undefined runtime crashes
-- **⚠️ GOTCHA: Optimized Score** — - > 1388 notes | Score threshold: >40
-+ > 1405 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nivel — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: Fixed null crash in Meta — parallelizes async operations for speed** — -             return {"ok": True, "media_id": media_id}
-+            
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Added JWT tokens authen
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1423 notes | Score threshold: >40
++ > 1431 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "77cba83163889274",
++
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Optimized Score
-- - ⚠️ 
++ - ⚠️ GOTCHA: Optimized Score — evolv
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in shared-context.json — confirmed 5x
+- Updated configuration server — confirmed 3x
 - Optimized GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - discovery in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 10x
 - problem-fix in agent-rules.md — confirmed 11x
-- Added JWT tokens authentication — confirmed 3x
-- convention in shared-context.json
-- problem-fix in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

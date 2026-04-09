@@ -850,12 +850,15 @@
         let mediaRecorder;
         let audioChunks = [];
         let isRecording = false;
+        window._isAudioRecording = false;
 
         document.addEventListener('click', async function(e) {
             const btnRecord = e.target.closest('#btnRecordAudio');
             if(btnRecord) {
                 if(!isRecording) {
                     try {
+                        window._isAudioRecording = true;
+                        if(window.toggleSendMicButton) window.toggleSendMicButton();
                         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                         mediaRecorder = new MediaRecorder(stream);
                         audioChunks = [];
@@ -976,6 +979,49 @@
         };
 
 
+                // Alternar boton enviar / grabar audio
+        window.toggleSendMicButton = function() {
+            if (window._isAudioRecording) return; // No alternar si estamos grabando
+            const input = document.getElementById('manualMsgInput');
+            const submitMenu = document.getElementById('btnSubmitForm');
+            const micMenu = document.getElementById('btnRecordAudio');
+            if (input && submitMenu && micMenu) {
+                if (input.value.trim().length > 0) {
+                    submitMenu.style.display = 'flex';
+                    micMenu.style.display = 'none';
+                } else {
+                    submitMenu.style.display = 'none';
+                    micMenu.style.display = 'flex';
+                }
+            }
+        };
+
+        // Escuchar input manual
+        document.addEventListener('input', function(e) {
+            if(e.target.id === 'manualMsgInput') {
+                window.toggleSendMicButton();
+            }
+        });
+        
+        // Interceptar asignaciones programáticas a value
+        const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        setTimeout(() => {
+            const msgInput = document.getElementById('manualMsgInput');
+            if (msgInput && msgInput.__valueInterceptor !== true) {
+                Object.defineProperty(msgInput, "value", {
+                    set: function(val) {
+                        originalValueSetter.call(this, val);
+                        if (window.toggleSendMicButton) window.toggleSendMicButton();
+                    },
+                    get: function() {
+                        return Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").get.call(this);
+                    }
+                });
+                msgInput.__valueInterceptor = true;
+                if(window.toggleSendMicButton) window.toggleSendMicButton();
+            }
+        }, 1000); // Darle tiempo a la creacion del SPA
+        
         window.enviarMensajeManual = async function (e, wa_id) {
             e.preventDefault();
             const input = document.getElementById('manualMsgInput');
@@ -1695,6 +1741,9 @@
                 
                 const btnRecord = document.getElementById('btnRecordAudio');
                 if (btnRecord) {
+                    isRecording = false;
+                    window._isAudioRecording = false;
+                    if(window.toggleSendMicButton) window.toggleSendMicButton();
                     btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
                     btnRecord.style.color = "var(--text-main)";
                 }

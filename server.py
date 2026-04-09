@@ -1900,40 +1900,23 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center; box-sizing:border-box; max-width:100%;">
                 <input type="hidden" id="replyToWamid" value="">
                 
-                <div style="position:relative; display:flex; gap:0.5rem;">
-                    <!-- Emoji Picker Button -->
-                    <button type="button" onclick="const m = document.getElementById('emojiMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Emojis">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                <!-- IZQUIERDA: Emojis y Stickers -->
+                <div style="flex:0 0 auto; display:flex; gap:0.1rem;">
+                    <!-- Emoji Button -->
+                    <button type="button" onclick="const m = document.getElementById('emojiMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:transparent; border:none; width:40px; height:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Emojis">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                     </button>
-                    <!-- Menú Flotante Unificado (Emojis + Stickers) -->
-                    <div id="emojiMenu" style="display:none; position:absolute; bottom:55px; left:0; z-index:1000; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.3); flex-direction:column; width:340px; overflow:hidden;">
-                        <div style="display:flex; background:var(--accent-bg); border-bottom:1px solid var(--accent-border);">
-                            <button type="button" onclick="document.getElementById('emojiTabContent').style.display='block'; document.getElementById('stickerTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.nextElementSibling.style.borderBottom='none'; this.nextElementSibling.style.color='var(--text-muted)';" style="flex:1; padding:0.8rem; background:transparent; border:none; border-bottom:2px solid var(--primary-color); color:var(--primary-color); cursor:pointer; font-weight:600; font-size:0.9rem; transition:color 0.2s;">🙂 Emojis</button>
-                            <button type="button" onclick="document.getElementById('stickerTabContent').style.display='block'; document.getElementById('emojiTabContent').style.display='none'; this.style.borderBottom='2px solid var(--primary-color)'; this.style.color='var(--primary-color)'; this.previousElementSibling.style.borderBottom='none'; this.previousElementSibling.style.color='var(--text-muted)'; cargarStickers();" style="flex:1; padding:0.8rem; background:transparent; border:none; border-bottom:none; color:var(--text-muted); cursor:pointer; font-weight:600; font-size:0.9rem; transition:color 0.2s;">⭐ Stickers</button>
-                        </div>
-                        <div id="emojiTabContent" style="display:block;">
-                            <emoji-picker class="light" style="width:100%; border:none; --background:var(--bg-main);"></emoji-picker>
-                        </div>
-                        <div id="stickerTabContent" class="custom-scrollbar" style="display:none; padding:1rem; width:100%; height:330px; overflow-y:auto; box-sizing:border-box;">
-                            <div id="stickersGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 0.8rem; justify-items: center;"></div>
-                            <div style="margin-top:1rem; text-align:center;">
-                                <label style="background:rgba(255,255,255,0.07); border:1px dashed var(--accent-border); color:var(--text-muted); font-size:0.75rem; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; display:inline-block; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'">
-                                    + Subir Nuevo Sticker (.webp/png)
-                                    <input type="file" accept="image/webp, image/png" style="display:none;" onchange="uploadStickerFromMenu(this)">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Sticker Button -->
+                    <button type="button" onclick="const m = document.getElementById('stickerMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:transparent; border:none; width:40px; height:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Stickers">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path><path d="M8.5 8.5v.01"></path><path d="M16 15.5v.01"></path><path d="M12 12v.01"></path><path d="M11 17a4.5 4.5 0 0 0 5-3"></path></svg>
+                    </button>
+                </div>
 
-                    <!-- Botón Clip (Adjuntos) -->
-                    <button type="button" onclick="const m = document.getElementById('attachMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Adjuntar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-                    </button>
-                    <!-- Menú Flotante de Adjuntos -->
-                    <div id="attachMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); left:0; width:190px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.2rem; z-index:100;">
-                        <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').setAttribute('capture', 'environment'); document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> Tomar Foto (Cámara)
-                        </button>
+                <!-- CENTRO: Input + Iconos internos -->
+                <div style="flex:1; display:flex; align-items:center; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:30px; padding:0.2rem 0.6rem; position:relative;">
+                    
+                    <!-- attach menu invisible pero insertado antes para dom tree relative -->
+                    <div id="attachMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); right:60px; width:190px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.2rem; z-index:100;">
                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').removeAttribute('capture'); document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Subir Imagen
                         </button>
@@ -1943,27 +1926,42 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'audio'); document.getElementById('hiddenFileInput').accept='audio/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> Subir Audio
                         </button>
-
+                        <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'documento'); document.getElementById('hiddenFileInput').accept='.pdf,.doc,.docx,.xls,.xlsx,.txt'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Subir Documento
+                        </button>
                     </div>
 
-                    <!-- Botón Plantillas -->
-                    <button type="button" onclick="const m = document.getElementById('templateMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarPlantillas();" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Plantillas (24h)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <input type="text" id="manualMsgInput" placeholder="Mensaje..." style="flex:1; min-width:0; background:transparent; border:none; outline:none; color:var(--text-main); font-size:1rem; padding:0.6rem 0.2rem; font-family:var(--font-main);" autocomplete="off" oninput="checkQuickReplyTrigger(this); if(window.toggleSendMicButton) window.toggleSendMicButton();">
+                    
+                    <!-- Clip (Adjuntos) -->
+                    <button type="button" onclick="const m = document.getElementById('attachMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:transparent; border:none; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Adjuntar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg);"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                     </button>
-                    <!-- Botón Quick Replies -->
-                    <button type="button" onclick="const side = document.getElementById('rightSidebar'); side.style.display = side.style.display==='none'?'flex':'none'; if(side.style.display==='flex') cargarQuickReplies();" style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='var(--bg-main)'" title="Respuestas Rápidas (/)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/><circle cx="10" cy="14" r="3"/><line x1="12" y1="16" x2="15" y2="19"/></svg>
+                    <!-- Cámara -->
+                    <button type="button" onclick="document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').setAttribute('capture', 'environment'); document.getElementById('hiddenFileInput').click();" style="background:transparent; border:none; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Cámara">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    </button>
+                    <!-- Rayo (Respuestas) -->
+                    <button type="button" onclick="const side = document.getElementById('rightSidebar'); side.style.display = side.style.display==='none'?'flex':'none'; if(side.style.display==='flex') cargarQuickReplies();" style="background:transparent; border:none; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--accent-hover); transition:color 0.2s;" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--accent-hover)'" title="Respuestas Rápidas">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                     </button>
                 </div>
 
-                <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;min-width:0;width:100%;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);box-sizing:border-box;" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
-                <button type="button" id="btnCancelAudio" style="background:var(--danger-color); color:white; border:none; border-radius:12px; height:44px; width:44px; display:none; align-items:center; justify-content:center; cursor:pointer; margin-left: 0.5rem; transition: background 0.2s;" title="Cancelar grabación">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                <button type="button" id="btnRecordAudio" style="background:var(--accent-bg); color:var(--text-main); border:none; border-radius:12px; height:44px; width:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-left: 0.5rem; margin-right: 0.5rem; transition: background 0.2s, color 0.2s;" title="Grabar nota de voz">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                </button>
-                <button type="submit" style="background:var(--primary-color);color:white;border:none;border-radius:12px;padding:0 1.5rem;height:44px;font-weight:600;font-size:0.95rem;cursor:pointer;transition:background 0.2s;">Enviar</button>
+                <!-- DERECHA: Mic o Send -->
+                <div style="flex:0 0 auto; display:flex; align-items:center; gap:0.2rem;">
+                    <!-- Send Button (Toggle) -->
+                    <button type="submit" id="btnSubmitForm" style="background:var(--primary-color);color:white;border:none;border-radius:50%;width:46px;height:46px;display:none;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.2s; box-shadow:0 3px 5px rgba(0,0,0,0.2);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Enviar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="margin-left: 2px;"><line x1="22" y1="2" x2="11" y2="13" stroke="white" stroke-width="2"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                    <!-- Record Audio Button (Toggle) -->
+                    <button type="button" id="btnRecordAudio" style="background:var(--primary-color);color:white;border:none;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.2s; box-shadow:0 3px 5px rgba(0,0,0,0.2);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Grabar nota de voz">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                    </button>
+                    <!-- Cancel Audio -->
+                    <button type="button" id="btnCancelAudio" style="background:var(--danger-color); color:white; border:none; border-radius:50%; height:46px; width:46px; display:none; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Cancelar grabación">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
             </form>            """
 
         session_tags = s.get("etiquetas", [])

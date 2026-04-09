@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 19 gotchas, 24 conventions, 62 fixes."
+description: "Python for botatc. 19 gotchas, 24 conventions, 63 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **145 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **148 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -39,6 +39,20 @@ Auto-compiled from **145 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in IZQUIERDA — parallelizes async operations for speed
+-                 <div style="position:relative; display:flex; gap:0.5rem;">
++                 <!-- IZQUIERDA: Emojis y Stickers -->
+-                     <!-- Emoji Picker Button -->
++                 <div style="flex:0 0 auto; display:flex; gap:0.1rem;">
+-                     <button type="button" onclick="const m = document.getElementById('emojiMenu'); m.style.display = m.style.display==='n
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: IZQUIERDA
+3. identifier: Emojis
+4. identifier: Stickers
+5. identifier: Emoji
 
 ### Fixed null crash in Tomar — parallelizes async operations for speed
 -                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-ali
@@ -238,22 +252,6 @@ Auto-compiled from **145 real patterns** in **botatc**. This skill is auto-route
 5. identifier: Buscar
 
 ### Fixed null crash in Show — parallelizes async operations for speed
--             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr} title="Click derecho (PC) o mantener presionado (Móvil) para opciones">{texto_renderizado}</div>'
-+             
--             
-+             import datetime
--         if not burbujas:
-+             meta_html = ""
--             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciad
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Show
-3. identifier: Click
-4. identifier: Conversaci
-5. identifier: Cabecera
-
-### Fixed null crash in Manejar — protects against XSS and CSRF token theft
--         # Ignorar event
+-             burbujas +
 
 ... [Truncated — see individual observations for full content]

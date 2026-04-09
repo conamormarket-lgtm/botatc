@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 155 gotchas, 143 conventions, 71 fixes."
+description: "Project for botatc. 162 gotchas, 144 conventions, 71 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **681 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,13 @@ Auto-compiled from **681 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... + -  |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the databas |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1423 notes - Score threshold: >40 + > 1431 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - gotcha  |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to supp |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1419 notes - Score threshold: >40 + > 1423 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1405 notes - Score threshold: >40 + > 1419 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in LEFT — prevents null/undefined runtime crashes + - problem-fix in agent-rule |
 | ⚠️ GOTCHA: Optimized Score | - > 1388 notes - Score threshold: >40 + > 1405 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
@@ -61,13 +68,6 @@ Auto-compiled from **681 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: problem-fix in brainsync_auto.md | - > 1029 notes - Score threshold: >40 + > 1030 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1014 notes - Score threshold: >40 + > 1019 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1003 notes - Score threshold: >40 + > 1006 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 999 notes - Score threshold: >40 + > 1003 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JW |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 993 notes - Score threshold: >40 + > 999 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 990 notes - Score threshold: >40 + > 993 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 987 notes - Score threshold: >40 + > 990 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 984 notes - Score threshold: >40 + > 987 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 982 notes - Score threshold: >40 + > 984 notes - Score threshold: >40 - - Replaced auth Patched  |
 
 ## 🔧 Problem Playbooks
 
@@ -193,6 +193,7 @@ Auto-compiled from **681 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security i
+- - Patched security issue Kevin
++ - problem-fix in 
 
 ... [Truncated — see individual observations for full content]
