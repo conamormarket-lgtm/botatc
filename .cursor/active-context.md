@@ -1,379 +1,377 @@
 > **BrainSync Context Pumper** 🧠
 > Dynamically loaded for active file: `inbox.html` (Domain: **Generic Logic**)
 
-### 📐 Generic Logic Conventions & Fixes
-- **[problem-fix] Fixed null crash in Content — prevents null/undefined runtime crashes**: -             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
-+             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
--                 await fetch('/enviar_mensaje', {
-+                 const res = await fetch('/api/admin/enviar_manual', {
--                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-+                     headers: { 'Content-Type': 'application/json' },
--                     body: `wa_id=${wa_id}&mensaje=${encodeURIComponent(msj)}&reply_to=${replyToWamid}`
-+                     body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid })
--             } catch(e) {
-+                 
--                 console.error("Error direct send", e);
-+                 const data = await res.json();
--             }
-+                 if(!data.ok) { console.error("Error direct send json", data); }
--         };
-+             } catch(e) {
-- 
-+                 console.error("Error direct send", e);
--         window.enviarMensajeManual = async function (e, wa_id) {
-+             }
--             e.preventDefault();
-+         };
--             const input = document.getElementById('manualMsgInput');
+### 🔴 Generic Logic Gotchas
+- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed**: - @app.post("/api/admin/enviar_manual")
 + 
--             if (!input) return;
-+         window.enviarMensajeManual = async function (e, wa_id) {
--             const msj = input.value.trim();
-+             e.preventDefault();
--             if (!msj) return;
-+             const input = document.getElementById('manualMsgInput');
-- 
-+             if (!input) return;
--             // Vaciar y enfocar
-+             const msj = input.value.trim();
--             input.value = '';
-+             if (!msj) return;
--             input.focus();
-+ 
-- 
-+             // Vaciar y enfocar
--             // Dibujado optimista instantáneo
-+             input.value = '';
--             const scroll = document.getE
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in POST — prevents null/undefined runtime crashes — confirmed 3x**: -         window.enviarMensajeManual = async function (e, wa_id) {
-+         
--             e.preventDefault();
-+         window.enviarMensajeDirecto = async function(wa_id, msj) {
--             const input = document.getElementById('manualMsgInput');
-+             if (!msj) return;
--             if (!input) return;
-+             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
--             const msj = input.value.trim();
-+             try {
--             if (!msj) return;
-+                 await fetch('/enviar_mensaje', {
-- 
-+                     method: 'POST',
--             // Vaciar y enfocar
-+                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
--             input.value = '';
-+                     body: `wa_id=${wa_id}&mensaje=${encodeURIComponent(msj)}&reply_to=${replyToWamid}`
--             input.focus();
-+                 });
-- 
-+             } catch(e) {
--             // Dibujado optimista instantáneo
-+                 console.error("Error direct send", e);
--             const scroll = document.getElementById('chatScroll');
-+             }
--             if (scroll) {
-+         };
--                 const bubble = document.createElement('div');
-+ 
--                 bubble.className = "bubble bubble-bot lado-izq";
-+         window.enviarMensajeManual = async function (e, wa_id) {
--                 bubble.style.border = "1px solid var(--primary-color)";
-+             e.preventDefault();
--                 bubble.innerText = msj;
-+             const input = document.getElementById('manualMsgInput');
--                 scroll.appendChild(bubble);
-+             if (!input) return;
--                 scroll.scrollTop = scroll.scrollHeight;
-+             const msj = input.value.trim();
--             }
-+             if (!msj) return;
--             const replyWamid = document.getElementById('replyToWamid') ? document.getElementById(
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] Updated schema Intercept**: -         // Smart ESC to exit chat without interrupting sequence
-+         
--         document.addEventListener('keydown', function(event) {
-+         // Intercept clicks on other chats if a sequence is sending
--             if (event.key === 'Escape') {
-+         document.addEventListener('click', async function(e) {
--                 if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
-+             const chatRow = e.target.closest('.chat-row');
--                     const urlParams = new URLSearchParams(window.location.search);
-+             if (chatRow && window.isSendingSequence) {
--                     const tab = urlParams.get('tab') || 'all';
-+                 e.preventDefault();
--                     
-+                 const url = chatRow.href;
--                     if (window.isSendingSequence) {
-+                 
--                         // Soft Virtual Exit to keep sequence sending in background
-+                 // Soft Navigation (PJAX style)
--                         window.history.pushState(null, '', `/inbox?tab=${tab}`);
-+                 window.history.pushState(null, '', url);
--                         
-+                 document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
--                         document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
-+                 chatRow.classList.add('active-row');
--                         
-+                 
--                         const viewer = document.querySelector('.chat-viewer-panel');
-+                 const viewer = document.querySelector('.chat-viewer-panel');
--                         if (viewer) {
-+                 if (viewer) {
--                             viewer.innerHTML = `
-+                     viewer.innerHTML = '<div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; 
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] Updated schema Smart**: -         // Pure ESC to exit chat
-+         // Smart ESC to exit chat without interrupting sequence
--                     window.location.href = `/inbox?tab=${tab}`;
-+                     
--                 }
-+                     if (window.isSendingSequence) {
--             }
-+                         // Soft Virtual Exit to keep sequence sending in background
--         });
-+                         window.history.pushState(null, '', `/inbox?tab=${tab}`);
-- 
-+                         
-- </script>
-+                         document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
--                 </div>
-+                         
-- 
-+                         const viewer = document.querySelector('.chat-viewer-panel');
--                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
-+                         if (viewer) {
--                     <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'"
-+                             viewer.innerHTML = `
--                         style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
-+                             <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
--                     <button type="button" onclick="guardarNuevaEtiquetaModal()"
-+                                 <h3>Bandeja de Entrada</h3>
--                         style="padding:0.6rem 1rem; border-radius:6px; background:var(--primary-color); border:none; color:white; font-weight:600; cursor:pointer;">Guardar</button>
-+                                 <p style="font-size:0.9rem; max-width:400px;">Selecciona una conversación para empezar o continuar chateando.</p>
--                 </div>
-+                             </div>`;
--          
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] what-changed in inbox.html**: -             --bg-sidebar: #17264a;
-+             --bg-sidebar: var(--bg-main);
--             --bg-list: #1b2d56;
-+             --bg-list: var(--bg-main);
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 4x**: -             background-color: var(--bg-main);
-+             background-color: var(--bg-sidebar);
--         
-+         }
--             background-color: var(--bg-sidebar);}
-+ 
-- 
-+         .chat-list-panel {
--         .chat-list-panel {
-+             width: 340px;
--             width: 340px;
-+             background-color: var(--bg-list);
--             background-color: var(--bg-main);
-+             border-right: 1px solid var(--accent-border);
--             border-right: 1px solid var(--accent-border);
-+             display: flex;
--             display: flex;
-+             flex-direction: column;
--             flex-direction: column;
-+             z-index: 5;
--             z-index: 5;
-+             transition: all 0.3s ease;
--             transition: all 0.3s ease;
-+             min-height: 0;
--             min-height: 0;
-+         }
--         
-+ 
--             background-color: var(--bg-list);}
-+         .chat-viewer-panel {
-- 
-+             flex: 1;
--         .chat-viewer-panel {
-+             background-color: var(--bg-main);
--             flex: 1;
-+             display: flex;
--             background-color: var(--bg-main);
-+             flex-direction: column;
--             display: flex;
-+             position: relative;
--             flex-direction: column;
-+             min-width: 0;
--             position: relative;
-+             /* previene desbordamiento en flex */
--             min-width: 0;
-+         }
--             /* previene desbordamiento en flex */
-+ 
--         }
-+         /* ---------------- LEFT SIDEBAR ---------------- */
-- 
-+         .nav-item {
--         /* ---------------- LEFT SIDEBAR ---------------- */
-+             width: 44px;
--         .nav-item {
-+             height: 44px;
--             width: 44px;
-+             border-radius: 12px;
--             height: 44px;
-+             display: flex;
--             border-radius: 12px;
-+             align-items: center;
--             
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] what-changed in inbox.html — confirmed 5x**: -             --bg-main: #1b2b4e;             
-+             --bg-main: #213668;             
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[decision] decision in inbox.html**: -             --primary-hover: #527ddb;
-+             --primary-hover: #2857bd;
--             --accent-bg: #374a68;
-+             --accent-bg: #1e293b;
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] what-changed in inbox.html — confirmed 7x**: -             --accent-bg: #5173aa;
-+             --accent-bg: #364e75;
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] decision in inbox.html — confirmed 9x**: -             --primary-hover: #2857bd;
-+             --primary-hover: #527ddb;
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in Inbox — prevents null/undefined runtime crashes — confirmed 11x**: - <head>
-+ 
--     <meta charset="UTF-8">
-+ <head>
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UTF-8">
--     <title>Inbox - IA-ATC</title>
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google: Inter para lectura, Outfit para acentos audaces -->
-+     <title>Inbox - IA-ATC</title>
--     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
-+     <!-- Fuentes de Google: Inter para lectura, Outfit para acentos audaces -->
--     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
-+     <link
--     <style>
-+         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap"
--         :root {
-+         rel="stylesheet">
--             /* 1. Nivel de Color Principal */
-+     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
--             --primary-color: #3b82f6;       
-+     <style>
--             --primary-hover: #2563eb;       
-+         :root {
--             /* 2. Nivel de Color de Acento */
-+             /* 1. Nivel de Color Principal */
--             --accent-bg: #1e293b;           
-+             --primary-color: #3b82f6;
--             --accent-border: #334155;       
-+             --primary-hover: #2563eb;
--             --accent-hover-soft: #334155;   
-+             /* 2. Nivel de Color de Acento */
--             /* 3. Nivel de Color de Fondo General */
-+             --accent-bg: #1e293b;
--             --bg-main: #1b2b4e;             
-+             --accent-border: #334155;
--             /* 4. Tipografías */
-+             --accent-hover-soft: #334155;
--             --font-main: 'Inter', sans-serif;
+- async def enviar_manual_endpoint(request: Request):
++ @app.get("/api/admin/buscar_mensajes")
+-     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""
++ async def buscar_mensajes(q: str, request: Request):
+-         raise HTTPException(status_code=403, detail="No autorizado")
++         return {"ok": False, "error": "No autorizado"}
+-     data = await request.json()
++     q = q.lower().strip()
+-     wa_id = data.get("wa_id")
++     if not q or len(q) < 2:
+-     texto = data.get("texto", "").strip()
++         return {"ok": True, "resultados": []}
+-     reply_to_wamid = data.get("reply_to_wamid")
 +     
+-     
++     resultados = []
+-     if not wa_id or wa_id not in sesiones or not texto:
++     # Usar dict para evitar iteraciones conflictivas
+-         return {"ok": False}
++     for wa_id, session in list(sesiones.items()):
+-         
++         historial = session.get("historial", [])
+-     s = sesiones[wa_id]
++         nombre = session.get("nombre_cliente", wa_id)
+-     # No guardamos en historial todavía, hasta confirmar envío
++         
+-     
++         matches_en_chat = []
+-     from whatsapp_client import enviar_mensaje, enviar_media
++         # Inverso para los más recientes
+-     import re
++         for msg in reversed(historial):
+-     
++             content = msg.get("content", "")
+-     async def process_and_send():
++             if content and q in content.lower() and msg.get("role") != "system":
+-         from whatsapp_client import enviar_media, enviar_mensaje, subir_media
++                 idx = content.lower().find(q)
+-         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[video:[^\]]+\]|\[audio:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
++                 start = max(0, idx - 25)
+-         last_wamid = None
++                 end = min(len(content), idx + len(q) + 25)
+-         exito_alguna_parte = False
++                 snippet = 
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+
+### 📐 Generic Logic Conventions & Fixes
+- **[convention] Fixed null crash in Sticker — prevents null/undefined runtime crashes — confirmed 3x**: -                 // Check if it's a sticker
++                 let clickedImg = e.target.closest('img');
+-                 let stickerImg = bubble.querySelector('img[alt^="Sticker"]');
++                 let stickerImg = null;
+-                 let ctxSaveSticker = document.getElementById("ctxSaveSticker");
++                 let regularImg = null;
+-                 if (stickerImg) {
++ 
+-                     ctxTargetMediaId = stickerImg.getAttribute('alt').replace('Sticker ', '').trim();
++                 if (clickedImg && clickedImg.getAttribute('alt')) {
+-                     ctxSaveSticker.style.display = 'flex';
++                     if (clickedImg.getAttribute('alt').startsWith("Sticker")) {
+-                 } else {
++                         stickerImg = clickedImg;
+-                     ctxTargetMediaId = "";
++                     } else if (clickedImg.getAttribute('alt').startsWith("Imagen")) {
+-                     ctxSaveSticker.style.display = 'none';
++                         regularImg = clickedImg;
+-                 }
++                     }
+- 
++                 } else {
+-                 let regularImg = bubble.querySelector('img[alt^="Imagen"]');
++                     stickerImg = bubble.querySelector('img[alt^="Sticker"]');
+-                 let ctxCopyImage = document.getElementById("ctxCopyImage");
++                     regularImg = bubble.querySelector('img[alt^="Imagen"]');
+-                 let ctxDownloadImage = document.getElementById("ctxDownloadImage");
++                 }
+-                 if (regularImg && !stickerImg) {
++ 
+-                     ctxTargetImageUrl = regularImg.src;
++                 let ctxSaveSticker = document.getElementById("ctxSaveSticker");
+-                     ctxCopyImage.style.display = 'flex';
++                 if (stickerImg) {
+-                     ctxDownloadImage.style.display = 'flex';
++                     ctxTargetMediaId = stickerImg.getAttribute('alt').replace('Sticker 
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] 🟢 Edited inbox.html (4071 changes, 24min)**: Active editing session on inbox.html.
-4071 content changes over 24 minutes.
-- **[trade-off] trade-off in inbox.html**: -             --bg-main: #0f172a;             
-+             --bg-main: #213668;             
-- </script>
-+ 
--                 </div>
-+         // Pure ESC to exit chat
--                 
-+         document.addEventListener('keydown', function(event) {
--                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
-+             if (event.key === 'Escape') {
--                     <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'" style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
-+                 if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
--                     <button type="button" onclick="guardarNuevaEtiquetaModal()" style="padding:0.6rem 1rem; border-radius:6px; background:var(--primary-color); border:none; color:white; font-weight:600; cursor:pointer;">Guardar</button>
-+                     const urlParams = new URLSearchParams(window.location.search);
--                 </div>
-+                     const tab = urlParams.get('tab') || 'all';
--             </div>
-+                     window.location.href = `/inbox?tab=${tab}`;
--         </div>
-+                 }
--     </div>
+- **[what-changed] what-changed in inbox.html**: -                                             div.className = 'bubble bubble-out';
++                                             div.className = 'bubble bubble-bot lado-der';
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] what-changed in inbox.html — confirmed 3x**: -                 bubble.className = "bubble bubble-bot lado-izq";
++                 bubble.className = "bubble bubble-bot lado-der";
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in WhatsApp — prevents null/undefined runtime crashes — confirmed 4x**: -                                         alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.");
++                                         alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.\n\nDetalle técnico: " + (enviaRes?.error || "Desconocido"));
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in Audio — fixes memory leak from uncleared timers — confirmed 3x**: -                         alert("Es necesario otorgar permisos de micrófono al navegador para grabar audios.");
++                         console.error('Audio Recorder Error:', err);
+-                     }
++                         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+-                 } else {
++                             alert("❌ ¡Conexión Insegura! Tu navegador ha bloqueado el micrófono por seguridad. Las web de grabación de audio OBLIGAN a que uses 'https://' o entres desde 'http://localhost' en lugar de usar una IP directa de la red.");
+-                     // Stop recording (this triggers the "stop" event listener above to send the message)
++                         } else {
+-                     mediaRecorder.stop();
++                             alert("Permiso Denegado o Error: " + err.message + ". Verifica el candadito arriba a la izquierda y dale permisos al micrófono.");
+-                     isRecording = false;
++                         }
+-                     mediaRecorder.stream.getTracks().forEach(t => t.stop());
++                     }
+-                     
++                 } else {
+-                     btnRecord.style.background = "var(--accent-bg)";
++                     // Stop recording (this triggers the "stop" event listener above to send the message)
+-                     btnRecord.style.color = "var(--text-main)";
++                     mediaRecorder.stop();
+-                     btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
++                     isRecording = false;
+-                     
++                     mediaRecorder.stream.getTracks().forEach(
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in Wait — confirmed 4x**: -         document.getElementById('chatSearchInput')?.addEventListener('input', window.aplicarFiltroChats);
++         
+- 
++         const searchInp = document.getElementById('chatSearchInput');
+-         function iniciarNuevoChat() {
++         if (searchInp) {
+-             let val = document.getElementById('chatSearchInput').value.trim();
++             const savedSearch = sessionStorage.getItem('chatSearchValue');
+-             val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
++             if (savedSearch) {
+-             if (val.length < 9) return alert("Número muy corto");
++                 searchInp.value = savedSearch;
+-             if (!val.startsWith("51")) val = "51" + val;
++                 // Wait for DOM to finish then apply
+-             window.location.href = `/inbox/${val}`;
++                 setTimeout(() => { if(window.aplicarFiltroChats) window.aplicarFiltroChats(); }, 100);
+-         }
 +             }
 - 
-+         });
--     <!-- Elementos ocultos para selectores del sistema -->
++             
+-         // EMOJI PICKER HOOK - Global event delegation
++             searchInp.addEventListener('input', function(e) {
+-         document.addEventListener('emoji-click', event => {
++                 sessionStorage.setItem('chatSearchValue', this.value);
+-             const input = document.getElementById('manualMsgInput');
++                 if(window.aplicarFiltroChats) window.aplicarFiltroChats();
+-             if (input) {
++             });
+-                 input.value += event.detail.unicode;
++         }
+-                 input.focus();
 + 
--     <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
-+ </script>
-- </body>
-+                 </div>
-- </html>
-+                 
-- 
-+                 <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
-+                     <button type="button" onclick="document.getElementById('createLabelModal').style.display='none'" style="padding:0.6rem 1rem; border-radius:6px; background:none; border:none; color:var(--text-main); font-weight:600; cursor:pointer;">Cancelar</button>
-+                     <button t
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes — confirmed 5x**: -     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">// Si no se cerró ningún menú y estamos dentro de un chat, ir al inicio
-+     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js">
--                 if(!closedModal && window.location.pathname.match(/^\/inbox\/.+/)) {
-+         // --- NAVEGACIÓN Y SKELETONS ---
--                     const urlParams = new URLSearchParams(window.location.search);
-+         document.addEventListener('keydown', function(event) {
--                     const tab = urlParams.get('tab') || 'all';
-+             if (event.key === 'Escape') {
--                     window.location.href = `/inbox?tab=${tab}`;
-+                 let closedModal = false;
--                 }
-+                 ['qrCreateModal', 'rightSidebar', 'emojiMenu', 'attachMenu', 'inboxFilterMenu', 'bubbleContextMenu'].forEach(id => {
 -             }
-+                     const el = document.getElementById(id);
++ 
 -         });
-+                     if(el && el.style.display !== 'none' && el.style.display !== '') {
++         function iniciarNuevoChat() {
 - 
-+                         el.style.display = 'none';
--         document.addEventListener('click', function(e) {
-+                         closedModal = true;
--             const chatRow = e.target.closest('a.chat-row');
-+                     }
--             if(chatRow) {
-+                 });
--                 const chatViewer = document.querySelector('.chat-viewer-panel');
-+                 
--                 if(chatViewer) {
-+                 // Si no se cerró ningún menú y estamos dentro de un chat, ir al inicio
--                     // Muestra el skeleton layout simulando un chat mientras el navegador navega a la URL
-+                 if(!closedModal && window.location.pathname.match(/^\/inbox\/.+/)) {
--                     chatViewer.innerHTML = `
-+                     const urlParams = new URLSearchParams(window.location.search);
--                
++             let val = document.getElementById('chatSearchInput').value.trim();
+-         // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
++             val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
+-         document.addEventListener("click", function (e) {
++             if (val.length < 9) return alert("Número muy corto");
+-             const
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] what-changed in inbox.html — confirmed 5x**: -             --bg-main: #1b2b4e;             
-+             --bg-main: #213668;             
+- **[what-changed] Replaced dependency MODO**: -         # Solo lo agregamos si no está ya como último mensaje (evitar duplicados lógicos)
++ 
+-         if not sesion["historial"] or sesion["historial"][-1].get("content") != texto_cliente:
++ 
+-             sesion["historial"].append({"role": "user", "content": texto_cliente})
++         # ── MODO TESTER: preguntar N° de pedido manualmente ──
+- 
++         if es_tester:
+-         # ── MODO TESTER: preguntar N° de pedido manualmente ──
++             # Si ya nos dijo el número de pedido, buscarlo por ID
+-         if es_tester:
++             if sesion.get("esperando_pedido_tester"):
+-             # Si ya nos dijo el número de pedido, buscarlo por ID
++                 from firebase_client import inicializar_firebase
+-             if sesion.get("esperando_pedido_tester"):
++                 db = inicializar_firebase()
+-                 from firebase_client import inicializar_firebase
++                 id_pedido = texto_cliente.strip().upper()
+-                 db = inicializar_firebase()
++                 try:
+-                 id_pedido = texto_cliente.strip().upper()
++                     doc = db.collection("pedidos").document(id_pedido).get()
+-                 try:
++                     datos = doc.to_dict() if doc.exists else None
+-                     doc = db.collection("pedidos").document(id_pedido).get()
++                 except Exception:
+-                     datos = doc.to_dict() if doc.exists else None
++                     datos = None
+-                 except Exception:
++ 
+-                     datos = None
++                 if datos:
+- 
++                     sesion["esperando_pedido_tester"] = False
+-                 if datos:
++                     sesion["datos_pedido"] = datos
+-                     sesion["esperando_pedido_tester"] = False
++                     sesion["nombre_cliente"] = f"{datos.get('clienteNombre','')} {datos.get('clienteApellidos','')}".strip() or nombre
+-                     sesion["datos_pedido"
+… [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [html]
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[convention] Fixed null crash in Obtener — protects against XSS and CSRF token theft — confirmed 4x**: -     global BOT_GLOBAL_ACTIVO
++ 
+-     if not BOT_GLOBAL_ACTIVO:
++     # ── Obtener/crear sesión ──────────────────────────────
+-         print(f"  [⏹ Bot APAGADO globalmente → silencio]")
++     sesion = obtener_o_crear_sesion(numero_wa)
+-         return None
++     sesion["ultima_actividad"] = datetime.utcnow()
+- 
++     sesion["nombre_cliente"]   = nombre
+-     # ── Obtener/crear sesión ──────────────────────────────
++ 
+-     sesion = obtener_o_crear_sesion(numero_wa)
++     # 1) Guardar mensaje TEMPRANO para que SIEMPRE aparezca en el Inbox, sin duplicarse
+-     sesion["ultima_actividad"] = datetime.utcnow()
++     if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
+-     sesion["nombre_cliente"]   = nombre
++         sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
+- 
++         # ¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
+-     # 1) Guardar mensaje TEMPRANO para que SIEMPRE aparezca en el Inbox, sin duplicarse
++         try: 
+-     if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
++             from firebase_client import guardar_sesion_chat
+-         sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id})
++             guardar_sesion_chat(numero_wa, sesion)
+-         # ¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
++         except Exception as e:
+-         try: 
++             print(f"  [⚠️ Error guardando sesión temprana: {e}]")
+-             from firebase_client import guardar_sesion_chat
++ 
+-             guardar_sesion_chat(numero_wa, sesion)
++     global BOT_GLOBAL_ACTIVO
+-         except Exception as e:
++     if not BOT_GLOBAL_ACTIVO:
+-             print(f"  [⚠️ Error guardando sesión temprana: {e}]")
++         print(f"  [⏹ Bot APAGADO globalmente → silencio (guardado en BD)]")
+- 
++         return None
+-     # ── Buscar pedido en Firebase 
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[what-changed] Updated schema Conversion**: - old_code = """        # Conversion nativa WebM -> OGG para WhatsApp Voice Notes
++ new_block = """# Conversion nativa WebM -> MP4 para WhatsApp Voice Notes
+-         if "webm" in final_mime.lower() or "audio" in final_mime.lower():
++         if "webm" in final_mime.lower():
+-             try:
++             import imageio_ffmpeg
+-                 # Usar tmp para cross-platform compatibility
++             ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+-                 with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp_in:
++             try:
+-                     tmp_in.write(content)
++                 # Usar tmp para cross-platform compatibility
+-                     tmp_in_name = tmp_in.name
++                 with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp_in:
+-                 tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
++                     tmp_in.write(content)
+- 
++                     tmp_in_name = tmp_in.name
+-                 # Ejecutar FFMPEG (disponible via Aptfile en Railway)
++                 tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
+-                 # Utiliza codec aac compatible universal con .mp4
++ 
+-                 result = subprocess.run([
++                 # Ejecutar FFMPEG (via imageio-ffmpeg PIP)
+-                     'ffmpeg', '-y', '-i', tmp_in_name,
++                 result = subprocess.run([
+-                     '-c:a', 'aac', '-b:a', '64k',
++                     ffmpeg_exe, '-y', '-i', tmp_in_name,
+-                     tmp_out_name
++                     '-c:a', 'aac', '-b:a', '64k',
+-                 ], capture_output=True)"""
++                     tmp_out_name
+- 
++                 ], capture_output=True)"""
+- new_code = """        # Conversion nativa WebM -> MP4 para WhatsApp Voice Notes
++ 
+-         if "webm" in final_mime.lower():
++ text = re.sub(r'# Conversion nativa WebM.*?capture_output=True\)', new_block, text, flags=re.DOTALL)
+-             import subprocess, os, tempfile
++ 
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [text, new_block, text]
+- **[convention] problem-fix in server.py — confirmed 3x**: -         if media_id:
++         if media_id and not media_id.startswith("ERROR_META:"):
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **[what-changed] what-changed in requirements.txt**: - 
++ 
+- 
++ imageio-ffmpeg
++ 
+- **[what-changed] what-changed in requirements.txt**: - 
++ 
++ 
+- **[convention] Added JWT tokens authentication — confirmed 3x**: - # ============================================================
++ # ============================================================
+- #  whatsapp_client.py — Envía mensajes a WhatsApp via Meta API
++ #  whatsapp_client.py — Envía mensajes a WhatsApp via Meta API
+- # ============================================================
++ # ============================================================
+- import httpx
++ import httpx
+- from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
++ from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
+- 
++ 
+- META_API_URL = f"https://graph.facebook.com/{META_API_VERSION}/{META_PHONE_NUMBER_ID}/messages"
++ META_API_URL = f"https://graph.facebook.com/{META_API_VERSION}/{META_PHONE_NUMBER_ID}/messages"
+- 
++ 
+- 
++ 
+- def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) -> bool:
++ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) -> bool:
+-     """
++     """
+-     Envía un mensaje de texto al número de WhatsApp indicado.
++     Envía un mensaje de texto al número de WhatsApp indicado.
+- 
++ 
+-     Args:
++     Args:
+-         numero_destino: Número completo con código de país (ej: '51945257117')
++         numero_destino: Número completo con código de país (ej: '51945257117')
+-         texto:          Texto del mensaje a enviar
++         texto:          Texto del mensaje a enviar
+- 
++ 
+-     Returns:
++     Returns:
+-         wamid string si el envío fue exitoso, None si hubo error.
++         wamid string si el envío fue exitoso, None si hubo error.
+-     """
++     """
+-     headers = {
++     headers = {
+-         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
++         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+-         "Content-Type": "application/json",
++         "Content-Type": "application/json",
+-     }
++     }
+- 
++ 
+-     payload = {
++     payload = {
+-         "messaging_product": "whatsapp",
++         "messag
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [META_API_URL, enviar_mensaje, enviar_media, enviar_mensaje_texto, obtener_media_url]

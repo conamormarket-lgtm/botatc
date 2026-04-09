@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 109 gotchas, 102 conventions, 33 fixes."
+description: "Project for botatc. 113 gotchas, 106 conventions, 33 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **487 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **499 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **487 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1003 notes - Score threshold: >40 + > 1006 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 999 notes - Score threshold: >40 + > 1003 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JW |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 993 notes - Score threshold: >40 + > 999 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 990 notes - Score threshold: >40 + > 993 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 987 notes - Score threshold: >40 + > 990 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 984 notes - Score threshold: >40 + > 987 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
@@ -64,10 +68,6 @@ Auto-compiled from **487 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 567 notes - Score threshold: >40 + > 595 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in NAVEGACI — prevents null/undefined runtime crashes + - problem-fix in agent- |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in URLSearchParams — prevents null/undefined runtime crashes + - problem-fix in |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 539 notes - Score threshold: >40 + > 567 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Inbox — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 513 notes - Score threshold: >40 + > 535 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed nul |
 
 ## 🔧 Problem Playbooks
 
@@ -184,6 +184,8 @@ Auto-compiled from **487 real patterns** in **botatc**. This skill is auto-route
 + - Added error handling Respuestas — wraps unsafe operation in error boundary
 
 **Actionable Steps:**
-1. Modified 1 fil
+1. Modified 1 files
+
+### problem-fix in
 
 ... [Truncated — see individual observations for full content]
