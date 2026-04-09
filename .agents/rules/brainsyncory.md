@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1089 notes | Score threshold: >40
+> 1096 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- -
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in server.py
 + - problem-fix in agent-rules.md
 - - pro
@@ -36,10 +39,10 @@
 + - ⚠️ GOTCHA: Added JW
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1042 notes | Score threshold: >40
 + > 1053 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized Fixed — confirmed 3x
 - Fixed null crash in Solo — parallelizes async operations for speed — confirmed 4x
@@ -47,7 +50,6 @@
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Replaced auth Fixed — confirmed 3x
 
 ## Known Fixes
 
@@ -60,9 +62,9 @@
 ## Recent Decisions
 
 - Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 - decision in shared-context.json
 - Optimized Score — evolves the database schema to support new requirements
-- decision in inbox.html
 
 ## Learned Patterns
 

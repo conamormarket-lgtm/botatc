@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 125 gotchas, 118 conventions, 34 fixes."
+description: "Project for botatc. 126 gotchas, 118 conventions, 34 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **539 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **543 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **539 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - problem-fix in server.py + -  |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in server.py + - problem-fix in agent-rules.md - - problem-fix in inbox.html + - pro |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - gotcha in shared-context.json - - ⚠️ GOTCHA: Adde |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Added JWT tokens authentication — evol |
@@ -67,7 +68,6 @@ Auto-compiled from **539 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 700 notes - Score threshold: >40 + > 716 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 692 notes - Score threshold: >40 + > 700 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 689 notes - Score threshold: >40 + > 692 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 683 notes - Score threshold: >40 + > 689 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 
 ## 🔧 Problem Playbooks
 
@@ -187,6 +187,6 @@ Auto-compiled from **539 real patterns** in **botatc**. This skill is auto-route
 **Actionable Steps:**
 1. Modified 1 files
 
-### probl
+### problem-fix in 
 
 ... [Truncated — see individual observations for full content]
