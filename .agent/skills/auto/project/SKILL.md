@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 162 gotchas, 144 conventions, 71 fixes."
+description: "Project for botatc. 163 gotchas, 146 conventions, 82 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **708 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Interceptar — wraps unsafe operation in error boundary + - problem-fix in ag |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... + -  |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the databas |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1423 notes - Score threshold: >40 + > 1431 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
@@ -67,46 +68,36 @@ Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1030 notes - Score threshold: >40 + > 1033 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: problem-fix in brainsync_auto.md | - > 1029 notes - Score threshold: >40 + > 1030 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1014 notes - Score threshold: >40 + > 1019 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in LEFT — prevents null/undefined runtime crashes
-- - Fixed null crash in Nivel — prevents null/undefined runtime crashes
+- - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
 + - problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-- - problem-fix in server.py
-+ - Patched security issue Kevin
-- - problem-fix in inb
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - Fixed null crash in Nivel — prevents null/undefined runtime crashes
-- - problem-fix in server.py
-+ - Patched security issue Kevin
-- - problem-fix in inbox.html
-+ - problem-fix in server.py
-- - problem-fix in patcher.py
-+ - problem-fix in inbox.html
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem-fix in patcher.py
+- - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
 
-📌 I
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
 - - problem-fix in shared-context.json
 + - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
@@ -149,6 +140,8 @@ Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-route
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
 + - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
 - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
 
@@ -158,9 +151,11 @@ Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
 + - Patched security issue Kevin
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
@@ -169,23 +164,12 @@ Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
 + - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-- - problem-fix in server.py
+- - Patched security issue Kevin
 + - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
@@ -193,7 +177,13 @@ Auto-compiled from **691 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
 - - Patched security issue Kevin
-+ - problem-fix in 
++ - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Patched security issue Kevin
++ - pr
 
 ... [Truncated — see individual observations for full content]

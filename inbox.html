@@ -1115,7 +1115,7 @@
             const input = document.getElementById('manualMsgInput');
             if (input) {
                 input.value += `[sticker-local:${filename}] `;
-                const m = document.getElementById('emojiMenu');
+                const m = document.getElementById('combinedEmojiMenu');
                 if (m) m.style.display = 'none';
 
                 // Auto-enviar la etiqueta (sticker)
@@ -1291,9 +1291,9 @@
 
         // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
         document.addEventListener("click", function (e) {
-            const emojiMenu = document.getElementById("emojiMenu");
-            if (emojiMenu && !e.target.closest('#emojiMenu') && !e.target.closest('button[title="Emojis"]')) {
-                emojiMenu.style.display = "none";
+            const combinedEmojiMenu = document.getElementById("combinedEmojiMenu");
+            if (combinedEmojiMenu && !e.target.closest('#combinedEmojiMenu') && !e.target.closest('button[title="Emojis y Stickers"]')) {
+                combinedEmojiMenu.style.display = "none";
             }
 
             const attachMenu = document.getElementById("attachMenu");

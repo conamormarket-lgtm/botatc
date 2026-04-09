@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1445 notes | Score threshold: >40
+> 1483 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,31 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "b3392b7f6ff0f465",
++
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Interceptar — wraps unsafe operation in error 
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
 + - ⚠️ GOTCHA: Added JWT tokens authen
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1423 notes | Score threshold: >40
 + > 1431 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "77cba83163889274",
-+
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Optimized Score — evolv
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 6x
+- Fixed null crash in Alternar — wraps unsafe operation in error boundary — confirmed 4x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - what-changed in shared-context.json — confirmed 5x
 - Updated configuration server — confirmed 3x
 - Optimized GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
-- discovery in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 10x
-- problem-fix in agent-rules.md — confirmed 11x
 
 ## Known Fixes
 
