@@ -858,6 +858,9 @@
                             if(event.data.size > 0) audioChunks.push(event.data);
                         });
                         mediaRecorder.addEventListener("stop", async () => {
+                            if (mediaRecorder.canceled) {
+                                return; // Do not send audio if canceled
+                            }
                             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // WebM/OGG format for audio
                             const formData = new FormData();
                             formData.append("file", audioBlob, "voice_note.webm");
@@ -905,7 +908,9 @@
                             }
                         });
                         mediaRecorder.start();
+                        mediaRecorder.canceled = false;
                         isRecording = true;
+                        if(document.getElementById('btnCancelAudio')) document.getElementById('btnCancelAudio').style.display = 'flex';
                         
                         btnRecord.style.background = "#ef4444";
                         btnRecord.style.color = "white";
@@ -934,6 +939,7 @@
                     
                     btnRecord.style.background = "var(--accent-bg)";
                     btnRecord.style.color = "var(--text-main)";
+                    if(document.getElementById('btnCancelAudio')) document.getElementById('btnCancelAudio').style.display = 'none';
                     btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
                     
                     const manualInput = document.getElementById("manualMsgInput");
@@ -1672,6 +1678,22 @@
         document.addEventListener('click', () => {
             const m = document.getElementById('phoneContextMenu');
             if(m) m.style.display = 'none';
+        });
+    
+        document.body.addEventListener('click', async (e) => {
+            const btnCancel = e.target.closest('#btnCancelAudio');
+            if (btnCancel && typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.canceled = true; // sets custom flag so the 'stop' event ignores it
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop()); // close microphone
+                
+                const btnRecord = document.getElementById('btnRecordAudio');
+                if (btnRecord) {
+                    btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
+                    btnRecord.style.color = "var(--text-main)";
+                }
+                btnCancel.style.display = 'none';
+            }
         });
     </script>
 </body>
