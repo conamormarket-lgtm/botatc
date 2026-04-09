@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1351 notes | Score threshold: >40
+> 1388 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,27 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Optimized Score — evolv
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1335 notes | Score threshold: >40
++ > 1351 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score
 + - ⚠️ GOTCHA: Optimized GOTCHA
 - - ⚠️ 
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operat
-- **⚠️ GOTCHA: Optimized Score** — - > 1316 notes | Score threshold: >40
-+ > 1335 notes | Score threshold
-- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed** — - @app.post("/api/admin/enviar_manual")
-+ @app.post("/api/admin/envia
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
 
 ## Project Standards
 
+- convention in shared-context.json
+- what-changed in shared-context.json — confirmed 3x
+- Patched security issue Kevin — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Optimized Fixed — confirmed 4x
+- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 10x
-- problem-fix in agent-rules.md — confirmed 8x
-- Fixed null crash in Dropdown — parallelizes async operations for speed — confirmed 4x
-- what-changed in shared-context.json — confirmed 7x
-- Added JWT tokens authentication — confirmed 4x
-- discovery in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- Optimized GOTCHA — confirmed 4x
 
 ## Known Fixes
 
