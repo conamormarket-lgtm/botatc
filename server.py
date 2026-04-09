@@ -788,7 +788,7 @@ async def settings_panel(request: Request):
 
 @app.get("/api/media/{media_id}")
 async def get_media_endpoint(media_id: str):
-    from fastapi.responses import Response
+    from fastapi.responses import Response, RedirectResponse
     if media_id in media_cache:
         data, mime = media_cache[media_id]
         return Response(content=data, media_type=mime)
@@ -802,7 +802,9 @@ async def get_media_endpoint(media_id: str):
                 media_cache[media_id] = (data, mime)
                 return Response(content=data, media_type=mime)
     except: pass
-    return Response(content=b"", status_code=404)
+    
+    # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en vez de 404 para evitar parpadeos y errores de javascript en el cliente
+    return RedirectResponse("https://placehold.co/250x150?text=Media+Expirado", status_code=302)
 
 @app.get("/api/quick-replies")
 def get_quick_replies(request: Request):
@@ -1341,23 +1343,6 @@ async def debug_historial(wa_id: str):
 
 from fastapi.responses import Response
 
-@app.get("/api/media/{media_id}")
-async def get_media_proxy(request: Request, media_id: str):
-    """Proxy para obtener imágenes o stickers de WhatsApp sin exponer el token cliente."""
-    if not verificar_sesion(request):
-        raise HTTPException(status_code=403, detail="No autorizado")
-        
-    from whatsapp_client import obtener_media_url, descargar_media
-    url = await obtener_media_url(media_id)
-    if not url:
-        return Response(content=b"", status_code=404)
-        
-    contenido, mime_type = await descargar_media(url)
-    if not contenido:
-        return Response(content=b"", status_code=404)
-        
-    return Response(content=contenido, media_type=mime_type or "image/jpeg")
-
 
 # ─────────────────────────────────────────────
 #  Health check y Debug
@@ -1710,7 +1695,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 if tipo == "sticker":
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/150x150?text=Sticker';"></div>"""
                 elif tipo == "imagen":
-                    return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+                    return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
                 elif tipo == "video":
                     return f"""<div style="text-align:center;"><video controls src="{src_url}" style="max-width: 250px; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px;"></video></div>"""
                 elif tipo == "audio":

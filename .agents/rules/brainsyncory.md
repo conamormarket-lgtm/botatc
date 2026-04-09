@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1042 notes | Score threshold: >40
+> 1062 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,26 +20,25 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: Added JW
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1042 notes | Score threshold: >40
++ > 1053 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1040 notes | Score threshold: >40
++ > 1042 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1036 notes | Score threshold: >40
 + > 1040 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in brainsync_auto.md
 + - ⚠️ GOTCHA: Added J
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1033 notes | Score threshold: >40
-+ > 1036 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1030 notes | Score threshold: >40
-+ > 1033 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in brainsync_auto.md** — - > 1029 notes | Score threshold: >40
-+ > 1030 notes | Score threshold
-- **⚠️ GOTCHA: Fixed null crash in Object — prevents null/undefined runtime crashes** — -             function renderQuickReplies(data) {
-+             funct
 
 ## Project Standards
 
 - what-changed in shared-context.json — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
+- Patched security issue Fixed — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x

@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 13 gotchas, 18 conventions, 49 fixes."
+description: "Python for botatc. 13 gotchas, 18 conventions, 51 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **117 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -33,6 +33,41 @@ Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Response — parallelizes async operations for speed
+-     from fastapi.responses import Response
++     from fastapi.responses import Response, RedirectResponse
+-     return Response(content=b"", status_code=404)
++     
+- 
++     # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en vez de 404 para evitar parpadeos y errores de javascript en el cliente
+- @app.get("/api/quick-replies")
++     return RedirectResponse("https://placehold.co/250x150?text=
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Response
+3. identifier: RedirectResponse
+4. identifier: DEVUELVE
+5. identifier: PLACEHOLDER
+
+### Fixed null crash in KeyError — protects against XSS and CSRF token theft
+-         else:
++         elif tipo_mensaje == "location":
+-             texto_cliente = f"[{tipo_mensaje}]"
++             lat = mensaje_data.get("location", {}).get("latitude", "")
+- 
++             lon = mensaje_data.get("location", {}).get("longitude", "")
+-     except (KeyError, IndexError):
++             addr = mensaje_data.get("location", {}).get("address", "")
+-         return {"stat
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: KeyError
+3. identifier: IndexError
+4. identifier: Detectar
+5. identifier: Buscar
 
 ### Fixed null crash in Show — parallelizes async operations for speed
 -             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr} title="Click derecho (PC) o mantener presionado (Móvil) para opciones">{texto_renderizado}</div>'
@@ -236,36 +271,6 @@ Auto-compiled from **115 real patterns** in **botatc**. This skill is auto-route
 -                 elif tipo == "audio":
 +                 elif tipo == "video":
 -                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
-+                     return f"""<div style="text-align:center;"><video controls src="{src_url}" style="max-width: 250px; max-heigh
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Reemplazar
-3. identifier: Hola
-4. identifier: Limpiar
-5. identifier: HTML
-
-### Fixed null crash in Sube — parallelizes async operations for speed
--     """Sube una imagen directamente desde la interfaz Web a Meta Graph."""
-+     """Sube media directamente desde la interfaz Web a Meta Graph."""
--         media_id = await subir_media(content, file.content_type, file.filename or "upload.png")
-+         
--         
-+         fallback_name = "upload.bin"
--         if media_id:
-+         if file.content_type:
--             return {"ok": T
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Sube
-3. identifier: Web
-4. identifier: Meta
-5. identifier: Graph
-
-### Fixed null crash in Reemplazos — prevents null/undefined runtime crashes
--                     prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + (msgs.length > 1 ? ` (${{{msgs.length}}} msgs)` : '');
-+                     prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + (msgs.length > 1 ? ` (${{msgs.length}} msgs)` : '');
--                     container.onmouseout = function() {{this.style.borderColor='v
++                     return f"""<div style="text-align:center;"><video controls src="
 
 ... [Truncated — see individual observations for full content]
