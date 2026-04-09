@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 26 conventions, 44 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 26 conventions, 46 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **121 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,34 @@ Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Phone — wraps unsafe operation in error boundary
+- </body>
++ 
+- 
++     <!-- Phone Context Menu -->
+- </html>
++     <div id="phoneContextMenu" style="display:none; position:fixed; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:8px; padding:0.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.5); z-index:10000; min-width:180px;">
++         <div id="ctxPhoneTitle" style="font-size:0.75rem; color:var(--text-muted); padd
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Phone
+3. identifier: Context
+4. identifier: Menu
+5. identifier: Tel
+
+### problem-fix in inbox.html
+- </body>
++ 
+- 
++     <!-- Lightbox para imágenes -->
+- </html>
++     <div id="imageLightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; cursor:pointer;" onclick="if(event.target === this) this.style.display='none'">
++         <button onclick="documen
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in Error
 -                                     alert("Error subiendo el audio a los servidores de WhatsApp");
@@ -317,43 +345,6 @@ Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-route
 -             --accent-border: #334155;
 +             --accent-hover-soft: #334155;
 -             --accent-hover-soft: #334155;
-+             /* 3. Nivel de Color de Fondo General */
--             /* 3. Nivel de Color de Fondo General */
-+             --bg-main: #213668;
--             --bg-main: #213668;
-+        
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Nivel
-3. identifier: Color
-4. identifier: Fondo
-5. identifier: General
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- <head>
-+ 
--     <meta charset="UTF-8">
-+ <head>
--     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-+     <meta charset="UTF-8">
--     <title>Inbox - IA-ATC</title>
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google: Inter para lectura,
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- 
-+ <head>
-- <head>
-+     <meta charset="UTF-8">
--     <meta charset="UTF-8">
-+     <meta name=
++             /* 3
 
 ... [Truncated — see individual observations for full content]

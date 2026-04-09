@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 13 gotchas, 18 conventions, 51 fixes."
+description: "Python for botatc. 13 gotchas, 19 conventions, 52 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **117 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **119 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -33,6 +33,13 @@ Auto-compiled from **117 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in server.py
+-                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
++                     return f"""<div style="text-alig
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in Response — parallelizes async operations for speed
 -     from fastapi.responses import Response
@@ -264,13 +271,6 @@ Auto-compiled from **117 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 2. identifier: Acci
 3. identifier: Tag
-4. identifier: Categor
-5. identifier: General
-
-### Fixed null crash in Reemplazar — parallelizes async operations for speed
--                 elif tipo == "audio":
-+                 elif tipo == "video":
--                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="max-width: 250px; height: 40px; outline: none; margin-bottom: 5px;"></audio></div>'
-+                     return f"""<div style="text-align:center;"><video controls src="
+4. id
 
 ... [Truncated — see individual observations for full content]

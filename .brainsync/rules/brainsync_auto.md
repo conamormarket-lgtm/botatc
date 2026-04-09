@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1062 notes | Score threshold: >40
+> 1089 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,34 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in server.py
++ - problem-fix in agent-rules.md
+- - pro
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - gotcha in shared-co
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "67e4a5cd426ae349",
++
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
 + - ⚠️ GOTCHA: Added JW
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1042 notes | Score threshold: >40
 + > 1053 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1040 notes | Score threshold: >40
-+ > 1042 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1036 notes | Score threshold: >40
-+ > 1040 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in brainsync_auto.md
-+ - ⚠️ GOTCHA: Added J
 
 ## Project Standards
 
 - what-changed in shared-context.json — confirmed 3x
-- Patched security issue Fixed — confirmed 3x
+- Optimized Fixed — confirmed 3x
+- Fixed null crash in Solo — parallelizes async operations for speed — confirmed 4x
+- Replaced auth Fixed — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Replaced auth Fixed — confirmed 3x
 
 ## Known Fixes
 

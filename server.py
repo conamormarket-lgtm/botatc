@@ -1388,6 +1388,16 @@ async def ver_chat(request: Request, numero_wa: str):
         lado      = "bot-lado" if es_bot else "user-lado"
         remitente = "🤖 María" if es_bot else f"👤 {nombre}"
         texto     = m["content"].replace("\n", "<br>")
+            
+            def wrap_phone(match):
+                phone = match.group(1)
+                clean_phone = re.sub(r'[\s\-]', '', phone)
+                # Solo si tiene más de 6 dígitos
+                if sum(c.isdigit() for c in clean_phone) >= 7:
+                    # Escape seguro
+                    return f'<span class="chat-phone" style="color:var(--primary-color); text-decoration:underline; cursor:pointer; font-weight:500;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
+                return phone
+            texto = re.sub(r'(?<![a-zA-Z0-9\:\-\/\.\=\_])(\+?\d[\d\s\-]{6,15}\d)(?![a-zA-Z0-9\.\-\/\=\_])', wrap_phone, texto)
         burbujas += f"""
         <div class="mensaje {lado}">
           <div class="remitente">{remitente}</div>

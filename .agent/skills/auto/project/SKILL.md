@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 123 gotchas, 113 conventions, 33 fixes."
+description: "Project for botatc. 125 gotchas, 118 conventions, 34 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **525 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **539 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **525 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in server.py + - problem-fix in agent-rules.md - - problem-fix in inbox.html + - pro |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - gotcha in shared-context.json - - ⚠️ GOTCHA: Adde |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Added JWT tokens authentication — evol |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1042 notes - Score threshold: >40 + > 1053 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... + -  |
@@ -66,10 +68,22 @@ Auto-compiled from **525 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 692 notes - Score threshold: >40 + > 700 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 689 notes - Score threshold: >40 + > 692 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added JWT |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 683 notes - Score threshold: >40 + > 689 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 668 notes - Score threshold: >40 + > 683 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Solo — parallelizes async operations for speed
++ - problem-fix in server.py
+- - Fixed null crash in Phone — wraps unsafe operation in error boundary
++ - problem-fix in inbox.html
+- - problem-fix in server.py
++ - problem-fix in patcher.py
+- - problem-fix in inbox.html
++ - Added error handling Respuestas — wraps unsafe operation in error boundary
+- - Fixed null crash in Respo
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Patched security issue Fixed
 - - Patched security issue Kevin
@@ -173,18 +187,6 @@ Auto-compiled from **525 real patterns** in **botatc**. This skill is auto-route
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Descargar — prevents null/undefined runtime crashes
-- - problem-fix in patcher.py
-+ - problem-fix in shared-context.json
-- - Added error handling Respuestas — wraps unsafe operation in error boundary
-+ - problem-fix in patcher.py
-- - problem-fix in server.py
-+ - Added error handling Respuestas — wraps unsafe operation in error boundary
-
-**Actionable Steps:**
-1. Modified 1 files
-
+### probl
 
 ... [Truncated — see individual observations for full content]
