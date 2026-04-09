@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1286 notes | Score threshold: >40
+> 1308 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,14 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed** — - @app.post("/api/admin/enviar_manual")
++ @app.post("/api/admin/envia
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Optimized Score — evo
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1269 notes | Score threshold: >40
++ > 1286 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -27,32 +35,17 @@
 - }
 +       "id": "7c5fd917c03f87bf",
 +
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "3d7e53a37c69f407",
-+
-- **⚠️ GOTCHA: Optimized Score** — - > 1255 notes | Score threshold: >40
-+ > 1269 notes | Score threshold
-- **⚠️ GOTCHA: Fixed null crash in Nuevo — parallelizes async operations for speed** — -     if not wa_id or wa_id not in sesiones:
-+     elif wa_id and (wa
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1200 notes | Score threshold: >40
-+ > 1204 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Added JWT tokens authen
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 6x
+- Optimized GOTCHA — confirmed 4x
+- Patched security issue Kevin — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - problem-fix in agent-rules.md — confirmed 6x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 6x
-- Optimized Score — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- problem-fix in agent-rules.md — confirmed 6x
-- discovery in shared-context.json — confirmed 4x
 
 ## Known Fixes
 

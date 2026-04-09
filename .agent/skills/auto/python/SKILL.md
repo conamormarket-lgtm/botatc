@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 17 gotchas, 22 conventions, 60 fixes."
+description: "Python for botatc. 18 gotchas, 22 conventions, 61 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **138 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Request — paralleli | - @app.post("/api/admin/enviar_manual") + @app.post("/api/admin/enviar_media_manual") - async def  |
 | ⚠️ GOTCHA: Fixed null crash in Nuevo — parallelize | -     if not wa_id or wa_id not in sesiones: +     elif wa_id and (wa_id in sesiones) and len(sesio |
 | ⚠️ GOTCHA: Fixed null crash in Reacci — protects a | -         elif tipo_mensaje == "location": +         elif tipo_mensaje == "reaction": -            |
 | ⚠️ GOTCHA: Fixed null crash in KeyError — protects | -             texto_cliente = f"[📎 Archivo: {filename}]" +             media_id = mensaje_data.get |
@@ -37,6 +38,17 @@ Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Input — parallelizes async operations for speed
+-                 <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
++                 <!-- Input ocu
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Input
+3. identifier: Adjuntar
+4. identifier: Foto
+5. identifier: Video
 
 ### Fixed null crash in Cancelar — parallelizes async operations for speed
 -                 <button type="button" id="btnRecordAudio" style="background:var(--accent-bg); color:var(--text-main); border:none; border-radius:12px; height:44px; width:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-left: 0.5rem; margin-right: 0.5rem; transition: background 0.2s, color 0.2s;" title="Grabar nota de voz">
@@ -252,25 +264,6 @@ Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in Conversion — parallelizes async operations for speed
 -         # Conversion nativa WebM -> OGG para WhatsApp Voice Notes
 +         # Conversion nativa WebM -> MP4 para WhatsApp Voice Notes
--         if "webm" in final_mime.lower() or "audio" in final_mime.lower():
-+         if "webm" in final_mime.lower():
--             try:
-+             import imageio_ffmpeg
--                 # Usar tmp para cross-platform compatibility
-+             ffmpeg
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Conversion
-3. identifier: WebM
-4. identifier: WhatsApp
-5. identifier: Voice
-
-### problem-fix in server.py
--                     print("FFMPEG error detallado:", result.stderr.decode('utf-8', 'ignore') if result.stderr else "N/A")
-+                     err_msg = result.stderr.decode('utf-8', 'ignore') if result.stderr else "ExitCode!=0"
--                     final_mime = "audio/mp4" 
-+                     print("FFMPEG fallback ignorado o error:", err_msg)
--           
+-         if "webm" in final_mime.lo
 
 ... [Truncated — see individual observations for full content]

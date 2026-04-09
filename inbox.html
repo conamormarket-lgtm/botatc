@@ -44,7 +44,7 @@
             font-family: var(--font-main);
             background-color: var(--bg-main);
             color: var(--text-main);
-            height: 100vh;
+            height: 100dvh;
             display: flex;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
@@ -1040,6 +1040,22 @@
                         }
                     }
                 }
+            }
+        });
+
+        // Funcionalidad de dropdown de clip
+        window.toggleClipMenu = function() {
+            const menu = document.getElementById('clipActionMenu');
+            if(menu) {
+                menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
+            }
+        };
+        // Cerrar menú si clickea fuera
+        document.addEventListener('click', function(e) {
+            const btn = document.getElementById('btnAttachMediaDropdown');
+            const menu = document.getElementById('clipActionMenu');
+            if(btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
             }
         });
 

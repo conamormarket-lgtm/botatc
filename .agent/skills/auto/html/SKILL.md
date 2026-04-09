@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 27 conventions, 47 fixes, 1 error→fix pairs."
+description: "Html for botatc. 1 gotchas, 27 conventions, 48 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **123 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **124 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -35,6 +35,23 @@ Auto-compiled from **123 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Manejar — wraps unsafe operation in error boundary
+-         window.enviarMensajeManual = async function (e, wa_id) {
++ 
+-             e.preventDefault();
++         // Manejar subida de archivos (cámara/galería)
+-             const input = document.getElementById('manualMsgInput');
++         window.uploadAdminMedia = async function(inputElem, wa_id) {
+-             if (!input) return;
++             if (!inputElem.files || inputElem.files.le
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Manejar
+3. identifier: Est
+4. identifier: FormData
+5. identifier: POST
 
 ### Fixed null crash in Blob — prevents null/undefined runtime crashes
 -                             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // WebM/OGG format for audio
@@ -323,24 +340,6 @@ Auto-compiled from **123 real patterns** in **botatc**. This skill is auto-route
 + <head>
 -     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 +     <meta charset="UTF-8">
--     <title>Inbox - IA-ATC</title>
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <!-- Fuentes de Google: Inter para lectura,
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UTF
-3. identifier: Inbox
-4. identifier: ATC
-5. identifier: Fuentes
-
-### Fixed null crash in Inbox — prevents null/undefined runtime crashes
-- 
-+ <head>
-- <head>
-+     <meta charset="UTF-8">
--     <meta charset="UTF-8">
-+     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
--     <meta name="viewport" 
+-     <title>Inbox - 
 
 ... [Truncated — see individual observations for full content]
