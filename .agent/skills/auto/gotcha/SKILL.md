@@ -33,7 +33,6 @@ Auto-compiled from **55 real patterns** in **botatc**. This skill is auto-routed
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth Score (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication (seen 8x)
 - ✅ Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 5x)
-- ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 7x)
 - ✅ Avoid: ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... (seen 7x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... (seen 10x)
@@ -49,7 +48,6 @@ Auto-compiled from **55 real patterns** in **botatc**. This skill is auto-routed
 - ✅ Avoid: gotcha in agent-rules.md (seen 4x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication (seen 13x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 12x)
-- ✅ Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 3x)
 - ✅ Avoid: ⚠️ GOTCHA: Optimized GOTCHA (seen 8x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication (seen 16x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication (seen 12x)
@@ -60,10 +58,12 @@ Auto-compiled from **55 real patterns** in **botatc**. This skill is auto-routed
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication (seen 9x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication (seen 3x)
 - ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 9x)
+- ✅ Avoid: ⚠️ GOTCHA: Replaced auth GOTCHA (seen 8x)
 - ✅ Avoid: ⚠️ GOTCHA: Optimized GOTCHA (seen 9x)
 - ✅ Avoid: ⚠️ GOTCHA: Optimized GOTCHA (seen 2x)
 - ✅ Avoid: ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed (seen 2x)
 - ✅ Avoid: gotcha in agent-rules.md (seen 3x)
+- ✅ Avoid: ⚠️ GOTCHA: problem-fix in agent-rules.md (seen 3x)
 - ✅ Avoid: ⚠️ GOTCHA: Added JWT tokens authentication (seen 5x)
 
 ---

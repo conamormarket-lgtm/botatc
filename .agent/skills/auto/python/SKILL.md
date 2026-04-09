@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 21 gotchas, 25 conventions, 64 fixes."
+description: "Python for botatc. 22 gotchas, 26 conventions, 64 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
 | ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
 | ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
 | ⚠️ GOTCHA: Fixed null crash in Meta — parallelizes | -             return {"ok": True, "media_id": media_id} +             # Meta no permite descargar m |
@@ -235,8 +236,6 @@ Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-route
 -     return Response(content=b"", status_code=404)
 +     
 - 
-+     # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en vez de 404 para evitar parpadeos y errores de javascript en el cliente
-- @app.get("/api/quick-replies")
-+     return RedirectResponse("https:/
++     # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en v
 
 ... [Truncated — see individual observations for full content]
