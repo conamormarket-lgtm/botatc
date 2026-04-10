@@ -1349,12 +1349,28 @@
 
         const chatsContainerDiv = document.getElementById('regularChatsContainer');
         if (chatsContainerDiv) {
-            const savedScroll = sessionStorage.getItem('chatListScrollTop');
-            if (savedScroll) {
-                setTimeout(() => { chatsContainerDiv.scrollTop = parseInt(savedScroll); }, 50);
-            }
+            const applyScroll = () => {
+                const s = sessionStorage.getItem('chatListScrollTop');
+                if (s) chatsContainerDiv.scrollTop = parseInt(s);
+            };
+            
+            // Apply immediately, and firmly a few times to beat browser rendering or filter passes
+            applyScroll();
+            setTimeout(applyScroll, 50);
+            setTimeout(applyScroll, 150);
+            setTimeout(applyScroll, 300);
+
+            // Record cleanly using event listener, throttled/debounced implicitly? 
             chatsContainerDiv.addEventListener('scroll', function() {
                 sessionStorage.setItem('chatListScrollTop', this.scrollTop);
+            });
+
+            // Adicionalmente, asegurar que si se hace clic en un chat, se guarde justo ese instante
+            const chatLinks = chatsContainerDiv.querySelectorAll('.chat-row');
+            chatLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    sessionStorage.setItem('chatListScrollTop', chatsContainerDiv.scrollTop);
+                });
             });
         }
 

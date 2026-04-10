@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1575 notes | Score threshold: >40
+> 1612 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -21,30 +21,31 @@
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - Fixed null crash in Nivel — prev
-- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes** — -                     if (oldScroll.innerHTML !== newScroll.innerHTML)
-- **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
-- **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1517 notes | Score threshold: >40
-+ > 1518 notes | Score threshold
++ - problem-fix in shared-context.js
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "602ab35b45066361",
++       "id": "240bac1273fa39c0",
 +
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: problem-
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in EMOJI — wraps unsafe operation in error bounda
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined run
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 4x
-- Optimized Fixed — confirmed 4x
-- Fixed null crash in CUSTOM — wraps unsafe operation in error boundary — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in server.py — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 11x
+- problem-fix in agent-rules.md — confirmed 4x
+- Fixed null crash in EMOJI — wraps unsafe operation in error boundary — confirmed 3x
+- Patched security issue Kevin — confirmed 4x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 11x
+- problem-fix in agent-rules.md — confirmed 9x
 
 ## Known Fixes
 
