@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2048 notes | Score threshold: >40
+> 2071 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,33 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2048 notes | Score threshold: >40
++ > 2061 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: Optimize
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2032 notes | Score threshold: >40
++ > 2048 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - ⚠️ GOTCHA: Added JWT 
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1999 notes | Score threshold: >40
-+ > 2032 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- -
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Panel — reduces excessive function call freque
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in shared-context.json — confirmed 5x
+- Optimized Fixed — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
+- Fixed null crash in Nombre — parallelizes async operations for speed — confirmed 4x
+- problem-fix in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 14x
-- problem-fix in agent-rules.md — confirmed 10x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Patched security issue Kevin — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Nombre — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Click — parallelizes async operations for speed
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md

@@ -1067,14 +1067,16 @@
         });
 
 
-        window.enviarMensajeDirecto = async function(wa_id, msj) {
+        window._nextQuickReplyTitle = null;
+
+        window.enviarMensajeDirecto = async function(wa_id, msj, qrTitle = null) {
             if (!msj) return {ok: false};
             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
             try {
                 const res = await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid })
+                    body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid, quick_reply_title: qrTitle || window._nextQuickReplyTitle || null })
                 });
 
                 const data = await res.json();
@@ -1207,10 +1209,13 @@
             }
 
             try {
+                const qrTitleToPass = window._nextQuickReplyTitle || null;
+                window._nextQuickReplyTitle = null; // resetear
+                
                 const res = await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyWamid })
+                    body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyWamid, quick_reply_title: qrTitleToPass })
                 });
 
                 const data = await res.json();
@@ -1957,6 +1962,7 @@
             const ts = bubble.dataset.ts || '';
             const deliveredTs = bubble.dataset.deliveredTs || '';
             const readTs = bubble.dataset.readTs || '';
+            const qrTitle = bubble.dataset.quickReply || '';
             // Get text without meta (timestamp/ticks)
             const clone = bubble.cloneNode(true);
             const metaEl = clone.querySelector('.msg-meta');
@@ -1965,6 +1971,15 @@
 
             document.getElementById('info-preview-text').textContent = preview || '—';
             document.getElementById('info-sent-by').textContent = sentBy;
+            
+            // Handle QR title display
+            const qrRow = document.getElementById('info-row-qr');
+            if (qrTitle) {
+                document.getElementById('info-qr-title').textContent = qrTitle;
+                qrRow.style.display = 'flex';
+            } else {
+                qrRow.style.display = 'none';
+            }
             document.getElementById('info-sent-ts').textContent = formatTsUnix(ts);
             document.getElementById('info-delivered-ts').textContent = deliveredTs ? formatTsUnix(deliveredTs) : '—';
             document.getElementById('info-read-ts').textContent = readTs ? formatTsUnix(readTs) : '—';
@@ -2005,6 +2020,10 @@
             <div class="info-row">
                 <span class="info-label">Enviado por</span>
                 <span class="info-value"><span class="icon">👤</span><span id="info-sent-by">—</span></span>
+            </div>
+            <div class="info-row" id="info-row-qr" style="display: none;">
+                <span class="info-label">Respuesta Rápida</span>
+                <span class="info-value"><span class="icon">⚡</span><span id="info-qr-title">—</span></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Hora de envío</span>

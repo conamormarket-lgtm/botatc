@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 232 gotchas, 188 conventions, 134 fixes."
+description: "Project for botatc. 236 gotchas, 188 conventions, 134 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **966 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **975 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **966 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2048 notes - Score threshold: >40 + > 2061 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Optimized Score — evolves the database |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2032 notes - Score threshold: >40 + > 2048 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
@@ -64,10 +68,6 @@ Auto-compiled from **966 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1680 notes - Score threshold: >40 + > 1697 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Fixed null crash in HTMLResponse — parallelizes async operations for speed + - ⚠️ GOT |
-| ⚠️ GOTCHA: Optimized Score | - > 1678 notes - Score threshold: >40 + > 1680 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 
 ## 🔧 Problem Playbooks
 
@@ -184,8 +184,6 @@ Auto-compiled from **966 real patterns** in **botatc**. This skill is auto-route
 + - problem-fix in whatsapp_client.py
 - - Patched security issue Kevin
 + - problem-fix in shared-context.json
-- - problem-fix in shared-context.json
-+ - problem-fix in inbox.html
-- - problem-fix in whatsapp_
+- - problem-fix in s
 
 ... [Truncated — see individual observations for full content]

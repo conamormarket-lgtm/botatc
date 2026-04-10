@@ -1505,6 +1505,7 @@ async def enviar_manual_endpoint(request: Request):
     wa_id = data.get("wa_id")
     texto = data.get("texto", "").strip()
     reply_to_wamid = data.get("reply_to_wamid")
+    quick_reply_title = data.get("quick_reply_title", "")
     
     if not wa_id or wa_id not in sesiones or not texto:
         return {"ok": False}
@@ -1568,7 +1569,7 @@ async def enviar_manual_endpoint(request: Request):
         # Obtener usuario que envió el mensaje — usar nombre visible si está configurado
         usuario_sesion = obtener_usuario_sesion(request)
         sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
-        s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name})
+        s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name, "quick_reply_title": quick_reply_title})
         s["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Humano -> {wa_id}]: {texto}")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
@@ -2314,7 +2315,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             
             extra_data = ""
             if es_bot:
-                extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}"'
+                qr_title_val = m.get("quick_reply_title", "")
+                extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}" data-quick-reply="{qr_title_val}"'
             
             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{meta_html}</div>'
 
@@ -2644,9 +2646,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     if(!finalMsg) {{ i < msgs.length-1 && await new Promise(r=>setTimeout(r, delay)); continue; }}
                     
                     if (window.enviarMensajeDirecto) {{
-                        await window.enviarMensajeDirecto("{wa_id}", finalMsg);
+                        await window.enviarMensajeDirecto("{wa_id}", finalMsg, qr.title);
                     }} else {{
                         const endsWithSlash = input.value.trimEnd().endsWith("/");
+                        window._nextQuickReplyTitle = qr.title;
                         input.value = (endsWithSlash && i===0) ? input.value.trimEnd().slice(0,-1) + finalMsg : finalMsg;
                         if(btn) btn.click();
                     }}

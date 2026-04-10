@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 32 gotchas, 38 conventions, 78 fixes."
+description: "Python for botatc. 32 gotchas, 38 conventions, 79 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **203 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **207 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -52,6 +52,19 @@ Auto-compiled from **203 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Click — parallelizes async operations for speed
+-                 extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}"'
++                 qr_title_val = m.get("quick_reply_title", "")
+-             
++                 extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Click
+3. identifier: Conversaci
+4. identifier: Cabecera
+5. identifier: Atenci
 
 ### Fixed null crash in Response — protects against XSS and CSRF token theft
 - async def login_post(response: Response, username: str = Form(None), [REDACTED] = Form(None), google_token: str = Form(None), action: str = Form("login")):
@@ -216,26 +229,6 @@ Auto-compiled from **203 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in JSONResponse — protects against XSS and CSRF token theft
 - import os
 + import traceback
-- from fastapi.staticfiles import StaticFiles
-+ from fastapi.responses import JSONResponse
-- os.makedirs("static/stickers", exist_ok=True)
-+ 
-- app.mount("/static", StaticFiles(directory="static"), name="static")
-+ @app.exception_handler(Exception)
-- 
-+ async def custom_exception_handler(request: Request, exc: Exception):
-- gemini_client = genai.Client(api_
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: JSONResponse
-3. identifier: Exception
-4. identifier: Request
-5. identifier: Unhandled
-
-### Fixed null crash in GRUPO — parallelizes async operations for speed
--         if activo_chat:
-+         if s_fake_vg:
--      
+- from fastapi.staticfiles import 
 
 ... [Truncated — see individual observations for full content]
