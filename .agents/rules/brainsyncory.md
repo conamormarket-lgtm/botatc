@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1712 notes | Score threshold: >40
+> 1720 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,13 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "e5a251bf6d6c233d",
++
 - **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
 + - gotcha in shared-context.json
 - - 
@@ -35,16 +42,10 @@
 + - ⚠️ GOTCHA: Optimized Score — evo
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1680 notes | Score threshold: >40
 + > 1697 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "a5d55dca6aec7bd2",
-+
 
 ## Project Standards
 
+- Added JWT tokens authentication — evolves the database schema to support new ... — confirmed 3x
 - Updated schema GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - what-changed in shared-context.json — confirmed 6x
@@ -52,7 +53,6 @@
 - discovery in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
-- Patched security issue Kevin — confirmed 5x
 
 ## Known Fixes
 

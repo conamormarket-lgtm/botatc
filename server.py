@@ -37,6 +37,20 @@ from bot_atc import normalizar_texto, preprocesar_mensaje
 # ─────────────────────────────────────────────
 app = FastAPI(title="Bot ATC — IA-ATC")
 
+import traceback
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def custom_exception_handler(request: Request, exc: Exception):
+    err_str = f"Unhandled exception: {exc}\n{traceback.format_exc()}"
+    with open("crash_log.txt", "w", encoding="utf-8") as file:
+        file.write("\n--- CRASH ---\n")
+        file.write(f"URL: {request.url}\n")
+        file.write(err_str)
+    print(err_str)
+    return JSONResponse(status_code=500, content={"message": "Internal Server Error", "details": str(exc)})
+
+
 import os
 from fastapi.staticfiles import StaticFiles
 os.makedirs("static/stickers", exist_ok=True)
