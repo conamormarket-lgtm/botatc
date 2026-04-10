@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 34 gotchas, 37 conventions, 79 fixes."
+description: "Python for botatc. 34 gotchas, 38 conventions, 79 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **208 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

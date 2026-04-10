@@ -1580,7 +1580,8 @@
             if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
 
             if (!confirm(`Se le enviará la plantilla '${name}' al número +${wa_id}. ¿Deseas continuar?`)) return;
-            document.getElementById("templateMenu").style.display = "none";
+            const tMenu = document.getElementById("templateMenu");
+            if(tMenu) tMenu.style.display = "none";
 
             try {
                 const res = await fetch("/api/admin/enviar_plantilla", {

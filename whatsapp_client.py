@@ -214,26 +214,6 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
             # Se paso la estructura compleja
             template_data["components"] = components
 
-        
-    payload = {
-        "messaging_product": "whatsapp",
-        "recipient_type": "individual",
-        "to": numero_destino,
-        "type": "template",
-        "template": template_data
-    }
-
-    
-    if body_params:
-        template_data["components"] = [
-            {
-                "type": "body",
-                "parameters": [
-                    {"type": "text", "text": str(p)} for p in body_params
-                ]
-            }
-        ]
-
     payload = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
