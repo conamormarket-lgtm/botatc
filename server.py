@@ -683,20 +683,47 @@ from fastapi import Response
 
 VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
 import json, os
+
+# ─── Sesiones de usuarios (auth) persitidas en Firebase ───────────────────────
+# active_sessions: {token: user_dict}
 active_sessions = {}
-if os.path.exists("sessions.json"):
+
+def _load_sessions_from_firebase():
+    """Carga todas las sesiones activas desde Firestore al arrancar el servidor."""
+    global active_sessions
     try:
-        with open("sessions.json", "r") as f:
-            active_sessions = json.load(f)
-    except:
-        pass
+        from firebase_client import inicializar_firebase
+        db = inicializar_firebase()
+        if not db: return
+        docs = db.collection("auth_sessions").stream()
+        for doc in docs:
+            active_sessions[doc.id] = doc.to_dict()
+        print(f"✅ Se restauraron {len(active_sessions)} sesiones de usuario desde Firebase.")
+    except Exception as e:
+        print(f"❌ Error cargando sesiones de usuario: {e}")
+
+_load_sessions_from_firebase()
 
 def save_sessions():
+    """Persiste todas las sesiones activas en Firestore."""
     try:
-        with open("sessions.json", "w") as f:
-            json.dump(active_sessions, f)
-    except:
-        pass
+        from firebase_client import inicializar_firebase
+        db = inicializar_firebase()
+        if not db: return
+        col = db.collection("auth_sessions")
+        # Guardar solo las sesiones actuales
+        for token, user_data in active_sessions.items():
+            col.document(token).set(user_data)
+    except Exception as e:
+        print(f"❌ Error guardando sesiones de usuario: {e}")
+
+def delete_session_from_firebase(token: str):
+    """Elimina una sesión específica de Firestore al hacer logout."""
+    try:
+        from firebase_client import inicializar_firebase
+        db = inicializar_firebase()
+        if db: db.collection("auth_sessions").document(token).delete()
+    except: pass
 
 
 def obtener_usuario_sesion(request: Request) -> dict | None:
@@ -835,7 +862,7 @@ async def logout(request: Request):
     token = request.cookies.get("session_token")
     if token in active_sessions:
         del active_sessions[token]
-        save_sessions()
+    delete_session_from_firebase(token)
     resp = RedirectResponse(url="/login", status_code=303)
     resp.delete_cookie("session_token")
     return resp
