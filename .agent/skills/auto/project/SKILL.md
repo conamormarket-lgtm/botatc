@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 194 gotchas, 168 conventions, 97 fixes."
+description: "Project for botatc. 196 gotchas, 169 conventions, 97 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **825 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **830 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **825 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - Patched security issue Kevin — hardens HTTP security headers - |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1731 notes - Score threshold: >40 + > 1747 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - problem-fix in server.py - - Patched security issue Kevin + -  |
 | ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - problem-fix in server.py - - Patched security issue Kevin + -  |
 | ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in shared-context.json - - ⚠️ GOTCHA: Optimized Score — e |
@@ -66,8 +68,6 @@ Auto-compiled from **825 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to supp |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1335 notes - Score threshold: >40 + > 1351 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in Re |
 
 ## 🔧 Problem Playbooks
 
@@ -194,6 +194,6 @@ Auto-compiled from **825 real patterns** in **botatc**. This skill is auto-route
 - - problem-fix in agent-rules.md
 + - Patched security issue Kevin
 
-📌 IDE AST Context: Modified symbol
+📌 IDE AST Context: Modified s
 
 ... [Truncated — see individual observations for full content]

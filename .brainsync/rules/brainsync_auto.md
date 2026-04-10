@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1747 notes | Score threshold: >40
+> 1757 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue GOTCHA
++ - Patched security issue Kevin — h
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1731 notes | Score threshold: >40
++ > 1747 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue GOTCHA
 + - problem-fix in server.py
 - - Pat
@@ -40,27 +44,17 @@
 - }
 +       "id": "e5a251bf6d6c233d",
 +
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - gotcha in shared-context.json
-- - 
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "fb823a0a3efdc7ee",
-+
 
 ## Project Standards
 
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- problem-fix in server.py — confirmed 4x
+- Added JWT tokens authentication — confirmed 4x
 - Replaced auth Patched — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Patched security issue Fixed — confirmed 3x
 - Fixed null crash in Interruptor — protects against XSS and CSRF token theft — confirmed 3x
-- Added JWT tokens authentication — evolves the database schema to support new ... — confirmed 3x
-- Updated schema GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in shared-context.json — confirmed 6x
 
 ## Known Fixes
 
