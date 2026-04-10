@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 1741 observations
+# Auto-synced | 1756 observations
 
 **Stack:** Python · FastAPI
 
@@ -36,11 +36,11 @@ Example:
 # 📐 Conventions
 
 - Git Commit: restauracion respuestas rapidas — confirmed 3x
+- Git Commit: restauracion respuestas rapidas — confirmed 3x
 - Git Commit: fix audios — confirmed 3x
 - Git Commit: fix audios — confirmed 3x
 - Git Commit: fix audios — confirmed 4x
 - Git Commit: fix audios — confirmed 3x
-- Git Commit: ui
 - Git Commit: ui
 - Git Commit: ui
 
@@ -55,6 +55,3 @@ Example:
 
 ---
 *Auto-synced | 2026-04-10*
-
-# BrainSync Intelligence (Auto-Synced)
-[BrainSync Rules](.brainsync/agent-rules.md)

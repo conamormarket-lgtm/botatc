@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 28 gotchas, 28 conventions, 67 fixes."
+description: "Python for botatc. 28 gotchas, 29 conventions, 69 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **173 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **176 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -48,6 +48,26 @@ Auto-compiled from **173 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in server.py
+-         s = sesiones[wa_id]
++         s = s_fake_vg if s_fake_vg else sesiones[wa_id]
+
+📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in server.py
+-         hist_total.sort(key=lambda x: x.get("timestamp", ""))
++         hist_total.sort(key=lambda x: str(x.get("timestamp", "")))
+-             s_fake_vg["historial"].sort(key=lambda x: x.get("timestamp", ""))
++             s_fake_vg["historial"].sort(key=lambda x: str(x.get("timestamp", "")))
+
+📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in JSONResponse — protects against XSS and CSRF token theft
 - import os
@@ -188,28 +208,5 @@ Auto-compiled from **173 real patterns** in **botatc**. This skill is auto-route
 +             # --- Renderizar números de teléfono clickeables ---
 -             
 +             def wrap_phone(match):
--             def reemplazar_archivos_inline(match):
-+                 phone = match.group(1)
--                 tipo = match.group(1)
-+                 clean_phone = re.sub(r'[\s\-]', '', phone)
--
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Renderizar
-3. identifier: Solo
-4. identifier: Escape
-5. identifier: Sticker
-
-### Fixed null crash in Esperando — parallelizes async operations for speed
-- 
-+         burbujas += f"""
--         def wrap_phone(match):
-+         <div class="mensaje {lado}">
--             phone = match.group(1)
-+           <div class="remitente">{remitente}</div>
--             clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
-+           <div class="{clase}">{texto}</div>
--             if sum(c.isdigit(
 
 ... [Truncated — see individual observations for full content]
