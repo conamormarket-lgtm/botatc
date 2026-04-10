@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 22 gotchas, 26 conventions, 65 fixes."
+description: "Python for botatc. 23 gotchas, 27 conventions, 65 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **162 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Exception — protect | -         from firebase_client import cargar_etiquetas_bd +         from firebase_client import car |
 | ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
 | ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
 | ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
@@ -234,7 +235,6 @@ Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-route
 4. identifier: Bot
 5. identifier: Esperando
 
-### problem-fix in server.py
--                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-
+### prob
 
 ... [Truncated — see individual observations for full content]

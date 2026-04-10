@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1612 notes | Score threshold: >40
+> 1641 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,31 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -         from firebase_client import cargar_etiquetas_bd
++         f
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1612 notes | Score threshold: >40
++ > 1630 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.js
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "240bac1273fa39c0",
-+
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: problem-
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in EMOJI — wraps unsafe operation in error bounda
++ - Patched security issue Kevin
+- -
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined run
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1607 notes | Score threshold: >40
++ > 1612 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in agent-rules.md — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 11x
 - problem-fix in agent-rules.md — confirmed 4x
 - Fixed null crash in EMOJI — wraps unsafe operation in error boundary — confirmed 3x
 - Patched security issue Kevin — confirmed 4x
-- Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 11x
-- problem-fix in agent-rules.md — confirmed 9x
 
 ## Known Fixes
 

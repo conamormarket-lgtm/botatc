@@ -326,3 +326,17 @@ def cargar_quick_replies_bd() -> list:
             data.setdefault("etiquetas", [])
             qrs.append(data)
     return qrs
+
+def guardar_grupo_bd(grupo: dict):
+    db = inicializar_firebase()
+    if db: db.collection("virtual_groups").document(grupo["id"]).set(grupo)
+
+def eliminar_grupo_bd(grupo_id: str):
+    db = inicializar_firebase()
+    if db: db.collection("virtual_groups").document(grupo_id).delete()
+
+def cargar_grupos_bd() -> list:
+    db = inicializar_firebase()
+    if not db: return []
+    docs = db.collection("virtual_groups").stream()
+    return [d.to_dict() for d in docs]

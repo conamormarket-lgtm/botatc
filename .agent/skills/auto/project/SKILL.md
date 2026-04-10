@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 176 gotchas, 154 conventions, 93 fixes."
+description: "Project for botatc. 181 gotchas, 159 conventions, 95 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **764 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **779 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,11 @@ Auto-compiled from **764 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1612 notes - Score threshold: >40 + > 1630 notes - Score threshold: >40 - + - problem-fix in sha |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in Apply — r |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1607 notes - Score threshold: >40 + > 1612 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ G |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in EMOJI — wraps unsafe operation in error boundary + - problem-fix in agent-ru |
@@ -63,13 +68,38 @@ Auto-compiled from **764 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to sup |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 1192 notes - Score threshold: >40 + > 1193 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
-| ⚠️ GOTCHA: Replaced auth Score | - > 1177 notes - Score threshold: >40 + > 1187 notes - Score threshold: >40 - +       "id": "9dff0b4 |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1159 notes - Score threshold: >40 + > 1177 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Replaced auth Patched | - - Fixed null crash in KeyError — protects against XSS and CSRF token theft + - Patched security is |
-| ⚠️ GOTCHA: Optimized Fixed | - - problem-fix in shared-context.json + - Fixed null crash in Esperando — parallelizes async operat |
-| ⚠️ GOTCHA: Optimized Score | - > 1096 notes - Score threshold: >40 + > 1109 notes - Score threshold: >40 - - Added JWT tokens aut |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Apply — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Apply — reduces excessive function call frequency
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+- - problem-fix in patcher.py
++ - problem-fix in inb
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Apply — reduces excessive function call frequency
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+- - problem-fix in patcher.py
++ - problem-fix in inbox.html
+- - Added error handling Respuestas — wraps unsafe operation in error boundary
++ - problem-fix in pa
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in EMOJI — wraps unsafe operation in error boundary
@@ -161,36 +191,6 @@ Auto-compiled from **764 real patterns** in **botatc**. This skill is auto-route
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
 + - Patched security issue Kevin
-- - Patched security issue Kevin — introduces API versioning for backward compati...
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in server.py
-+ - Patched security issue Kevin — introduces API versioning for backward compati...
-
-📌 IDE AST Context: Modifi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin — introduces API versioning for backward compati...
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin — introduces API versioning for backward compati...
-- - problem-fix in server.py
-+ - problem-fix in shared-context.json
-- - problem-fix in inbox.html
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin — introduces API versioning for backward compati...
-+ - problem-fix in agent-rules.md
-- 
+- - Patched 
 
 ... [Truncated — see individual observations for full content]

@@ -2,409 +2,346 @@
 > Dynamically loaded for active file: `inbox.html` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
-- **⚠️ GOTCHA: Fixed null crash in Reacci — protects against XSS and CSRF token theft**: -         elif tipo_mensaje == "location":
-+         elif tipo_mensaje == "reaction":
--             lat = mensaje_data.get("location", {}).get("latitude", "")
-+             reaction_data = mensaje_data.get("reaction", {})
--             lon = mensaje_data.get("location", {}).get("longitude", "")
-+             emoji = reaction_data.get("emoji", "")
--             addr = mensaje_data.get("location", {}).get("address", "")
-+             msg_id_reacted = reaction_data.get("message_id", "")
--             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
-+             
--         elif tipo_mensaje == "location":
-+             texto_original = "un mensaje"
--             lat = mensaje_data.get("location", {}).get("latitude", "")
-+             if numero_wa in sesiones:
--             lon = mensaje_data.get("location", {}).get("longitude", "")
-+                 for m_hist in sesiones[numero_wa]["historial"]:
--             addr = mensaje_data.get("location", {}).get("address", "")
-+                     if m_hist.get("msg_id") == msg_id_reacted:
--             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
-+                         txt = m_hist.get("content", "")
--         else:
-+                         if txt.startswith("["): 
--             texto_cliente = f"[{tipo_mensaje}]"
-+                             txt = txt.split("]")[0] + "]"
-- 
-+                         texto_original = (txt[:40] + '...') if len(txt) > 40 else txt
--     except (KeyError, IndexError):
-+                         break
--         return {"status": "ok"}   # payload inesperado → ignorar sin error
-+             
-- 
-+             if emoji:
--     # Detectar si el cliente está usando la función de deslizar/responder
-+                 texto_cliente = f"[💬 Reacción: {emoji} a «{texto_original}»]"
--     contexto = changes["messages"][0].get("context", {})
-+             else:
--     if "id" in contexto:
-+                 texto_cliente = f"[❌ Quitó reacción a «{texto_original}»]"
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **⚠️ GOTCHA: Fixed null crash in KeyError — protects against XSS and CSRF token theft**: -             texto_cliente = f"[📎 Archivo: {filename}]"
-+             media_id = mensaje_data.get("document", {}).get("id", "")
--         elif tipo_mensaje == "location":
-+             texto_cliente = f"[documento:{media_id}|{filename}]"
--             lat = mensaje_data.get("location", {}).get("latitude", "")
-+         elif tipo_mensaje == "location":
--             lon = mensaje_data.get("location", {}).get("longitude", "")
-+             lat = mensaje_data.get("location", {}).get("latitude", "")
--             addr = mensaje_data.get("location", {}).get("address", "")
-+             lon = mensaje_data.get("location", {}).get("longitude", "")
--             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
-+             addr = mensaje_data.get("location", {}).get("address", "")
--         elif tipo_mensaje == "location":
-+             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
--             lat = mensaje_data.get("location", {}).get("latitude", "")
-+         elif tipo_mensaje == "location":
--             lon = mensaje_data.get("location", {}).get("longitude", "")
-+             lat = mensaje_data.get("location", {}).get("latitude", "")
--             addr = mensaje_data.get("location", {}).get("address", "")
-+             lon = mensaje_data.get("location", {}).get("longitude", "")
--             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
-+             addr = mensaje_data.get("location", {}).get("address", "")
--         else:
-+             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
--             texto_cliente = f"[{tipo_mensaje}]"
-+         else:
-- 
-+             texto_cliente = f"[{tipo_mensaje}]"
--     except (KeyError, IndexError):
-+ 
--         return {"status": "ok"}   # payload inesperado → ignorar sin error
-+     except (KeyError, IndexError):
-- 
-+         return {"status": "ok"}   # payload inesperado → ignorar sin error
--     # Detectar si el cliente está usando la función de deslizar/responder
-+ 
--     conte
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **⚠️ GOTCHA: Fixed null crash in Esperando — parallelizes async operations for speed**: -         burbujas += f"""
-+ 
--         <div class="mensaje {lado}">
-+         def wrap_phone(match):
--           <div class="remitente">{remitente}</div>
-+             phone = match.group(1)
--           <div class="{clase}">{texto}</div>
-+             clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
--         </div>"""
-+             if sum(c.isdigit() for c in clean_phone) >= 7:
-- 
-+                 return f'<span class="chat-phone" style="color:var(--primary-color); text-decoration:underline; cursor:pointer; font-weight:500;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
--     if not burbujas:
-+             return phone
--         burbujas = '<p style="text-align:center;color:#aaa;padding:2rem">Sin mensajes aún en esta sesión</p>'
-+         texto = __import__('re').sub(r'(?<![a-zA-Z0-9\:\-\/\.\=\_])(\+?\d[\d\s\-]{6,15}\d)(?![a-zA-Z0-9\.\-\/\=\_])', wrap_phone, texto)
-- 
-+         burbujas += f"""
--     estado_badge = "🟢 Bot activo" if activo else "🔴 Esperando humano"
-+         <div class="mensaje {lado}">
--     color_badge  = "#2e7d32" if activo else "#c62828"
-+           <div class="remitente">{remitente}</div>
--     bg_badge     = "#e8f5e9" if activo else "#ffebee"
-+           <div class="{clase}">{texto}</div>
-- 
-+         </div>"""
--     btn_reactivar = "" if activo else f"""
-+ 
--     <form method="post" action="/admin/reactivar/{numero_wa}" style="margin:0">
-+     if not burbujas:
--       <button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;
-+         burbujas = '<p style="text-align:center;color:#aaa;padding:2rem">Sin mensajes aún en esta sesión</p>'
--                      border-radius:8px;cursor:pointer;font-weight:600">▶ Reactivar bot</button>
-+ 
--     </form>"""
-+     estado_badge = "🟢 Bot activo" if activo else "🔴 Esperando humano"
-- 
-+     color_badge  = "#2e7d32" if activo else "#c62828"
--     return HTMLResponse(f"""
-+     bg_badge     = "#e8f5e9" if acti
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **⚠️ GOTCHA: Fixed null crash in Object — prevents null/undefined runtime crashes**: -             function renderQuickReplies(data) {
-+             function renderQuickReplies(data) {{
--                 if(data.length === 0) {
-+                 if(data.length === 0) {{
--                 }
-+                 }}
--                 const groups = {};
-+                 const groups = {{}};
--                 data.forEach(qr => {
-+                 data.forEach(qr => {{
--                 });
-+                 }});
--                 const isSearching = document.getElementById('qrSearchFilter') && document.getElementById('qrSearchFilter').value.trim() !== "";
-+                 const searchInput = document.getElementById('qrSearchFilter');
--                 
-+                 const isSearching = searchInput && searchInput.value.trim() !== "";
--                 Object.keys(groups).sort().forEach(cat => {
-+                 
--                     const groupContainer = document.createElement("div");
-+                 Object.keys(groups).sort().forEach(cat => {{
--                     groupContainer.style.cssText = "display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.2rem;";
-+                     const groupContainer = document.createElement("div");
--                     
-+                     groupContainer.style.cssText = "display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.2rem;";
--                     const catHeader = document.createElement("div");
+- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes**: -                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
++                     const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
+-                         // Respetar scroll solo si el usuario no ha subido a leer
++                     let didAppend = false;
+-                         const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
 +                     
--                     catHeader.style.cssText = "background:rgba(255,255,255,0.05); padding:0.6rem 0.8rem; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:0.85rem; border:1px solid var(--accent-border); user-select:none; transition:background 0.2s;";
-+                     const catHeader = document.createElement("div");
--                     catHeader.onmouseover = function() {this.style.background='rgba(255,255,255,0.08)';};
-+                     catHeader.styl
+-                         oldScroll.innerHTML = newScroll.innerHTML;
++                     const cleanHTML = (html) => html.replace(/style="[^"]*"/g, "").replace(/>\d+:\d{2}</g, ">0:00<");
+-                         if (isAtBottom) {
++                     
+-                             oldScroll.scrollTop = oldScroll.scrollHeight;
++                     const newChildren = Array.from(newScroll.children);
+-                         }
++                     
+-                     }
++                     for (let i = 0; i < newChildren.length; i++) {
+-                 }
++                         const newNode = newChildren[i];
+-             } catch (e) {
++                         const oldNode = oldScroll.children[i];
+-                 console.warn('Error en Live Chat Polling:', e);
++                         
+-             }
++                         if (!oldNode) {
+-         }, 1500);
++                             oldScroll.appendChild(newNode.cloneNode(true));
+- 
++                             didAppend = true;
+-         // API CLIENT PARA RESPONDER
++                         } else {
+-         
++                             if (cleanHTML(oldNode.innerHTML) !== cleanHTML(newNode.innerHTML)) {
+-         
++                                 const audio = oldNode.querySelector('audio');
+-         // NATIVE AUDIO RECORDING LOGIC
++                                 if (audio && window._currentAudio === audio && !audio.paused) {
+-         let mediaRecorder;
++                        
 … [diff truncated]
 
+📌 IDE AST Context: Modified symbols likely include [html]
+- **⚠️ GOTCHA: problem-fix in server.py**: -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 100%; max-height: 400px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
++                     return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><img src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+-                     return f"""<div style="text-align:center;"><video controls src="{src_url}" style="width: 100%; max-width: 250px; max-height: 300px; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; box-sizing: border-box; display: block;"></video></div>"""
++                     return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>"""
+
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **⚠️ GOTCHA: Fixed null crash in Agrupar — prevents null/undefined runtime crashes**: -             function renderQuickReplies(data) {{
-+             function renderQuickReplies(data) {
--                 if(data.length === 0) {{
-+                 if(data.length === 0) {
--                 }}
-+                 }
--                 data.forEach(qr => {{
-+                 
--                     const container = document.createElement("div");
-+                 // Agrupar por categoría
--                     container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.65rem 0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
-+                 const groups = {};
--                     container.onmouseover = function() {{this.style.borderColor='var(--primary-color)';}};
-+                 data.forEach(qr => {
--                     container.onmouseout = function() {{this.style.borderColor='var(--accent-border)';}};
-+                     const cat = qr.category && qr.category.trim() !== "" ? qr.category : "General";
--                     const btn = document.createElement("button");
-+                     if(!groups[cat]) groups[cat] = [];
--                     btn.type = "button";
-+                     groups[cat].push(qr);
--                     btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column; gap:0.25rem;";
-+                 });
--                     // Title row
-+                 
--                     const headerRow = document.createElement("div");
-+                 // Variables de control de estado abierto (mantener abiertos los grupos al buscar)
--                     headerRow.style.cssText = "display:flex; justify-content:space-between; align-items:center; width:100%;";
-+                 const isSearching = document.getElementById('qrSearchFilter') && document.getElementById('qrSearchFilter').value.trim() !== "";
-… [diff truncated]
+- **⚠️ GOTCHA: problem-fix in server.py**: -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 100%; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
++                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 100%; max-height: 400px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+
+📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
+- **⚠️ GOTCHA: problem-fix in server.py**: -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
++                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 100%; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[convention] Fixed null crash in Opcional — wraps unsafe operation in error boundary — confirmed 3x**: -                         isRecording = true;
-+                         mediaRecorder.canceled = false;
--                         
-+                         isRecording = true;
--                         btnRecord.style.background = "#ef4444";
-+                         if(document.getElementById('btnCancelAudio')) document.getElementById('btnCancelAudio').style.display = 'flex';
--                         btnRecord.style.color = "white";
-+                         
--                         btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>`;
-+                         btnRecord.style.background = "#ef4444";
--                         
-+                         btnRecord.style.color = "white";
--                         // Opcional: Mostrar que está grabando en el input
-+                         btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>`;
--                         const manualInput = document.getElementById("manualMsgInput");
-+                         
--                         if(manualInput) {
-+                         // Opcional: Mostrar que está grabando en el input
--                             manualInput.dataset.originalPlaceholder = manualInput.placeholder;
-+                         const manualInput = document.getElementById("manualMsgInput");
--                             manualInput.placeholder = "🔴 Grabando audio... (Presiona el cuadro rojo para detener/enviar)";
-+                         if(manualInput) {
--                         }
-+                             manualInput.dataset.originalPlaceholder = manualInput.placeholder;
+- **[problem-fix] Fixed null crash in Apply — reduces excessive function call frequency**: -             const savedScroll = sessionStorage.getItem('chatListScrollTop');
++             const applyScroll = () => {
+-             if (savedScroll) {
++                 const s = sessionStorage.getItem('chatListScrollTop');
+-                 setTimeout(() => { chatsContainerDiv.scrollTop = parseInt(savedScroll); }, 50);
++                 if (s) chatsContainerDiv.scrollTop = parseInt(s);
+-             }
++             };
+-             chatsContainerDiv.addEventListener('scroll', function() {
++             
+-                 sessionStorage.setItem('chatListScrollTop', this.scrollTop);
++             // Apply immediately, and firmly a few times to beat browser rendering or filter passes
+-             });
++             applyScroll();
+-         }
++             setTimeout(applyScroll, 50);
 - 
-+                             manualInput.placeholder = "🔴 Grabando audio... (Presiona el cuadro rojo para detener/enviar)";
--                     } cat
++             setTimeout(applyScroll, 150);
+- 
++             setTimeout(applyScroll, 300);
+-         function iniciarNuevoChat() {
++ 
+-             let val = document.getElementById('chatSearchInput').value.trim();
++             // Record cleanly using event listener, throttled/debounced implicitly? 
+-             val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
++             chatsContainerDiv.addEventListener('scroll', function() {
+-             if (val.length < 9) return alert("Número muy corto");
++                 sessionStorage.setItem('chatListScrollTop', this.scrollTop);
+-             if (!val.startsWith("51")) val = "51" + val;
++             });
+-             window.location.href = `/inbox/${val}`;
++ 
+-         }
++             // Adicionalmente, asegurar que si se hace clic en un chat, se guarde justo ese instante
+- 
++             const chatLinks = chatsContainerDiv.querySelectorAll('.chat-row');
+-         // EMOJI PICKER HOOK - Global event delegation
++             chatLinks.forEach(link => {
+-         document.addEventListener('emoji-click', event => {
++                 link.addEventListener('click', () => {
+-          
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[problem-fix] problem-fix in inbox.html**: - </body>
-+ 
-- 
-+     <!-- Lightbox para imágenes -->
-- </html>
-+     <div id="imageLightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; cursor:pointer;" onclick="if(event.target === this) this.style.display='none'">
-+         <button onclick="document.getElementById('imageLightbox').style.display='none'" style="position:absolute; top:20px; right:30px; background:none; border:none; color:white; font-size:2.5rem; cursor:pointer; text-shadow:0 2px 4px rgba(0,0,0,0.5);">&times;</button>
-+         <img id="lightboxImg" src="" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.7); cursor:default;" oncontextmenu="event.stopPropagation();">
-+     </div>
-+ 
-+     <!-- Script de Lightbox -->
-+     <script>
-+         document.addEventListener('click', function(e) {
-+             if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
-+                 const alt = e.target.getAttribute('alt');
-+                 if (alt && alt.startsWith('Imagen')) {
-+                     const lb = document.getElementById('imageLightbox');
-+                     const lbImg = document.getElementById('lightboxImg');
-+                     if (lb && lbImg) {
-+                         lbImg.src = e.target.src;
-+                         lb.style.display = 'flex';
-+                     }
-+                 }
+- **[convention] Fixed null crash in EMOJI — wraps unsafe operation in error boundary — confirmed 3x**: - 
++         const chatsContainerDiv = document.getElementById('regularChatsContainer');
+-         function iniciarNuevoChat() {
++         if (chatsContainerDiv) {
+-             let val = document.getElementById('chatSearchInput').value.trim();
++             const savedScroll = sessionStorage.getItem('chatListScrollTop');
+-             val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
++             if (savedScroll) {
+-             if (val.length < 9) return alert("Número muy corto");
++                 setTimeout(() => { chatsContainerDiv.scrollTop = parseInt(savedScroll); }, 50);
+-             if (!val.startsWith("51")) val = "51" + val;
 +             }
+-             window.location.href = `/inbox/${val}`;
++             chatsContainerDiv.addEventListener('scroll', function() {
+-         }
++                 sessionStorage.setItem('chatListScrollTop', this.scrollTop);
+- 
++             });
+-         // EMOJI PICKER HOOK - Global event delegation
++         }
+-         document.addEventListener('emoji-click', event => {
++ 
+-             const input = document.getElementById('manualMsgInput');
++ 
+-             if (input) {
++         function iniciarNuevoChat() {
+-                 input.value += event.detail.unicode;
++             let val = document.getElementById('chatSearchInput').value.trim();
+-                 input.focus();
++             val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
+-             }
++             if (val.length < 9) return alert("Número muy corto");
+-         });
++             if (!val.startsWith("51")) val = "51" + val;
+- 
++             window.location.href = `/inbox/${val}`;
+-         // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
++         }
+-         document.addEventListener("click", function (e) {
++ 
+-             const combinedEmojiMenu = document.getElementById("combinedEmojiMenu");
++         // EMOJI PICKER HOOK - Global event delegation
+-             if (combinedEmojiM
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in CUSTOM — wraps unsafe operation in error boundary — confirmed 3x**: -         window.toggleSendMicButton = function() {
++         // CUSTOM AUDIO PLAYER LOGIC
+-             if (window._isAudioRecording) return; // No alternar si estamos grabando
++         window.formatAudioTime = function(seconds) {
+-             const input = document.getElementById('manualMsgInput');
++             if (!seconds || isNaN(seconds)) return "0:00";
+-             const submitMenu = document.getElementById('btnSubmitForm');
++             const min = Math.floor(seconds / 60);
+-             const micMenu = document.getElementById('btnRecordAudio');
++             const sec = Math.floor(seconds % 60);
+-             if (input && submitMenu && micMenu) {
++             return min + ":" + (sec < 10 ? "0" : "") + sec;
+-                 if (input.value.trim().length > 0) {
++         };
+-                     submitMenu.style.display = 'flex';
++ 
+-                     micMenu.style.display = 'none';
++         window._currentAudio = null;
+-                 } else {
++         window._currentBtn = null;
+-                     submitMenu.style.display = 'none';
++         window.toggleAudio = function(btn) {
+-                     micMenu.style.display = 'flex';
++             const container = btn.closest('.custom-audio-player');
+-                 }
++             const audio = container.querySelector('audio');
+-             }
++             const iconPlay = btn.querySelector('.icon-play');
+-         };
++             const iconPause = btn.querySelector('.icon-pause');
+-         // Escuchar input manual
++             if (window._currentAudio && window._currentAudio !== audio) {
+-         document.addEventListener('input', function(e) {
++                 window._currentAudio.pause();
+-             if(e.target.id === 'manualMsgInput') {
++                 if (window._currentBtn) {
+-                 window.toggleSendMicButton();
++                     window._currentBtn.querySelector('.icon-play').style.display = 'block';
+-             }
++   
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[trade-off] trade-off in inbox.html**: -                 const m = document.getElementById('emojiMenu');
++                 const m = document.getElementById('combinedEmojiMenu');
+-             const emojiMenu = document.getElementById("emojiMenu");
++             const combinedEmojiMenu = document.getElementById("combinedEmojiMenu");
+-             if (emojiMenu && !e.target.closest('#emojiMenu') && !e.target.closest('button[title="Emojis"]')) {
++             if (combinedEmojiMenu && !e.target.closest('#combinedEmojiMenu') && !e.target.closest('button[title="Emojis y Stickers"]')) {
+-                 emojiMenu.style.display = "none";
++                 combinedEmojiMenu.style.display = "none";
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in inbox.html**: -                     btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
++                     isRecording = false;
+-                     btnRecord.style.color = "var(--text-main)";
++                     window._isAudioRecording = false;
+-                 }
++                     if(window.toggleSendMicButton) window.toggleSendMicButton();
+-                 btnCancel.style.display = 'none';
++                     btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
+-             }
++                     btnRecord.style.color = "var(--text-main)";
+-         });
++                 }
+-     </script>
++                 btnCancel.style.display = 'none';
+- </body>
++             }
+- 
 +         });
+- </html>
 +     </script>
 + </body>
 + 
 + </html>
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in Sticker — prevents null/undefined runtime crashes — confirmed 3x**: -                 // Check if it's a sticker
-+                 let clickedImg = e.target.closest('img');
--                 let stickerImg = bubble.querySelector('img[alt^="Sticker"]');
-+                 let stickerImg = null;
--                 let ctxSaveSticker = document.getElementById("ctxSaveSticker");
-+                 let regularImg = null;
--                 if (stickerImg) {
-+ 
--                     ctxTargetMediaId = stickerImg.getAttribute('alt').replace('Sticker ', '').trim();
-+                 if (clickedImg && clickedImg.getAttribute('alt')) {
--                     ctxSaveSticker.style.display = 'flex';
-+                     if (clickedImg.getAttribute('alt').startsWith("Sticker")) {
--                 } else {
-+                         stickerImg = clickedImg;
--                     ctxTargetMediaId = "";
-+                     } else if (clickedImg.getAttribute('alt').startsWith("Imagen")) {
--                     ctxSaveSticker.style.display = 'none';
-+                         regularImg = clickedImg;
--                 }
-+                     }
+- **[convention] Fixed null crash in Alternar — wraps unsafe operation in error boundary — confirmed 4x**: -         window.enviarMensajeManual = async function (e, wa_id) {
++                 // Alternar boton enviar / grabar audio
+-             e.preventDefault();
++         window.toggleSendMicButton = function() {
+-             if (!input) return;
++             const submitMenu = document.getElementById('btnSubmitForm');
+-             const msj = input.value.trim();
++             const micMenu = document.getElementById('btnRecordAudio');
+-             if (!msj) return;
++             if (input && submitMenu && micMenu) {
 - 
++                 if (input.value.trim().length > 0) {
+-             // Vaciar y enfocar
++                     submitMenu.style.display = 'flex';
+-             input.value = '';
++                     micMenu.style.display = 'none';
+-             input.focus();
 +                 } else {
--                 let regularImg = bubble.querySelector('img[alt^="Imagen"]');
-+                     stickerImg = bubble.querySelector('img[alt^="Sticker"]');
--                 let ctxCopyImage = document.getElementById("ctxCopyImage");
-+                     regularImg = bubble.querySelector('img[alt^="Imagen"]');
--                 let ctxDownloadImage = document.getElementById("ctxDownloadImage");
+- 
++                     submitMenu.style.display = 'none';
+-             // Dibujado optimista instantáneo
++                     micMenu.style.display = 'flex';
+-             const scroll = document.getElementById('chatScroll');
 +                 }
--                 if (regularImg && !stickerImg) {
+-             if (scroll) {
++             }
+-                 const bubble = document.createElement('div');
++         };
+-                 bubble.className = "bubble bubble-bot lado-der";
 + 
--                     ctxTargetImageUrl = regularImg.src;
-+                 let ctxSaveSticker = document.getElementById("ctxSaveSticker");
--                     ctxCopyImage.style.display = 'flex';
-+                 if (stickerImg) {
--                     ctxDownloadImage.style.display = 'flex';
-+                     ctxTargetMediaId = stickerImg.getAttribute('alt').replace('Sticker 
+-                 bubble.style.border = "1px solid var(--primary-color)";
++         // Escuchar input manual
+-                 bubble.innerText = msj;
++         document.addEventListener('input', function(e) {
+-                 scroll.appendChild(bubble);
++             if(e.target.id === 'manualMsgInput') {
+-                 scroll.scrollTop = scroll.scrollHeight;
++                 window.toggleSendMicButton();
+- 
++         });
+-             const replyWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
++         
+-             if (document.getElementById('replyPreviewContainer')) {
++         window.enviarMensajeManual = async function (e, wa
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] Updated stop database schema — adds runtime type validation before use**: - # Modify the record code
-+ # 1. Update stop event listener to check `mediaRecorder.canceled`
-- target = r"""            if (mediaRecorder && mediaRecorder.state === 'recording') {
-+ target1 = r"""                        mediaRecorder.addEventListener("stop", async () => {
--                 mediaRecorder.stop();
-+                             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // WebM/OGG format for audio
--                 btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
-+                             const formData = new FormData();"""
--                 btnRecord.style.color = "var(--text-main)";
-+ replace1 = r"""                        mediaRecorder.addEventListener("stop", async () => {
--             } else {
-+                             if (mediaRecorder.canceled) {
--                 try {
-+                                 return; // Do not send audio if canceled
--                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-+                             }
--                     mediaRecorder = new MediaRecorder(stream);
-+                             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // WebM/OGG format for audio
--                     audioChunks = [];
-+                             const formData = new FormData();"""
--                     mediaRecorder.addEventListener("dataavailable", event => {
-+ text = text.replace(target1, replace1)
--                         if(event.data.size > 0) audioChunks.push(event.data);
-+ 
--                     });
-+ # 2. Update mediaRecorder.start() logic
--                     mediaRecorder.addEventListener("stop", 
-… [diff truncated]
+- **[what-changed] what-changed in check_chat.py**: - idx = s.find('<a href="/inbox/')
++ idx = s.find('lista_chats_html +=')
+- print(s[max(0,idx-50):idx+500])
++ print(s[max(0,idx-50):idx+800])
 
-📌 IDE AST Context: Modified symbols likely include [text, target1, replace1, text, target2]
-- **[convention] Fixed null crash in Archivo — protects against XSS and CSRF token theft — confirmed 8x**: -             media_id = mensaje_data.get("document", {}).get("id", "")
-+             texto_cliente = f"[📎 Archivo: {filename}]"
--             texto_cliente = f"[documento:{media_id}|{filename}]" 
-+         elif tipo_mensaje == "location":
--         elif tipo_mensaje == "location":
-+             lat = mensaje_data.get("location", {}).get("latitude", "")
--             lat = mensaje_data.get("location", {}).get("latitude", "")
-+             lon = mensaje_data.get("location", {}).get("longitude", "")
--             lon = mensaje_data.get("location", {}).get("longitude", "")
-+             addr = mensaje_data.get("location", {}).get("address", "")
--             addr = mensaje_data.get("location", {}).get("address", "")
-+             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
--             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
-+         elif tipo_mensaje == "location":
--         elif tipo_mensaje == "location":
-+             lat = mensaje_data.get("location", {}).get("latitude", "")
--             lat = mensaje_data.get("location", {}).get("latitude", "")
-+             lon = mensaje_data.get("location", {}).get("longitude", "")
--             lon = mensaje_data.get("location", {}).get("longitude", "")
-+             addr = mensaje_data.get("location", {}).get("address", "")
--             addr = mensaje_data.get("location", {}).get("address", "")
-+             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
--             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
-+         else:
--         else:
-+             texto_cliente = f"[{tipo_mensaje}]"
--             texto_cliente = f"[{tipo_mensaje}]"
+📌 IDE AST Context: Modified symbols likely include [s, idx]
+- **[what-changed] what-changed in check_chat.py**: - idx = s.find('class="chat-item')
++ idx = s.find('<a href="/inbox/')
+- print(s[max(0,idx-50):idx+300])
++ print(s[max(0,idx-50):idx+500])
+
+📌 IDE AST Context: Modified symbols likely include [s, idx]
+- **[what-changed] Updated firebase_client database schema**: - class LabelPayload(BaseModel):
++ class InitChatPayload(BaseModel):
+-     id: str
++     wa_id: str
+-     name: Optional[str] = None
++ 
+-     color: Optional[str] = None
++ @app.post("/api/admin/chat/init")
+- 
++ async def api_init_chat(payload: InitChatPayload, request: Request):
+- @app.post("/api/admin/labels/save")
++     if not verificar_sesion(request): raise HTTPException(status_code=403)
+- async def api_save_label(payload: LabelPayload, request: Request):
++     num_norm = normalizar_numero(payload.wa_id)
+-     if not verificar_sesion(request):
++     obtener_o_crear_sesion(num_norm)
+-         raise HTTPException(status_code=403, detail="No autorizado")
++     return {"ok": True, "wa_id": num_norm}
+-     from firebase_client import guardar_etiqueta_bd
++ 
+-     guardar_etiqueta_bd(payload.id, payload.name, payload.color)
++ class LabelPayload(BaseModel):
+-     global global_labels
++     id: str
+-     global_labels = [l for l in global_labels if l.get("id") != payload.id]
++     name: Optional[str] = None
+-     global_labels.append({"id": payload.id, "name": payload.name, "color": payload.color})
++     color: Optional[str] = None
+-     return {"ok": True}
 + 
 - 
-+     except (KeyError, IndexError):
--     except (KeyError, IndexError):
-+         return {"status": "ok"}   # payload inesperado → ignorar sin error
--         return {"status": "ok"}   # payload inesperado → ignorar sin error
-+ 
-- 
-+     # Detectar si el cliente está usando la función de deslizar/responder
--     # De
++ @app.post("/api/admin/labels/save")
+- @app.post("/api/admin/labels/delete")
++ async def api_save_label(payload: LabelPayload, request: Request):
+- async def api_delete_label(payload: LabelPayload, request: Request):
++     if not verificar_sesion(request):
+-     if not verificar_sesion(request):
++         raise HTTPException(status_code=403, detail="No autorizado")
+-         raise HTTPException(status_code=403, detail="No autorizado")
++     from firebase_client import guardar_etiqueta_bd
+-     from firebase_client import eliminar_etiqueta_bd
++     guardar_etiqueta_bd(payload.id, payload.name, payload.color)
+-     eliminar_etiqueta_bd(payload.id)
++     global global_labels
+-     global global_labels
++     global_labels = [l for l in global_labels if l.get("id") != pay
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[convention] Fixed null crash in Solo — parallelizes async operations for speed — confirmed 4x**: -         burbujas += f"""
-+             
--         <div class="mensaje {lado}">
-+             def wrap_phone(match):
--           <div class="remitente">{remitente}</div>
-+                 phone = match.group(1)
--           <div class="{clase}">{texto}</div>
-+                 clean_phone = re.sub(r'[\s\-]', '', phone)
--         </div>"""
-+                 # Solo si tiene más de 6 dígitos
-- 
-+                 if sum(c.isdigit() for c in clean_phone) >= 7:
--     if not burbujas:
-+                     # Escape seguro
--         burbujas = '<p style="text-align:center;color:#aaa;padding:2rem">Sin mensajes aún en esta sesión</p>'
-+                     return f'<span class="chat-phone" style="color:var(--primary-color); text-decoration:underline; cursor:pointer; font-weight:500;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
-- 
-+                 return phone
--     estado_badge = "🟢 Bot activo" if activo else "🔴 Esperando humano"
-+             texto = re.sub(r'(?<![a-zA-Z0-9\:\-\/\.\=\_])(\+?\d[\d\s\-]{6,15}\d)(?![a-zA-Z0-9\.\-\/\=\_])', wrap_phone, texto)
--     color_badge  = "#2e7d32" if activo else "#c62828"
-+         burbujas += f"""
--     bg_badge     = "#e8f5e9" if activo else "#ffebee"
-+         <div class="mensaje {lado}">
-- 
-+           <div class="remitente">{remitente}</div>
--     btn_reactivar = "" if activo else f"""
-+           <div class="{clase}">{texto}</div>
--     <form method="post" action="/admin/reactivar/{numero_wa}" style="margin:0">
-+         </div>"""
--       <button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;
-+ 
--                      border-radius:8px;cursor:pointer;font-weight:600">▶ Reactivar bot</button>
-+     if not burbujas:
--     </form>"""
-+         burbujas = '<p style="text-align:center;color:#aaa;padding:2rem">Sin mensajes aún en esta sesión</p>'
--     return HTMLResponse(f"""
-+     estado_badge = "🟢 Bot activo" if activo else "🔴 Esperando humano"
-
-… [diff truncated]
+- **[what-changed] what-changed in server.py**: -                 return f'<span class="chat-phone" style="color:var(--primary-color); text-decoration:underline; cursor:pointer; font-weight:500;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
++                 return f'<span class="chat-phone" style="text-decoration:underline; cursor:pointer; font-weight:bold;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
+-                     return f'<span class="chat-phone" style="color:var(--primary-color); text-decoration:underline; cursor:pointer; font-weight:500;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
++                     return f'<span class="chat-phone" style="text-decoration:underline; cursor:pointer; font-weight:bold;" onclick="abrirCtxTelefono(event, \'{clean_phone}\')">{phone}</span>'
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]
-- **[problem-fix] problem-fix in server.py**: -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
-+                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+- **[convention] what-changed in server.py — confirmed 3x**: -                     return f'<div style="text-align:center;"><audio controls src="{src_url}" style="width: 100%; max-width: 250px; height: 40px; outline: none; margin-bottom: 5px; box-sizing: border-box; display: block;"></audio></div>'
++                     return f'<div style="min-width: 250px; max-width: 100%; margin: 0 auto; display: flex;"><audio controls src="{src_url}" style="width: 100%; height: 45px; outline: none; margin-bottom: 5px; border-radius: 20px;"></audio></div>'
 
 📌 IDE AST Context: Modified symbols likely include [app, gemini_client, startup_event, sesiones, global_labels]

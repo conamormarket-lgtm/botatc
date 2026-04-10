@@ -62,10 +62,12 @@ def startup_event():
         print(f"✅ Se restauraron {count_stickers} stickers desde la DB al FileSystem efímero.")
         
         # Restaurar Etiquetas
-        from firebase_client import cargar_etiquetas_bd
-        global global_labels
+        from firebase_client import cargar_etiquetas_bd, cargar_grupos_bd
+        global global_labels, global_groups
         global_labels = cargar_etiquetas_bd()
         print(f"✅ Se restauraron {len(global_labels)} etiquetas globales.")
+        global_groups = cargar_grupos_bd()
+        print(f"✅ Se restauraron {len(global_groups)} grupos virtuales.")
     except Exception as e:
         print(f"❌ Error al restaurar datos desde Firebase: {e}")
 
@@ -1964,6 +1966,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     
                     <!-- Right utilities inside -->
                     <div style="display:flex; flex-shrink:0; align-items:center; margin-bottom: 3px;">
+                        <!-- Respuestas Rápidas -->
+                        <button type="button" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){ side.style.display='flex'; if(window.cargarQuickReplies) window.cargarQuickReplies(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); } else { side.style.display='none'; }" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        </button>
                         <!-- Clip -->
                         <button type="button" onclick="const m = document.getElementById('attachMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Adjuntar">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg);"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
@@ -3002,6 +3008,50 @@ async def api_save_label(payload: LabelPayload, request: Request):
     global_labels = [l for l in global_labels if l.get("id") != payload.id]
     global_labels.append({"id": payload.id, "name": payload.name, "color": payload.color})
     return {"ok": True}
+
+class GroupPayload(BaseModel):
+    id: str
+    name: str
+    members: list[str]
+
+@app.post("/api/admin/groups/save")
+async def api_save_group(payload: GroupPayload, request: Request):
+    if not verificar_sesion(request): raise HTTPException(status_code=403)
+    global global_groups
+    found = False
+    for i, g in enumerate(global_groups):
+        if g.get("id") == payload.id:
+            global_groups[i] = payload.dict()
+            found = True
+            break
+    if not found: global_groups.append(payload.dict())
+    try:
+        from firebase_client import guardar_grupo_bd
+        guardar_grupo_bd(payload.dict())
+    except: pass
+    return {"ok": True}
+
+@app.post("/api/admin/groups/delete")
+async def api_delete_group(payload: GroupPayload, request: Request):
+    if not verificar_sesion(request): raise HTTPException(status_code=403)
+    global global_groups
+    global_groups = [g for g in global_groups if g.get("id") != payload.id]
+    try:
+        from firebase_client import eliminar_grupo_bd
+        eliminar_grupo_bd(payload.id)
+    except: pass
+    return {"ok": True}
+
+@app.get("/api/admin/groups/list")
+async def api_list_groups(request: Request):
+    if not verificar_sesion(request): raise HTTPException(status_code=403)
+    global global_groups
+    if not global_groups:
+        try: 
+            from firebase_client import cargar_grupos_bd
+            global_groups = cargar_grupos_bd()
+        except: pass
+    return {"groups": global_groups}
 
 @app.post("/api/admin/labels/delete")
 async def api_delete_label(payload: LabelPayload, request: Request):
