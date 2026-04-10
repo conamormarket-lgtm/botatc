@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2088 notes | Score threshold: >40
+> 2120 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,56 +20,43 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes** — -                     if (oldScroll.innerHTML !== newScroll.innerHTML)
-- **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft** — -                                 try:
-+                             
-- **⚠️ GOTCHA: Updated whatsapp_client database schema** — - class EnviarPlantillaPayload(BaseModel):
-+ 
--     wa_id: str
-+ cl
-- **⚠️ GOTCHA: Fixed null crash in DOTALL — parallelizes async operations for speed** — -     with open("inbox.html", "r", encoding="utf-8") as f:
-+     
-- 
-- **⚠️ GOTCHA: Fixed null crash in Response — protects against XSS and CSRF token theft** — - @app.post("/login")
-+ 
-- async def login_post(response: Response, 
-- **⚠️ GOTCHA: Fixed null crash in HTMLResponse — parallelizes async operations for speed** — -     if not verificar_sesion(request):
-+     global global_groups
--
-
-## Active: `.`
-
-- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes**
-- **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft**
-- **⚠️ GOTCHA: Updated whatsapp_client database schema**
-- **⚠️ GOTCHA: Fixed null crash in DOTALL — parallelizes async operations for speed**
-- **⚠️ GOTCHA: Fixed null crash in Response — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2115 notes | Score threshold: >40
++ > 2117 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2113 notes | Score threshold: >40
++ > 2115 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2111 notes | Score threshold: >40
++ > 2113 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2107 notes | Score threshold: >40
++ > 2111 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 2104 notes | Score threshold: >40
++ > 2107 notes | Score threshold
 
 ## Project Standards
 
-- Fixed null crash in Logout — reduces excessive function call frequency — confirmed 5x
-- Fixed null crash in EMOJI — wraps unsafe operation in error boundary — confirmed 3x
-- Fixed null crash in CUSTOM — wraps unsafe operation in error boundary — confirmed 3x
-- Fixed null crash in Alternar — wraps unsafe operation in error boundary — confirmed 4x
-- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 3x
-- Fixed null crash in Opcional — wraps unsafe operation in error boundary — confirmed 3x
-- Fixed null crash in Sticker — prevents null/undefined runtime crashes — confirmed 3x
-- what-changed in inbox.html — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- Fixed null crash in Exception — protects against XSS and CSRF token theft — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
+- Strengthened types Patched
+- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
 - ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Click — parallelizes async operations for speed
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -     → ✅ Patched security issue Score — evolves the database schema to support new req...
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ - - Fixed null crash in Descargar — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 
 ## Recent Decisions
 
-- decision in inbox.html
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - decision in server.py
-- decision in inbox.html
-- decision in inbox.html
+- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

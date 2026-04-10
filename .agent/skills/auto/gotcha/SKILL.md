@@ -18,7 +18,7 @@ Auto-compiled from **66 real patterns** in **botatc**. This skill is auto-routed
 
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
-| `- - **⚠️ GOTCHA: Fixed null crash in Exception — p` | Patched security issue Score — evolves the database schema t | 2x |
+| `- - **⚠️ GOTCHA: Fixed null crash in Exception — p` | Patched security issue Score — evolves the database schema t | 7x |
 
 ## 📐 Conventions & Best Practices
 

@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 32 gotchas, 38 conventions, 79 fixes."
+description: "Python for botatc. 34 gotchas, 37 conventions, 79 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **207 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **208 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **207 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Exception — protect | -     except Exception as e: +         return response.text.strip() -         import traceback +  |
+| ⚠️ GOTCHA: Replaced auth Conserva | -     except Exception as e: +         return "" -         import traceback +  -         with op |
 | ⚠️ GOTCHA: Fixed null crash in Ignorar — protects  | -                                 try: +                                 import time -             |
 | ⚠️ GOTCHA: Updated whatsapp_client database schema | - class EnviarPlantillaPayload(BaseModel): +  -     wa_id: str + class EnviarPlantillaPayload(Bas |
 | ⚠️ GOTCHA: Fixed null crash in DOTALL — paralleliz | -     with open("inbox.html", "r", encoding="utf-8") as f: +      -         html = f.read() +     |
@@ -219,16 +221,6 @@ Auto-compiled from **207 real patterns** in **botatc**. This skill is auto-route
 -         hist_total.sort(key=lambda x: x.get("timestamp", ""))
 +         hist_total.sort(key=lambda x: str(x.get("timestamp", "")))
 -             s_fake_vg["historial"].sort(key=lambda x: x.get("timestamp", ""))
-+             s_fake_vg["historial"].sort(key=lambda x: str(x.get("timestamp", "")))
-
-📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in JSONResponse — protects against XSS and CSRF token theft
-- import os
-+ import traceback
-- from fastapi.staticfiles import 
++             s_fake_vg["historial"].sort(key=lambda x: str(x.get("timestamp",
 
 ... [Truncated — see individual observations for full content]

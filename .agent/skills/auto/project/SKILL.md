@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 238 gotchas, 190 conventions, 134 fixes."
+description: "Project for botatc. 246 gotchas, 197 conventions, 135 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **984 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1005 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,14 @@ Auto-compiled from **984 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2115 notes - Score threshold: >40 + > 2117 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2113 notes - Score threshold: >40 + > 2115 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2111 notes - Score threshold: >40 + > 2113 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2107 notes - Score threshold: >40 + > 2111 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 2104 notes - Score threshold: >40 + > 2107 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2088 notes - Score threshold: >40 + > 2104 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
+| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 2080 notes - Score threshold: >40 + > 2083 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized Score | - > 2078 notes - Score threshold: >40 + > 2080 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2048 notes - Score threshold: >40 + > 2061 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
@@ -60,16 +68,25 @@ Auto-compiled from **984 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in JSONResponse — protects against XSS and CSRF token theft + - Fixed null cras |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Replaced auth Patched + - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the da |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1747 notes - Score threshold: >40 + > 1757 notes - Score threshold: >40 - + - problem-fix in ser |
-| ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - Patched security issue Kevin — hardens HTTP security headers - |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1731 notes - Score threshold: >40 + > 1747 notes - Score threshold: >40 - - **gotcha in shared-c |
-| ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - problem-fix in server.py - - Patched security issue Kevin + -  |
-| ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - problem-fix in server.py - - Patched security issue Kevin + -  |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in shared-context.json - - ⚠️ GOTCHA: Optimized Score — e |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to su |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1680 notes - Score threshold: >40 + > 1697 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 
 ## 🔧 Problem Playbooks
+
+### Patched security issue Patched
+- - Fixed null crash in POST — reduces excessive function call frequency
++ - Patched security issue Kevin
+- - Fixed null crash in Click — parallelizes async operations for speed
++ - Fixed null crash in Exception — protects against XSS and CSRF token theft
+- - problem-fix in whatsapp_client.py
++ - Fixed null crash in POST — reduces excessive function call frequency
+- - problem-fix in inbox.html
++ -
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Patched
+3. identifier: Kevin
+4. identifier: Fixed
+5. identifier: Exception
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in BARRA — reduces excessive function call frequency
@@ -162,28 +179,6 @@ Auto-compiled from **984 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in whatsapp_client.py
-+ - problem-fix in shared-context.json
-- - problem-fix in shared-context.json
-+ - problem-fix in whatsapp_client.py
-- - problem-fix in inbox.html
-+ - problem-fix in shared-context.json
-- - problem-fix in patcher.py
-+ - problem-fix in inbox.html
-
-📌 IDE AST Context: Modified symbols likely
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in shared-context.json
-- - Patched security issue Kevin
-+ - problem-fix in whatsapp_client.py
-- - Patched security issue Kevin
-+ - problem-fix in shared-context.json
-- - pr
++ - problem-fi
 
 ... [Truncated — see individual observations for full content]

@@ -2402,7 +2402,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <div style="flex:1; display:flex; align-items:flex-end; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:24px; padding:0.2rem 0.4rem; position:relative; min-height:46px; min-width:0; box-sizing:border-box;">
                     
                     <!-- attach menu -->
-                    <div id="attachMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); right:10px; width:190px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.2rem; z-index:100;">
+                    <div id="attachMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); right:10px; width:190px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.2rem; z-index:100;">
                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').removeAttribute('capture'); document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Subir Imagen
                         </button>
@@ -2426,8 +2426,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     
                     <!-- Right utilities inside -->
                     <div style="display:flex; flex-shrink:0; align-items:center; margin-bottom: 3px;">
-                        <!-- Respuestas Rápidas -->
-                        <button type="button" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){{ side.style.display='flex'; if(window.cargarQuickReplies) window.cargarQuickReplies(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); }} else {{ side.style.display='none'; }}" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas">
+                        <!-- Respuestas Rápidas & Plantillas -->
+                        <button type="button" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){{ side.style.display='flex'; if(window.cargarQuickReplies) window.cargarQuickReplies(); if(window.cargarPlantillas) window.cargarPlantillas(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); }} else {{ side.style.display='none'; }}" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas y Plantillas">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                         </button>
                         <!-- Clip -->
@@ -2526,6 +2526,17 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 </div>
                 <div id="quickRepliesList" style="flex:1; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:0.6rem;">
                     <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando...</div>
+                </div>
+
+                <!-- Plantillas Subsection -->
+                <div style="padding:1rem 1.5rem; border-top:1px solid var(--accent-border); background:var(--accent-bg); display:flex; flex-direction:column; max-height:220px; flex-shrink:0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
+                        <h4 style="margin:0; font-size:0.85rem; color:var(--text-main); font-weight:600;">Plantillas (Meta)</h4>
+                        <button onclick="if(window.crearPlantilla) window.crearPlantilla()" style="background:var(--primary-color); color:white; border:none; border-radius:4px; padding:0.2rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:bold;" title="Añadir Plantilla">AÑADIR</button>
+                    </div>
+                    <div id="templateList" class="hide-scrollbar" style="overflow-y:auto; display:flex; flex-direction:column; gap:0.4rem; flex:1;">
+                        <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando plantillas...</div>
+                    </div>
                 </div>
 
                 <!-- Hidden section / Sub-panel for Creating QR -->
