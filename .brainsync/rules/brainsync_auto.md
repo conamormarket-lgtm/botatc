@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1786 notes | Score threshold: >40
+> 1812 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,36 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in Request — protects against XSS and CSRF token 
-- **⚠️ GOTCHA: Fixed null crash in Response — protects against XSS and CSRF token theft** — - @app.post("/login")
-+ 
-- async def login_post(response: Response, 
-- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in JSONResponse — protects against XSS and CSRF t
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Replaced auth Patched
-+ - ⚠️ GOTCHA: Added JWT tokens a
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1747 notes | Score threshold: >40
-+ > 1757 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue GOTCHA
-+ - Patched security issue Kevin — h
+- **⚠️ GOTCHA: Fixed null crash in DOTALL — parallelizes async operations for speed** — -     with open("inbox.html", "r", encoding="utf-8") as f:
++     
+- 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: problem-fix in agent-
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - problem-fix in server.py
+- 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "aeaa5daabeca4dd8",
++
 
 ## Project Standards
 
+- Fixed null crash in HTMLResponse — parallelizes async operations for speed — confirmed 4x
+- Added JWT tokens authentication — confirmed 5x
+- what-changed in shared-context.json — confirmed 5x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in prompts.py — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- Patched security issue Kevin — hardens HTTP security headers — confirmed 3x
-- Replaced auth GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
 
 ## Known Fixes
 

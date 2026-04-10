@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 31 conventions, 57 fixes, 2 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 31 conventions, 58 fixes, 2 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **142 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -44,6 +44,21 @@ Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-route
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in Admin — reduces excessive function call frequency
+-         <!-- System Settings Icon -->
++         <!-- Admin Users Icon -->
+-         <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
++         <a href="/usuarios" class="nav-item" title="Panel de Usuarios">
+-             <svg viewBox="0 0 24 24">
++             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin=
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Admin
+3. identifier: Users
+4. identifier: Icon
+5. identifier: Panel
 
 ### Fixed null crash in Apply — reduces excessive function call frequency
 -             const savedScroll = sessionStorage.getItem('chatListScrollTop');
@@ -312,23 +327,6 @@ Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-route
 +         
 -             if (!msj) return;
 +         // NATIVE AUDIO RECORDING LOGIC
--             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
-+         let mediaRecorder;
--             try {
-+         let audioChunks = [];
--                 const re
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: NATIVE
-3. identifier: AUDIO
-4. identifier: RECORDING
-5. identifier: LOGIC
-
-### Fixed null crash in PANEL — prevents null/undefined runtime crashes
--         <div class="chats-container">
-+         <div class="chats-container" id="regularChatsContainer">
--     </div>
-+         <div class="chats-container" id="msgSearchResults" style="display:none; padding:1rem; flex-direc
+-             const replyToWamid = document.getElementById('replyToWamid') 
 
 ... [Truncated — see individual observations for full content]

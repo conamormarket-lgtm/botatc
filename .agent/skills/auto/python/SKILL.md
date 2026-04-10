@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 29 gotchas, 31 conventions, 71 fixes."
+description: "Python for botatc. 30 gotchas, 31 conventions, 72 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **183 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **185 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **183 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in DOTALL — paralleliz | -     with open("inbox.html", "r", encoding="utf-8") as f: +      -         html = f.read() +     |
 | ⚠️ GOTCHA: Fixed null crash in Response — protects | - @app.post("/login") +  - async def login_post(response: Response, username: str = Form(...), [RE |
 | ⚠️ GOTCHA: Fixed null crash in HTMLResponse — para | -     if not verificar_sesion(request): +     global global_groups -         return HTMLResponse(o |
 | ⚠️ GOTCHA: Fixed null crash in Virtual — paralleli | -             texto  = m["content"].replace("\\n", "<br>") +             texto  = m["content"].repl |
@@ -49,6 +50,23 @@ Auto-compiled from **183 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in server.py
+-     if not verificar_sesion(request):
++     if not es_admin(request):
+-     if not verificar_sesion(request):
++     if not es_admin(request):
+-     if not verificar_sesion(request):
++     if not es_admin(request):
+-     if not verificar_sesion(request):
++     if not es_admin(request):
+-     if not verificar_sesion(request):
++     if not es_admin(request):
+
+📌 IDE AST Context: Modified 
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in False — parallelizes async operations for speed
 - def obtener_login_html(error=""):
@@ -196,18 +214,6 @@ Auto-compiled from **183 real patterns** in **botatc**. This skill is auto-route
 5. identifier: Video
 
 ### Fixed null crash in Cancelar — parallelizes async operations for speed
--                 <button type="button" id="btnRecordAudio" style="background:var(--accent-bg); color:var(--text-main); border:none; border-radius:12px; height:44px; width:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; margin-left: 0.5rem; margin-right: 0.5rem; transition: background 0.2s, color 0.2s;" title="Grabar nota de voz">
-+                 <button type="bu
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Cancelar
-3. identifier: Grabar
-4. identifier: Enviar
-5. identifier: None
-
-### Fixed null crash in KeyError — protects against XSS and CSRF token theft
--             texto_cliente = f"[📎 Archivo: {filename}]"
-+ 
+-                 <button type="button"
 
 ... [Truncated — see individual observations for full content]

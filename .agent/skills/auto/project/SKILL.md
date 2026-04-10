@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 200 gotchas, 172 conventions, 97 fixes."
+description: "Project for botatc. 204 gotchas, 173 conventions, 99 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **846 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **855 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **846 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - gotcha in shared-context.json + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replac |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in server.py - - problem-fix in inbox.html +  |
 | ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in Request — protects against XSS and CSRF token theft + - Fixed null crash in  |
 | ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in JSONResponse — protects against XSS and CSRF token theft + - Fixed null cras |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Replaced auth Patched + - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the da |
@@ -64,12 +68,36 @@ Auto-compiled from **846 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1419 notes - Score threshold: >40 + > 1423 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1405 notes - Score threshold: >40 + > 1419 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in LEFT — prevents null/undefined runtime crashes + - problem-fix in agent-rule |
-| ⚠️ GOTCHA: Optimized Score | - > 1388 notes - Score threshold: >40 + > 1405 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nivel — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score - - ⚠️ GOTCHA: Optimized Score — evol |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Admin — reduces excessive function call frequency
++ - Patched security issue Kevin
+- - Patched security issue Kevin
++ - Fixed null crash in Admin — reduces excessive function call frequency
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - problem-fix in server.py
++ - problem-fix in
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Admin — reduces excessive function call frequency
+- - problem-fix in server.py
++ - Patched security issue Kevin
+- - problem-fix in shared-context.json
++ - problem-fix in server.py
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lesso
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Patched security issue GOTCHA
 - - ⚠️ GOTCHA: Updated schema GOTCHA
@@ -162,36 +190,6 @@ Auto-compiled from **846 real patterns** in **botatc**. This skill is auto-route
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin — introduces API versioning for backward compati...
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched securit
+### problem-fix
 
 ... [Truncated — see individual observations for full content]

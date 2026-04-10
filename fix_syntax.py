@@ -1,14 +1,10 @@
 import sys
-sys.stdout.reconfigure(encoding='utf-8')
-
-with open("server.py", "r", encoding="utf-8") as f:
+with open('server.py', 'r', encoding='utf-8') as f:
     text = f.read()
 
-# Fix the injected escaped quotes
-if '\\"\\"\\"' in text:
-    text = text.replace('\\"\\"\\"', '\"\"\"')
+text = text.replace('    """\n.replace("__ERR_HTML__", err_html)', '    """')
 
-with open("server.py", "w", encoding="utf-8") as f:
+with open('server.py', 'w', encoding='utf-8') as f:
     f.write(text)
 
-print("Fixed escaped quotes")
+print("Fixed syntax error")

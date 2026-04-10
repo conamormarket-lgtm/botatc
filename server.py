@@ -836,7 +836,6 @@ def obtener_login_html(error="", success=False):
     </div>
     </body></html>
     """
-.replace("__ERR_HTML__", err_html)
 
 @app.get("/settings", response_class=HTMLResponse)
 async def settings_panel(request: Request):
