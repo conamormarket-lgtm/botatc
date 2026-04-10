@@ -2285,10 +2285,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 texto_renderizado = html_reply + texto_restante
                 
             # Formatear la vista de plantillas salientes
-            match_tpl = re.match(r"^\[Plantilla enviada:\s*(.*?)\]$", texto_renderizado)
+            match_tpl = re.match(r"^\[Plantilla enviada:\s*(.*?)\]$", texto_renderizado, flags=re.DOTALL)
             if match_tpl:
-                tpl_name = match_tpl.group(1)
-                texto_renderizado = f'<div style="background:rgba(255,255,255,0.05); border-left:3px solid #10b981; padding:0.6rem; border-radius:6px; margin:-0.2rem;"><div style="font-size:0.7rem; color:#10b981; font-weight:600; text-transform:uppercase; margin-bottom:0.3rem; display:flex; align-items:center; gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> PLANTILLA META</div><div style="font-size:0.95rem; font-weight:500;">{tpl_name}</div></div>'
+                tpl_content = match_tpl.group(1).strip()
+                # Split title from the rest if available
+                parts = tpl_content.split("\n", 1)
+                tpl_title = parts[0]
+                tpl_body = f'<div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px solid rgba(16,185,129,0.2); font-size:0.85rem; color:var(--text-main); line-height:1.4;">{parts[1].replace(chr(10), "<br>")}</div>' if len(parts) > 1 else ""
+                
+                texto_renderizado = f'<div style="background:rgba(255,255,255,0.05); border-left:3px solid #10b981; padding:0.6rem; border-radius:6px; margin:-0.2rem;"><div style="font-size:0.7rem; color:#10b981; font-weight:600; text-transform:uppercase; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> PLANTILLA META: {tpl_title}</div>{tpl_body}</div>'
                 
             wamid = m.get("msg_id", "")
             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
@@ -3477,9 +3482,33 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
                 "clienteNombre": "Desconocido (Plantilla saliente)"
             }
         
+        import urllib.request, json
+        from config import META_ACCESS_TOKEN
+        tpl_full_text = payload.template_name
+        try:
+            req = urllib.request.Request(
+                f'https://graph.facebook.com/v19.0/1672706204042046/message_templates?name={payload.template_name}',
+                headers={'Authorization': 'Bearer ' + META_ACCESS_TOKEN}
+            )
+            data = json.loads(urllib.request.urlopen(req).read().decode())
+            for t in data.get('data', []):
+                if t.get('language') == payload.language_code:
+                    body_text = ""
+                    for c in t.get('components', []):
+                        if c['type'] == 'HEADER' and c.get('format') == 'TEXT': body_text += f"{c['text']}\n"
+                        elif c['type'] == 'BODY': body_text += f"{c['text']}\n"
+                        elif c['type'] == 'FOOTER': body_text += f"\n{c['text']}\n"
+                        elif c['type'] == 'BUTTONS':
+                            body_text += "\n"
+                            for b in c.get('buttons', []): body_text += f"🔘 {b.get('text')}\n"
+                    if body_text: tpl_full_text = f"{payload.template_name}\n{body_text.strip()}"
+                    break
+        except Exception:
+            pass
+            
         if "historial" not in s: s["historial"] = []
 
-        s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
+        s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {tpl_full_text}]", "msg_id": wamid})
         from datetime import datetime
         s["ultima_actividad"] = datetime.utcnow()
         guardar_sesion_chat(payload.wa_id, s)
