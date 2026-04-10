@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1548 notes | Score threshold: >40
+> 1575 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - Fixed null crash in Nivel — prev
 - **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes** — -                     if (oldScroll.innerHTML !== newScroll.innerHTML)
 - **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
 - **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
@@ -32,19 +34,17 @@
 - }
 +       "id": "602ab35b45066361",
 +
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1507 notes | Score threshold: >40
-+ > 1512 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- Optimized Fixed — confirmed 4x
+- Fixed null crash in CUSTOM — wraps unsafe operation in error boundary — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in server.py — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Optimized GOTCHA — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
 
 ## Known Fixes
 

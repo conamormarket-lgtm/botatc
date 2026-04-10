@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 168 gotchas, 151 conventions, 82 fixes."
+description: "Project for botatc. 169 gotchas, 152 conventions, 90 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **735 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **748 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **735 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Fixed null crash in Nivel — prevents null/undefined runtime cr |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1517 notes - Score threshold: >40 + > 1518 notes - Score threshold: >40 - - problem-fix in share |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1507 notes - Score threshold: >40 + > 1512 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1496 notes - Score threshold: >40 + > 1507 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
@@ -67,11 +68,116 @@ Auto-compiled from **735 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1042 notes - Score threshold: >40 + > 1053 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... + -  |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1040 notes - Score threshold: >40 + > 1042 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1036 notes - Score threshold: >40 + > 1040 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Patched security issue Kevin — introduces API versioning for backward compati...
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 A
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue Kevin
+- - Patched security issue Kevin — introduces API versioning for backward compati...
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in server.py
++ - Patched security issue Kevin — introduces API versioning for backward compati...
+
+📌 IDE AST Context: Modifi
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin — introduces API versioning for backward compati...
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin — introduces API versioning for backward compati...
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+
+📌 IDE AST Context: Modified 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin — introduces API versioning for backward compati...
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin — introduces API versioning for backward compati...
+- - problem-fix in server.py
++ - problem-fix in shared-context.json
+- - problem-fix in inbox.html
++ - problem-fix in server.py
+- - problem-fix in patcher.py
+
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in CUSTOM — wraps unsafe operation in error boundary
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in server.py
+- - Fixed null crash in Documento — parallelizes async operations for speed
++ - problem-fix in inbox.html
+- - Fixed null crash in Popover — parallelizes async operations for speed
++ - problem-fix in patcher.py
+
+📌 IDE A
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
 - - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
 + - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
@@ -85,104 +191,6 @@ Auto-compiled from **735 real patterns** in **botatc**. This skill is auto-route
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
 + - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in Interceptar — wraps unsafe operation in error boundary
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - Patched secu
+- - proble
 
 ... [Truncated — see individual observations for full content]

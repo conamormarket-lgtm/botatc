@@ -1789,10 +1789,15 @@
             document.getElementById('phoneContextMenu').style.display = 'none';
             const wa_id = targetPhoneCtx.replace(/\D/g, '');
             if(wa_id.length > 6) {
+                let final_wa_id = wa_id;
                 try {
-                    await fetch('/api/admin/chat/init', { method: 'POST', body: JSON.stringify({wa_id}), headers:{'Content-Type':'application/json'} });
+                    const res = await fetch('/api/admin/chat/init', { method: 'POST', body: JSON.stringify({wa_id}), headers:{'Content-Type':'application/json'} });
+                    if(res.ok) {
+                        const data = await res.json();
+                        if(data.wa_id) final_wa_id = data.wa_id;
+                    }
                 } catch(e) {}
-                window.location.href = "/inbox/" + wa_id;
+                window.location.href = "/inbox/" + final_wa_id;
             }
         });
 

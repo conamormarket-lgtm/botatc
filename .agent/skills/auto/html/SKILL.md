@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 30 conventions, 54 fixes, 1 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 30 conventions, 55 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **137 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -43,6 +43,21 @@ Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+
+### Fixed null crash in Nivel — prevents null/undefined runtime crashes
+-         * { box-sizing: border-box; }
++         .bubble-user .chat-phone { color: var(--primary-color) !important; text-decoration: underline; font-weight: bold; }
+-         body { overflow-x: hidden; max-width: 100vw; }
++         .bubble-bot .chat-phone { color: #ffffff !important; text-decoration: underline; font-weight: bold; }
+-                 :root {
++         * { box-sizing: border-b
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Nivel
+3. identifier: Color
+4. identifier: Principal
+5. identifier: Acento
 
 ### Fixed null crash in MediaRecorder — prevents null/undefined runtime crashes
 - 
@@ -316,19 +331,6 @@ Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-route
 -         <div class="ctx-item" id="ctxCopy"
 +         <div class="ctx-item" id="ctxCopyImage"
 -             style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
-+             style="display:none; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; color:var(--text-main); align-item
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Copiar
-3. identifier: Imagen
-4. identifier: Texto
-5. identifier: Custom
-
-### Fixed null crash in Content — prevents null/undefined runtime crashes
--             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
-+             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
--                 await fetch('/enviar_mensaje', {
-+                 const res = await fet
++             style="display:none; padding:0.8rem 1rem; cursor:pointer; font-s
 
 ... [Truncated — see individual observations for full content]

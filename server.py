@@ -2977,6 +2977,16 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
 
 from typing import Optional
 
+class InitChatPayload(BaseModel):
+    wa_id: str
+
+@app.post("/api/admin/chat/init")
+async def api_init_chat(payload: InitChatPayload, request: Request):
+    if not verificar_sesion(request): raise HTTPException(status_code=403)
+    num_norm = normalizar_numero(payload.wa_id)
+    obtener_o_crear_sesion(num_norm)
+    return {"ok": True, "wa_id": num_norm}
+
 class LabelPayload(BaseModel):
     id: str
     name: Optional[str] = None
