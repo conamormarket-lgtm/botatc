@@ -428,6 +428,17 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             lon = mensaje_data.get("location", {}).get("longitude", "")
             addr = mensaje_data.get("location", {}).get("address", "")
             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
+        elif tipo_mensaje == "button":
+            texto_cliente = "🎯 " + mensaje_data.get("button", {}).get("text", "Botón")
+        elif tipo_mensaje == "interactive":
+            inter = mensaje_data.get("interactive", {})
+            tipo_inter = inter.get("type", "")
+            if tipo_inter == "button_reply":
+                texto_cliente = "🎯 " + inter.get("button_reply", {}).get("title", "Botón")
+            elif tipo_inter == "list_reply":
+                texto_cliente = "📋 " + inter.get("list_reply", {}).get("title", "Opción")
+            else:
+                texto_cliente = "[Interacción]"
         else:
             texto_cliente = f"[{tipo_mensaje}]"
 
@@ -2272,6 +2283,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 texto_restante = match.group(2)
                 html_reply = f'<div style="font-size:0.75rem; color:var(--text-muted); background:rgba(0,0,0,0.15); padding:0.35rem 0.6rem; border-radius:6px; margin-bottom:0.4rem; border-left:3px solid var(--primary-color); display:flex; flex-direction:column; max-width:100%; overflow:hidden;"><span style="font-weight:600;font-size:0.65rem;margin-bottom:0.1rem;opacity:0.8;">Respondió a:</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{texto_citado}</span></div>'
                 texto_renderizado = html_reply + texto_restante
+                
+            # Formatear la vista de plantillas salientes
+            match_tpl = re.match(r"^\[Plantilla enviada:\s*(.*?)\]$", texto_renderizado)
+            if match_tpl:
+                tpl_name = match_tpl.group(1)
+                texto_renderizado = f'<div style="background:rgba(255,255,255,0.05); border-left:3px solid #10b981; padding:0.6rem; border-radius:6px; margin:-0.2rem;"><div style="font-size:0.7rem; color:#10b981; font-weight:600; text-transform:uppercase; margin-bottom:0.3rem; display:flex; align-items:center; gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> PLANTILLA META</div><div style="font-size:0.95rem; font-weight:500;">{tpl_name}</div></div>'
                 
             wamid = m.get("msg_id", "")
             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""

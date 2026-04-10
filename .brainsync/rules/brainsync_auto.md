@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2124 notes | Score threshold: >40
+> 2167 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,11 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2124 notes | Score threshold: >40
++ > 2164 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: problem-fix in agent-
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in POST — wraps unsafe operation in error boundar
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -31,22 +36,17 @@
 + > 2117 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2113 notes | Score threshold: >40
 + > 2115 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2111 notes | Score threshold: >40
-+ > 2113 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2107 notes | Score threshold: >40
-+ > 2111 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 18x
+- problem-fix in agent-rules.md — confirmed 14x
+- Added JWT tokens authentication — confirmed 3x
+- Patched security issue Kevin — confirmed 4x
 - Strengthened types Respuestas
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- Fixed null crash in Exception — protects against XSS and CSRF token theft — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- Strengthened types Patched
 
 ## Known Fixes
 
@@ -59,9 +59,9 @@
 ## Recent Decisions
 
 - Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - decision in server.py
-- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

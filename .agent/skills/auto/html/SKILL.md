@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 32 conventions, 65 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 32 conventions, 66 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **152 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,25 @@ Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in POST — wraps unsafe operation in error boundary
+-             document.getElementById("templateMenu").style.display = "none";
++             const tMenu = document.getElementById("templateMenu");
+- 
++             if(tMenu) tMenu.style.display = "none";
+-             try {
++ 
+-                 const res = await fetch("/api/admin/enviar_plantilla", {
++             try {
+-                     method: "POST",
++                 const res = a
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: POST
+3. identifier: Content
+4. identifier: Type
+5. identifier: JSON
 
 ### Fixed null crash in POST — reduces excessive function call frequency
 -         window.enviarMensajeDirecto = async function(wa_id, msj) {
@@ -311,24 +330,6 @@ Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-route
 + 
 
 **Actionable Steps:**
-1. Modified 1 files
-2. identifier: Vaciar
-3. identifier: Dibujado
-4. identifier: POST
-5. identifier: Content
-
-### Fixed null crash in Funcionalidad — wraps unsafe operation in error boundary
--             height: 100vh;
-+             height: 100dvh;
--         // Añadir estilo CSS de spin si no existe
-+         // Funcionalidad de dropdown de clip
--         if(!document.getElementById('spinStyle')) {
-+         window.toggleClipMenu = function() {
--             const style = document.createElement('style');
-+             const menu = document.getElementById('clipActionMenu');
-- 
-
-**Actionable Steps:**
-1.
+1. Modified 1 fil
 
 ... [Truncated — see individual observations for full content]
