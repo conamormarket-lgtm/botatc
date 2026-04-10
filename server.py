@@ -925,9 +925,9 @@ def obtener_login_html(error="", success=False):
             <input type="text" name="username" id="username" placeholder="Usuario" autocomplete="off" />
 
             <input type="password" name="password" id="password" placeholder="Contraseña" />
-            <div style="display:flex; align-items:center; margin-top:5px; font-size:13px; color:#94a3b8; user-select:none;">
-                <input type="checkbox" name="remember" id="remember" value="yes" style="margin-right:8px; cursor:pointer;" checked>
-                <label for="remember" style="cursor:pointer;">Mantener sesión iniciada</label>
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:5px; margin-bottom:5px; font-size:13px; color:#94a3b8; user-select:none;">
+                <input type="checkbox" name="remember" id="remember" value="yes" style="cursor:pointer; width:auto; margin:0;" checked>
+                <label for="remember" style="cursor:pointer; margin:0;">Mantener sesión iniciada</label>
             </div>
             <button type="submit" id="submit-btn" style="margin-top: 15px; margin-bottom: 20px;">Ingresar</button>
 
@@ -948,7 +948,7 @@ def obtener_login_html(error="", success=False):
                  data-logo_alignment="left"
                  style="display: flex; justify-content: center;">
             </div>
-            <div id="google-hint" style="color: #ef4444; font-size: 11px; text-align: center; margin-top: 5px;">(Requiere configurar Client ID de Google)</div>
+
         </form>
 
     </div>
