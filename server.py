@@ -1631,7 +1631,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             "ultima_actividad": vg_ultima_actividad,
             "nombre_cliente": f"{vg.get('name')}",
             "bot_activo": True,
-            "historial": hist_total[-5:],
+            "historial": hist_total[-50:],
             "is_virtual_group": True,
             "vg_id": vg.get("id"),
             "etiquetas": []
@@ -1806,7 +1806,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         </div>"""
     else:
         # Renderizar Chat Activo
-        s = sesiones[wa_id]
+        s = s_fake_vg if s_fake_vg else sesiones[wa_id]
         nombre_chat = s.get("nombre_cliente", wa_id)
         activo_chat = s.get("bot_activo", True)
         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
