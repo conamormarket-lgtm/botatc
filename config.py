@@ -44,7 +44,7 @@ SESION_EXPIRA_HORAS      = 4    # tras N horas de inactividad → sesión nueva
 ESTADOS_DISEÑO           = {"En Diseño", "en diseño", "Diseño", "diseño"}
 
 # --- Panel de administración ---
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin1234")  # cambiar en producción
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")  # Debe configurarse como variable de entorno en Railway
 
 # --- Modo Tester (números que pueden probar con cualquier pedido) ---
 NUMEROS_TESTER = {"997778512", "51997778512"}  # el dueño puede probar con N° de pedido manual

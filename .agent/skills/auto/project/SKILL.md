@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **921 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **924 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
