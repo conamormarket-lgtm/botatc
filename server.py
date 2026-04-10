@@ -873,13 +873,13 @@ def obtener_login_html(error="", success=False):
     
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-      function setMode(mode) {
+      function setMode(mode) {{
           document.getElementById('action').value = mode;
           document.getElementById('btn-login').classList.toggle('active', mode==='login');
           document.getElementById('btn-register').classList.toggle('active', mode==='register');
           document.getElementById('submit-btn').innerText = mode==='login' ? 'Ingresar' : 'Registrarse';
-      }
-      function handleGoogleCredential(response) {
+      }}
+      function handleGoogleCredential(response) {{
           const form = document.createElement("form");
           form.method = "POST";
           form.action = "/login";
@@ -897,7 +897,7 @@ def obtener_login_html(error="", success=False):
           form.appendChild(inputAction);
           document.body.appendChild(form);
           form.submit();
-      }
+      }}
     </script>
 
     </head><body>
