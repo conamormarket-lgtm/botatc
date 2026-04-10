@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 32 conventions, 63 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 32 conventions, 64 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **148 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **149 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,20 @@ Auto-compiled from **148 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in Informaci — reduces excessive function call frequency
+-     </div>
++         <div class="ctx-item" id="ctxMsgInfo"
+-     <style>
++             style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-top:1px solid var(--accent-border); color:var(--text-main); display:none; align-items:center; gap:0.5rem; transition:background 0.2s;"
+-         .bubble-user .chat-phone { color: var(--primary-color) !important; text-decoration: underlin
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Informaci
+3. identifier: Custom
+4. identifier: Scrollbar
+5. identifier: LOGICA
 
 ### Fixed null crash in BARRA — reduces excessive function call frequency
 -         /* Mini menú contextual */
@@ -315,21 +329,6 @@ Auto-compiled from **148 real patterns** in **botatc**. This skill is auto-route
 -             if (!input) return;
 +             if (!inputElem.files || inputElem.files.le
 
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Manejar
-3. identifier: Est
-4. identifier: FormData
-5. identifier: POST
-
-### Fixed null crash in Blob — prevents null/undefined runtime crashes
--                             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' }); // WebM/OGG format for audio
-+                             if (mediaRecorder.canceled) {
--                             const formData = new FormData();
-+                                 return; // Do not send audio if canceled
--                             formData.append("file", audioBlob, "voice_no
-
-**Actionable Steps:**
-1. Mod
+**Actionable 
 
 ... [Truncated — see individual observations for full content]

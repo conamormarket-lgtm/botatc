@@ -1565,9 +1565,9 @@ async def enviar_manual_endpoint(request: Request):
     if exito:
         import time
         ts = int(time.time())
-        # Obtener usuario que envió el mensaje
+        # Obtener usuario que envió el mensaje — usar nombre visible si está configurado
         usuario_sesion = obtener_usuario_sesion(request)
-        sent_by_name = usuario_sesion.get("username", "Agente") if usuario_sesion else "Agente"
+        sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
         s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name})
         s["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Humano -> {wa_id}]: {texto}")
@@ -1652,7 +1652,13 @@ async def api_usuarios_update(request: Request, data: dict):
     username = data.get("username")
     estado = data.get("estado")
     permisos = data.get("permisos", [])
-    if actualizar_permisos_usuario(username, estado, permisos):
+    nombre = data.get("nombre", "")
+    if actualizar_permisos_usuario(username, estado, permisos, nombre):
+        # Si el usuario tiene sesión activa, actualizar su nombre en memoria
+        for token, user in active_sessions.items():
+            if user.get("username") == username:
+                user["nombre"] = nombre
+                break
         return {"ok": True}
     return {"ok": False}
 
@@ -1692,6 +1698,7 @@ def obtener_usuarios_html():
             <thead>
                 <tr>
                     <th>Usuario</th>
+                    <th>Nombre Visible</th>
                     <th>Estado</th>
                     <th>Permisos</th>
                     <th>Acciones</th>
@@ -1713,6 +1720,7 @@ def obtener_usuarios_html():
                     const isAdmin = u.permisos.includes('admin');
                     tbody.innerHTML += `<tr>
                             <td>${u.username}</td>
+                            <td><input type="text" id="nombre-${u.username}" value="${u.nombre || ''}" placeholder="Nombre visible..." style="background:#0f172a; color:white; border:1px solid #475569; padding:5px 8px; border-radius:5px; width:140px; font-size:13px;"></td>
                             <td><span class="badge ${u.estado}">${u.estado}</span></td>
                             <td>${isAdmin ? 'Admin' : 'Estándar'}</td>
                             <td>
@@ -1734,11 +1742,12 @@ def obtener_usuarios_html():
                 const estado = document.getElementById(`estado-${username}`).value;
                 const perm = document.getElementById(`permiso-${username}`).value;
                 const permisos = perm ? [perm] : [];
+                const nombre = document.getElementById(`nombre-${username}`)?.value?.trim() || '';
                 
                 const res = await fetch('/api/usuarios/update', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username, estado, permisos})
+                    body: JSON.stringify({username, estado, permisos, nombre})
                 });
                 
                 if (res.ok) {

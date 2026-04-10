@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 228 gotchas, 187 conventions, 134 fixes."
+description: "Project for botatc. 232 gotchas, 188 conventions, 134 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **960 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **966 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **960 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1999 notes - Score threshold: >40 + > 2032 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in BARRA — r |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Panel — reduces excessive function call frequency + - problem-fix in agent-r |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1990 notes - Score threshold: >40 + > 1991 notes - Score threshold: >40 - - what-changed in shar |
@@ -64,10 +68,6 @@ Auto-compiled from **960 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Fixed null crash in HTMLResponse — parallelizes async operations for speed + - ⚠️ GOT |
 | ⚠️ GOTCHA: Optimized Score | - > 1678 notes - Score threshold: >40 + > 1680 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Updated schema Patched | - - Patched security issue Kevin + - Patched security issue Score — evolves the database schema to s |
-| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1612 notes - Score threshold: >40 + > 1630 notes - Score threshold: >40 - + - problem-fix in sha |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in Apply — r |
 
 ## 🔧 Problem Playbooks
 
@@ -186,7 +186,6 @@ Auto-compiled from **960 real patterns** in **botatc**. This skill is auto-route
 + - problem-fix in shared-context.json
 - - problem-fix in shared-context.json
 + - problem-fix in inbox.html
-- - problem-fix in whatsapp_client.py
-+ - problem
+- - problem-fix in whatsapp_
 
 ... [Truncated — see individual observations for full content]
