@@ -2289,9 +2289,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if match_tpl:
                 tpl_content = match_tpl.group(1).strip()
                 # Split title from the rest if available
-                parts = tpl_content.split("\n", 1)
+                parts = tpl_content.split("<br>", 1)
                 tpl_title = parts[0]
-                tpl_body = f'<div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px solid rgba(16,185,129,0.2); font-size:0.85rem; color:var(--text-main); line-height:1.4;">{parts[1].replace(chr(10), "<br>")}</div>' if len(parts) > 1 else ""
+                tpl_body = f'<div style="margin-top:0.6rem; padding-top:0.6rem; border-top:1px solid rgba(16,185,129,0.2); font-size:0.85rem; color:var(--text-main); line-height:1.4;">{parts[1]}</div>' if len(parts) > 1 else ""
                 
                 texto_renderizado = f'<div style="background:rgba(255,255,255,0.05); border-left:3px solid #10b981; padding:0.6rem; border-radius:6px; margin:-0.2rem;"><div style="font-size:0.7rem; color:#10b981; font-weight:600; text-transform:uppercase; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> PLANTILLA META: {tpl_title}</div>{tpl_body}</div>'
                 

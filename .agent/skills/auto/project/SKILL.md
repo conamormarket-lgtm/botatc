@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 249 gotchas, 198 conventions, 148 fixes."
+description: "Project for botatc. 251 gotchas, 199 conventions, 148 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1027 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1031 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **1027 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — intro | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Added JWT tokens authentication — intr |
+| ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2164 notes - Score threshold: >40 + > 2167 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2124 notes - Score threshold: >40 + > 2164 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - gotcha in shared-context.json + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Optimi |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in POST — wraps unsafe operation in error boundary + - problem-fix in agent-rul |
@@ -66,8 +68,6 @@ Auto-compiled from **1027 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - gotcha in shared-context.json + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replac |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in server.py - - problem-fix in inbox.html +  |
-| ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in Request — protects against XSS and CSRF token theft + - Fixed null crash in  |
 
 ## 🔧 Problem Playbooks
 
@@ -181,6 +181,6 @@ Auto-compiled from **1027 real patterns** in **botatc**. This skill is auto-rout
 - - Patched security issue Patched
 + - Patched security issue Kevin
 - - Patched security issue Kevin
-+ - Patched security issue Pat
+
 
 ... [Truncated — see individual observations for full content]

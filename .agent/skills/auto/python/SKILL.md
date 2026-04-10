@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 34 gotchas, 38 conventions, 79 fixes."
+description: "Python for botatc. 34 gotchas, 38 conventions, 80 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **210 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -54,6 +54,24 @@ Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Formatear — parallelizes async operations for speed
+-             wamid = m.get("msg_id", "")
++             # Formatear la vista de plantillas salientes
+-             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
++             match_tpl = re.match(r"^\[Plantilla enviada:\s*(.*?)\]$", texto_renderizado)
+-             
++             if match_tpl:
+-             meta_html = ""
++                 tpl_name = match_tpl.group(1)
+-          
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Formatear
+3. identifier: Plantilla
+4. identifier: PLANTILLA
+5. identifier: META
 
 ### Fixed null crash in Click — parallelizes async operations for speed
 -                 extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}"'
@@ -206,21 +224,6 @@ Auto-compiled from **209 real patterns** in **botatc**. This skill is auto-route
 2. identifier: Request
 3. identifier: None
 4. identifier: True
-5. identifier: False
-
-### problem-fix in server.py
--         s = sesiones[wa_id]
-+         s = s_fake_vg if s_fake_vg else sesiones[wa_id]
-
-📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in server.py
--         hist_total.sort(key=lambda x: x.get("timestamp", ""))
-+         hist_total.sort(key=lambda x: str(x.get("timestamp", "")))
--             s_fake_vg["historial"].sort(key=lambda x: x.get("timestamp", ""))
-+             s_fake_vg["historial"].sort(key=lambda x: str(x.get("timestamp",
+5. identifier: Fa
 
 ... [Truncated — see individual observations for full content]

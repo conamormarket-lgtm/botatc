@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2167 notes | Score threshold: >40
+> 2178 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: Added JW
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2164 notes | Score threshold: >40
++ > 2167 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2124 notes | Score threshold: >40
 + > 2164 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
@@ -32,10 +36,6 @@
 - }
 +       "id": "e9fd7a44e21e56dc",
 +
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2115 notes | Score threshold: >40
-+ > 2117 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2113 notes | Score threshold: >40
-+ > 2115 notes | Score threshold
 
 ## Project Standards
 
@@ -50,7 +50,7 @@
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Click — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Formatear — parallelizes async operations for speed
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -     → ✅ Patched security issue Score — evolves the database schema to support new req...
