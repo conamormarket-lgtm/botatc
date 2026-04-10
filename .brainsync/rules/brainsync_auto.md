@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1644 notes | Score threshold: >40
+> 1678 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,34 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -         from firebase_client import cargar_etiquetas_bd
-+         f
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1612 notes | Score threshold: >40
-+ > 1630 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- -
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1607 notes | Score threshold: >40
-+ > 1612 notes | Score threshold
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse — parallelizes async operations for speed** — -     if not verificar_sesion(request):
++     global global_groups
+-
+- **⚠️ GOTCHA: Fixed null crash in Virtual — parallelizes async operations for speed** — -             texto  = m["content"].replace("\\n", "<br>")
++         
+- **⚠️ GOTCHA: Updated schema Patched** — - - Patched security issue Kevin
++ - Patched security issue Score — ev
+- **⚠️ GOTCHA: Fixed null crash in GRUPO** — -     html = html.replace("{chat_view_css}", chat_view_css)
++     if 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "5ed3a7d99f98711b",
++
+- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed** — -     todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_acti
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- Patched security issue Kevin — confirmed 5x
+- Added JWT tokens authentication — confirmed 6x
+- what-changed in shared-context.json — confirmed 4x
 - Added API route: /admin — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- problem-fix in agent-rules.md — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 11x
-- problem-fix in agent-rules.md — confirmed 4x
 
 ## Known Fixes
 

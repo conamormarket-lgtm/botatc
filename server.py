@@ -1568,6 +1568,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             global_labels = cargar_etiquetas_bd()
         except: pass
 
+    global global_groups
+    if not global_groups:
+        try:
+            from firebase_client import cargar_grupos_bd
+            global_groups = cargar_grupos_bd()
+        except: pass
+
     if not verificar_sesion(request):
         return HTMLResponse(obtener_login_html(), status_code=401)
 
@@ -1593,7 +1600,30 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         return hist[-1]["content"][:50] + ("…" if len(hist[-1]["content"]) > 50 else "")
 
     # Procesar Lista de Chats
-    todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True)
+    grupos_sesiones = []
+    for vg in global_groups:
+        miembros = vg.get("members", [])
+        sesiones_miembros = [sesiones.get(m) for m in miembros if m in sesiones]
+        if not sesiones_miembros: continue
+        vg_ultima_actividad = max((s.get("ultima_actividad", datetime.utcnow()) for s in sesiones_miembros))
+        
+        hist_total = []
+        for s in sesiones_miembros:
+            hist_total.extend(s.get("historial", []))
+        hist_total.sort(key=lambda x: x.get("timestamp", ""))
+        
+        s_fake = {
+            "ultima_actividad": vg_ultima_actividad,
+            "nombre_cliente": f"{vg.get('name')}",
+            "bot_activo": True,
+            "historial": hist_total[-5:],
+            "is_virtual_group": True,
+            "vg_id": vg.get("id"),
+            "etiquetas": []
+        }
+        grupos_sesiones.append((vg.get("id"), s_fake))
+
+    todas = sorted(list(sesiones.items()) + grupos_sesiones, key=lambda x: x[1].get("ultima_actividad", datetime.min), reverse=True)
     lista_chats_html = ""
     
     # ------------------ Generador de Filtro de Etiquetas HTML ------------------
@@ -1661,9 +1691,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         preview  = ultimo_msg(s)
         time_str = tiempo_relativo(s["ultima_actividad"])
         
-        badge_html = '<span class="badge">🟢 Bot Activo</span>'
-        if not activo:
-            badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
+        is_vg = s.get("is_virtual_group", False)
+        if is_vg:
+            badge_html = '<span class="badge" style="background:rgba(168, 85, 247, 0.15); color:#a855f7; border: 1px solid rgba(168, 85, 247, 0.3);">👥 GRUPO VIRTUAL</span>'
+        else:
+            badge_html = '<span class="badge">🟢 Bot Activo</span>'
+            if not activo:
+                badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
             
         active_class = "active-row" if wa_id == num else ""
             
@@ -1699,9 +1733,38 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     # Procesar Panel Derecho (Chat Viewer)
     chat_viewer_html = ""
     chat_view_css = ""
+    s_fake_vg = None
     
+    if wa_id and wa_id.startswith("vg_"):
+        vg = next((g for g in global_groups if g.get("id") == wa_id), None)
+        if vg:
+            s_fake_vg = {
+                "is_virtual_group": True,
+                "nombre_cliente": f"👥 {vg.get('name')}",
+                "historial": [],
+                "bot_activo": True,
+                "ultima_actividad": datetime.utcnow()
+            }
+            miembros = vg.get("members", [])
+            for m in miembros:
+                if m in sesiones:
+                    hist = sesiones[m].get("historial", [])
+                    nombre_m = sesiones[m].get("nombre_cliente") or m
+                    for msg in hist:
+                        msg_copy = dict(msg)
+                        msg_copy["sender_name_override"] = nombre_m
+                        msg_copy["sender_wa_id"] = m
+                        s_fake_vg["historial"].append(msg_copy)
+            s_fake_vg["historial"].sort(key=lambda x: x.get("timestamp", ""))
+            
+            if not s_fake_vg["historial"]:
+                chat_viewer_html = f'''<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.95rem;flex-direction:column;gap:10px;">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <p>Grupo Virtual "{vg.get('name')}".</p><p>Todavía no hay mensajes correspondientes a sus miembros.</p>
+                </div>'''
+
     # Auto-inicializar chat nuevo si se manda un número válido (ej. desde el buscador UI)
-    if wa_id and wa_id not in sesiones:
+    elif wa_id and wa_id not in sesiones:
         import re
         if re.match(r'^51\d{9}$', str(wa_id)):
             sesiones[wa_id] = {
@@ -1719,7 +1782,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <p>Nuevo chat inicializado.</p><p>Escribe tu primer mensaje abajo para saludar a <b>+{wa_id}</b>.</p>
         </div>'''
         
-    if not wa_id or wa_id not in sesiones:
+    if not wa_id or (wa_id not in sesiones and not s_fake_vg):
         chat_viewer_html = """
         <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1745,7 +1808,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             es_bot = m["role"] == "assistant"
             clase  = "bubble-bot" if es_bot else "bubble-user"
             lado   = "lado-der" if es_bot else "lado-izq"
-            texto  = m["content"].replace("\\n", "<br>")
+            texto  = m["content"].replace("\n", "<br>")
+            
+            # Virtual group: Include visual author tag for user messages
+            if not es_bot and "sender_name_override" in m:
+                s_name = m.get("sender_name_override", "")
+                s_waid = m.get("sender_wa_id", "")
+                texto = f'<div style="background:rgba(255,255,255,0.08); padding:0.4rem 0.6rem; border-radius:4px; font-size:0.8rem; margin-bottom:0.4rem; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;"><strong style="color:var(--text-main); font-family:var(--font-heading);">{s_name}</strong> <a href="/inbox/{s_waid}" style="color:var(--primary-color); text-decoration:none; font-weight:bold; padding:0.2rem 0.4rem; background:rgba(59, 130, 246, 0.15); border-radius:4px;">Responder ↗</a></div>' + texto
             def wrap_phone2(match):
                 phone = match.group(1)
                 clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
@@ -1893,7 +1962,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             </div>"""
 
         chat_box = ""
-        if activo_chat:
+        if s_fake_vg:
+            chat_box = """<div style="padding:0.75rem; color:#c084fc; text-align:center; font-size:0.85rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:0.5rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> GRUPO VIRTUAL DE SOLO LECTURA. HAGA CLIC EN EL LOGO DE UN MENSAJE PARA ABRIR SU CHAT PRIVADO.</div>"""
+        elif activo_chat:
             chat_box = """
             <div id="qrProgressContainer" style="display:none; align-items:center; background:var(--accent-bg); padding:0.5rem 1rem; margin-bottom:0.5rem; border-radius:8px; gap:0.5rem; font-size:0.8rem; flex-direction:column; border:1px solid var(--accent-border);">
                 <div style="width:100%; display:flex; justify-content:space-between; color:var(--text-main); font-weight:600;"><span id="qrProgressText">Procesando...</span></div>
@@ -2624,6 +2695,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     html = html.replace("{lista_chats_html}", lista_chats_html)
     html = html.replace("{labels_filter_html}", labels_filter_html)
     html = html.replace("{chat_viewer_html}", chat_viewer_html)
+    if s_fake_vg:
+        html = html.replace("{style_input_area}", 'style="display:none;"')
+        html = html.replace("{grupo_virtual_banner}", '''<div style="padding:0.75rem; background:rgba(168,85,247,0.1); border-top:1px solid rgba(168,85,247,0.3); color:#c084fc; text-align:center; font-size:0.85rem; font-weight:600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:5px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> GRUPO VIRTUAL DE SOLO LECTURA. HAZ CLIC EN EL LOGO/FOTO AL LADO DE UN MENSAJE PARA ABRIR SU CHAT PRIVADO.</div>''')
+    else:
+        html = html.replace("{style_input_area}", '')
+        html = html.replace("{grupo_virtual_banner}", '')
     html = html.replace("{chat_view_css}", chat_view_css)
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
     

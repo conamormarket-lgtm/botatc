@@ -1,0 +1,5 @@
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+s = open('server.py', 'r', encoding='utf-8').read()
+idx = s.find('chat_viewer_html = f"""')
+print(s[idx+3000:idx+4500])

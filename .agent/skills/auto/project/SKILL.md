@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 181 gotchas, 159 conventions, 95 fixes."
+description: "Project for botatc. 182 gotchas, 161 conventions, 96 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **781 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **794 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **781 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Updated schema Patched | - - Patched security issue Kevin + - Patched security issue Score — evolves the database schema to s |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1612 notes - Score threshold: >40 + > 1630 notes - Score threshold: >40 - + - problem-fix in sha |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in Apply — r |
@@ -67,9 +68,24 @@ Auto-compiled from **781 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1199 notes - Score threshold: >40 + > 1200 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to sup |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 1192 notes - Score threshold: >40 + > 1193 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 
 ## 🔧 Problem Playbooks
+
+### Patched security issue Score — evolves the database schema to support new req...
+- > 1644 notes | Score threshold: >40
++ > 1657 notes | Score threshold: >40
+- - **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -         from firebase_client import cargar_etiquetas_bd
++ - **⚠️ GOTCHA: Fixed null crash in GRUPO** — -     html = html.replace("{chat_view_css}", chat_view_css)
+- +         f
++ +     if 
+- - **gotcha in agent-rules.md** — Fi
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Score
+3. identifier: GOTCHA
+4. identifier: Fixed
+5. identifier: GRUPO
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Apply — reduces excessive function call frequency
@@ -172,25 +188,6 @@ Auto-compiled from **781 real patterns** in **botatc**. This skill is auto-route
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - Patched security issue Kevin — introduces API versioning for backward compati...
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 A
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-- - Patched 
+**Actionabl
 
 ... [Truncated — see individual observations for full content]

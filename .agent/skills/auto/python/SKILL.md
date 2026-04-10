@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 23 gotchas, 27 conventions, 65 fixes."
+description: "Python for botatc. 28 gotchas, 27 conventions, 66 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **162 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **170 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,11 @@ Auto-compiled from **162 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in HTMLResponse — para | -     if not verificar_sesion(request): +     global global_groups -         return HTMLResponse(o |
+| ⚠️ GOTCHA: Fixed null crash in Virtual — paralleli | -             texto  = m["content"].replace("\\n", "<br>") +             texto  = m["content"].repl |
+| ⚠️ GOTCHA: Fixed null crash in GRUPO | -     html = html.replace("{chat_view_css}", chat_view_css) +     if s_fake_vg: -     html = html. |
+| ⚠️ GOTCHA: Fixed null crash in True — parallelizes | -     todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True) +      |
+| ⚠️ GOTCHA: Fixed null crash in False — parallelize | -         badge_html = '<span class="badge">🟢 Bot Activo</span>' +         is_vg = s.get("is_virtu |
 | ⚠️ GOTCHA: Fixed null crash in Exception — protect | -         from firebase_client import cargar_etiquetas_bd +         from firebase_client import car |
 | ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
 | ⚠️ GOTCHA: problem-fix in server.py | -                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-wid |
@@ -43,6 +48,19 @@ Auto-compiled from **162 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in GRUPO — parallelizes async operations for speed
+-         if activo_chat:
++         if s_fake_vg:
+-             chat_box = """
++             chat_box = """<div style="padding:0.75rem; color:#c084fc; text-align:center; font-size:0.85rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:0.5rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: GRUPO
+3. identifier: VIRTUAL
+4. identifier: SOLO
+5. identifier: LECTURA
 
 ### Fixed null crash in Documento — parallelizes async operations for speed
 -                     return f'<div style="min-width: 250px; max-width: 100%; margin: 0 auto; display: flex;"><audio controls src="{src_url}" style="width: 100%; height: 45px; outline: none; margin-bottom: 5px; border-radius: 20px;"></audio></div>'
@@ -192,49 +210,6 @@ Auto-compiled from **162 real patterns** in **botatc**. This skill is auto-route
 -           <div class="{clase}">{texto}</div>
 +             clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
 -         </div>"""
-+             if sum(c.isdigit() for c in clean_phone) >= 7:
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Sin
-3. identifier: Bot
-4. identifier: Esperando
-5. identifier: Reactivar
-
-### Fixed null crash in Esperando — parallelizes async operations for speed
--         remitente = "🤖 María" if es_bot else f"👤 {nombre}"        texto     = m["content"].replace("\n", "<br>")
-+         remitente = "🤖 María" if es_bot else f"👤 {nombre}"
--         burbujas += f"""
-+         texto     = m["content"].replace("\n", "<br>")
--         <div class="mensaje {lado}">
-+         burbujas += f"""
--           <div class="remitente">{remitente}</div>
-+         
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Mar
-3. identifier: Sin
-4. identifier: Bot
-5. identifier: Esperando
-
-### Fixed null crash in Esperando — parallelizes async operations for speed
--         remitente = "🤖 María" if es_bot else f"👤 {nombre}"
-+         remitente = "🤖 María" if es_bot else f"👤 {nombre}"        texto     = m["content"].replace("\n", "<br>")
--         texto     = m["content"].replace("\n", "<br>")
-+         burbujas += f"""
--             
-+         <div class="mensaje {lado}">
--             def wrap_phone(match):
-+           <div class="remitente">{re
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Mar
-3. identifier: Sin
-4. identifier: Bot
-5. identifier: Esperando
-
-### prob
++             if sum(c.isdig
 
 ... [Truncated — see individual observations for full content]
