@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 2021 observations
+# Auto-synced | 2022 observations
 
 **Stack:** Python · FastAPI
 
@@ -55,3 +55,6 @@ Example:
 
 ---
 *Auto-synced | 2026-04-10*
+
+# BrainSync Intelligence (Auto-Synced)
+[BrainSync Rules](.brainsync/agent-rules.md)

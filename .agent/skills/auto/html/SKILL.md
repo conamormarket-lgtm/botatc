@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 32 conventions, 61 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 32 conventions, 63 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **146 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **148 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,47 @@ Auto-compiled from **146 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in BARRA — reduces excessive function call frequency
+-         /* Mini menú contextual */
++         
+-         #msg-ctx-menu {
++ 
+-             position: fixed; background: #1e293b; border: 1px solid rgba(255,255,255,0.12);
++         </style>
+-             border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 9999;
++ </head>
+-             overflow: hidden; display: none; min-width: 160px;
++ 
+-         }
++ <body class="{bod
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: BARRA
+3. identifier: LATERAL
+4. identifier: IZQUIERDA
+5. identifier: Navegaci
+
+### Fixed null crash in Panel — reduces excessive function call frequency
+-     </style>
++     
+- </head>
++         /* ─── Panel de Info de Mensaje ─── */
+- 
++         #msg-info-panel {
+- <body class="{body_class}">
++             position: fixed; top: 0; right: -360px; width: 340px; height: 100%;
+- 
++             background: var(--bg-card, #1e293b); border-left: 1px solid var(--accent-border, rgba(255,255,255,0.1));
+-     <!-- 1. BARRA LATERAL IZQUIERDA (Naveg
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Panel
+3. identifier: Info
+4. identifier: Mensaje
+5. identifier: Outfit
 
 ### Fixed null crash in Logout — reduces excessive function call frequency
 - 
@@ -289,41 +330,6 @@ Auto-compiled from **146 real patterns** in **botatc**. This skill is auto-route
 -                             formData.append("file", audioBlob, "voice_no
 
 **Actionable Steps:**
-1. Modified 1 files
-2. identifier: Blob
-3. identifier: WebM
-4. identifier: OGG
-5. identifier: FormData
-
-### Fixed null crash in Phone — wraps unsafe operation in error boundary
-- </body>
-+ 
-- 
-+     <!-- Phone Context Menu -->
-- </html>
-+     <div id="phoneContextMenu" style="display:none; position:fixed; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:8px; padding:0.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.5); z-index:10000; min-width:180px;">
-+         <div id="ctxPhoneTitle" style="font-size:0.75rem; color:var(--text-muted); padd
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Phone
-3. identifier: Context
-4. identifier: Menu
-5. identifier: Tel
-
-### problem-fix in inbox.html
-- </body>
-+ 
-- 
-+     <!-- Lightbox para imágenes -->
-- </html>
-+     <div id="imageLightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; cursor:pointer;" onclick="if(event.target === this) this.style.display='none'">
-+         <button onclick="documen
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Error
--            
+1. Mod
 
 ... [Truncated — see individual observations for full content]

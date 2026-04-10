@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 226 gotchas, 185 conventions, 125 fixes."
+description: "Project for botatc. 228 gotchas, 187 conventions, 134 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **944 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **960 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **944 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in BARRA — r |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Panel — reduces excessive function call frequency + - problem-fix in agent-r |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1990 notes - Score threshold: >40 + > 1991 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1984 notes - Score threshold: >40 + > 1987 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1981 notes - Score threshold: >40 + > 1984 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
@@ -66,16 +68,51 @@ Auto-compiled from **944 real patterns** in **botatc**. This skill is auto-route
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1612 notes - Score threshold: >40 + > 1630 notes - Score threshold: >40 - + - problem-fix in sha |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in Apply — r |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1607 notes - Score threshold: >40 + > 1612 notes - Score threshold: >40 - - **gotcha in shared-c |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - Fixed null crash in Nueva — reduces excessive function call frequency
+- - Fixed null crash in BARRA — reduces excessive function call frequency
 + - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Fixed null crash in Nueva — reduces excessive function call frequency
++ - Fixed null crash in BARRA — reduces excessive function call frequency
+- - Fixed null crash in Panel — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in BARRA — reduces excessive function call frequency
+- - Fixed null crash in Panel — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Panel — reduces excessive function call frequency
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Panel — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Panel — reduces excessive function call frequency
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Panel — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Panel — reduces excessive function call frequency
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
@@ -84,40 +121,24 @@ Auto-compiled from **944 real patterns** in **botatc**. This skill is auto-route
 
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Fixed null crash in Nueva — reduces excessive function call frequency
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in whatsapp_client.py
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in whatsapp_client.py
-+ - problem-fix in agent-rules.md
++ - Fixed null crash in Panel — reduces excessive function call frequency
 - - problem-fix in shared-context.json
-+ - problem-fix in whatsapp_client.py
++ - problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in agent-rules.md
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 A
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in whatsapp_client.py
-+ - problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
-+ - problem-fix in whatsapp_client.py
-- - Patched security issue Fixed
++ - problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
 + - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in whatsapp_client.py
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
@@ -125,74 +146,47 @@ Auto-compiled from **944 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in whatsapp_client.py
+- - problem-fix in shared-context.json
 + - problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in shared-context.json
 - - problem-fix in shared-context.json
 + - problem-fix in whatsapp_client.py
-- - Patched security issue Fixed
-+ - problem-fix in shared-context.json
-- - Patched security issue Kevin
-+ - Patched security issue Fixed
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Pro
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in whatsapp_client.py
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in whatsapp_client.py
-- - Patched security issue Fixed
-+ - problem-fix in shared-context.json
-- - Patched security issue Kevin
-+ - Patched security issue Fixed
 - - problem-fix in inbox.html
-+ - Patched security issue Kevin
++ - problem-fix in shared-context.json
 
-📌 IDE AST Context: Modified symbols likely inclu
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intelle
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
-+ - problem-fix in whatsapp_client.py
-- - Patched security issue Fixed
++ - problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
 + - problem-fix in shared-context.json
-- - Patched security issue Kevin
-+ - Patched security issue Fixed
+- - problem-fix in shared-context.json
++ - problem-fix in whatsapp_client.py
 - - problem-fix in inbox.html
-+ - Patched security issue Kevin
++ - problem-fix in shared-context.json
 - - problem-fix in patcher.py
 + - problem-fix in inbox.html
 
-📌 IDE AST Context: Modified symbols likely include [# Projec
+📌 IDE AST Context: Modified symbols likely
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
+- - Patched security issue Kevin
++ - problem-fix in shared-context.json
+- - Patched security issue Kevin
++ - problem-fix in whatsapp_client.py
+- - Patched security issue Kevin
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in inbox.html
+- - problem-fix in whatsapp_client.py
++ - problem
 
 ... [Truncated — see individual observations for full content]
