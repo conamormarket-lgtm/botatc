@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1757 notes | Score threshold: >40
+> 1786 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,41 +20,28 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in Request — protects against XSS and CSRF token 
+- **⚠️ GOTCHA: Fixed null crash in Response — protects against XSS and CSRF token theft** — - @app.post("/login")
++ 
+- async def login_post(response: Response, 
+- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in JSONResponse — protects against XSS and CSRF t
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Replaced auth Patched
++ - ⚠️ GOTCHA: Added JWT tokens a
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1747 notes | Score threshold: >40
++ > 1757 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue GOTCHA
 + - Patched security issue Kevin — h
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1731 notes | Score threshold: >40
-+ > 1747 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue GOTCHA
-+ - problem-fix in server.py
-- - Pat
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue GOTCHA
-+ - problem-fix in server.py
-- - Pat
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "75e96d95f32aa9bc",
-+
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "e5a251bf6d6c233d",
-+
 
 ## Project Standards
 
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in prompts.py — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Patched security issue Kevin — hardens HTTP security headers — confirmed 3x
 - Replaced auth GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
-- problem-fix in server.py — confirmed 4x
-- Added JWT tokens authentication — confirmed 4x
-- Replaced auth Patched — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Patched security issue Fixed — confirmed 3x
-- Fixed null crash in Interruptor — protects against XSS and CSRF token theft — confirmed 3x
 
 ## Known Fixes
 

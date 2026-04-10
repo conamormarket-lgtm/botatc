@@ -698,27 +698,69 @@ def save_sessions():
     except:
         pass
 
-def verificar_sesion(request: Request):
+
+def obtener_usuario_sesion(request: Request) -> dict | None:
     token = request.cookies.get("session_token")
-    return token in active_sessions
+    if token and token in active_sessions:
+        return active_sessions[token]
+    return None
+
+def verificar_sesion(request: Request):
+    user = obtener_usuario_sesion(request)
+    if user and user.get("estado") == "aprobado":
+        return True
+    return False
+
+def es_admin(request: Request):
+    user = obtener_usuario_sesion(request)
+    return user and "admin" in user.get("permisos", []) and user.get("estado") == "aprobado"
 
 @app.get("/login", response_class=HTMLResponse)
+
 async def login_get():
     return obtener_login_html()
 
+
+import hashlib
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
+
 @app.post("/login")
-async def login_post(response: Response, username: str = Form(...), password: str = Form(...)):
-    if username in VALID_USERS and VALID_USERS[username] == password:
-        import uuid
-        token = str(uuid.uuid4())
-        active_sessions[token] = username
-        save_sessions()
-        resp = RedirectResponse(url="/inbox", status_code=303)
-        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=86400)
-        return resp
-    return HTMLResponse(obtener_login_html(error="Usuario o clave incorrectos."), status_code=401)
+async def login_post(response: Response, username: str = Form(...), password: str = Form(...), action: str = Form("login")):
+    if action == "register":
+        from firebase_client import crear_usuario
+        exito = crear_usuario(username, hash_password(password))
+        if exito:
+            return HTMLResponse(obtener_login_html(error="Cuenta creada. Espera a que un administrador la apruebe.", success=True), status_code=200)
+        else:
+            return HTMLResponse(obtener_login_html(error="El usuario ya existe."), status_code=400)
+
+    # Es Login
+    from firebase_client import obtener_usuario
+    # Soporte para la cuenta admin inicial de rescate
+    if username == "admin" and password == ADMIN_PASSWORD:
+        user_data = {"username": "admin", "estado": "aprobado", "permisos": ["admin"]}
+    else:
+        user_data = obtener_usuario(username)
+        if not user_data or user_data.get("password") != hash_password(password):
+            return HTMLResponse(obtener_login_html(error="Usuario o clave incorrectos."), status_code=401)
+        
+        if user_data.get("estado") != "aprobado":
+            return HTMLResponse(obtener_login_html(error="Tu cuenta está pendiente de aprobación por un administrador."), status_code=403)
+
+    import uuid
+    token = str(uuid.uuid4())
+    active_sessions[token] = user_data
+    save_sessions()
+    
+    # Redirigir al inbox por defecto
+    resp = RedirectResponse(url="/inbox", status_code=303)
+    resp.set_cookie(key="session_token", value=token, httponly=True, max_age=86400)
+    return resp
 
 @app.get("/logout")
+
 async def logout(request: Request):
     token = request.cookies.get("session_token")
     if token in active_sessions:
@@ -728,62 +770,78 @@ async def logout(request: Request):
     resp.delete_cookie("session_token")
     return resp
 
-def obtener_login_html(error=""):
-    err_html = f'<div class="error">{error}</div>' if error else ''
-    return """
+
+def obtener_login_html(error="", success=False):
+    msg_html = f'<div class="error" style="color: {"#10b981" if success else "#ef4444"}; background: {"#064e3b" if success else "#451a1e"}; border: 1px solid {"#059669" if success else "#991b1b"}; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9em; text-align: center;">{error}</div>' if error else ''
+    return f"""
     <html><head><title>Acceso Restringido — IA-ATC</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
     <style>
-      :root {
+      :root {{
           --primary-color: #3b82f6; --primary-hover: #2563eb;
-          --bg-main: #0f172a; --accent-bg: rgba(30, 41, 59, 0.7);
-          --accent-border: rgba(255, 255, 255, 0.1);
-          --text-main: #f8fafc; --text-muted: #94a3b8;
-      }
-      *{box-sizing:border-box;margin:0;padding:0}
-      body{font-family:'Inter',sans-serif;display:flex;justify-content:center;
-           align-items:center;min-height:100vh;background-color:var(--bg-main);
-           background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-main) 70%);
-           color:var(--text-main);-webkit-font-smoothing: antialiased;}
-      .glass-modal{background:var(--accent-bg);padding:3rem 2.5rem;border-radius:24px;
-            box-shadow:0 25px 50px -12px rgba(0,0,0,.5);width:90%;max-width:380px;
-            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-            border:1px solid var(--accent-border);text-align:center;}
-      .logo{font-size:3rem;margin-bottom:1rem;display:inline-block;animation:float 3s ease-in-out infinite}
-      @keyframes float { 0%, 100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-      h2{font-family:'Outfit',sans-serif;font-size:1.5rem;margin-bottom:.5rem;font-weight:700}
-      p.subtitle{font-size:.9rem;color:var(--text-muted);margin-bottom:2rem}
-      label{font-size:.85rem;color:var(--text-muted);font-weight:500;display:block;margin-bottom:.5rem;text-align:left}
-      input{width:100%;padding:1rem 1.25rem;border:1px solid var(--accent-border);border-radius:12px;
-            font-size:1rem;outline:none;transition:all .2s;background:rgba(15,23,42,0.6);color:white;
-            margin-bottom:1.5rem;}
-      input:focus{border-color:var(--primary-color);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
-      button{width:100%;padding:1rem;background:var(--primary-color);color:white;
-             border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;
-             transition:background .2s;font-family:'Inter',sans-serif;}
-      button:hover{background:var(--primary-hover)}
-      .error{color:#ef4444;font-size:0.85rem;margin-bottom:1.5rem;font-weight:500;background:rgba(239, 68, 68, 0.1);padding:0.5rem;border-radius:8px;}
-    </style></head>
-    <body><div class="glass-modal">
-      <div class="logo">🤖</div>
-      <h2>Identificación</h2>
-      <p class="subtitle">Ingresa tus credenciales del sistema</p>
-      __ERR_HTML__
-      <form method="post" action="/login">
-        <label>Usuario</label>
-        <input type="text" name="username" placeholder="Tu usuario..." required autofocus>
-        <label>Contraseña</label>
-        <input type="password" name="password" placeholder="Ingresa tu clave secreta..." required>
-        <button type="submit">Desbloquear el Sistema</button>
-      </form>
-    </div></body></html>
-    """.replace("__ERR_HTML__", err_html)
+          --bg-main: #0f172a; --bg-card: #1e293b; --text-color: #f8fafc;
+      }}
+      body {{
+          background-color: var(--bg-main); color: var(--text-color);
+          font-family: 'Inter', sans-serif; display: flex;
+          align-items: center; justify-content: center; height: 100vh; margin: 0;
+      }}
+      .login-box {{
+          background-color: var(--bg-card); padding: 40px;
+          border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+          width: 100%; max-width: 350px;
+      }}
+      h2 {{ text-align: center; font-family: 'Outfit', sans-serif; font-size: 24px; margin-top: 0; margin-bottom: 30px; letter-spacing: -0.5px; }}
+        .tabs {{ display: flex; gap: 10px; margin-bottom: 20px; }}
+        .tab-btn {{ flex: 1; padding: 10px; text-align: center; border: none; background: transparent; color: #94a3b8; font-family: 'Outfit', sans-serif; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s ease; }}
+        .tab-btn.active {{ color: var(--primary-color); border-bottom-color: var(--primary-color); }}
+      input {{
+          width: 100%; padding: 12px; margin-bottom: 20px;
+          border: 1px solid #334155; border-radius: 10px;
+          background: #0f172a; color: white; box-sizing: border-box;
+          transition: all 0.2s ease;
+      }}
+      input:focus {{ outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }}
+      button {{
+          width: 100%; padding: 14px; background-color: var(--primary-color);
+          color: white; border: none; border-radius: 10px; font-weight: 600;
+          cursor: pointer; transition: background 0.3s ease, transform 0.1s ease;
+      }}
+      button:hover {{ background-color: var(--primary-hover); transform: translateY(-1px); }}
+      button:active {{ transform: translateY(1px); }}
+    </style>
+    <script>
+      function setMode(mode) {{
+          document.getElementById('action').value = mode;
+          document.getElementById('btn-login').classList.toggle('active', mode==='login');
+          document.getElementById('btn-register').classList.toggle('active', mode==='register');
+          document.getElementById('submit-btn').innerText = mode==='login' ? 'Ingresar' : 'Registrarse';
+      }}
+    </script>
+    </head><body>
+    <div class="login-box">
+        <h2>IA-ATC</h2>
+        {msg_html}
+        <div class="tabs">
+            <button class="tab-btn active" id="btn-login" onclick="setMode('login')">Ingresar</button>
+            <button class="tab-btn" id="btn-register" onclick="setMode('register')">Registrarse</button>
+        </div>
+        <form method="POST" action="/login">
+            <input type="hidden" id="action" name="action" value="login" />
+            <input type="text" name="username" placeholder="Usuario" required autofocus autocomplete="off" />
+            <input type="password" name="password" placeholder="Contraseña" required />
+            <button type="submit" id="submit-btn" style="margin-top: 10px;">Ingresar</button>
+        </form>
+    </div>
+    </body></html>
+    """
+.replace("__ERR_HTML__", err_html)
 
 @app.get("/settings", response_class=HTMLResponse)
 async def settings_panel(request: Request):
     """Personalización de Agente y Base de Conocimiento."""
-    if not verificar_sesion(request):
+    if not es_admin(request):
         return HTMLResponse(obtener_login_html(), status_code=200)
 
     import os
@@ -956,7 +1014,7 @@ async def import_backup(request: Request, file: UploadFile = File(...)):
     
 @app.post("/api/settings/save")
 async def save_settings(request: Request, guia_content: str = Form(...)):
-    if not verificar_sesion(request):
+    if not es_admin(request):
         raise HTTPException(status_code=403, detail="No autorizado")
 
     with open("guia_respuestas.md", "w", encoding="utf-8") as f:
@@ -970,7 +1028,7 @@ async def save_settings(request: Request, guia_content: str = Form(...)):
 
 @app.post("/api/settings/upload_pdf")
 async def upload_pdf(request: Request, pdf_file: UploadFile = File(...)):
-    if not verificar_sesion(request):
+    if not es_admin(request):
         return RedirectResponse(url="/login", status_code=303)
         
     if pdf_file.filename and pdf_file.filename.lower().endswith(".pdf"):
@@ -986,7 +1044,7 @@ async def upload_pdf(request: Request, pdf_file: UploadFile = File(...)):
 
 @app.get("/api/settings/delete_pdf/{filename}")
 async def delete_pdf(request: Request, filename: str):
-    if not verificar_sesion(request):
+    if not es_admin(request):
         return RedirectResponse(url="/login", status_code=303)
         
     import os
@@ -999,7 +1057,7 @@ async def delete_pdf(request: Request, filename: str):
 
 @app.post("/api/settings/toggle_proactive")
 async def toggle_proactive(request: Request):
-    if not verificar_sesion(request):
+    if not es_admin(request):
         return RedirectResponse(url="/login", status_code=303)
     
     import pedidos_observer
@@ -1418,7 +1476,134 @@ from fastapi.responses import Response
 #  Health check y Debug
 # ─────────────────────────────────────────────
 
+
+@app.get("/usuarios", response_class=HTMLResponse)
+async def panel_usuarios(request: Request):
+    if not es_admin(request):
+        return RedirectResponse(url="/inbox", status_code=303)
+        
+    return obtener_usuarios_html()
+
+@app.get("/api/usuarios/list")
+async def api_usuarios_list(request: Request):
+    if not es_admin(request):
+        return {"error": "Unauthorized"}
+    from firebase_client import obtener_todos_los_usuarios
+    return obtener_todos_los_usuarios()
+
+@app.post("/api/usuarios/update")
+async def api_usuarios_update(request: Request, data: dict):
+    if not es_admin(request):
+        return {"error": "Unauthorized"}
+    from firebase_client import actualizar_permisos_usuario
+    username = data.get("username")
+    estado = data.get("estado")
+    permisos = data.get("permisos", [])
+    if actualizar_permisos_usuario(username, estado, permisos):
+        return {"ok": True}
+    return {"ok": False}
+
+def obtener_usuarios_html():
+    return '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Panel de Usuarios — IA-ATC</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+        <style>
+          :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --primary: #3b82f6; --danger: #ef4444; --success: #10b981; }
+          body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 20px; }
+          .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 20px; margin-bottom: 20px; }
+          h1 { font-family: 'Outfit'; margin: 0; }
+          .btn { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 14px; }
+          table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; }
+          th, td { padding: 15px; text-align: left; border-bottom: 1px solid #334155; }
+          th { background: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 12px; color: #94a3b8; }
+          .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+          .badge.pendiente { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+          .badge.aprobado { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+          select { background: #334155; color: white; border: 1px solid #475569; padding: 5px 10px; border-radius: 5px; }
+          .action-btn { background: #475569; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Gestión de Usuarios</h1>
+            <div>
+                <a href="/inbox" class="btn" style="background:#475569">← Volver al Inbox</a>
+            </div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Permisos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="users-body">
+                <tr><td colspan="4" style="text-align:center">Cargando...</td></tr>
+            </tbody>
+        </table>
+
+        <script>
+            async function loadUsers() {
+                const res = await fetch('/api/usuarios/list');
+                const users = await res.json();
+                const tbody = document.getElementById('users-body');
+                tbody.innerHTML = '';
+                
+                users.forEach(u => {
+                    const isAdmin = u.permisos.includes('admin');
+                    tbody.innerHTML += `<tr>
+                            <td>${u.username}</td>
+                            <td><span class="badge ${u.estado}">${u.estado}</span></td>
+                            <td>${isAdmin ? 'Admin' : 'Estándar'}</td>
+                            <td>
+                                <select id="estado-${u.username}">
+                                    <option value="pendiente" ${u.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                                    <option value="aprobado" ${u.estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>
+                                </select>
+                                <select id="permiso-${u.username}">
+                                    <option value="">Estándar</option>
+                                    <option value="admin" ${isAdmin ? 'selected' : ''}>Admin</option>
+                                </select>
+                                <button class="action-btn" onclick="saveUser('${u.username}')">Guardar</button>
+                            </td>
+                        </tr>`;
+                });
+            }
+            
+            async function saveUser(username) {
+                const estado = document.getElementById(`estado-${username}`).value;
+                const perm = document.getElementById(`permiso-${username}`).value;
+                const permisos = perm ? [perm] : [];
+                
+                const res = await fetch('/api/usuarios/update', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, estado, permisos})
+                });
+                
+                if (res.ok) {
+                    alert("Usuario actualizado");
+                    loadUsers();
+                } else {
+                    alert("Error al actualizar");
+                }
+            }
+            
+            loadUsers();
+        </script>
+    </body>
+    </html>
+    '''
+
 @app.get("/")
+
 async def home_redirect():
     return RedirectResponse("/inbox", status_code=303)
 
@@ -1596,8 +1781,17 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     import os
     if not os.path.exists("inbox.html"): return HTMLResponse("404: inbox.html no encontrado")
         
+    
     with open("inbox.html", "r", encoding="utf-8") as f:
         html = f.read()
+
+    if not es_admin(request):
+        import re
+        html = re.sub(r'<a href="/settings".*?</a>', '', html, flags=re.DOTALL)
+        html = re.sub(r'<a href="/admin".*?</a>', '', html, flags=re.DOTALL)
+        html = re.sub(r'<a href="/usuarios".*?</a>', '', html, flags=re.DOTALL)
+        html = re.sub(r'<!-- Admin Users Icon -->.*?</a>', '', html, flags=re.DOTALL)
+
 
     ahora = datetime.utcnow()
     

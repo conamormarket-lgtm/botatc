@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 31 conventions, 57 fixes, 1 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 31 conventions, 57 fixes, 2 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -43,6 +43,7 @@ Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-route
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+| `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
 
 ### Fixed null crash in Apply — reduces excessive function call frequency
 -             const savedScroll = sessionStorage.getItem('chatListScrollTop');
@@ -328,9 +329,6 @@ Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-route
 -         <div class="chats-container">
 +         <div class="chats-container" id="regularChatsContainer">
 -     </div>
-+         <div class="chats-container" id="msgSearchResults" style="display:none; padding:1rem; flex-direction:column; gap:5px; background:var(--bg-main);">
-- 
-+         </div>
--     <!-- 3. PANEL DERECHO (Visor de Chat o Estado
++         <div class="chats-container" id="msgSearchResults" style="display:none; padding:1rem; flex-direc
 
 ... [Truncated — see individual observations for full content]

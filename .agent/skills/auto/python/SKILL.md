@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 28 gotchas, 29 conventions, 69 fixes."
+description: "Python for botatc. 29 gotchas, 31 conventions, 71 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **177 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **183 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **177 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Response — protects | - @app.post("/login") +  - async def login_post(response: Response, username: str = Form(...), [RE |
 | ⚠️ GOTCHA: Fixed null crash in HTMLResponse — para | -     if not verificar_sesion(request): +     global global_groups -         return HTMLResponse(o |
 | ⚠️ GOTCHA: Fixed null crash in Virtual — paralleli | -             texto  = m["content"].replace("\\n", "<br>") +             texto  = m["content"].repl |
 | ⚠️ GOTCHA: Fixed null crash in GRUPO | -     html = html.replace("{chat_view_css}", chat_view_css) +     if s_fake_vg: -     html = html. |
@@ -48,6 +49,41 @@ Auto-compiled from **177 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in False — parallelizes async operations for speed
+- def obtener_login_html(error=""):
++ 
+-     err_html = f'<div class="error">{error}</div>' if error else ''
++ def obtener_login_html(error="", success=False):
+-     return """
++     msg_html = f'<div class="error" style="color: {"#10b981" if success else "#ef4444"}; background: {"#064e3b" if success else "#451a1e"}; border: 1px solid {"#059669" if success else "#991b1b"}; padding: 10px; bord
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: False
+3. identifier: Acceso
+4. identifier: Restringido
+5. identifier: ATC
+
+### Fixed null crash in Request — protects against XSS and CSRF token theft
+- def verificar_sesion(request: Request):
++ 
+-     token = request.cookies.get("session_token")
++ def obtener_usuario_sesion(request: Request) -> dict | None:
+-     return token in active_sessions
++     token = request.cookies.get("session_token")
+- 
++     if token and token in active_sessions:
+- @app.get("/login", response_class=HTMLResponse)
++         return active_sessions[token]
+- as
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Request
+3. identifier: None
+4. identifier: True
+5. identifier: False
 
 ### problem-fix in server.py
 -         s = sesiones[wa_id]
@@ -172,41 +208,6 @@ Auto-compiled from **177 real patterns** in **botatc**. This skill is auto-route
 
 ### Fixed null crash in KeyError — protects against XSS and CSRF token theft
 -             texto_cliente = f"[📎 Archivo: {filename}]"
-+             media_id = mensaje_data.get("document", {}).get("id", "")
--         elif tipo_mensaje == "location":
-+             texto_cliente = f"[documento:{media_id}|{filename}]" 
--             lat = mensaje_data.get("location", {}).get("latitude", "")
-+         elif tipo_mensaje == "location":
--             lon = mensaje_data.get(
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: KeyError
-3. identifier: IndexError
-4. identifier: Detectar
-5. identifier: Buscar
-
-### Fixed null crash in Documento — parallelizes async operations for speed
--                 return match.group(0)
-+                 elif tipo == "documento":
-- 
-+                     partes = media_id.split("|", 1)
--             # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
-+                     doc_id = partes[0]
--             # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
-+                     
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Documento
-3. identifier: Bajar
-4. identifier: Reemplazar
-5. identifier: Hola
-
-### Fixed null crash in Renderizar — parallelizes async operations for speed
--             # --- Renderizar media_id si es [sticker:ID] o [imagen:ID] ---
-+             # --- Renderizar números de teléfono clickeables ---
--             
-+             def wrap_phone(match):
++ 
 
 ... [Truncated — see individual observations for full content]

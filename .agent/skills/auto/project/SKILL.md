@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 196 gotchas, 169 conventions, 97 fixes."
+description: "Project for botatc. 200 gotchas, 172 conventions, 97 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **830 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **846 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **830 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in Request — protects against XSS and CSRF token theft + - Fixed null crash in  |
+| ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in JSONResponse — protects against XSS and CSRF token theft + - Fixed null cras |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Replaced auth Patched + - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the da |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1747 notes - Score threshold: >40 + > 1757 notes - Score threshold: >40 - + - problem-fix in ser |
 | ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - Patched security issue Kevin — hardens HTTP security headers - |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1731 notes - Score threshold: >40 + > 1747 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: Replaced auth Patched | - - Patched security issue GOTCHA + - problem-fix in server.py - - Patched security issue Kevin + -  |
@@ -64,10 +68,6 @@ Auto-compiled from **830 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized Score | - > 1388 notes - Score threshold: >40 + > 1405 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nivel — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score - - ⚠️ GOTCHA: Optimized Score — evol |
-| ⚠️ GOTCHA: Optimized Score | - > 1362 notes - Score threshold: >40 + > 1388 notes - Score threshold: >40 - - what-changed in shar |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to supp |
 
 ## 🔧 Problem Playbooks
 
@@ -192,8 +192,6 @@ Auto-compiled from **830 real patterns** in **botatc**. This skill is auto-route
 - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified s
++ - Patched securit
 
 ... [Truncated — see individual observations for full content]
