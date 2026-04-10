@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1964 notes | Score threshold: >40
+> 1999 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,34 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1940 notes | Score threshold: >40
-+ > 1956 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in Response — protects against XSS and CSRF token
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1930 notes | Score threshold: >40
-+ > 1940 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nueva — reduces excessive function call freque
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1894 notes | Score threshold: >40
-+ > 1930 notes | Score threshold
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "5d9420593410d140",
++
+- **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft** — -                                 try:
++                             
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1990 notes | Score threshold: >40
++ > 1991 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1984 notes | Score threshold: >40
++ > 1987 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1981 notes | Score threshold: >40
++ > 1984 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1978 notes | Score threshold: >40
++ > 1981 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
+- Added JWT tokens authentication — confirmed 3x
+- Patched security issue Kevin — confirmed 3x
+- Replaced auth server — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 5x
-- Fixed null crash in Logout — reduces excessive function call frequency — confirmed 5x
-- Replaced auth Fixed — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 14x
-- discovery in shared-context.json — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 9x
 
 ## Known Fixes
 

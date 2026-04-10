@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 218 gotchas, 181 conventions, 125 fixes."
+description: "Project for botatc. 226 gotchas, 185 conventions, 125 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **924 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **944 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,14 @@ Auto-compiled from **924 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1990 notes - Score threshold: >40 + > 1991 notes - Score threshold: >40 - - what-changed in shar |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1984 notes - Score threshold: >40 + > 1987 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1981 notes - Score threshold: >40 + > 1984 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1978 notes - Score threshold: >40 + > 1981 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1975 notes - Score threshold: >40 + > 1978 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1970 notes - Score threshold: >40 + > 1975 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1966 notes - Score threshold: >40 + > 1970 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1964 notes - Score threshold: >40 + > 1966 notes - Score threshold: >40 - - Added JWT tokens aut |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1940 notes - Score threshold: >40 + > 1956 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in Response — protects against XSS and CSRF token theft + - problem-fix in shar |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1930 notes - Score threshold: >40 + > 1940 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
@@ -60,14 +68,6 @@ Auto-compiled from **924 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in Apply — r |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1607 notes - Score threshold: >40 + > 1612 notes - Score threshold: >40 - - **gotcha in shared-c |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ G |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in EMOJI — wraps unsafe operation in error boundary + - problem-fix in agent-ru |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - ⚠️ G |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes + - ⚠️ GOTCHA: pr |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in Nivel — p |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nivel — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Fixed null crash in Nivel — prevents null/undefined runtime cr |
 
 ## 🔧 Problem Playbooks
 
@@ -194,7 +194,5 @@ Auto-compiled from **924 real patterns** in **botatc**. This skill is auto-route
 
 **Actionable Steps:**
 1. Modified 1 files
-
-### problem-fix in agent
 
 ... [Truncated — see individual observations for full content]

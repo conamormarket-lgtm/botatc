@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 31 gotchas, 37 conventions, 78 fixes."
+description: "Python for botatc. 32 gotchas, 37 conventions, 78 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **201 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **202 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **201 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Ignorar — protects  | -                                 try: +                                 import time -             |
 | ⚠️ GOTCHA: Updated whatsapp_client database schema | - class EnviarPlantillaPayload(BaseModel): +  -     wa_id: str + class EnviarPlantillaPayload(Bas |
 | ⚠️ GOTCHA: Fixed null crash in DOTALL — paralleliz | -     with open("inbox.html", "r", encoding="utf-8") as f: +      -         html = f.read() +     |
 | ⚠️ GOTCHA: Fixed null crash in Response — protects | - @app.post("/login") +  - async def login_post(response: Response, username: str = Form(...), [RE |
@@ -235,7 +236,6 @@ Auto-compiled from **201 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in GRUPO — parallelizes async operations for speed
 -         if activo_chat:
 +         if s_fake_vg:
--             chat_box = """
-+             chat_box = """<div style="padding:0.75rem; color:#c084fc; text-align:center; font-size:0.85rem; font-weight:600; display:
+-      
 
 ... [Truncated — see individual observations for full content]

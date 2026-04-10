@@ -342,6 +342,12 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
                             old_st = it.get("status", "sent")
                             if jerarquia.get(status_val, 0) >= jerarquia.get(old_st, 0):
                                 it["status"] = status_val
+                                import time
+                                ts_now = int(time.time())
+                                if status_val == "delivered" and not it.get("delivered_ts"):
+                                    it["delivered_ts"] = ts_now
+                                elif status_val == "read" and not it.get("read_ts"):
+                                    it["read_ts"] = ts_now
                                 try:
                                     from firebase_client import guardar_sesion_chat
                                     guardar_sesion_chat(num_wa, se)
@@ -664,7 +670,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Guardar respuesta en historial ────────────────────
     import time
     ts = int(time.time())
-    sesion["historial"].append({"role": "assistant", "content": respuesta_final, "msg_id": wamid_out, "status": "sent", "timestamp": ts})
+    sesion["historial"].append({"role": "assistant", "content": respuesta_final, "msg_id": wamid_out, "status": "sent", "timestamp": ts, "sent_by": "IA Bot"})
 
     
     try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
@@ -1559,7 +1565,10 @@ async def enviar_manual_endpoint(request: Request):
     if exito:
         import time
         ts = int(time.time())
-        s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts})
+        # Obtener usuario que envió el mensaje
+        usuario_sesion = obtener_usuario_sesion(request)
+        sent_by_name = usuario_sesion.get("username", "Agente") if usuario_sesion else "Agente"
+        s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name})
         s["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Humano -> {wa_id}]: {texto}")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
@@ -2287,7 +2296,18 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if ts_html or status_html:
                 meta_html = f'<div class="msg-meta" style="text-align:right; margin-top:4px; font-size:0.65rem; color:inherit; opacity:0.8; display:flex; justify-content:flex-end; align-items:center; gap:2px;">{ts_html}{status_html}</div>'
 
-            burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr} title="Click derecho (PC) o mantener presionado (Móvil) para opciones">{texto_renderizado}{meta_html}</div>'
+            # Extraer datos para el panel de info
+            sent_by_val = m.get("sent_by", "")
+            ts_unix = m.get("timestamp", "")
+            delivered_ts = m.get("delivered_ts", "")
+            read_ts = m.get("read_ts", "")
+            msg_status = m.get("status", "")
+            
+            extra_data = ""
+            if es_bot:
+                extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}"'
+            
+            burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{meta_html}</div>'
 
             
         if not burbujas:
