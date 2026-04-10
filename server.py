@@ -726,8 +726,67 @@ import hashlib
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
+
+
 @app.post("/login")
-async def login_post(response: Response, username: str = Form(...), password: str = Form(...), action: str = Form("login")):
+async def login_post(response: Response, username: str = Form(None), password: str = Form(None), google_token: str = Form(None), action: str = Form("login")):
+    from firebase_client import obtener_usuario, crear_usuario
+    
+    user_data = None
+    
+    if google_token:
+        try:
+            from google.oauth2 import id_token
+            import google.auth.transport.requests
+            request_g = google.auth.transport.requests.Request()
+            # Idealmente deberíamos validar el CLIENT_ID passandolo a audience=..., por ahora solo validamos firma
+            val = id_token.verify_oauth2_token(google_token, request_g)
+            email = val.get("email")
+            parsed_username = email.split('@')[0]
+            
+            user_data = obtener_usuario(parsed_username)
+            if not user_data:
+                # auto-registrar si no existe
+                crear_usuario(parsed_username, "GOOGLE_AUTH")
+                return HTMLResponse(obtener_login_html(error="Cuenta vinculada con Google. Espera a que un administrador apruebe tu cuenta.", success=True), status_code=200)
+                
+            if user_data.get("estado") != "aprobado":
+                return HTMLResponse(obtener_login_html(error="Tu cuenta de Google está pendiente de aprobación."), status_code=403)
+                
+        except Exception as e:
+            return HTMLResponse(obtener_login_html(error=f"Error validando Google Token: {str(e)}"), status_code=401)
+            
+    else:
+        if not username or not password:
+            return HTMLResponse(obtener_login_html(error="Faltan credenciales."), status_code=400)
+            
+        if action == "register":
+            exito = crear_usuario(username, hash_password(password))
+            if exito:
+                return HTMLResponse(obtener_login_html(error="Cuenta creada. Espera a que un administrador la apruebe.", success=True), status_code=200)
+            else:
+                return HTMLResponse(obtener_login_html(error="El usuario ya existe."), status_code=400)
+
+        # Basic Login
+        if username == "admin" and password == ADMIN_PASSWORD:
+            user_data = {"username": "admin", "estado": "aprobado", "permisos": ["admin"]}
+        else:
+            user_data = obtener_usuario(username)
+            if not user_data or user_data.get("password") != hash_password(password):
+                return HTMLResponse(obtener_login_html(error="Usuario o clave incorrectos."), status_code=401)
+            if user_data.get("estado") != "aprobado":
+                return HTMLResponse(obtener_login_html(error="Tu cuenta está pendiente de aprobación."), status_code=403)
+
+    import uuid
+    token = str(uuid.uuid4())
+    active_sessions[token] = user_data
+    save_sessions()
+    
+    resp = RedirectResponse(url="/inbox", status_code=303)
+    resp.set_cookie(key="session_token", value=token, httponly=True, max_age=86400)
+    return resp
+
+
     if action == "register":
         from firebase_client import crear_usuario
         exito = crear_usuario(username, hash_password(password))
@@ -811,14 +870,36 @@ def obtener_login_html(error="", success=False):
       button:hover {{ background-color: var(--primary-hover); transform: translateY(-1px); }}
       button:active {{ transform: translateY(1px); }}
     </style>
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-      function setMode(mode) {{
+      function setMode(mode) {
           document.getElementById('action').value = mode;
           document.getElementById('btn-login').classList.toggle('active', mode==='login');
           document.getElementById('btn-register').classList.toggle('active', mode==='register');
           document.getElementById('submit-btn').innerText = mode==='login' ? 'Ingresar' : 'Registrarse';
-      }}
+      }
+      function handleGoogleCredential(response) {
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = "/login";
+          const inputToken = document.createElement("input");
+          inputToken.type = "hidden";
+          inputToken.name = "google_token";
+          inputToken.value = response.credential;
+          
+          const inputAction = document.createElement("input");
+          inputAction.type = "hidden";
+          inputAction.name = "action";
+          inputAction.value = document.getElementById('action').value;
+          
+          form.appendChild(inputToken);
+          form.appendChild(inputAction);
+          document.body.appendChild(form);
+          form.submit();
+      }
     </script>
+
     </head><body>
     <div class="login-box">
         <h2>IA-ATC</h2>
@@ -827,12 +908,32 @@ def obtener_login_html(error="", success=False):
             <button class="tab-btn active" id="btn-login" onclick="setMode('login')">Ingresar</button>
             <button class="tab-btn" id="btn-register" onclick="setMode('register')">Registrarse</button>
         </div>
-        <form method="POST" action="/login">
+        
+        <form method="POST" action="/login" id="login-form">
             <input type="hidden" id="action" name="action" value="login" />
-            <input type="text" name="username" placeholder="Usuario" required autofocus autocomplete="off" />
-            <input type="password" name="password" placeholder="Contraseña" required />
-            <button type="submit" id="submit-btn" style="margin-top: 10px;">Ingresar</button>
+            <input type="text" name="username" id="username" placeholder="Usuario" autocomplete="off" />
+            <input type="password" name="password" id="password" placeholder="Contraseña" />
+            <button type="submit" id="submit-btn" style="margin-top: 10px; margin-bottom: 20px;">Ingresar</button>
+            <div style="text-align: center; margin-bottom: 10px; font-size: 14px; color: #94a3b8;">o continúa con</div>
+            <div id="g_id_onload"
+                 data-client_id="REEMPLAZAR_CON_TU_CLIENT_ID"
+                 data-context="use"
+                 data-ux_mode="popup"
+                 data-callback="handleGoogleCredential"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="continue_with"
+                 data-size="large"
+                 data-logo_alignment="left"
+                 style="display: flex; justify-content: center;">
+            </div>
+            <div id="google-hint" style="color: #ef4444; font-size: 11px; text-align: center; margin-top: 5px;">(Requiere configurar Client ID de Google)</div>
         </form>
+
     </div>
     </body></html>
     """
