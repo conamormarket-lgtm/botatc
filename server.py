@@ -1625,7 +1625,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         hist_total = []
         for s in sesiones_miembros:
             hist_total.extend(s.get("historial", []))
-        hist_total.sort(key=lambda x: x.get("timestamp", ""))
+        hist_total.sort(key=lambda x: str(x.get("timestamp", "")))
         
         s_fake = {
             "ultima_actividad": vg_ultima_actividad,
@@ -1770,7 +1770,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         msg_copy["sender_name_override"] = nombre_m
                         msg_copy["sender_wa_id"] = m
                         s_fake_vg["historial"].append(msg_copy)
-            s_fake_vg["historial"].sort(key=lambda x: x.get("timestamp", ""))
+            s_fake_vg["historial"].sort(key=lambda x: str(x.get("timestamp", "")))
             
             if not s_fake_vg["historial"]:
                 chat_viewer_html = f'''<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.95rem;flex-direction:column;gap:10px;">

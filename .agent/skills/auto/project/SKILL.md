@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 192 gotchas, 165 conventions, 96 fixes."
+description: "Project for botatc. 192 gotchas, 166 conventions, 97 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **812 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **817 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -70,6 +70,25 @@ Auto-compiled from **812 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized Score | - > 1316 notes - Score threshold: >40 + > 1335 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 
 ## 🔧 Problem Playbooks
+
+### Patched security issue GOTCHA
+- - ⚠️ GOTCHA: Updated schema GOTCHA
++ - gotcha in shared-context.json
+- - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Updated schema GOTCHA
+- - ⚠️ GOTCHA: Optimized GOTCHA
++ - gotcha in shared-context.json
+- - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements
++ - ⚠️ GOTCHA: Optimized GOTCHA
+- - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Optimized Score — evol
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: GOTCHA
+3. identifier: Updated
+4. identifier: Optimized
+5. identifier: Score
 
 ### Patched security issue Score — evolves the database schema to support new req...
 - > 1644 notes | Score threshold: >40
@@ -175,23 +194,6 @@ Auto-compiled from **812 real patterns** in **botatc**. This skill is auto-route
 - - problem-fix in agent-rules.md
 + - Patched security issue Kevin
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue Kevin
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - P
+📌 IDE AST Context: Modified symbols likely in
 
 ... [Truncated — see individual observations for full content]

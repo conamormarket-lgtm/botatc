@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 28 gotchas, 28 conventions, 66 fixes."
+description: "Python for botatc. 28 gotchas, 28 conventions, 67 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **171 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **173 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -48,6 +48,26 @@ Auto-compiled from **171 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in JSONResponse — protects against XSS and CSRF token theft
+- import os
++ import traceback
+- from fastapi.staticfiles import StaticFiles
++ from fastapi.responses import JSONResponse
+- os.makedirs("static/stickers", exist_ok=True)
++ 
+- app.mount("/static", StaticFiles(directory="static"), name="static")
++ @app.exception_handler(Exception)
+- 
++ async def custom_exception_handler(request: Request, exc: Exception):
+- gemini_client = genai.Client(api_
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: JSONResponse
+3. identifier: Exception
+4. identifier: Request
+5. identifier: Unhandled
 
 ### Fixed null crash in GRUPO — parallelizes async operations for speed
 -         if activo_chat:
@@ -190,26 +210,6 @@ Auto-compiled from **171 real patterns** in **botatc**. This skill is auto-route
 +           <div class="remitente">{remitente}</div>
 -             clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
 +           <div class="{clase}">{texto}</div>
--             if sum(c.isdigit() for c in clean_phone) >= 7:
-+         </div>"""
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Sin
-3. identifier: Bot
-4. identifier: Esperando
-5. identifier: Reactivar
-
-### Fixed null crash in Esperando — parallelizes async operations for speed
--         burbujas += f"""
-+ 
--         <div class="mensaje {lado}">
-+         def wrap_phone(match):
--           <div class="remitente">{remitente}</div>
-+             phone = match.group(1)
--           <div class="{clase}">{texto}</div>
-+             clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
--         </div>"""
-+             if sum(c.isdig
+-             if sum(c.isdigit(
 
 ... [Truncated — see individual observations for full content]
