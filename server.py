@@ -729,7 +729,8 @@ def hash_password(password: str) -> str:
 
 
 @app.post("/login")
-async def login_post(response: Response, username: str = Form(None), password: str = Form(None), google_token: str = Form(None), action: str = Form("login")):
+async def login_post(response: Response, username: str = Form(None), password: str = Form(None), google_token: str = Form(None), action: str = Form("login"), remember: str = Form(None)):
+
     from firebase_client import obtener_usuario, crear_usuario
     
     user_data = None
@@ -782,9 +783,14 @@ async def login_post(response: Response, username: str = Form(None), password: s
     active_sessions[token] = user_data
     save_sessions()
     
+
     resp = RedirectResponse(url="/inbox", status_code=303)
-    resp.set_cookie(key="session_token", value=token, httponly=True, max_age=86400)
+    if remember == "yes" or google_token:
+        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=2592000) # 30 días
+    else:
+        resp.set_cookie(key="session_token", value=token, httponly=True) # cookie de sesión (se borra al cerrar el navegador)
     return resp
+
 
 
     if action == "register":
@@ -814,9 +820,14 @@ async def login_post(response: Response, username: str = Form(None), password: s
     save_sessions()
     
     # Redirigir al inbox por defecto
+
     resp = RedirectResponse(url="/inbox", status_code=303)
-    resp.set_cookie(key="session_token", value=token, httponly=True, max_age=86400)
+    if remember == "yes" or google_token:
+        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=2592000) # 30 días
+    else:
+        resp.set_cookie(key="session_token", value=token, httponly=True) # cookie de sesión (se borra al cerrar el navegador)
     return resp
+
 
 @app.get("/logout")
 
@@ -912,8 +923,14 @@ def obtener_login_html(error="", success=False):
         <form method="POST" action="/login" id="login-form">
             <input type="hidden" id="action" name="action" value="login" />
             <input type="text" name="username" id="username" placeholder="Usuario" autocomplete="off" />
+
             <input type="password" name="password" id="password" placeholder="Contraseña" />
-            <button type="submit" id="submit-btn" style="margin-top: 10px; margin-bottom: 20px;">Ingresar</button>
+            <div style="display:flex; align-items:center; margin-top:5px; font-size:13px; color:#94a3b8; user-select:none;">
+                <input type="checkbox" name="remember" id="remember" value="yes" style="margin-right:8px; cursor:pointer;" checked>
+                <label for="remember" style="cursor:pointer;">Mantener sesión iniciada</label>
+            </div>
+            <button type="submit" id="submit-btn" style="margin-top: 15px; margin-bottom: 20px;">Ingresar</button>
+
             <div style="text-align: center; margin-bottom: 10px; font-size: 14px; color: #94a3b8;">o continúa con</div>
             <div id="g_id_onload"
                  data-client_id="572322137024-dh5ueu5kpln5scjckfvcr970cupi20gp.apps.googleusercontent.com"

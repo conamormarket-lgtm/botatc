@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 31 gotchas, 36 conventions, 77 fixes."
+description: "Python for botatc. 31 gotchas, 36 conventions, 78 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **199 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **200 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -51,6 +51,18 @@ Auto-compiled from **199 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Response — protects against XSS and CSRF token theft
+- async def login_post(response: Response, username: str = Form(None), [REDACTED] = Form(None), google_token: str = Form(None), action: str = Form("login")):
++ async def login_post(response: Response, username: str = Form(None), [REDACTED] = Form(None), google_token: str = Form(None), action: str = Form("login"), remember: str = Form(None)):
+-     from firebase_client import obtener_usuario, cre
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Response
+3. identifier: Form
+4. identifier: None
+5. identifier: Request
 
 ### problem-fix in whatsapp_client.py
 -     }
@@ -224,16 +236,6 @@ Auto-compiled from **199 real patterns** in **botatc**. This skill is auto-route
 -         if activo_chat:
 +         if s_fake_vg:
 -             chat_box = """
-+             chat_box = """<div style="padding:0.75rem; color:#c084fc; text-align:center; font-size:0.85rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:0.5rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: GRUPO
-3. identifier: VIRTUAL
-4. identifier: SOLO
-5. identifier: LECTURA
-
-### Fixed null crash in Documento — parallelizes async operations for speed
--                     return f'<div style="min-width: 250px; max-width: 100%; margin: 0 auto; display: flex;"><audio controls src="{src_url}" style="width: 100%; height: 45px; outline: none; margin-bottom: 5px; border-
++             chat_box = """<div style="padding:0.75rem; color:#c084fc; text-align:center; font-size:0.85rem; font-weight:600; display:
 
 ... [Truncated — see individual observations for full content]

@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 215 gotchas, 179 conventions, 125 fixes."
+description: "Project for botatc. 217 gotchas, 181 conventions, 125 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **911 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **918 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **911 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in Response — protects against XSS and CSRF token theft + - problem-fix in shar |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1930 notes - Score threshold: >40 + > 1940 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - Fixed null crash in BU |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1894 notes - Score threshold: >40 + > 1930 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
@@ -66,8 +68,6 @@ Auto-compiled from **911 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nivel — prevents null/undefined runtime crashes + - problem-fix in agent-rul |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Fixed null crash in Nivel — prevents null/undefined runtime cr |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1517 notes - Score threshold: >40 + > 1518 notes - Score threshold: >40 - - problem-fix in share |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1507 notes - Score threshold: >40 + > 1512 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1496 notes - Score threshold: >40 + > 1507 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 
 ## 🔧 Problem Playbooks
 
@@ -195,6 +195,6 @@ Auto-compiled from **911 real patterns** in **botatc**. This skill is auto-route
 **Actionable Steps:**
 1. Modified 1 files
 
-### 
+### problem-fix in agent
 
 ... [Truncated — see individual observations for full content]

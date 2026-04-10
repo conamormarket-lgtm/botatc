@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1940 notes | Score threshold: >40
+> 1956 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,18 +20,19 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in Response — protects against XSS and CSRF token
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1930 notes | Score threshold: >40
++ > 1940 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nueva — reduces excessive function call freque
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - ⚠️ GOTCHA: Added JWT 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1894 notes | Score threshold: >40
 + > 1930 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nueva — reduces excessive function call freque
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Optimized Score — evolv
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 14x
 - discovery in shared-context.json — confirmed 3x
 - problem-fix in agent-rules.md — confirmed 9x
@@ -39,13 +40,12 @@
 - Strengthened types None
 - Strengthened types None
 - Added JWT tokens authentication — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 17x
 
 ## Known Fixes
 
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Response — protects against XSS and CSRF token theft
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Descargar — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 

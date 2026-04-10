@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 31 conventions, 60 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 32 conventions, 61 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **144 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **146 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,21 @@ Auto-compiled from **144 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in Logout — reduces excessive function call frequency
+- 
++         <!-- Logout Icon -->
+-         <!-- Indicador global abajo -->
++         <a href="/logout" class="nav-item" title="Cerrar Sesión" style="margin-top: auto; color: #ef4444;">
+-         <div class="bot-status-indicator" title="Estado Global del Bot"></div>
++             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Logout
+3. identifier: Icon
+4. identifier: Cerrar
+5. identifier: Sesi
 
 ### Fixed null crash in BUSCADOR — reduces excessive function call frequency
 -             <div style="padding: 0 20px 10px 20px;">
@@ -309,22 +324,6 @@ Auto-compiled from **144 real patterns** in **botatc**. This skill is auto-route
 1. Modified 1 files
 
 ### Fixed null crash in Error
--                                     alert("Error subiendo el audio a los servidores de WhatsApp");
-+                                     alert("Error procesando o subiendo el audio:\n\n" + (data.error || "Rechazo desconocido en el servidor."));
-
-📌 IDE AST Context: Modified symbols likely include [html]
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Error
-3. identifier: Rechazo
-4. identifier: WhatsApp
-
-### Fixed null crash in Error — fixes memory leak from uncleared timers
--             if (!msj) return;
-+             if (!msj) return {ok: false};
--                 
-+ 
--             } catch(
+-            
 
 ... [Truncated — see individual observations for full content]
