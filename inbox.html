@@ -1347,6 +1347,17 @@
             });
         }
 
+        const chatsContainerDiv = document.getElementById('regularChatsContainer');
+        if (chatsContainerDiv) {
+            const savedScroll = sessionStorage.getItem('chatListScrollTop');
+            if (savedScroll) {
+                setTimeout(() => { chatsContainerDiv.scrollTop = parseInt(savedScroll); }, 50);
+            }
+            chatsContainerDiv.addEventListener('scroll', function() {
+                sessionStorage.setItem('chatListScrollTop', this.scrollTop);
+            });
+        }
+
 
         function iniciarNuevoChat() {
             let val = document.getElementById('chatSearchInput').value.trim();
