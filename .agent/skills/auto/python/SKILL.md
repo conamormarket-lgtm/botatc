@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 30 gotchas, 31 conventions, 72 fixes."
+description: "Python for botatc. 31 gotchas, 36 conventions, 76 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **185 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **195 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **185 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Updated whatsapp_client database schema | - class EnviarPlantillaPayload(BaseModel): +  -     wa_id: str + class EnviarPlantillaPayload(Bas |
 | ⚠️ GOTCHA: Fixed null crash in DOTALL — paralleliz | -     with open("inbox.html", "r", encoding="utf-8") as f: +      -         html = f.read() +     |
 | ⚠️ GOTCHA: Fixed null crash in Response — protects | - @app.post("/login") +  - async def login_post(response: Response, username: str = Form(...), [RE |
 | ⚠️ GOTCHA: Fixed null crash in HTMLResponse — para | -     if not verificar_sesion(request): +     global global_groups -         return HTMLResponse(o |
@@ -50,6 +51,68 @@ Auto-compiled from **185 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in server.py
+-                  data-client_id="REEMPLAZAR_CON_TU_CLIENT_ID"
++                  data-client_id="572322137024-dtrf5gg7tn2a7ifn1msai8d13ej93n9a.apps.googleusercontent.com"
+
+📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in Response — protects against XSS and CSRF token theft
+- @app.post("/login")
++ 
+- async def login_post(response: Response, username: str = Form(...), [REDACTED] = Form(...), action: str = Form("login")):
++ @app.post("/login")
+-     if action == "register":
++ async def login_post(response: Response, username: str = Form(None), [REDACTED] = Form(None), google_token: str = Form(None), action: str = Form("login")):
+-         from firebase_client imp
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Response
+3. identifier: Form
+4. identifier: None
+5. identifier: TODO
+
+### Fixed null crash in Ingresar — parallelizes async operations for speed
+-     <script>
++     
+-       function setMode(mode) {{
++     <script src="https://accounts.google.com/gsi/client" async defer></script>
+-           document.getElementById('action').value = mode;
++     <script>
+-           document.getElementById('btn-login').classList.toggle('active', mode==='login');
++       function setMode(mode) {
+-           document.getElementById('btn-register').cl
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Ingresar
+3. identifier: Registrarse
+4. identifier: POST
+5. identifier: ATC
+
+### Fixed null crash in HTMLResponse — parallelizes async operations for speed
+- .replace("__ERR_HTML__", err_html)
++ 
+- 
++ @app.get("/settings", response_class=HTMLResponse)
+- @app.get("/settings", response_class=HTMLResponse)
++ async def settings_panel(request: Request):
+- async def settings_panel(request: Request):
++     """Personalización de Agente y Base de Conocimiento."""
+-     """Personalización de Agente y Base de Conocimiento."""
++     if not es_admin(requ
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: HTMLResponse
+3. identifier: Request
+4. identifier: Personalizaci
+5. identifier: Agente
 
 ### problem-fix in server.py
 -     if not verificar_sesion(request):
@@ -168,52 +231,6 @@ Auto-compiled from **185 real patterns** in **botatc**. This skill is auto-route
 5. identifier: Hola
 
 ### Fixed null crash in Popover — parallelizes async operations for speed
--             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center; box-sizing:border-box; max-width:100%;">
-+             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.4rem; width:100%; margin:0; position:relative; align-it
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Popover
-3. identifier: Tab
-4. identifier: Headers
-5. identifier: Emojis
-
-### Fixed null crash in IZQUIERDA — parallelizes async operations for speed
--                 <div style="position:relative; display:flex; gap:0.5rem;">
-+                 <!-- IZQUIERDA: Emojis y Stickers -->
--                     <!-- Emoji Picker Button -->
-+                 <div style="flex:0 0 auto; display:flex; gap:0.1rem;">
--                     <button type="button" onclick="const m = document.getElementById('emojiMenu'); m.style.display = m.style.display==='n
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: IZQUIERDA
-3. identifier: Emojis
-4. identifier: Stickers
-5. identifier: Emoji
-
-### Fixed null crash in Tomar — parallelizes async operations for speed
--                         <button type="button" onclick="document.getElementById('attachMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-ali
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Tomar
-3. identifier: Foto
-4. identifier: Subir
-5. identifier: Imagen
-
-### Fixed null crash in Input — parallelizes async operations for speed
--                 <input type="text" id="manualMsgInput" placeholder="Escribe un mensaje... (/)" style="flex:1;padding:0.8rem 1rem;border-radius:12px;border:1px solid var(--accent-border);background:var(--bg-main);color:var(--text-main);outline:none;font-size:0.95rem;font-family:var(--font-main);" autocomplete="off" required oninput="checkQuickReplyTrigger(this)">
-+                 <!-- Input ocu
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Input
-3. identifier: Adjuntar
-4. identifier: Foto
-5. identifier: Video
-
-### Fixed null crash in Cancelar — parallelizes async operations for speed
--                 <button type="button"
+-             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;"
 
 ... [Truncated — see individual observations for full content]

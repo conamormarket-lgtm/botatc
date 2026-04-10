@@ -916,7 +916,7 @@ def obtener_login_html(error="", success=False):
             <button type="submit" id="submit-btn" style="margin-top: 10px; margin-bottom: 20px;">Ingresar</button>
             <div style="text-align: center; margin-bottom: 10px; font-size: 14px; color: #94a3b8;">o continúa con</div>
             <div id="g_id_onload"
-                 data-client_id="REEMPLAZAR_CON_TU_CLIENT_ID"
+                 data-client_id="572322137024-dh5ueu5kpln5scjckfvcr970cupi20gp.apps.googleusercontent.com"
                  data-context="use"
                  data-ux_mode="popup"
                  data-callback="handleGoogleCredential"
@@ -3336,18 +3336,23 @@ async def api_list_templates(request: Request):
     plantillas = cargar_plantillas_bd()
     return {"ok": True, "plantillas": plantillas}
 
+
 class EnviarPlantillaPayload(BaseModel):
     wa_id: str
     template_name: str
     language_code: str = "es"
+    body_params: list[str] = None
+
 
 @app.post("/api/admin/enviar_plantilla")
 async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
         
+    
     from whatsapp_client import enviar_plantilla
-    wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code)
+    wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code, payload.body_params)
+
     
     if wamid:
         # Registrar el envío en el historial del dashboard

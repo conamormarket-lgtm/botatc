@@ -188,23 +188,60 @@ async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str
         print(f"❌ Error enviando reacción: {e}")
         return False
 
-async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es") -> str | None:
-    """Envía un Message Template preaprobado por Meta."""
+
+async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es", components: list = None) -> str | None:
+    """Envía un Message Template preaprobado por Meta, soportando variables dinámicas."""
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
         "Content-Type": "application/json",
     }
+    
+    template_data = {
+        "name": template_name,
+        "language": {"code": language_code}
+    }
+    
+    
+    if components is not None:
+        if len(components) > 0 and isinstance(components[0], str):
+            # Se pasaron parametros simples (texto)
+            structured_params = [{"type": "text", "text": str(c)} for c in components]
+            template_data["components"] = [{
+                "type": "body",
+                "parameters": structured_params
+            }]
+        else:
+            # Se paso la estructura compleja
+            template_data["components"] = components
+
+        
     payload = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
         "to": numero_destino,
         "type": "template",
-        "template": {
-            "name": template_name,
-            "language": {
-                "code": language_code
+        "template": template_data
+    }
+
+    
+    if body_params:
+        template_data["components"] = [
+            {
+                "type": "body",
+                "parameters": [
+                    {"type": "text", "text": str(p)} for p in body_params
+                ]
             }
-        }
+        ]
+
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": numero_destino,
+        "type": "template",
+        "template": template_data
+    }
+
     }
     try:
         async with httpx.AsyncClient() as client:

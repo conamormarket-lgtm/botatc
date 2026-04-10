@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 31 conventions, 58 fixes, 2 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 31 conventions, 58 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -42,7 +42,8 @@ Auto-compiled from **142 real patterns** in **botatc**. This skill is auto-route
 
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
-| `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 5x |
+| `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
+| `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
 
 ### Fixed null crash in Admin — reduces excessive function call frequency
@@ -326,7 +327,6 @@ Auto-compiled from **142 real patterns** in **botatc**. This skill is auto-route
 -         window.enviarMensajeDirecto = async function(wa_id, msj) {
 +         
 -             if (!msj) return;
-+         // NATIVE AUDIO RECORDING LOGIC
--             const replyToWamid = document.getElementById('replyToWamid') 
++         // NATIVE 
 
 ... [Truncated — see individual observations for full content]
