@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 236 gotchas, 188 conventions, 134 fixes."
+description: "Project for botatc. 238 gotchas, 190 conventions, 134 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **975 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **984 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **975 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 2080 notes - Score threshold: >40 + > 2083 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized Score | - > 2078 notes - Score threshold: >40 + > 2080 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2048 notes - Score threshold: >40 + > 2061 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Optimized Score — evolves the database |
@@ -66,8 +68,6 @@ Auto-compiled from **975 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to su |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1680 notes - Score threshold: >40 + > 1697 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
 
 ## 🔧 Problem Playbooks
 
@@ -184,6 +184,6 @@ Auto-compiled from **975 real patterns** in **botatc**. This skill is auto-route
 + - problem-fix in whatsapp_client.py
 - - Patched security issue Kevin
 + - problem-fix in shared-context.json
-- - problem-fix in s
+- - pr
 
 ... [Truncated — see individual observations for full content]

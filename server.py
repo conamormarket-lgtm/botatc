@@ -251,7 +251,7 @@ def llamar_gemini(historial: list[dict]) -> str:
         with open("error_gemini.txt", "w") as f:
             f.write(traceback.format_exc())
         print(f"❌ Error Gemini: {e}")
-        return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
+        return ""
 
 
 def recortar_historial(historial: list[dict]) -> list[dict]:
@@ -646,6 +646,11 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     historial_para_gemini = recortar_historial(sesion["historial"])
     print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
     respuesta_bot = llamar_gemini(historial_para_gemini)
+    
+    if not respuesta_bot.strip():
+        # Falla silenciosamente si Gemini no genera respuesta útil o tira error
+        print("  [❌ Respuesta vacía de Gemini. Ignorando...]")
+        return None
 
     # ── Procesar escalación si el modelo la detectó ───────
     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)

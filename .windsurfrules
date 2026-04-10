@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 2079 observations
+# Auto-synced | 2109 observations
 
 **Stack:** Python · FastAPI
 
@@ -45,13 +45,13 @@ Example:
 - Git Commit: ui
 
 # ⚡ Available Tools (ON-DEMAND only)
-- `save(title, content, category)` — Save a note + auto-detect conflicts
-- `batch_save(items[])` — Save multiple notes in 1 call
-- `query(text)` — Search memory for architecture, past fixes, decisions
-- `search(text)` — Full-text search for details
-- `check_errors()` — Check compiler errors after edits
+- `sys_core_02(title, content, category)` — Save a note + auto-detect conflicts
+- `sys_core_03(items[])` — Save multiple notes in 1 call
+- `sys_core_01(text)` — Search memory for architecture, past fixes, decisions
+- `sys_core_05(text)` — Full-text search for details
+- `sys_core_16()` — Check compiler errors after edits
 
-> ℹ️ DO NOT call get_context() or get_gotchas() at startup — context above IS your context.
+> ℹ️ DO NOT call sys_core_14() or sys_core_08() at startup — context above IS your context.
 
 ---
 *Auto-synced | 2026-04-10*

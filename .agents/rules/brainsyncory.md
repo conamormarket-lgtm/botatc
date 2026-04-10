@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2071 notes | Score threshold: >40
+> 2088 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,41 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2048 notes | Score threshold: >40
-+ > 2061 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Optimize
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2032 notes | Score threshold: >40
-+ > 2048 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes** — -                     if (oldScroll.innerHTML !== newScroll.innerHTML)
+- **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft** — -                                 try:
++                             
+- **⚠️ GOTCHA: Updated whatsapp_client database schema** — - class EnviarPlantillaPayload(BaseModel):
++ 
+-     wa_id: str
++ cl
+- **⚠️ GOTCHA: Fixed null crash in DOTALL — parallelizes async operations for speed** — -     with open("inbox.html", "r", encoding="utf-8") as f:
++     
+- 
+- **⚠️ GOTCHA: Fixed null crash in Response — protects against XSS and CSRF token theft** — - @app.post("/login")
++ 
+- async def login_post(response: Response, 
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse — parallelizes async operations for speed** — -     if not verificar_sesion(request):
++     global global_groups
+-
+
+## Active: `.`
+
+- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes**
+- **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Updated whatsapp_client database schema**
+- **⚠️ GOTCHA: Fixed null crash in DOTALL — parallelizes async operations for speed**
+- **⚠️ GOTCHA: Fixed null crash in Response — protects against XSS and CSRF token theft**
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in shared-context.json — confirmed 5x
-- Optimized Fixed — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- Fixed null crash in Nombre — parallelizes async operations for speed — confirmed 4x
-- problem-fix in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 14x
+- Fixed null crash in Logout — reduces excessive function call frequency — confirmed 5x
+- Fixed null crash in EMOJI — wraps unsafe operation in error boundary — confirmed 3x
+- Fixed null crash in CUSTOM — wraps unsafe operation in error boundary — confirmed 3x
+- Fixed null crash in Alternar — wraps unsafe operation in error boundary — confirmed 4x
+- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 3x
+- Fixed null crash in Opcional — wraps unsafe operation in error boundary — confirmed 3x
+- Fixed null crash in Sticker — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in inbox.html — confirmed 3x
 
 ## Known Fixes
 
@@ -53,10 +66,10 @@
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized GOTCHA — introduces API versioning for backward compatibility
+- decision in inbox.html
 - decision in server.py
-- Optimized Score — evolves the database schema to support new requirements
+- decision in inbox.html
+- decision in inbox.html
 
 ## Learned Patterns
 
@@ -200,6 +213,6 @@ n8n offers two Python execution modes:
 - [Python] Don't use mutable default arguments (def f(items=[]) is a bug)
 
 ## Available Tools (ON-DEMAND only)
-- `query(q)` — Deep search when stuck
-- `find(query)` — Full-text lookup
-> Context above IS your context. Do NOT call load() at startup.
+- `sys_core_01(q)` — Deep search when stuck
+- `sys_core_05(query)` — Full-text lookup
+> Context above IS your context. Do NOT call sys_core_14() at startup.

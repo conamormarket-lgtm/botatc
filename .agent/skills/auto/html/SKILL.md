@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 32 conventions, 64 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 32 conventions, 65 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **150 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **151 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,22 @@ Auto-compiled from **150 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in POST — reduces excessive function call frequency
+-         window.enviarMensajeDirecto = async function(wa_id, msj) {
++         window._nextQuickReplyTitle = null;
+-             if (!msj) return {ok: false};
++ 
+-             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
++         window.enviarMensajeDirecto = async function(wa_id, msj, qrTitle = null) {
+-             tr
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: POST
+3. identifier: Content
+4. identifier: Type
+5. identifier: JSON
 
 ### Fixed null crash in Informaci — reduces excessive function call frequency
 -     </div>
@@ -313,22 +329,6 @@ Auto-compiled from **150 real patterns** in **botatc**. This skill is auto-route
 - 
 
 **Actionable Steps:**
-1. Modified 1 files
-2. identifier: Funcionalidad
-3. identifier: Cerrar
-4. identifier: CSS
-5. identifier: Vaciar
-
-### Fixed null crash in Manejar — wraps unsafe operation in error boundary
--         window.enviarMensajeManual = async function (e, wa_id) {
-+ 
--             e.preventDefault();
-+         // Manejar subida de archivos (cámara/galería)
--             const input = document.getElementById('manualMsgInput');
-+         window.uploadAdminMedia = async function(inputElem, wa_id) {
--             if (!input) return;
-+             if (!inputElem.files || inputElem.files.le
-
-**Actionable 
+1.
 
 ... [Truncated — see individual observations for full content]
