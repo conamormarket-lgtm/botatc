@@ -377,4 +377,16 @@ def obtener_todos_los_usuarios() -> list[dict]:
         res.append(d)
     return res
 
-
+def actualizar_permisos_usuario(username: str, estado: str, permisos: list[str], nombre: str = "") -> bool:
+    db = inicializar_firebase()
+    doc_ref = db.collection("usuarios_atc").document(username)
+    if doc_ref.get().exists:
+        update_data = {
+            "estado": estado,
+            "permisos": permisos
+        }
+        if nombre:
+            update_data["nombre"] = nombre
+        doc_ref.update(update_data)
+        return True
+    return False
