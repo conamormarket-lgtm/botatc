@@ -464,6 +464,12 @@
             </div>
 
             {labels_filter_html}
+            <div style="padding: 0 20px 10px 20px;">
+                <button onclick="openTemplateModal()" class="dashboard-btn" style="width: 100%; background: var(--success-color); border:none; border-radius:10px; font-weight:600; cursor:pointer;">
+                    💬 Nueva Conversación
+                </button>
+            </div>
+
 
             <!-- BUSCADOR / NUEVO CHAT -->
             <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
@@ -1869,6 +1875,34 @@
             }
         });
     </script>
+
+    <!-- Modal: Start Template Conversation -->
+    <div class="modal-overlay" id="template-modal">
+        <div class="modal">
+            <h2 style="margin-bottom: 10px; font-family:var(--font-heading);">Nueva Conversación (Plantilla)</h2>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
+                Inicia un contacto saliente usando una plantilla aprobada por Meta.
+            </p>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Teléfono destino (con código de país)</label>
+                <input type="text" id="tpl-phone" placeholder="Ej: 51987654321" style="width:100%; padding:10px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:white;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Nombre de la plantilla</label>
+                <input type="text" id="tpl-name" placeholder="Ej: hello_world" style="width:100%; padding:10px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:white;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Variables ({{1}}, {{2}}... separadas por comas)</label>
+                <input type="text" id="tpl-vars" placeholder="Pedro, 12345" style="width:100%; padding:10px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:white;">
+                <small style="color:var(--text-muted); display:block; margin-top:5px;">Deja vacío si tu plantilla no tiene variables redaccionadas en el cuerpo.</small>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeTemplateModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="sendTemplate()" id="tpl-send-btn">Enviar Mensaje</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

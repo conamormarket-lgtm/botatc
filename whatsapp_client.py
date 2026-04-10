@@ -242,7 +242,6 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
         "template": template_data
     }
 
-    }
     try:
         async with httpx.AsyncClient() as client:
             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)

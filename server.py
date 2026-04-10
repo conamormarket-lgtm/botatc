@@ -3358,12 +3358,22 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
         # Registrar el envío en el historial del dashboard
         from firebase_client import cargar_sesion_chat, guardar_sesion_chat
         s = cargar_sesion_chat(payload.wa_id)
-        if s:
-            if "historial" not in s: s["historial"] = []
-            s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
-            from datetime import datetime
-            s["ultima_actividad"] = datetime.utcnow()
-            guardar_sesion_chat(payload.wa_id, s)
+        if not s:
+            # Create a brand new session if it doesn't exist so it appears in Inbox immediately
+            s = {
+                "historial": [], 
+                "estado_bot": "activo",
+                "etiquetas": [],
+                "ultimo_mensaje": "",
+                "clienteNombre": "Desconocido (Plantilla saliente)"
+            }
+        
+        if "historial" not in s: s["historial"] = []
+
+        s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
+        from datetime import datetime
+        s["ultima_actividad"] = datetime.utcnow()
+        guardar_sesion_chat(payload.wa_id, s)
         return {"ok": True, "wamid": wamid}
     return {"ok": False, "error": "No se pudo enviar (Verifica que el WABA ID sea el correcto o Meta la rechazó)."}
 
