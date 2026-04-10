@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 22 gotchas, 26 conventions, 64 fixes."
+description: "Python for botatc. 22 gotchas, 26 conventions, 65 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **157 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -42,6 +42,17 @@ Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Documento — parallelizes async operations for speed
+-                     return f'<div style="min-width: 250px; max-width: 100%; margin: 0 auto; display: flex;"><audio controls src="{src_url}" style="width: 100%; height: 45px; outline: none; margin-bottom: 5px; border-radius: 20px;"></audio></div>'
++                     return f"""<div class="custom-audio-player" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; ma
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Documento
+3. identifier: Bajar
+4. identifier: Reemplazar
+5. identifier: Hola
 
 ### Fixed null crash in Popover — parallelizes async operations for speed
 -             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.5rem; width:100%; margin:0; position:relative; align-items:center; box-sizing:border-box; max-width:100%;">
@@ -224,18 +235,6 @@ Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-route
 5. identifier: Esperando
 
 ### problem-fix in server.py
--                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: inline-block;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
-+                     return f"""<div style="text-alig
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Response — parallelizes async operations for speed
--     from fastapi.responses import Response
-+     from fastapi.responses import Response, RedirectResponse
--     return Response(content=b"", status_code=404)
-+     
-- 
-+     # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en v
+-                     return f"""<div style="text-align:center;"><img src="{src_url}" style="max-width: 250px; min-height: 100px; border-
 
 ... [Truncated — see individual observations for full content]

@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 1 gotchas, 29 conventions, 54 fixes, 1 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 30 conventions, 54 fixes, 1 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,11 +10,19 @@ enabled: true
 
 # Html
 
-Auto-compiled from **134 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **136 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
 > **CRITICAL:** These are real gotchas from this project. Ignoring them WILL cause bugs.
+
+### ❌ ⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes
+-                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
++                     const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
+-                         // Respetar scroll solo si 
+- Modified 1 files
+- identifier: Array
+- identifier: Error
 
 ### ❌ ⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes
 -                 }
@@ -321,21 +329,6 @@ Auto-compiled from **134 real patterns** in **botatc**. This skill is auto-route
 -             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : '';
 +             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
 -                 await fetch('/enviar_mensaje', {
-+                 const res = await fetch('/api/admin/enviar_manual', {
--            
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Content
-3. identifier: Type
-4. identifier: JSON
-5. identifier: Error
-
-### Fixed null crash in Nivel — prevents null/undefined runtime crashes
--         :root {
-+                 :root {
--             --primary-color: #3b82f6;
-+             --primary-color: #3b82f6;       
--            
++                 const res = await fet
 
 ... [Truncated — see individual observations for full content]

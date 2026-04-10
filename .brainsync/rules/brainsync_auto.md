@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1531 notes | Score threshold: >40
+> 1548 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,7 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes** — -                     if (oldScroll.innerHTML !== newScroll.innerHTML)
 - **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
 - **⚠️ GOTCHA: problem-fix in server.py** — -                     return f"""<div style="text-align:center;"><img 
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1517 notes | Score threshold: >40
@@ -33,19 +34,17 @@
 +
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1507 notes | Score threshold: >40
 + > 1512 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1496 notes | Score threshold: >40
-+ > 1507 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in server.py — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized GOTCHA — confirmed 3x
 - problem-fix in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 4x
-- Optimized Patched — confirmed 3x
 
 ## Known Fixes
 
@@ -57,8 +56,8 @@
 
 ## Recent Decisions
 
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - decision in server.py
-- Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 
