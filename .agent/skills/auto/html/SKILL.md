@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 31 conventions, 58 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 31 conventions, 60 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **142 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **144 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,38 @@ Auto-compiled from **142 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in BUSCADOR — reduces excessive function call frequency
+-             <div style="padding: 0 20px 10px 20px;">
++             
+-                 <button onclick="openTemplateModal()" class="dashboard-btn" style="width: 100%; background: var(--success-color); border:none; border-radius:10px; font-weight:600; cursor:pointer;">
++ 
+-                     💬 Nueva Conversación
++ 
+-                 </button>
++             <!-- BUSCADOR / NUEVO CHAT -->
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: BUSCADOR
+3. identifier: NUEVO
+4. identifier: CHAT
+5. identifier: Buscar
+
+### Fixed null crash in Nueva — reduces excessive function call frequency
+- 
++             <div style="padding: 0 20px 10px 20px;">
+-             <!-- BUSCADOR / NUEVO CHAT -->
++                 <button onclick="openTemplateModal()" class="dashboard-btn" style="width: 100%; background: var(--success-color); border:none; border-radius:10px; font-weight:600; cursor:pointer;">
+-             <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
++    
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Nueva
+3. identifier: Conversaci
+4. identifier: BUSCADOR
+5. identifier: NUEVO
 
 ### Fixed null crash in Admin — reduces excessive function call frequency
 -         <!-- System Settings Icon -->
@@ -293,40 +325,6 @@ Auto-compiled from **142 real patterns** in **botatc**. This skill is auto-route
 +             if (!msj) return {ok: false};
 -                 
 + 
--             } catch(e) {
-+                 return data;
--                 console.error("Error direct send", e);
-+             } catch(e) {
--             }
-+                 console.error("Error direct send", e);
--         };
-+                 return {ok: false, error: e.message || "Red E
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Error
-3. identifier: Red
-4. identifier: Vaciar
-5. identifier: Dibujado
-
-### Fixed null crash in Append — fixes memory leak from uncleared timers
--                                     window.enviarMensajeDirecto(wa_id, `[audio:${data.media_id}]`, null);
-+                                     const enviaRes = await window.enviarMensajeDirecto(wa_id, `[audio:${data.media_id}]`, null);
--                                     // Append locally artificially just for UX
-+                                     if(enviaRes && enviaRes.ok) {
--       
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Append
-3. identifier: Audio
-4. identifier: WhatsApp
-5. identifier: Meta
-
-### Fixed null crash in NATIVE — fixes memory leak from uncleared timers
--         window.enviarMensajeDirecto = async function(wa_id, msj) {
-+         
--             if (!msj) return;
-+         // NATIVE 
+-             } catch(
 
 ... [Truncated — see individual observations for full content]

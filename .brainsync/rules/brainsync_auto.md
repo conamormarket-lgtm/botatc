@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1894 notes | Score threshold: >40
+> 1940 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,26 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Updated whatsapp_client database schema
-+ - ⚠️ GOTCHA: 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Fixed
-+ - ⚠️ GOTCHA: Updated whatsapp_client 
-- **⚠️ GOTCHA: Updated whatsapp_client database schema** — - class EnviarPlantillaPayload(BaseModel):
-+ 
--     wa_id: str
-+ cl
-- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in HTMLResponse — parallelizes async operations f
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- -
-- **⚠️ GOTCHA: Fixed null crash in DOTALL — parallelizes async operations for speed** — -     with open("inbox.html", "r", encoding="utf-8") as f:
-+     
-- 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nueva — reduces excessive function call freque
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 1894 notes | Score threshold: >40
++ > 1930 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nueva — reduces excessive function call freque
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Optimized Score — evolv
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 14x
+- discovery in shared-context.json — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 9x
+- what-changed in shared-context.json — confirmed 23x
 - Strengthened types None
 - Strengthened types None
-- what-changed in shared-context.json — confirmed 10x
-- Fixed null crash in Response — protects against XSS and CSRF token theft — confirmed 5x
-- problem-fix in agent-rules.md — confirmed 4x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 8x
+- problem-fix in agent-rules.md — confirmed 17x
 
 ## Known Fixes
 

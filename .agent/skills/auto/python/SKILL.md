@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 31 gotchas, 36 conventions, 76 fixes."
+description: "Python for botatc. 31 gotchas, 36 conventions, 77 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **195 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **199 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -51,6 +51,20 @@ Auto-compiled from **195 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in whatsapp_client.py
+-     }
++     try:
+-     try:
++         async with httpx.AsyncClient() as client:
+-         async with httpx.AsyncClient() as client:
++             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
+-             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
++             res.raise_for_status()
+-             res.raise_for_sta
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in server.py
 -                  data-client_id="REEMPLAZAR_CON_TU_CLIENT_ID"
@@ -220,17 +234,6 @@ Auto-compiled from **195 real patterns** in **botatc**. This skill is auto-route
 5. identifier: LECTURA
 
 ### Fixed null crash in Documento — parallelizes async operations for speed
--                     return f'<div style="min-width: 250px; max-width: 100%; margin: 0 auto; display: flex;"><audio controls src="{src_url}" style="width: 100%; height: 45px; outline: none; margin-bottom: 5px; border-radius: 20px;"></audio></div>'
-+                     return f"""<div class="custom-audio-player" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; ma
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Documento
-3. identifier: Bajar
-4. identifier: Reemplazar
-5. identifier: Hola
-
-### Fixed null crash in Popover — parallelizes async operations for speed
--             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;"
+-                     return f'<div style="min-width: 250px; max-width: 100%; margin: 0 auto; display: flex;"><audio controls src="{src_url}" style="width: 100%; height: 45px; outline: none; margin-bottom: 5px; border-
 
 ... [Truncated — see individual observations for full content]

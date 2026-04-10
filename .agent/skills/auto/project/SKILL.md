@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 208 gotchas, 177 conventions, 117 fixes."
+description: "Project for botatc. 215 gotchas, 179 conventions, 125 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **890 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **911 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,13 @@ Auto-compiled from **890 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - Fixed null crash in BU |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
+| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1894 notes - Score threshold: >40 + > 1930 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - problem-fix in agent-r |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to supp |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1843 notes - Score threshold: >40 + > 1894 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Updated whatsapp_client database schema + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Fixed + - ⚠️ GOTCHA: Updated whatsapp_client database schema - - ⚠️ GOTCHA: |
 | ⚠️ GOTCHA: Optimized Fixed | - - Fixed null crash in HTMLResponse — parallelizes async operations for speed + - Fixed null crash  |
@@ -61,17 +68,112 @@ Auto-compiled from **890 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1517 notes - Score threshold: >40 + > 1518 notes - Score threshold: >40 - - problem-fix in share |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1507 notes - Score threshold: >40 + > 1512 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1496 notes - Score threshold: >40 + > 1507 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1483 notes - Score threshold: >40 + > 1496 notes - Score threshold: >40 - - **gotcha in shared-c |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1445 notes - Score threshold: >40 + > 1483 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Interceptar — wraps unsafe operation in error boundary + - problem-fix in ag |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ... + -  |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the databas |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1423 notes - Score threshold: >40 + > 1431 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - gotcha  |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
+- - Fixed null crash in Nueva — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Nueva — reduces excessive function call frequency
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Nueva — reduces excessive function call frequency
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in whatsapp_client.py
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in whatsapp_client.py
+- - Patched security issue Fixed
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in whatsapp_client.py
+- - Patched security issue Fixed
++ - problem-fix in shared-context.json
+- - Patched security issue Kevin
++ - Patched security issue Fixed
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Pro
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in whatsapp_client.py
+- - Patched security issue Fixed
++ - problem-fix in shared-context.json
+- - Patched security issue Kevin
++ - Patched security issue Fixed
+- - problem-fix in inbox.html
++ - Patched security issue Kevin
+
+📌 IDE AST Context: Modified symbols likely inclu
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in whatsapp_client.py
+- - Patched security issue Fixed
++ - problem-fix in shared-context.json
+- - Patched security issue Kevin
++ - Patched security issue Fixed
+- - problem-fix in inbox.html
++ - Patched security issue Kevin
+- - problem-fix in patcher.py
++ - problem-fix in inbox.html
+
+📌 IDE AST Context: Modified symbols likely include [# Projec
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
 - - problem-fix in server.py
 + - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
@@ -93,104 +195,6 @@ Auto-compiled from **890 real patterns** in **botatc**. This skill is auto-route
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in agent-rules.md
-- - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - Patched security 
+### 
 
 ... [Truncated — see individual observations for full content]
