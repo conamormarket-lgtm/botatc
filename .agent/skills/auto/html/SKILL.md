@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **140 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **141 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

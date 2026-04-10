@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1641 notes | Score threshold: >40
+> 1644 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -37,14 +37,14 @@ Content summary (8
 
 ## Project Standards
 
+- Added API route: /admin — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - problem-fix in agent-rules.md — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 11x
 - problem-fix in agent-rules.md — confirmed 4x
-- Fixed null crash in EMOJI — wraps unsafe operation in error boundary — confirmed 3x
-- Patched security issue Kevin — confirmed 4x
 
 ## Known Fixes
 
