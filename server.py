@@ -82,6 +82,7 @@ def startup_event():
 # numero_wa tiene código de país: "51945257117"
 sesiones: dict[str, dict] = {}
 global_labels: list = []
+global_groups: list = []
 
 # Interruptor global — False = bot completamente apagado
 BOT_GLOBAL_ACTIVO: bool = True

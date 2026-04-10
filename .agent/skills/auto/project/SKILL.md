@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 182 gotchas, 161 conventions, 96 fixes."
+description: "Project for botatc. 192 gotchas, 163 conventions, 96 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **794 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **808 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,16 @@ Auto-compiled from **794 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in shared-context.json - - ⚠️ GOTCHA: Optimized Score — e |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to su |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1680 notes - Score threshold: >40 + > 1697 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in HT |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Fixed null crash in HTMLResponse — parallelizes async operations for speed + - ⚠️ GOT |
+| ⚠️ GOTCHA: Optimized Score | - > 1678 notes - Score threshold: >40 + > 1680 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Updated schema Patched | - - Patched security issue Kevin + - Patched security issue Score — evolves the database schema to s |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1612 notes - Score threshold: >40 + > 1630 notes - Score threshold: >40 - + - problem-fix in sha |
@@ -58,16 +68,6 @@ Auto-compiled from **794 real patterns** in **botatc**. This skill is auto-route
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Fixed null crash in Re |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed + - ⚠️ GOTCHA:  |
 | ⚠️ GOTCHA: Optimized Score | - > 1316 notes - Score threshold: >40 + > 1335 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to su |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1269 notes - Score threshold: >40 + > 1286 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Optimized Score | - > 1255 notes - Score threshold: >40 + > 1269 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1200 notes - Score threshold: >40 + > 1204 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Added JWT tokens authentication - - ⚠️ GOTCHA: Replac |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1199 notes - Score threshold: >40 + > 1200 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to sup |
-| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 1192 notes - Score threshold: >40 + > 1193 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 
 ## 🔧 Problem Playbooks
 
@@ -188,6 +188,10 @@ Auto-compiled from **794 real patterns** in **botatc**. This skill is auto-route
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
-**Actionabl
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - P
 
 ... [Truncated — see individual observations for full content]

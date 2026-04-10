@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 1678 notes | Score threshold: >40
+> 1712 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,34 +20,39 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in HTMLResponse — parallelizes async operations for speed** — -     if not verificar_sesion(request):
-+     global global_groups
--
-- **⚠️ GOTCHA: Fixed null crash in Virtual — parallelizes async operations for speed** — -             texto  = m["content"].replace("\\n", "<br>")
-+         
-- **⚠️ GOTCHA: Updated schema Patched** — - - Patched security issue Kevin
-+ - Patched security issue Score — ev
-- **⚠️ GOTCHA: Fixed null crash in GRUPO** — -     html = html.replace("{chat_view_css}", chat_view_css)
-+     if 
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - gotcha in shared-context.json
+- - 
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "5ed3a7d99f98711b",
++       "id": "fb823a0a3efdc7ee",
 +
-- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed** — -     todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_acti
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Optimized Score — evo
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 1680 notes | Score threshold: >40
++ > 1697 notes | Score threshold
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "a5d55dca6aec7bd2",
++
 
 ## Project Standards
 
+- Updated schema GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in shared-context.json — confirmed 5x
+- discovery in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - Patched security issue Kevin — confirmed 5x
-- Added JWT tokens authentication — confirmed 6x
-- what-changed in shared-context.json — confirmed 4x
-- Added API route: /admin — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
