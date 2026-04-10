@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2178 notes | Score threshold: >40
+> 2182 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2167 notes | Score threshold: >40
++ > 2178 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication
 + - ⚠️ GOTCHA: Added JW
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2164 notes | Score threshold: >40
@@ -29,16 +31,10 @@
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
 + - ⚠️ GOTCHA: problem-fix in agent-
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in POST — wraps unsafe operation in error boundar
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "e9fd7a44e21e56dc",
-+
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 5x
 - what-changed in shared-context.json — confirmed 18x
 - problem-fix in agent-rules.md — confirmed 14x
 - Added JWT tokens authentication — confirmed 3x
@@ -46,7 +42,6 @@
 - Strengthened types Respuestas
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

@@ -1591,7 +1591,8 @@
                 });
                 const data = await res.json();
                 if (data.ok) {
-                    alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
+                    // Cargar el chat inmediatamente para ver la burbuja
+                    window.location.reload();
                 } else {
                     alert("❌ Error: " + data.error);
                 }

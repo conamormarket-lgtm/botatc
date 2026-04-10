@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 251 gotchas, 199 conventions, 148 fixes."
+description: "Project for botatc. 252 gotchas, 199 conventions, 148 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1031 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1035 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **1031 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2167 notes - Score threshold: >40 + > 2178 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Added JWT tokens authentication — intr |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2164 notes - Score threshold: >40 + > 2167 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2124 notes - Score threshold: >40 + > 2164 notes - Score threshold: >40 - - **gotcha in shared-c |
@@ -67,7 +68,6 @@ Auto-compiled from **1031 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - problem-fix in agent-rules.md - - problem-fix in agent-rules.md |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - gotcha in shared-context.json + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Replac |
 
 ## 🔧 Problem Playbooks
 
@@ -180,7 +180,6 @@ Auto-compiled from **1031 real patterns** in **botatc**. This skill is auto-rout
 + - problem-fix in agent-rules.md
 - - Patched security issue Patched
 + - Patched security issue Kevin
-- - Patched security issue Kevin
-
+- - Patched security issu
 
 ... [Truncated — see individual observations for full content]
