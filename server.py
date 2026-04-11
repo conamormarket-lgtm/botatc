@@ -1470,7 +1470,8 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                 # Transcodificar a H.264. Utiliza preset ultrafast para evitar timeouts 
                 # en solicitudes HTTP síncronas antes de enviar a Meta.
                 result = subprocess.run([
-                    ffmpeg_exe, '-y', '-i', tmp_in_name,
+                    ffmpeg_exe, '-y', '-hide_banner', '-i', tmp_in_name,
+                    '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
                     '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26',
                     '-pix_fmt', 'yuv420p', '-profile:v', 'baseline', '-level', '3.0',
                     '-c:a', 'aac', '-b:a', '64k',
@@ -1486,7 +1487,8 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                 else:
                     err_msg = result.stderr.decode('utf-8','ignore') if result.stderr else "Unknown error"
                     print("FFMPEG video error crítico:", err_msg)
-                    return {"ok": False, "error": f"Error procesando el video: {err_msg[:100]}"}
+                    # Mostrar el FINAL del error (donde viene la causa real), ya que al principio solo hay logs
+                    return {"ok": False, "error": f"Error FFMPEG: {err_msg[-150:]}"}
                 
                 os.remove(tmp_in_name)
                 if os.path.exists(tmp_out_name): os.remove(tmp_out_name)
