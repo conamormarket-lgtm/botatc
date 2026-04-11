@@ -1043,24 +1043,50 @@ async def settings_panel(request: Request):
     return HTMLResponse(html)
 
 @app.get("/api/media/{media_id}")
-async def get_media_endpoint(media_id: str):
+async def get_media_endpoint(media_id: str, request: Request):
     from fastapi.responses import Response, RedirectResponse
+    
+    data = None
+    mime = None
     if media_id in media_cache:
         data, mime = media_cache[media_id]
-        return Response(content=data, media_type=mime)
+    else:
+        try:
+            from whatsapp_client import obtener_media_url, descargar_media
+            url = await obtener_media_url(media_id)
+            if url:
+                data, mime = await descargar_media(url)
+                if data:
+                    media_cache[media_id] = (data, mime)
+        except: pass
         
-    try:
-        from whatsapp_client import obtener_media_url, descargar_media
-        url = await obtener_media_url(media_id)
-        if url:
-            data, mime = await descargar_media(url)
-            if data:
-                media_cache[media_id] = (data, mime)
-                return Response(content=data, media_type=mime)
-    except: pass
-    
-    # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en vez de 404 para evitar parpadeos y errores de javascript en el cliente
-    return RedirectResponse("https://placehold.co/250x150?text=Media+Expirado", status_code=302)
+    if not data:
+        # DEVUELVE UN PLACEHOLDER NATIVO POR DEFAULT en vez de 404 para evitar parpadeos y errores de javascript en el cliente
+        return RedirectResponse("https://placehold.co/250x150?text=Media+Expirado", status_code=302)
+        
+    # SOPORTE ESTRICTO PARA VIDEOS/AUDIOS EN NAVEGADORES MOVILES (HTTP 206 Range Requests)
+    # Safari (iOS) y Chrome Móvil exigen que el servidor responda rangos parciales
+    range_header = request.headers.get("Range")
+    if range_header and ("video" in mime or "audio" in mime):
+        import re
+        match = re.search(r"bytes=(\d+)-(\d*)", range_header)
+        if match:
+            start = int(match.group(1))
+            end_val = match.group(2)
+            tot_len = len(data)
+            end = int(end_val) if end_val else tot_len - 1
+            if end >= tot_len:
+                end = tot_len - 1
+            length = end - start + 1
+            chunk = data[start:end + 1]
+            headers = {
+                "Content-Range": f"bytes {start}-{end}/{tot_len}",
+                "Accept-Ranges": "bytes",
+                "Content-Length": str(length),
+            }
+            return Response(content=chunk, status_code=206, headers=headers, media_type=mime)
+            
+    return Response(content=data, headers={"Accept-Ranges": "bytes"}, media_type=mime)
 
 @app.get("/api/quick-replies")
 def get_quick_replies(request: Request):
@@ -1434,10 +1460,11 @@ async def admin_upload_media(file: UploadFile = File(...)):
                 
                 tmp_out_name = tmp_in_name + "_out.mp4"
                 
-                # Transcodificar a H.264. FFMPEG hornea la rotación EXIF nativamente.
+                # Transcodificar a H.264. Utiliza preset ultrafast para evitar timeouts 
+                # en solicitudes HTTP síncronas antes de enviar a Meta.
                 result = subprocess.run([
                     ffmpeg_exe, '-y', '-i', tmp_in_name,
-                    '-c:v', 'libx264', '-preset', 'fast', '-crf', '26',
+                    '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26',
                     '-c:a', 'aac', '-b:a', '64k',
                     '-movflags', '+faststart',
                     tmp_out_name
