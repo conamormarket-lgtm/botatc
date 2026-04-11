@@ -1465,6 +1465,7 @@ async def admin_upload_media(file: UploadFile = File(...)):
                 result = subprocess.run([
                     ffmpeg_exe, '-y', '-i', tmp_in_name,
                     '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26',
+                    '-pix_fmt', 'yuv420p', '-profile:v', 'baseline', '-level', '3.0',
                     '-c:a', 'aac', '-b:a', '64k',
                     '-movflags', '+faststart',
                     tmp_out_name
