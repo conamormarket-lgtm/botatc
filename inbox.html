@@ -1292,9 +1292,8 @@
 
         // LÓGICA DE SUBIDA MULTIMEDIA ASÍNCRONA EN SEGUNDO PLANO
         const uploadMedia = async (file, mode = 'imagen') => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const wa_id = urlParams.get('wa_id');
-            if (!wa_id) {
+            const wa_id = window.location.pathname.split('/').pop();
+            if (!wa_id || isNaN(wa_id) || wa_id === 'inbox') {
                 alert("Debes tener un chat abierto para enviar multimedia directamente.");
                 return;
             }
