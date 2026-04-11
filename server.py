@@ -1472,7 +1472,7 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                 # y sature la memoria RAM (OOM Killer) con multiples buffers.
                 result = subprocess.run([
                     ffmpeg_exe, '-y', '-hide_banner', '-loglevel', 'error', '-i', tmp_in_name,
-                    '-vf', "scale='if(gt(a,1),min(854,iw),-2)':'if(gt(a,1),-2,min(854,ih))'",
+                    '-vf', 'scale=w=min(854\\,iw):h=-2',
                     '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32', '-maxrate', '1.5M', '-bufsize', '3M', '-threads', '1',
                     '-pix_fmt', 'yuv420p', '-profile:v', 'baseline', '-level', '3.0',
                     '-c:a', 'aac', '-b:a', '64k',
