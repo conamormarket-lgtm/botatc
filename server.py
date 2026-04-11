@@ -1491,9 +1491,15 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
             except Exception as ex:
                 print(f"Error procesando video con ffmpeg: {ex}")
 
-        media_id = await subir_media(content, final_mime, file.filename or fallback_name)
+        # META ES ESTRICTO: El filename debe coincidir con el mime_type real
+        safe_filename = fallback_name
+        if "audio/ogg" in final_mime: safe_filename = "voice.ogg"
+        elif "video/mp4" in final_mime: safe_filename = "video.mp4"
+        elif "image/" in final_mime: safe_filename = "image.png"
+
+        media_id = await subir_media(content, final_mime, safe_filename)
         
-        if media_id:
+        if media_id and not media_id.startswith("ERROR"):
             # Meta no permite descargar media enviada por nosotros mismos.
             # Por lo que es de vital importancia guardarla en la cache para mostrarla en nuestro propio chat.
             media_cache[media_id] = (content, final_mime)
