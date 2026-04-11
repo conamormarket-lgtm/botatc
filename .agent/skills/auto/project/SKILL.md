@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 262 gotchas, 215 conventions, 152 fixes."
+description: "Project for botatc. 263 gotchas, 216 conventions, 155 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1090 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1100 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **1090 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - problem-fix in agent-rules.md - - problem-fix in shared-context |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - problem-fix in agent-rules.md - - problem-fix in agent-rules.md |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2238 notes - Score threshold: >40 + > 2250 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2235 notes - Score threshold: >40 + > 2238 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
@@ -67,9 +68,51 @@ Auto-compiled from **1090 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1930 notes - Score threshold: >40 + > 1940 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - Fixed null crash in BU |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1894 notes - Score threshold: >40 + > 1930 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin
+- - Fixed null crash in Video — reduces excessive function call frequency
++ - problem-fix in shared-context.json
+- - Fixed null crash in Falla — reduces excessive function call frequency
++ - Fixed null crash in Video — reduces excessive function call frequency
+
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Falla — reduces excessive function call frequency
++ - Patched security issue Kevin
+- - Fixed null crash in Falla — reduces excessive function call frequency
++ - problem-fix in shared-context.json
+- - Patched security issue Score — evolves the database schema to support new req...
++ - Fixed null crash in Video — reduces excessive function call frequency
+- - Fixed null crash 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Patched security issue Score — evolves the database schema to support new req...
+- > 2250 notes | Score threshold: >40
++ > 2271 notes | Score threshold: >40
+- - **gotcha in shared-context.json** — -     }
++ - **⚠️ GOTCHA: Fixed null crash in Aislar — reduces excessive function call frequency** — -                     const cleanHTML = (html) => html.replace(/style=
+- +     },
++ - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
+- -   ]
++ + - prob
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Score
+3. identifier: GOTCHA
+4. identifier: Fixed
+5. identifier: Aislar
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Debes — reduces excessive function call frequency
@@ -134,51 +177,6 @@ Auto-compiled from **1090 real patterns** in **botatc**. This skill is auto-rout
 - - problem-fix in agent-rules.md
 + - Fixed null crash in POST — wraps unsafe operation in error boundary
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in POST — wraps unsafe operation in error boundary
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-#
+📌 IDE AST Context: Modified symbols likely include [# Project Intel
 
 ... [Truncated — see individual observations for full content]

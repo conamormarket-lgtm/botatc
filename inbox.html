@@ -1346,27 +1346,53 @@
                         body: JSON.stringify({ wa_id: wa_id, texto: textToSend, reply_to_wamid: null, quick_reply_title: null })
                     });
                     
-                    if (loadingBubble) {
+                    if (loadingBubble && document.body.contains(loadingBubble)) {
                         loadingBubble.innerHTML = `✅ ${modeIcon} ¡Procesado y enviado a Meta!`;
                         loadingBubble.style.border = "1px solid var(--primary-color)";
                         loadingBubble.style.opacity = "1";
                         setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 3000); 
+                    } else {
+                        showGlobalToast(`✅ ${modeIcon} ¡Video subido y enviado a +${wa_id} correctamente!`);
                     }
                 } else {
                     if (loadingBubble && document.body.contains(loadingBubble)) {
                         loadingBubble.innerHTML = `❌ Error subiendo: ${data.error || "Desconocido"}`;
                         loadingBubble.style.border = "1px solid red";
                     } else {
-                        alert(`❌ Falla al enviar ${modeIcon} a +${wa_id}:\n${data.error || "Desconocido"}`);
+                        showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
                     }
                 }
             } catch (e) {
                 if (loadingBubble && document.body.contains(loadingBubble)) {
                     loadingBubble.innerHTML = `❌ Falló la conexión de fondo.`;
                 } else {
-                    alert(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red.`);
+                    showGlobalToast(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red.`);
                 }
             }
+        };
+
+        // NOTIFICACIONES GLOBALES INDESTRUCTIBLES
+        window.showGlobalToast = function(msg) {
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = 'var(--primary-color)';
+            toast.style.color = 'white';
+            toast.style.padding = '1rem';
+            toast.style.borderRadius = '8px';
+            toast.style.boxShadow = '0 5px 15px rgba(0,0,0,0.5)';
+            toast.style.zIndex = '999999';
+            toast.style.fontWeight = '600';
+            toast.style.maxWidth = '90%';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s';
+                setTimeout(() => toast.remove(), 500);
+            }, 6000);
         };
 
         // Pegar imagen directamente en el chat

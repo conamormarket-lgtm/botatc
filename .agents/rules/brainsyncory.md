@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2271 notes | Score threshold: >40
+> 2294 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- -
 - **⚠️ GOTCHA: Fixed null crash in Aislar — reduces excessive function call frequency** — -                     const cleanHTML = (html) => html.replace(/style=
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
@@ -35,18 +38,16 @@
 +
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2235 notes | Score threshold: >40
 + > 2238 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2225 notes | Score threshold: >40
-+ > 2235 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- problem-fix in agent-rules.md — confirmed 5x
+- Patched security issue Kevin — confirmed 4x
+- discovery in shared-context.json — confirmed 3x
 - trade-off in shared-context.json — confirmed 4x
 - Fixed null crash in Nivel — reduces excessive function call frequency — confirmed 4x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
-- what-changed in shared-context.json — confirmed 3x
-- Optimized Fixed — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes

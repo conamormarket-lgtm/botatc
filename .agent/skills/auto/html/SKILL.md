@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 3 gotchas, 34 conventions, 69 fixes, 3 error→fix pairs."
+description: "Html for botatc. 3 gotchas, 35 conventions, 71 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **158 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,33 @@ Auto-compiled from **158 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in Falla — reduces excessive function call frequency
+-                         alert(`❌ Falla al enviar ${modeIcon} a +${wa_id}:\n${data.error || "Desconocido"}`);
++                         showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
+-                     alert(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red.`);
++                     showGlobalToast(`❌ Falló la subida de ${modeIcon}
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Falla
+3. identifier: Desconocido
+4. identifier: Fall
+5. identifier: NOTIFICACIONES
+
+### Fixed null crash in Falla — reduces excessive function call frequency
+-                     if (loadingBubble) {
++                     if (loadingBubble && document.body.contains(loadingBubble)) {
+-                         alert("Error subiendo media: " + (data.error || "Desconocido"));
++                         alert(`❌ Falla al enviar ${modeIcon} a +${wa_id}:\n${data.error || "Desconocido"}`);
+-                 if (loadingBubble) loadingBubble.innerHTML = `❌ F
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Falla
+3. identifier: Desconocido
+4. identifier: Fall
+5. identifier: Pegar
 
 ### Fixed null crash in Debes — reduces excessive function call frequency
 -             const urlParams = new URLSearchParams(window.location.search);
@@ -287,42 +314,6 @@ Auto-compiled from **158 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in MediaRecorder — prevents null/undefined runtime crashes
 - 
 +         window._isAudioRecording = false;
--         document.addEventListener('click', async function(e) {
-+ 
--             const btnRecord = e.target.closest('#btnRecordAudio');
-+         document.addEventListener('click', async function(e) {
--             if(btnRecord) {
-+             const btnRecord = e.target.closest('#btnRecordAudio');
--                 if(!isRecording) {
-+     
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: MediaRecorder
-3. identifier: Blob
-4. identifier: WebM
-5. identifier: OGG
-
-### Fixed null crash in Interceptar — wraps unsafe operation in error boundary
--         window.enviarMensajeManual = async function (e, wa_id) {
-+         // Interceptar asignaciones programáticas a value
--             e.preventDefault();
-+         const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
--             const input = document.getElementById('manualMsgInput');
-+         setTimeout(() => {
--             
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Interceptar
-3. identifier: Object
-4. identifier: HTMLInputElement
-5. identifier: Darle
-
-### Fixed null crash in LEFT — prevents null/undefined runtime crashes
--             /* previene desbordamiento en flex */
-+             max-width: 100vw;
--         }
-+   
+-         document.addEventListener('click', async function
 
 ... [Truncated — see individual observations for full content]
