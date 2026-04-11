@@ -1405,7 +1405,7 @@ async def admin_upload_media(file: UploadFile = File(...)):
                 if result.returncode == 0 and os.path.exists(tmp_out_name):
                     with open(tmp_out_name, "rb") as f_out:
                         content = f_out.read()
-                    final_mime = "audio/ogg"
+                    final_mime = "audio/ogg; codecs=opus"
                     fallback_name = "voice.ogg"
                 else:
                     err_msg = result.stderr.decode('utf-8', 'ignore') if result.stderr else "ExitCode!=0"

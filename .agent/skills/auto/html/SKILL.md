@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 32 conventions, 67 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 33 conventions, 66 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -45,23 +45,6 @@ Auto-compiled from **153 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
-
-### Fixed null crash in Cargar — wraps unsafe operation in error boundary
--                     alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
-+                     // Cargar el chat inmediatamente para ver la burbuja
--                 } else {
-+                     window.location.reload();
--                     alert("❌ Error: " + data.error);
-+                 } else {
--                 }
-+                     al
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Cargar
-3. identifier: Error
-4. identifier: Falla
-5. identifier: ETIQUETAS
 
 ### Fixed null crash in POST — wraps unsafe operation in error boundary
 -             document.getElementById("templateMenu").style.display = "none";
@@ -328,6 +311,23 @@ Auto-compiled from **153 real patterns** in **botatc**. This skill is auto-route
 -             --primary-hover: #2563eb;       
 +             /* 1. Nivel de Color Principal */
 -             /* 2. Nivel de Color de Acento (translú
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Nivel
+3. identifier: Color
+4. identifier: Principal
+5. identifier: Acento
+
+### Fixed null crash in Vaciar — wraps unsafe operation in error boundary
+-         // Manejar subida de archivos (cámara/galería)
++         window.enviarMensajeManual = async function (e, wa_id) {
+-         window.uploadAdminMedia = async function(inputElem, wa_id) {
++             e.preventDefault();
+-             if (!inputElem.files || inputElem.files.length === 0) return;
++             const input = document.getElementById('manualMsgInput');
+-             
++ 
 
 **Actionable Steps:**
 1. Modified 1 fil
