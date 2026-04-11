@@ -1299,6 +1299,7 @@
 
             const formData = new FormData();
             formData.append("file", file);
+            formData.append("mode", mode);
 
             try {
                 const res = await fetch('/api/admin/upload_media', {

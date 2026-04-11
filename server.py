@@ -1395,7 +1395,7 @@ async def pausar_bot_manual(request: Request, numero_wa: str):
 
 
 @app.post("/api/admin/upload_media")
-async def admin_upload_media(file: UploadFile = File(...)):
+async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None)):
     """Sube media directamente desde la interfaz Web a Meta Graph."""
     try:
         from whatsapp_client import subir_media
@@ -1404,6 +1404,13 @@ async def admin_upload_media(file: UploadFile = File(...)):
         fallback_name = "upload.bin"
         final_mime = file.content_type or "application/octet-stream"
         
+        if mode == "video" and "octet-stream" in final_mime:
+            final_mime = "video/mp4"
+            fallback_name = "upload.mp4"
+        elif mode == "audio" and "octet-stream" in final_mime:
+            final_mime = "audio/webm"
+            fallback_name = "upload.webm"
+            
         if final_mime:
             if "image" in final_mime: fallback_name = "upload.png"
             elif "video" in final_mime: fallback_name = "upload.mp4"
