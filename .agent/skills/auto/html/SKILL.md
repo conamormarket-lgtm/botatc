@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 3 gotchas, 36 conventions, 72 fixes, 3 error→fix pairs."
+description: "Html for botatc. 3 gotchas, 36 conventions, 73 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **164 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **166 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,21 @@ Auto-compiled from **164 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 7x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in Falla — reduces excessive function call frequency
+-                     } else {
++                         setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
+-                         showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
++                     } else {
+-                     }
++                         showGlob
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Falla
+3. identifier: Desconocido
+4. identifier: Fall
+5. identifier: NOTIFICACIONES
 
 ### Fixed null crash in BARRA — reduces excessive function call frequency
 - </head>
@@ -308,20 +323,6 @@ Auto-compiled from **164 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in POST — wraps unsafe operation in error boundary
 -                 try {
 +                 let final_wa_id = wa_id;
--                     await fetch('/api/admin/chat/init', { method: 'POST', body: JSON.stringify({wa_id}), headers:{'Content-Type':'application/json'} });
-+                 try {
--                 } catch(e) {}
-+                     const res = await fetch('/api/admin/chat/init', { method: 'POST', body: JSON.stringify({wa_id})
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: POST
-3. identifier: JSON
-4. identifier: Content
-5. identifier: Type
-
-### Fixed null crash in Nivel — prevents null/undefined runtime crashes
--         * { box-sizing: border-box; }
-+         .bubble-user .chat-phone { color: var(--primary-color) !imp
+-                     aw
 
 ... [Truncated — see individual observations for full content]

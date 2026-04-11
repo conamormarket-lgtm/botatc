@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2365 notes | Score threshold: >40
+> 2386 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,20 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backwa
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - Patched security issue Kevi
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — introduces API versioning for backwar
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Optimized Score — int
+- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2361 notes | Score threshold: >40
++ > 2365 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2359 notes | Score threshold: >40
 + > 2361 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "43f574d17008c7bf",
-+
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in whatsapp_client.p
-- **⚠️ GOTCHA: Fixed null crash in Botones — parallelizes async operations for speed** — -     # Inyectar CSS dinámico exacto al de inbox
-+ 
--     custom_the
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "5e76fbfbd6772178",
-+
-- **⚠️ GOTCHA: Updated schema Patched** — - - Patched security issue Kevin
-+ - Patched security issue Score — ev
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
@@ -53,11 +41,10 @@
 - problem-fix in shared-context.json — confirmed 4x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Fixed null crash in Configuraci — reduces excessive function call frequency — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Formatear — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Sino — protects against XSS and CSRF token theft
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md

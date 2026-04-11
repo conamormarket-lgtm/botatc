@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 269 gotchas, 226 conventions, 161 fixes."
+description: "Project for botatc. 274 gotchas, 226 conventions, 162 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1133 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1141 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,11 @@ Auto-compiled from **1133 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility + - ⚠️ GOTCHA |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue Kevin - - problem-fix in shared-co |
+| ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - ⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility + - ⚠️ GOTCHA: |
+| ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Score — introduces API versioning for bac |
+| ⚠️ GOTCHA: Optimized Score — introduces API versio | - > 2361 notes - Score threshold: >40 + > 2365 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: Optimized Score — introduces API versio | - > 2359 notes - Score threshold: >40 + > 2361 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in whatsapp_client.py - - problem-fix in agent-rul |
 | ⚠️ GOTCHA: Updated schema Patched | - - Patched security issue Kevin + - Patched security issue Score — evolves the database schema to s |
@@ -63,13 +68,25 @@ Auto-compiled from **1133 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Panel — reduces excessive function call frequency + - problem-fix in agent-r |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1990 notes - Score threshold: >40 + > 1991 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1984 notes - Score threshold: >40 + > 1987 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1981 notes - Score threshold: >40 + > 1984 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1978 notes - Score threshold: >40 + > 1981 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1975 notes - Score threshold: >40 + > 1978 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1970 notes - Score threshold: >40 + > 1975 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1966 notes - Score threshold: >40 + > 1970 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 
 ## 🔧 Problem Playbooks
+
+### Patched security issue Fixed
+- - Patched security issue Kevin
++ - Fixed null crash in Sino — protects against XSS and CSRF token theft
+- - Fixed null crash in Falla — reduces excessive function call frequency
++ - Patched security issue Kevin
+- - problem-fix in shared-context.json
++ - Fixed null crash in Falla — reduces excessive function call frequency
+- - problem-fix in whatsapp_client.py
++ - problem-fix in shared-context.js
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Fixed
+3. identifier: Sino
+4. identifier: XSS
+5. identifier: CSRF
 
 ### problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
@@ -165,19 +182,6 @@ Auto-compiled from **1133 real patterns** in **botatc**. This skill is auto-rout
 + - Patched security issue Kevin
 - - Fixed null crash in Video — reduces excessive function call frequency
 + - problem-fix in shared-context.json
-- - Fixed null crash in Falla — reduces excessive function call frequency
-+ - Fixed null crash in Video — reduces excessive function call frequency
-
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Falla — reduces excessive function call frequency
-+ - Patched security issue Kevin
-- - Fixed null crash in Falla — reduces excessive function call frequency
-+ - problem-fix in shared-context.json
-- - Patched security issue Score — evolves the database schema to support new req...
-+ - Fixed null crash in Video — reduces excessive functio
+- - Fixed null cr
 
 ... [Truncated — see individual observations for full content]

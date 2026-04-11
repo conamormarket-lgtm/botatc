@@ -3369,13 +3369,33 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     return HTMLResponse(inyectar_tema_global(request, html))
 
 @app.post("/api/user/theme")
-async def update_user_theme(request: Request, bg_main: str = Form(None), accent_bg: str = Form(None), primary_color: str = Form(None), wallpaper: str = Form(None), wallpaper_opacity: str = Form("0.15")):
+async def update_user_theme(
+    request: Request, 
+    bg_main: str = Form(None), 
+    accent_bg: str = Form(None), 
+    primary_color: str = Form(None), 
+    wallpaper: str = Form(None), 
+    wallpaper_opacity: str = Form("0.15"),
+    wallpaper_file: UploadFile = File(None)
+):
     if not verificar_sesion(request):
         return {"ok": False, "error": "No autorizado"}
     
     usuario_sesion = obtener_usuario_sesion(request)
     if not usuario_sesion: return {"ok": False}
     
+    # Manejar subida de archivo si existe
+    if wallpaper_file and wallpaper_file.filename:
+        import os
+        os.makedirs("static/wallpapers", exist_ok=True)
+        ext = wallpaper_file.filename.split(".")[-1]
+        filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
+        filepath = os.path.join("static", "wallpapers", filename)
+        content = await wallpaper_file.read()
+        with open(filepath, "wb") as f:
+            f.write(content)
+        wallpaper = f"/static/wallpapers/{filename}"
+
     prefs = {
         "bg_main": bg_main or "#0f172a",
         "accent_bg": accent_bg or "#1e293b",

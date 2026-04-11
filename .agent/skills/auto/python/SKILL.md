@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 35 gotchas, 38 conventions, 82 fixes."
+description: "Python for botatc. 35 gotchas, 38 conventions, 83 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **213 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **214 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -55,6 +55,25 @@ Auto-compiled from **213 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Sino — protects against XSS and CSRF token theft
+- 
++     wp_opacity = float(prefs.get('wallpaper_opacity', '0.15'))
+-     c_acc_hex = c_acc.lstrip('#')
++ 
+-     if len(c_acc_hex) == 6:
++     c_acc_hex = c_acc.lstrip('#')
+-         c_acc_rgb = tuple(int(c_acc_hex[i:i+2], 16) for i in (0, 2, 4))
++     if len(c_acc_hex) == 6:
+-         accent_bg_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.05)"
++         c_acc_rgb = tup
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Sino
+3. identifier: Reemplazar
+4. identifier: JSONResponse
+5. identifier: Exception
 
 ### Fixed null crash in HTMLResponse — parallelizes async operations for speed
 -     return HTMLResponse(html)
@@ -195,25 +214,6 @@ Auto-compiled from **213 real patterns** in **botatc**. This skill is auto-route
 + @app.get("/settings", response_class=HTMLResponse)
 - @app.get("/settings", response_class=HTMLResponse)
 + async def settings_panel(request: Request):
-- async def settings_panel(request: Request):
-+     """Personalización de Agente y Base de Conocimiento."""
--     """Personalización de Agente y Base de Conocimiento."""
-+     if not es_admin(requ
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: HTMLResponse
-3. identifier: Request
-4. identifier: Personalizaci
-5. identifier: Agente
-
-### problem-fix in server.py
--     if not verificar_sesion(request):
-+     if not es_admin(request):
--     if not verificar_sesion(request):
-+     if not es_admin(request):
--     if not verificar_sesion(request):
-+     if not es_admin(request):
--     if not verificar_sesion(requ
+- async def se
 
 ... [Truncated — see individual observations for full content]
