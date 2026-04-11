@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2356 notes | Score threshold: >40
+> 2365 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2359 notes | Score threshold: >40
++ > 2361 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -41,19 +43,17 @@
 +
 - **⚠️ GOTCHA: Updated schema Patched** — - - Patched security issue Kevin
 + - Patched security issue Score — ev
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Updated schema Fixed
-+ - ⚠️ GOTCHA: Added JWT tokens au
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 6x
 - problem-fix in shared-context.json — confirmed 4x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Fixed null crash in Configuraci — reduces excessive function call frequency — confirmed 3x
-- Patched security issue Score — evolves the database schema to support new req... — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
 
 ## Known Fixes
 
@@ -67,8 +67,8 @@
 
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — introduces API versioning for backward compatibility
-- Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 

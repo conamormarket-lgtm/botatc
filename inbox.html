@@ -1369,6 +1369,7 @@
                     if (loadingBubble && document.body.contains(loadingBubble)) {
                         loadingBubble.innerHTML = `❌ Error subiendo: ${data.error || "Desconocido"}`;
                         loadingBubble.style.border = "1px solid red";
+                        setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
                     } else {
                         showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
                     }
@@ -1376,6 +1377,8 @@
             } catch (e) {
                 if (loadingBubble && document.body.contains(loadingBubble)) {
                     loadingBubble.innerHTML = `❌ Falló la conexión de fondo.`;
+                    loadingBubble.style.border = "1px solid red";
+                    setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
                 } else {
                     showGlobalToast(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red.`);
                 }

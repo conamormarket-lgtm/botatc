@@ -45,6 +45,7 @@ def inyectar_tema_global(request, html: str) -> str:
     c_prim = prefs.get('primary_color', '#3b82f6')
     c_acc = prefs.get('accent_bg', '#1e293b')
     wp = prefs.get('wallpaper', '')
+    wp_opacity = float(prefs.get('wallpaper_opacity', '0.15'))
 
     c_acc_hex = c_acc.lstrip('#')
     if len(c_acc_hex) == 6:
@@ -70,16 +71,24 @@ def inyectar_tema_global(request, html: str) -> str:
     '''
     
     if wp:
+        c_bg_hex = c_bg.lstrip('#')
+        if len(c_bg_hex) == 6:
+            c_bg_rgb = tuple(int(c_bg_hex[i:i+2], 16) for i in (0, 2, 4))
+            overlay_alpha = 1.0 - wp_opacity
+            overlay_rgba = f"rgba({c_bg_rgb[0]}, {c_bg_rgb[1]}, {c_bg_rgb[2]}, {overlay_alpha})"
+        else:
+            overlay_rgba = f"rgba(15, 23, 42, {1.0 - wp_opacity})"
+            
         css += f'''
-        .chat-viewer-panel, .settings-main-panel, body {{
-            background-image: url('{wp}') !important;
+        #chatScroll {{
+            background: linear-gradient({overlay_rgba}, {overlay_rgba}), url('{wp}') !important;
             background-size: cover !important;
             background-position: center !important;
             background-attachment: fixed !important;
         }}
         .appearance-card, .proactive-card, .pdf-card, .backup-card, .editor-card {{
-            background: rgba(30, 41, 59, 0.85) !important;
-            backdrop-filter: blur(10px);
+            background: var(--accent-bg) !important;
+            border: 1px solid var(--accent-border) !important;
         }}
         '''
 
@@ -95,6 +104,7 @@ def inyectar_tema_global(request, html: str) -> str:
     html = html.replace("{primary_color}", c_prim)
     html = html.replace("{accent_bg}", c_acc)
     html = html.replace("{wallpaper}", wp)
+    html = html.replace("{wallpaper_opacity}", str(wp_opacity))
     return html
 
 import traceback
@@ -3359,7 +3369,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     return HTMLResponse(inyectar_tema_global(request, html))
 
 @app.post("/api/user/theme")
-async def update_user_theme(request: Request, bg_main: str = Form(None), accent_bg: str = Form(None), primary_color: str = Form(None), wallpaper: str = Form(None)):
+async def update_user_theme(request: Request, bg_main: str = Form(None), accent_bg: str = Form(None), primary_color: str = Form(None), wallpaper: str = Form(None), wallpaper_opacity: str = Form("0.15")):
     if not verificar_sesion(request):
         return {"ok": False, "error": "No autorizado"}
     
@@ -3367,10 +3377,11 @@ async def update_user_theme(request: Request, bg_main: str = Form(None), accent_
     if not usuario_sesion: return {"ok": False}
     
     prefs = {
-        "bg_main": bg_main or "#213668",
-        "accent_bg": accent_bg or "#ffffff",
+        "bg_main": bg_main or "#0f172a",
+        "accent_bg": accent_bg or "#1e293b",
         "primary_color": primary_color or "#3b82f6",
-        "wallpaper": wallpaper or ""
+        "wallpaper": wallpaper or "",
+        "wallpaper_opacity": wallpaper_opacity or "0.15"
     }
     
     username = usuario_sesion.get("username")

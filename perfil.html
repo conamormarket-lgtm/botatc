@@ -125,9 +125,15 @@
                         </div>
                     </div>
                     
-                    <div style="display:flex; flex-direction:column; gap:0.5rem;">
-                        <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">URL Imagen de Fondo del Chat (Opcional)</label>
-                        <input type="url" id="theme_wallpaper" name="wallpaper" value="{wallpaper}" placeholder="Ej: https://..." style="background:rgba(0,0,0,0.2); border:1px solid var(--accent-border); color:white; padding:0.8rem 1rem; border-radius:8px; outline:none; font-family:var(--font-main);">
+                    <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:0.5rem;">
+                        <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1; min-width:250px;">
+                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">URL Imagen de Fondo del Chat (Opcional)</label>
+                            <input type="url" id="theme_wallpaper" name="wallpaper" value="{wallpaper}" placeholder="Ej: https://..." style="background:rgba(0,0,0,0.2); border:1px solid var(--accent-border); color:white; padding:0.8rem 1rem; border-radius:8px; outline:none; font-family:var(--font-main);">
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1; min-width:200px;">
+                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Opacidad del Fondo: <span id="opacityVal" style="color:var(--primary-color);">{wallpaper_opacity}</span></label>
+                            <input type="range" id="theme_wallpaper_opacity" name="wallpaper_opacity" value="{wallpaper_opacity}" min="0.05" max="1.0" step="0.05" style="width:100%; margin-top:0.5rem; cursor:pointer;" oninput="document.getElementById('opacityVal').innerText=this.value;">
+                        </div>
                     </div>
                     
                     <div style="display:flex; gap:1rem; margin-top:0.5rem;">
@@ -163,6 +169,8 @@
             document.getElementById('theme_primary_color').value = '#3b82f6';
             document.getElementById('theme_accent_bg').value = '#1e293b';
             document.getElementById('theme_wallpaper').value = '';
+            document.getElementById('theme_wallpaper_opacity').value = '0.15';
+            document.getElementById('opacityVal').innerText = '0.15';
             previewTheme();
             
             const form = document.getElementById('themeForm');
