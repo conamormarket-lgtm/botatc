@@ -59,6 +59,9 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
     es_url = media_id_o_url.startswith("http")
     media_obj = {"link": media_id_o_url} if es_url else {"id": media_id_o_url}
     
+    if tipo_media == "audio":
+        media_obj["voice"] = True
+    
     payload = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",

@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2199 notes | Score threshold: >40
+> 2201 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -36,6 +36,7 @@ Content summary (8
 
 ## Project Standards
 
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
@@ -43,7 +44,6 @@ Content summary (8
 - what-changed in shared-context.json — confirmed 5x
 - Added JWT tokens authentication — introduces API versioning for backward comp...
 - what-changed in shared-context.json — confirmed 18x
-- problem-fix in agent-rules.md — confirmed 14x
 
 ## Known Fixes
 
