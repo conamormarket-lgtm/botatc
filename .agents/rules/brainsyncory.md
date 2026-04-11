@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2294 notes | Score threshold: >40
+> 2300 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,13 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "f7f3effb0ee962b2",
++
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
 - -
@@ -36,19 +43,17 @@
 - }
 +       "id": "3274f4298165db89",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2235 notes | Score threshold: >40
-+ > 2238 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 3x
+- Fixed null crash in Video — reduces excessive function call frequency — confirmed 4x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - problem-fix in agent-rules.md — confirmed 5x
 - Patched security issue Kevin — confirmed 4x
 - discovery in shared-context.json — confirmed 3x
-- trade-off in shared-context.json — confirmed 4x
-- Fixed null crash in Nivel — reduces excessive function call frequency — confirmed 4x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

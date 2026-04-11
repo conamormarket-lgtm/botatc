@@ -1040,6 +1040,13 @@ async def settings_panel(request: Request):
     
     html = html.replace("{lista_pdfs}", pdfs_html or "<li style='color:var(--text-muted);font-style:italic;padding:0.5rem;'>Ningún archivo PDF subido.</li>")
     
+    usuario_sesion = obtener_usuario_sesion(request)
+    prefs = usuario_sesion.get("preferencias_ui", {}) if usuario_sesion else {}
+    html = html.replace("{bg_main}", prefs.get("bg_main", "#0f172a"))
+    html = html.replace("{primary_color}", prefs.get("primary_color", "#3b82f6"))
+    html = html.replace("{accent_bg}", prefs.get("accent_bg", "#1e293b"))
+    html = html.replace("{wallpaper}", prefs.get("wallpaper", ""))
+
     return HTMLResponse(html)
 
 @app.get("/api/media/{media_id}")
@@ -3217,7 +3224,74 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     html = html.replace("{chat_view_css}", chat_view_css)
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
     
+    # Tema Custom
+    custom_theme_css = ""
+    usuario_sesion = obtener_usuario_sesion(request)
+    if usuario_sesion and "preferencias_ui" in usuario_sesion:
+        prefs = usuario_sesion["preferencias_ui"]
+        c_bg = prefs.get('bg_main', '#213668')
+        c_prim = prefs.get('primary_color', '#3b82f6')
+        c_acc = prefs.get('accent_bg', '#ffffff')
+        
+        c_acc = c_acc.lstrip('#')
+        if len(c_acc) == 6:
+            c_acc_rgb = tuple(int(c_acc[i:i+2], 16) for i in (0, 2, 4))
+            accent_bg_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.05)"
+            accent_border_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.1)"
+            accent_hover_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.08)"
+        else:
+            accent_bg_rgba = "rgba(255, 255, 255, 0.05)"
+            accent_border_rgba = "rgba(255, 255, 255, 0.1)"
+            accent_hover_rgba = "rgba(255, 255, 255, 0.08)"
+            
+        custom_theme_css = f'''
+        :root {{
+            --bg-main: {c_bg} !important;
+            --bg-sidebar: {c_bg} !important;
+            --bg-list: {c_bg} !important;
+            --primary-color: {c_prim} !important;
+            --accent-bg: {accent_bg_rgba} !important;
+            --accent-border: {accent_border_rgba} !important;
+            --accent-hover-soft: {accent_hover_rgba} !important;
+        }}
+        '''
+        wp = prefs.get('wallpaper', '')
+        if wp:
+            custom_theme_css += f'''
+            .chat-viewer-panel {{
+                background-image: url('{wp}') !important;
+                background-size: cover !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
+            }}
+            '''
+    html = html.replace("{custom_theme_css}", custom_theme_css)
+
     return HTMLResponse(html)
+
+@app.post("/api/user/theme")
+async def update_user_theme(request: Request, bg_main: str = Form(None), accent_bg: str = Form(None), primary_color: str = Form(None), wallpaper: str = Form(None)):
+    if not verificar_sesion(request):
+        return {"ok": False, "error": "No autorizado"}
+    
+    usuario_sesion = obtener_usuario_sesion(request)
+    if not usuario_sesion: return {"ok": False}
+    
+    prefs = {
+        "bg_main": bg_main or "#213668",
+        "accent_bg": accent_bg or "#ffffff",
+        "primary_color": primary_color or "#3b82f6",
+        "wallpaper": wallpaper or ""
+    }
+    
+    username = usuario_sesion.get("username")
+    if username:
+        from firebase_client import actualizar_preferencias_tema
+        actualizar_preferencias_tema(username, prefs)
+        usuario_sesion["preferencias_ui"] = prefs
+        save_sessions()
+        
+    return {"ok": True}
 
 @app.get("/inbox", response_class=HTMLResponse)
 async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None):

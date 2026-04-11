@@ -390,3 +390,11 @@ def actualizar_permisos_usuario(username: str, estado: str, permisos: list[str],
         doc_ref.update(update_data)
         return True
     return False
+
+def actualizar_preferencias_tema(username: str, preferencias_ui: dict) -> bool:
+    db = inicializar_firebase()
+    doc_ref = db.collection("usuarios_atc").document(username)
+    if doc_ref.get().exists:
+        doc_ref.update({"preferencias_ui": preferencias_ui})
+        return True
+    return False
