@@ -918,6 +918,10 @@
                     const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
                     let didAppend = false;
                     
+                    // Aislar temporalmente elementos de subida asíncrona (fantasmas)
+                    const tempNodes = Array.from(oldScroll.querySelectorAll('[data-temp="true"]'));
+                    tempNodes.forEach(node => oldScroll.removeChild(node));
+                    
                     const cleanHTML = (html) => html.replace(/style="[^"]*"/g, "").replace(/>\d+:\d{2}</g, ">0:00<");
                     
                     const newChildren = Array.from(newScroll.children);
@@ -943,6 +947,9 @@
                     while (oldScroll.children.length > newChildren.length) {
                         oldScroll.removeChild(oldScroll.lastChild);
                     }
+                    
+                    // Reinyectar elementos asíncronos fantasma
+                    tempNodes.forEach(node => oldScroll.appendChild(node));
                     
                     if (didAppend && isAtBottom) {
                         oldScroll.scrollTop = oldScroll.scrollHeight;
@@ -1304,6 +1311,7 @@
             if (scroll) {
                 loadingBubble = document.createElement('div');
                 loadingBubble.className = "bubble bubble-bot lado-der";
+                loadingBubble.setAttribute("data-temp", "true");
                 loadingBubble.style.border = "1px dashed var(--accent-border)";
                 loadingBubble.style.opacity = "0.7";
                 loadingBubble.style.background = "rgba(0,0,0,0.2)";
