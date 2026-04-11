@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 257 gotchas, 209 conventions, 150 fixes."
+description: "Project for botatc. 260 gotchas, 212 conventions, 150 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1067 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1079 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **1067 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2235 notes - Score threshold: >40 + > 2238 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2225 notes - Score threshold: >40 + > 2235 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2213 notes - Score threshold: >40 + > 2225 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in POST — reduces excessive function call frequency + - problem-fix in agent-ru |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2199 notes - Score threshold: >40 + > 2201 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2191 notes - Score threshold: >40 + > 2193 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
@@ -65,9 +68,6 @@ Auto-compiled from **1067 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1894 notes - Score threshold: >40 + > 1930 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - problem-fix in agent-r |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score — evolves the database schema to supp |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1843 notes - Score threshold: >40 + > 1894 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Updated whatsapp_client database schema + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA |
 
 ## 🔧 Problem Playbooks
 
@@ -177,6 +177,6 @@ Auto-compiled from **1067 real patterns** in **botatc**. This skill is auto-rout
 - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-g
+📌 IDE AST Context: Modified symbols 
 
 ... [Truncated — see individual observations for full content]

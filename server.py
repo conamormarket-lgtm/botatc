@@ -1473,7 +1473,7 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                 result = subprocess.run([
                     ffmpeg_exe, '-y', '-hide_banner', '-loglevel', 'error', '-i', tmp_in_name,
                     '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
-                    '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26', '-threads', '1',
+                    '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '32', '-maxrate', '1.5M', '-bufsize', '3M', '-threads', '1',
                     '-pix_fmt', 'yuv420p', '-profile:v', 'baseline', '-level', '3.0',
                     '-c:a', 'aac', '-b:a', '64k',
                     '-movflags', '+faststart',

@@ -1,5 +1,5 @@
 # botatc — Project Memory
-# Auto-synced | 2241 observations
+# Auto-synced | 2257 observations
 
 **Stack:** Python · FastAPI
 
@@ -35,13 +35,13 @@ Example:
 
 # 📐 Conventions
 
+- Git Commit: videos nativos — confirmed 5x
 - Git Commit: videos nativos — confirmed 4x
 - Git Commit: notas de voz — confirmed 4x
 - Git Commit: plantillas — confirmed 3x
 - Git Commit: sistema de autenticacion de usuarios — confirmed 5x
 - Git Commit: restauracion respuestas rapidas — confirmed 3x
 - Git Commit: restauracion respuestas rapidas — confirmed 3x
-- Git Commit: fix audios — confirmed 3x
 - Git Commit: fix audios — confirmed 3x
 
 # ⚡ Available Tools (ON-DEMAND only)
@@ -55,3 +55,6 @@ Example:
 
 ---
 *Auto-synced | 2026-04-11*
+
+# BrainSync Intelligence (Auto-Synced)
+[BrainSync Rules](.brainsync/agent-rules.md)

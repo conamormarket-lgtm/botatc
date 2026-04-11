@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2225 notes | Score threshold: >40
+> 2250 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,29 +20,33 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "3274f4298165db89",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2235 notes | Score threshold: >40
++ > 2238 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2225 notes | Score threshold: >40
++ > 2235 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2213 notes | Score threshold: >40
++ > 2225 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in POST — reduces excessive function call frequen
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2199 notes | Score threshold: >40
 + > 2201 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2191 notes | Score threshold: >40
-+ > 2193 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2178 notes | Score threshold: >40
-+ > 2182 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2167 notes | Score threshold: >40
-+ > 2178 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Optimized Fixed — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Fixed null crash in Cargar — wraps unsafe operation in error boundary — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- Added JWT tokens authentication — introduces API versioning for backward comp...
 
 ## Known Fixes
 

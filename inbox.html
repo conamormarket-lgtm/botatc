@@ -11,6 +11,8 @@
         rel="stylesheet">
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
     <style>
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spin-anim { animation: spin 1s linear infinite; }
         .bubble-user .chat-phone { color: var(--primary-color) !important; text-decoration: underline; font-weight: bold; }
         .bubble-bot .chat-phone { color: #ffffff !important; text-decoration: underline; font-weight: bold; }
         * { box-sizing: border-box; }
@@ -1288,20 +1290,40 @@
             }
         };
 
-        // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
+        // LÓGICA DE SUBIDA MULTIMEDIA ASÍNCRONA EN SEGUNDO PLANO
         const uploadMedia = async (file, mode = 'imagen') => {
-            const input = document.getElementById('manualMsgInput');
-            if (!input) return;
+            const urlParams = new URLSearchParams(window.location.search);
+            const wa_id = urlParams.get('wa_id');
+            if (!wa_id) {
+                alert("Debes tener un chat abierto para enviar multimedia directamente.");
+                return;
+            }
 
-            // UI Feedback
-            input.placeholder = `Subiendo ${mode} a WhatsApp... ⏳`;
-            input.disabled = true;
+            // Dibujado de burbuja temporal "cargando" para liberar el UI general
+            const scroll = document.getElementById('chatScroll');
+            let loadingBubble = null;
+            if (scroll) {
+                loadingBubble = document.createElement('div');
+                loadingBubble.className = "bubble bubble-bot lado-der";
+                loadingBubble.style.border = "1px dashed var(--accent-border)";
+                loadingBubble.style.opacity = "0.7";
+                loadingBubble.style.background = "rgba(0,0,0,0.2)";
+                
+                let modeIcon = mode === 'video' ? '🎬' : mode === 'audio' ? '🎵' : '🖼️';
+                loadingBubble.innerHTML = `<div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-main);">
+                                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-anim"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                                              Subiendo ${modeIcon} (${(file.size/1024/1024).toFixed(1)}MB) en segundo plano...
+                                           </div>`;
+                scroll.appendChild(loadingBubble);
+                scroll.scrollTop = scroll.scrollHeight;
+            }
 
             const formData = new FormData();
             formData.append("file", file);
             formData.append("mode", mode);
 
             try {
+                // Sube el archivo de forma completamente asíncrona a nuestro servidor
                 const res = await fetch('/api/admin/upload_media', {
                     method: 'POST',
                     body: formData
@@ -1309,16 +1331,30 @@
                 const data = await res.json();
 
                 if (data.ok && data.media_id) {
-                    input.value += `[${mode}:${data.media_id}] `;
+                    // Una vez subido con existo, SE MANDA EL MENSAJE AUTOMÁTICAMENTE a Meta
+                    const textToSend = `[${mode}:${data.media_id}]`;
+                    fetch('/api/admin/enviar_manual', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ wa_id: wa_id, texto: textToSend, reply_to_wamid: null, quick_reply_title: null })
+                    });
+                    
+                    if (loadingBubble) {
+                        loadingBubble.innerHTML = `✅ ${modeIcon} ¡Procesado y enviado a Meta!`;
+                        loadingBubble.style.border = "1px solid var(--primary-color)";
+                        loadingBubble.style.opacity = "1";
+                        setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 3000); 
+                    }
                 } else {
-                    alert("Error subiendo: " + (data.error || "Desconocido"));
+                    if (loadingBubble) {
+                        loadingBubble.innerHTML = `❌ Error subiendo: ${data.error || "Desconocido"}`;
+                        loadingBubble.style.border = "1px solid red";
+                    } else {
+                        alert("Error subiendo media: " + (data.error || "Desconocido"));
+                    }
                 }
             } catch (e) {
-                alert("Error de red subiendo archivo.");
-            } finally {
-                input.placeholder = "Escribe tu respuesta aquí...";
-                input.disabled = false;
-                input.focus();
+                if (loadingBubble) loadingBubble.innerHTML = `❌ Falló la conexión de fondo.`;
             }
         };
 

@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 33 conventions, 67 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 34 conventions, 68 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,23 @@ Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in GICA — reduces excessive function call frequency
+-         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
++         // LÓGICA DE SUBIDA MULTIMEDIA ASÍNCRONA EN SEGUNDO PLANO
+-             const input = document.getElementById('manualMsgInput');
++             const urlParams = new URLSearchParams(window.location.search);
+-             if (!input) return;
++             const wa_id = urlParams.get('wa_id');
+- 
++           
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: GICA
+3. identifier: SUBIDA
+4. identifier: MULTIMEDIA
+5. identifier: NCRONA
 
 ### Fixed null crash in POST — reduces excessive function call frequency
 - 
@@ -316,24 +333,6 @@ Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-route
 -            
 
 **Actionable Steps:**
-1. Modified 1 files
-2. identifier: LEFT
-3. identifier: SIDEBAR
-4. identifier: MIDDLE
-5. identifier: CHAT
-
-### Fixed null crash in Nivel — prevents null/undefined runtime crashes
--                 :root {
-+         * { box-sizing: border-box; }
--             /* 1. Nivel de Color Principal */
-+         body { overflow-x: hidden; max-width: 100vw; }
--             --primary-color: #3b82f6;       
-+                 :root {
--             --primary-hover: #2563eb;       
-+             /* 1. Nivel de Color Principal */
--             /* 2. Nivel de Color de Acento (translú
-
-**Actionable Steps:**
-1. Modified 1 fi
+1. Modifie
 
 ... [Truncated — see individual observations for full content]

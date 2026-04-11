@@ -153,7 +153,7 @@ async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload
     
     try:
         async with httpx.AsyncClient() as client:
-            res = await client.post(url, headers=headers, data=data, files=files, timeout=30)
+            res = await client.post(url, headers=headers, data=data, files=files, timeout=120)
             res.raise_for_status()
             return res.json().get("id")
     except httpx.HTTPStatusError as e:

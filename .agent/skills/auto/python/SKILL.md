@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 34 gotchas, 38 conventions, 80 fixes."
+description: "Python for botatc. 34 gotchas, 38 conventions, 81 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **210 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **211 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -54,6 +54,21 @@ Auto-compiled from **210 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Unknown — parallelizes async operations for speed
+-                     print("FFMPEG video fallback error ignorado:", result.stderr.decode('utf-8','ignore') if result.stderr else "")
++                     err_msg = result.stderr.decode('utf-8','ignore') if result.stderr else "Unknown error"
+-                 
++                     print("FFMPEG video error crítico:", err_msg)
+-                 os.remove(tmp_in_name)
++                     re
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Unknown
+3. identifier: FFMPEG
+4. identifier: False
+5. identifier: Error
 
 ### Fixed null crash in Formatear — parallelizes async operations for speed
 -             wamid = m.get("msg_id", "")
@@ -204,26 +219,6 @@ Auto-compiled from **210 real patterns** in **botatc**. This skill is auto-route
 2. identifier: False
 3. identifier: Acceso
 4. identifier: Restringido
-5. identifier: ATC
-
-### Fixed null crash in Request — protects against XSS and CSRF token theft
-- def verificar_sesion(request: Request):
-+ 
--     token = request.cookies.get("session_token")
-+ def obtener_usuario_sesion(request: Request) -> dict | None:
--     return token in active_sessions
-+     token = request.cookies.get("session_token")
-- 
-+     if token and token in active_sessions:
-- @app.get("/login", response_class=HTMLResponse)
-+         return active_sessions[token]
-- as
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Request
-3. identifier: None
-4. identifier: True
-5. identifier: Fa
+5. identifier:
 
 ... [Truncated — see individual observations for full content]
