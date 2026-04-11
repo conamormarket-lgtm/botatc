@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 34 gotchas, 38 conventions, 81 fixes."
+description: "Python for botatc. 34 gotchas, 38 conventions, 82 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **211 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **212 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -54,6 +54,23 @@ Auto-compiled from **211 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in HTMLResponse — parallelizes async operations for speed
+-     return HTMLResponse(html)
++     usuario_sesion = obtener_usuario_sesion(request)
+- 
++     prefs = usuario_sesion.get("preferencias_ui", {}) if usuario_sesion else {}
+- @app.get("/api/media/{media_id}")
++     html = html.replace("{bg_main}", prefs.get("bg_main", "#0f172a"))
+- async def get_media_endpoint(media_id: str, request: Request):
++     html = html.replace("{primary_color}", pre
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: HTMLResponse
+3. identifier: Request
+4. identifier: Response
+5. identifier: RedirectResponse
 
 ### Fixed null crash in Unknown — parallelizes async operations for speed
 -                     print("FFMPEG video fallback error ignorado:", result.stderr.decode('utf-8','ignore') if result.stderr else "")
@@ -203,22 +220,6 @@ Auto-compiled from **211 real patterns** in **botatc**. This skill is auto-route
 
 📌 IDE AST Context: Modified 
 
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in False — parallelizes async operations for speed
-- def obtener_login_html(error=""):
-+ 
--     err_html = f'<div class="error">{error}</div>' if error else ''
-+ def obtener_login_html(error="", success=False):
--     return """
-+     msg_html = f'<div class="error" style="color: {"#10b981" if success else "#ef4444"}; background: {"#064e3b" if success else "#451a1e"}; border: 1px solid {"#059669" if success else "#991b1b"}; padding: 10px; bord
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: False
-3. identifier: Acceso
-4. identifier: Restringido
-5. identifier:
+**Actionable
 
 ... [Truncated — see individual observations for full content]

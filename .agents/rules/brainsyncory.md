@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2300 notes | Score threshold: >40
+> 2326 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,14 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Updated schema Patched** — - - Patched security issue Kevin
++ - Patched security issue Score — ev
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Updated schema Fixed
++ - ⚠️ GOTCHA: Added JWT tokens au
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Updated schema Fixed
+
+- **⚠️ GOTCHA: Updated schema Fixed** — - - Fixed null crash in BARRA — reduces excessive function call freque
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -30,38 +38,25 @@
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
 - -
-- **⚠️ GOTCHA: Fixed null crash in Aislar — reduces excessive function call frequency** — -                     const cleanHTML = (html) => html.replace(/style=
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- -
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2238 notes | Score threshold: >40
-+ > 2250 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "3274f4298165db89",
-+
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 6x
+- Updated schema Fixed — confirmed 3x
+- Updated schema Patched — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- Patched security issue Score — evolves the database schema to support new req... — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 3x
 - Fixed null crash in Video — reduces excessive function call frequency — confirmed 4x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- problem-fix in agent-rules.md — confirmed 5x
-- Patched security issue Kevin — confirmed 4x
-- discovery in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
 - ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Formatear — parallelizes async operations for speed
+- ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -     → ✅ Patched security issue Score — evolves the database schema to support new req...
-- ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 
 ## Recent Decisions
 

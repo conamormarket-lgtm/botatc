@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 263 gotchas, 219 conventions, 155 fixes."
+description: "Project for botatc. 267 gotchas, 222 conventions, 157 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1104 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1115 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **1104 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Updated schema Patched | - - Patched security issue Kevin + - Patched security issue Score — evolves the database schema to s |
+| ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - ⚠️ GOTCHA: Updated schema Fixed + - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API  |
+| ⚠️ GOTCHA: Added JWT tokens authentication — intro | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema Fixed - - ⚠️ GOTCHA: problem-fix in  |
+| ⚠️ GOTCHA: Updated schema Fixed | - - Fixed null crash in BARRA — reduces excessive function call frequency + - Fixed null crash in HT |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - problem-fix in agent-rules.md - - problem-fix in shared-context |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - problem-fix in agent-rules.md - - problem-fix in agent-rules.md |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2238 notes - Score threshold: >40 + > 2250 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
@@ -64,12 +68,39 @@ Auto-compiled from **1104 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1966 notes - Score threshold: >40 + > 1970 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1964 notes - Score threshold: >40 + > 1966 notes - Score threshold: >40 - - Added JWT tokens aut |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1940 notes - Score threshold: >40 + > 1956 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
-| ⚠️ GOTCHA: Replaced auth Fixed | - - Fixed null crash in Response — protects against XSS and CSRF token theft + - problem-fix in shar |
-| ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1930 notes - Score threshold: >40 + > 1940 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - Fixed null crash in BU |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in shared-context.json
+- - Patched security issue Score — evolves the database schema to support new req...
++ - problem-fix in whatsapp_client.py
+- - problem-fix in shared-context.json
++ - problem-fix in inbox.html
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Ru
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Patched security issue Score — evolves the database schema to support new req...
+- > 2294 notes | Score threshold: >40
++ > 2300 notes | Score threshold: >40
+- - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - **gotcha in shared-context.json** — -     }
+- + - problem-fix in agent-rules.md
++ +     },
+- - -
++ -   ]
+- - **⚠️ GOTCHA: Fixed null crash in Aislar — reduces excessive function call frequency** — -                     const cleanHTML =
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Score
+3. identifier: GOTCHA
+4. identifier: Patched
+5. identifier: Kevin
 
 ### problem-fix in agent-rules.md
 - - Patched security issue Kevin
@@ -148,35 +179,6 @@ Auto-compiled from **1104 real patterns** in **botatc**. This skill is auto-rout
 - - Fixed null crash in POST — reduces excessive function call frequency
 + - problem-fix in agent-rules.md
 - - Patched security issue Kevin
-+ - Fixed null crash in POST — reduces excessive function call frequency
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - Patched security issue Kevin
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin — hardens HTTP se
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - Fixed null crash in POST — reduces excessive function call frequency
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - Patched security issue Kevin
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin — hardens HTTP security headers
-- - problem-fix in whatsapp_client.py
-+ - problem-fix in shared-context.json
-- - problem-fix
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in POST — wraps unsafe operation in error boundary
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in POST — wraps unsafe operation in error boundary
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intel
++
 
 ... [Truncated — see individual observations for full content]

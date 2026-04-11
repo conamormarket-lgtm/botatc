@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 3 gotchas, 35 conventions, 71 fixes, 3 error→fix pairs."
+description: "Html for botatc. 3 gotchas, 36 conventions, 72 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **164 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -28,9 +28,33 @@ Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-route
 
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
-| `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
+| `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 7x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in BARRA — reduces excessive function call frequency
+- </head>
++     <style id="custom-theme-css">
+- 
++ {custom_theme_css}
+- <body class="{body_class}">
++     </style>
+- 
++ </head>
+-     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
++ 
+-     <nav class="sidebar-nav">
++ <body class="{body_class}">
+-         <!-- Inbox Icon -->
++ 
+-         <a href="/inbox" class="nav-item active" title="Bandeja de Entrada (Inb
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: BARRA
+3. identifier: LATERAL
+4. identifier: IZQUIERDA
+5. identifier: Navegaci
 
 ### Fixed null crash in Falla — reduces excessive function call frequency
 -                         alert(`❌ Falla al enviar ${modeIcon} a +${wa_id}:\n${data.error || "Desconocido"}`);
@@ -298,22 +322,6 @@ Auto-compiled from **161 real patterns** in **botatc**. This skill is auto-route
 
 ### Fixed null crash in Nivel — prevents null/undefined runtime crashes
 -         * { box-sizing: border-box; }
-+         .bubble-user .chat-phone { color: var(--primary-color) !important; text-decoration: underline; font-weight: bold; }
--         body { overflow-x: hidden; max-width: 100vw; }
-+         .bubble-bot .chat-phone { color: #ffffff !important; text-decoration: underline; font-weight: bold; }
--                 :root {
-+         * { box-sizing: border-b
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Nivel
-3. identifier: Color
-4. identifier: Principal
-5. identifier: Acento
-
-### Fixed null crash in MediaRecorder — prevents null/undefined runtime crashes
-- 
-+         window._isAudioRecording = false;
--         document.addEventListener('click', async function
++         .bubble-user .chat-phone { color: var(--primary-color) !imp
 
 ... [Truncated — see individual observations for full content]
