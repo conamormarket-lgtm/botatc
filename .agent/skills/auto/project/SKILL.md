@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 260 gotchas, 212 conventions, 150 fixes."
+description: "Project for botatc. 262 gotchas, 215 conventions, 152 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1079 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1090 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **1079 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Kevin + - problem-fix in agent-rules.md - - problem-fix in agent-rules.md |
+| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2238 notes - Score threshold: >40 + > 2250 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2235 notes - Score threshold: >40 + > 2238 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2225 notes - Score threshold: >40 + > 2235 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2213 notes - Score threshold: >40 + > 2225 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
@@ -66,10 +68,38 @@ Auto-compiled from **1079 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - Fixed null crash in BU |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication — evolve |
 | ⚠️ GOTCHA: Added JWT tokens authentication — evolv | - > 1894 notes - Score threshold: >40 + > 1930 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Nueva — reduces excessive function call frequency + - problem-fix in agent-r |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Debes — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Debes — reduces excessive function call frequency
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - Patched security issue Kevin — hardens HTTP security headers
++ - Patched security issue Kevin
+
+📌 IDE AST Context
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Debes — reduces excessive function call frequency
+- - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- - Patched security issue Kevin — hardens HTTP security headers
++ - Patched security issue Kevin
+- - problem-fix in shared-context.json
++ - Patched security issue Kevin — hardens HTTP security headers
+
+📌 IDE AST Context: Mo
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in POST — reduces excessive function call frequency
@@ -149,34 +179,6 @@ Auto-compiled from **1079 real patterns** in **botatc**. This skill is auto-rout
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols 
+#
 
 ... [Truncated — see individual observations for full content]

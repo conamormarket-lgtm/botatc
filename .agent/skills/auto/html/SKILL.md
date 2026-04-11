@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 34 conventions, 68 fixes, 3 error→fix pairs."
+description: "Html for botatc. 3 gotchas, 34 conventions, 69 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,31 +10,17 @@ enabled: true
 
 # Html
 
-Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **158 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
 > **CRITICAL:** These are real gotchas from this project. Ignoring them WILL cause bugs.
 
-### ❌ ⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes
--                     if (oldScroll.innerHTML !== newScroll.innerHTML) {
-+                     const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
--                         // Respetar scroll solo si 
-- Modified 1 files
-- identifier: Array
-- identifier: Error
-
-### ❌ ⚠️ GOTCHA: Fixed null crash in Actualizar — prevents null/undefined runtime crashes
--                 }
-+                     if(typeof window.aplicarFiltroChats === 'function') {
--                 
-+                         window.aplicarFiltroChats();
--                 // Actualizar visibilidad de Chat
-+                     }
-- Modified 1 files
-- identifier: Actualizar
-- identifier: Chat
-
+| ❌ Don't | Details |
+|----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Aislar — reduces ex | -                     const cleanHTML = (html) => html.replace(/style="[^"]*"/g, "").replace(/>\d+:\ |
+| ⚠️ GOTCHA: Fixed null crash in Array — prevents nu | -                     if (oldScroll.innerHTML !== newScroll.innerHTML) { +                     cons |
+| ⚠️ GOTCHA: Fixed null crash in Actualizar — preven | -                 } +                     if(typeof window.aplicarFiltroChats === 'function') { -  |
 
 ## 🔧 Problem Playbooks
 
@@ -45,6 +31,22 @@ Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in Debes — reduces excessive function call frequency
+-             const urlParams = new URLSearchParams(window.location.search);
++             const wa_id = window.location.pathname.split('/').pop();
+-             const wa_id = urlParams.get('wa_id');
++             if (!wa_id || isNaN(wa_id) || wa_id === 'inbox') {
+-             if (!wa_id) {
++                 alert("Debes tener un chat abierto para enviar multimedia directamente.");
+-       
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Debes
+3. identifier: Dibujado
+4. identifier: Subiendo
+5. identifier: FormData
 
 ### Fixed null crash in GICA — reduces excessive function call frequency
 -         // LÓGICA DE SUBIDA DE IMÁGENES/STICKERS DIRECTAS (Pegar o click)
@@ -321,18 +323,6 @@ Auto-compiled from **156 real patterns** in **botatc**. This skill is auto-route
 -             /* previene desbordamiento en flex */
 +             max-width: 100vw;
 -         }
-+             overflow-x: hidden;
-- 
-+             /* previene desbordamiento en flex */
--         /* ---------------- LEFT SIDEBAR ---------------- */
-+         }
--         .nav-item {
-+ 
--             width: 44px;
-+         /* ---------------- LEFT SIDEBAR ---------------- */
--            
-
-**Actionable Steps:**
-1. Modifie
++   
 
 ... [Truncated — see individual observations for full content]

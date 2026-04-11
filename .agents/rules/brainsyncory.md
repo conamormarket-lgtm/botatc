@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2250 notes | Score threshold: >40
+> 2271 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,12 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Aislar — reduces excessive function call frequency** — -                     const cleanHTML = (html) => html.replace(/style=
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- -
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2238 notes | Score threshold: >40
++ > 2250 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -31,22 +37,17 @@
 + > 2238 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2225 notes | Score threshold: >40
 + > 2235 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2213 notes | Score threshold: >40
-+ > 2225 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in POST — reduces excessive function call frequen
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2199 notes | Score threshold: >40
-+ > 2201 notes | Score threshold
 
 ## Project Standards
 
+- trade-off in shared-context.json — confirmed 4x
+- Fixed null crash in Nivel — reduces excessive function call frequency — confirmed 4x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized Fixed — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 
 ## Known Fixes
 

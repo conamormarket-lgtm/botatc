@@ -1353,15 +1353,19 @@
                         setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 3000); 
                     }
                 } else {
-                    if (loadingBubble) {
+                    if (loadingBubble && document.body.contains(loadingBubble)) {
                         loadingBubble.innerHTML = `❌ Error subiendo: ${data.error || "Desconocido"}`;
                         loadingBubble.style.border = "1px solid red";
                     } else {
-                        alert("Error subiendo media: " + (data.error || "Desconocido"));
+                        alert(`❌ Falla al enviar ${modeIcon} a +${wa_id}:\n${data.error || "Desconocido"}`);
                     }
                 }
             } catch (e) {
-                if (loadingBubble) loadingBubble.innerHTML = `❌ Falló la conexión de fondo.`;
+                if (loadingBubble && document.body.contains(loadingBubble)) {
+                    loadingBubble.innerHTML = `❌ Falló la conexión de fondo.`;
+                } else {
+                    alert(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red.`);
+                }
             }
         };
 
