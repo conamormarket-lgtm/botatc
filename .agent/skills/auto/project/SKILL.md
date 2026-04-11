@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 267 gotchas, 224 conventions, 161 fixes."
+description: "Project for botatc. 268 gotchas, 226 conventions, 161 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1123 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1128 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **1123 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in whatsapp_client.py - - problem-fix in agent-rul |
 | ⚠️ GOTCHA: Updated schema Patched | - - Patched security issue Kevin + - Patched security issue Score — evolves the database schema to s |
 | ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - ⚠️ GOTCHA: Updated schema Fixed + - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API  |
 | ⚠️ GOTCHA: Added JWT tokens authentication — intro | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema Fixed - - ⚠️ GOTCHA: problem-fix in  |
@@ -67,7 +68,6 @@ Auto-compiled from **1123 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1970 notes - Score threshold: >40 + > 1975 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1966 notes - Score threshold: >40 + > 1970 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 1964 notes - Score threshold: >40 + > 1966 notes - Score threshold: >40 - - Added JWT tokens aut |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1940 notes - Score threshold: >40 + > 1956 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 
 ## 🔧 Problem Playbooks
 
@@ -178,6 +178,6 @@ Auto-compiled from **1123 real patterns** in **botatc**. This skill is auto-rout
 - - Fixed null crash in Falla — reduces excessive function call frequency
 + - problem-fix in shared-context.json
 - - Patched security issue Score — evolves the database schema to support new req...
-+ - Fixed null crash in Video — reduces excessive function call
++ - Fixed null crash in Video — reduces excessive function call f
 
 ... [Truncated — see individual observations for full content]

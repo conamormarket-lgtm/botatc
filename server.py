@@ -2152,7 +2152,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         html = re.sub(r'<a href="/settings".*?</a>', '', html, flags=re.DOTALL)
         html = re.sub(r'<a href="/admin".*?</a>', '', html, flags=re.DOTALL)
         html = re.sub(r'<a href="/usuarios".*?</a>', '', html, flags=re.DOTALL)
-        html = re.sub(r'<!-- Admin Users Icon -->.*?</a>', '', html, flags=re.DOTALL)
 
 
     ahora = datetime.utcnow()

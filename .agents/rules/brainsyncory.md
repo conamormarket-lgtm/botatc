@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2346 notes | Score threshold: >40
+> 2356 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,15 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "43f574d17008c7bf",
++
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in whatsapp_client.p
 - **⚠️ GOTCHA: Fixed null crash in Botones — parallelizes async operations for speed** — -     # Inyectar CSS dinámico exacto al de inbox
 + 
 -     custom_the
@@ -34,21 +43,17 @@
 + - Patched security issue Score — ev
 - **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Updated schema Fixed
 + - ⚠️ GOTCHA: Added JWT tokens au
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Updated schema Fixed
-
-- **⚠️ GOTCHA: Updated schema Fixed** — - - Fixed null crash in BARRA — reduces excessive function call freque
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 6x
+- problem-fix in shared-context.json — confirmed 4x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Fixed null crash in Configuraci — reduces excessive function call frequency — confirmed 3x
 - Patched security issue Score — evolves the database schema to support new req... — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
-- Updated schema Fixed — confirmed 3x
-- Updated schema Patched — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- Patched security issue Score — evolves the database schema to support new req... — confirmed 3x
 
 ## Known Fixes
 
@@ -61,8 +66,8 @@
 ## Recent Decisions
 
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
