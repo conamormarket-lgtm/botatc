@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2326 notes | Score threshold: >40
+> 2346 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,16 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Botones — parallelizes async operations for speed** — -     # Inyectar CSS dinámico exacto al de inbox
++ 
+-     custom_the
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "5e76fbfbd6772178",
++
 - **⚠️ GOTCHA: Updated schema Patched** — - - Patched security issue Kevin
 + - Patched security issue Score — ev
 - **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Updated schema Fixed
@@ -28,27 +38,17 @@
 + - ⚠️ GOTCHA: Updated schema Fixed
 
 - **⚠️ GOTCHA: Updated schema Fixed** — - - Fixed null crash in BARRA — reduces excessive function call freque
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "f7f3effb0ee962b2",
-+
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- -
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Fixed null crash in Configuraci — reduces excessive function call frequency — confirmed 3x
+- Patched security issue Score — evolves the database schema to support new req... — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - Updated schema Fixed — confirmed 3x
 - Updated schema Patched — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - Patched security issue Score — evolves the database schema to support new req... — confirmed 3x
-- what-changed in shared-context.json — confirmed 7x
-- problem-fix in agent-rules.md — confirmed 3x
-- Fixed null crash in Video — reduces excessive function call frequency — confirmed 4x
 
 ## Known Fixes
 
@@ -60,10 +60,10 @@
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- decision in server.py
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

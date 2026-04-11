@@ -1019,53 +1019,7 @@ async def perfil_panel(request: Request):
     usuario_sesion = obtener_usuario_sesion(request)
     prefs = usuario_sesion.get("preferencias_ui", {}) if usuario_sesion else {}
     
-    # Inyectar CSS dinámico exacto al de inbox
-    custom_theme_css = ""
-    c_bg = prefs.get('bg_main', '#0f172a')
-    c_prim = prefs.get('primary_color', '#3b82f6')
-    c_acc = prefs.get('accent_bg', '#1e293b')
-    c_acc_hex = c_acc.lstrip('#')
-    if len(c_acc_hex) == 6:
-        c_acc_rgb = tuple(int(c_acc_hex[i:i+2], 16) for i in (0, 2, 4))
-        accent_bg_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.05)"
-        accent_border_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.1)"
-        accent_hover_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.08)"
-    else:
-        accent_bg_rgba = "rgba(255, 255, 255, 0.05)"
-        accent_border_rgba = "rgba(255, 255, 255, 0.1)"
-        accent_hover_rgba = "rgba(255, 255, 255, 0.08)"
-        
-    custom_theme_css = f'''
-        :root {{
-            --bg-main: {c_bg} !important;
-            --bg-sidebar: {c_bg} !important;
-            --bg-list: {c_bg} !important;
-            --primary-color: {c_prim} !important;
-            --accent-bg: {accent_bg_rgba} !important;
-            --accent-border: {accent_border_rgba} !important;
-            --accent-hover-soft: {accent_hover_rgba} !important;
-        }}
-    '''
-    wp = prefs.get('wallpaper', '')
-    if wp:
-        custom_theme_css += f'''
-        .settings-main-panel {{
-            background-image: url('{wp}') !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-attachment: fixed !important;
-        }}
-        .appearance-card {{
-            background: rgba(30, 41, 59, 0.85) !important;
-            backdrop-filter: blur(10px);
-        }}
-        '''
 
-    html = html.replace("{custom_theme_css}", custom_theme_css)
-    html = html.replace("{bg_main}", c_bg)
-    html = html.replace("{primary_color}", c_prim)
-    html = html.replace("{accent_bg}", c_acc)
-    html = html.replace("{wallpaper}", wp)
     
     # Botones Admin
     if es_admin(request):
@@ -1078,7 +1032,7 @@ async def perfil_panel(request: Request):
     html = html.replace("{admin_button}", admin_btn)
     html = html.replace("{settings_button}", settings_btn)
 
-    return HTMLResponse(html)
+    return HTMLResponse(inyectar_tema_global(request, html))
 
 @app.get("/settings", response_class=HTMLResponse)
 async def settings_panel(request: Request):
@@ -1123,7 +1077,7 @@ async def settings_panel(request: Request):
     html = html.replace("{accent_bg}", prefs.get("accent_bg", "#1e293b"))
     html = html.replace("{wallpaper}", prefs.get("wallpaper", ""))
 
-    return HTMLResponse(html)
+    return HTMLResponse(inyectar_tema_global(request, html))
 
 @app.get("/api/media/{media_id}")
 async def get_media_endpoint(media_id: str, request: Request):
@@ -1435,7 +1389,7 @@ async def panel_admin(request: Request):
     html = html.replace("{filas_esperando_humano}", filas_esc)
     html = html.replace("{filas_todas}", filas_all)
     
-    return HTMLResponse(html)
+    return HTMLResponse(inyectar_tema_global(request, html))
 
 
 @app.post("/admin/reactivar/{numero_wa}")
@@ -3343,7 +3297,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             '''
     html = html.replace("{custom_theme_css}", custom_theme_css)
 
-    return HTMLResponse(html)
+    return HTMLResponse(inyectar_tema_global(request, html))
 
 @app.post("/api/user/theme")
 async def update_user_theme(request: Request, bg_main: str = Form(None), accent_bg: str = Form(None), primary_color: str = Form(None), wallpaper: str = Form(None)):

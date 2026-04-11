@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 34 gotchas, 38 conventions, 82 fixes."
+description: "Python for botatc. 35 gotchas, 38 conventions, 82 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **212 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **213 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **212 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Botones — paralleli | -     # Inyectar CSS dinámico exacto al de inbox +  -     custom_theme_css = "" +      -     c_b |
 | ⚠️ GOTCHA: Fixed null crash in Exception — protect | -     except Exception as e: +         return response.text.strip() -         import traceback +  |
 | ⚠️ GOTCHA: Replaced auth Conserva | -     except Exception as e: +         return "" -         import traceback +  -         with op |
 | ⚠️ GOTCHA: Fixed null crash in Ignorar — protects  | -                                 try: +                                 import time -             |
@@ -213,13 +214,6 @@ Auto-compiled from **212 real patterns** in **botatc**. This skill is auto-route
 +     if not es_admin(request):
 -     if not verificar_sesion(request):
 +     if not es_admin(request):
--     if not verificar_sesion(request):
-+     if not es_admin(request):
--     if not verificar_sesion(request):
-+     if not es_admin(request):
-
-📌 IDE AST Context: Modified 
-
-**Actionable
+-     if not verificar_sesion(requ
 
 ... [Truncated — see individual observations for full content]

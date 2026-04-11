@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 267 gotchas, 222 conventions, 157 fixes."
+description: "Project for botatc. 267 gotchas, 224 conventions, 161 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1115 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1123 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -72,6 +72,62 @@ Auto-compiled from **1115 real patterns** in **botatc**. This skill is auto-rout
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectua
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbo
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in whatsapp_client.py
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Configuraci — reduces excessive function call frequency
++ - problem-fix in shared-context.json
+- - Patched security issue Score — evolves the database schema to support new req...
++ - problem-fix in agent-rules.md
+- - Patched security issue Kevin
++ - problem-fix in shared-context.json
+- - Fixed null crash in HTMLResponse — parallelizes async operations for speed
++ - problem
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
 - - Patched security issue Kevin
 + - problem-fix in shared-context.json
 - - Patched security issue Score — evolves the database schema to support new req...
@@ -122,63 +178,6 @@ Auto-compiled from **1115 real patterns** in **botatc**. This skill is auto-rout
 - - Fixed null crash in Falla — reduces excessive function call frequency
 + - problem-fix in shared-context.json
 - - Patched security issue Score — evolves the database schema to support new req...
-+ - Fixed null crash in Video — reduces excessive function call frequency
-- - Fixed null crash 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Patched security issue Score — evolves the database schema to support new req...
-- > 2250 notes | Score threshold: >40
-+ > 2271 notes | Score threshold: >40
-- - **gotcha in shared-context.json** — -     }
-+ - **⚠️ GOTCHA: Fixed null crash in Aislar — reduces excessive function call frequency** — -                     const cleanHTML = (html) => html.replace(/style=
-- +     },
-+ - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-- -   ]
-+ + - prob
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Score
-3. identifier: GOTCHA
-4. identifier: Fixed
-5. identifier: Aislar
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Debes — reduces excessive function call frequency
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in Debes — reduces excessive function call frequency
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - Patched security issue Kevin
-
-📌 IDE AST Context
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in Debes — reduces excessive function call frequency
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - Patched security issue Kevin — hardens HTTP security headers
-+ - Patched security issue Kevin
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin — hardens HTTP security headers
-
-📌 IDE AST Context: Mo
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in POST — reduces excessive function call frequency
-+ - problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+
++ - Fixed null crash in Video — reduces excessive function call
 
 ... [Truncated — see individual observations for full content]

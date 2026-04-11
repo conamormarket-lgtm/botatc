@@ -129,9 +129,16 @@
                         <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">URL Imagen de Fondo del Chat (Opcional)</label>
                         <input type="url" id="theme_wallpaper" name="wallpaper" value="{wallpaper}" placeholder="Ej: https://..." style="background:rgba(0,0,0,0.2); border:1px solid var(--accent-border); color:white; padding:0.8rem 1rem; border-radius:8px; outline:none; font-family:var(--font-main);">
                     </div>
-                    <button type="submit" class="btn-save" style="align-self:flex-start; margin-top:0.5rem;">
-                        Aplicar Tema
-                    </button>
+                    
+                    <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+                        <button type="submit" class="btn-save">
+                            Aplicar Tema
+                        </button>
+                        <button type="button" onclick="restoreDefaultTheme()" style="background:transparent; color:var(--primary-color); border:1px solid var(--primary-color); padding:0.75rem 1.5rem; border-radius:8px; font-weight:600; cursor:pointer;">
+                            Restaurar por Defecto
+                        </button>
+                    </div>
+                    
                     <p id="themeStatus" style="font-size:0.85rem; color:var(--success-color); display:none;">¡Tema guardado! Se aplicará automáticamente.</p>
                 </form>
             </div>
@@ -148,6 +155,20 @@
             document.documentElement.style.setProperty('--bg-main', bgMain);
             document.documentElement.style.setProperty('--primary-color', primaryColor);
             document.documentElement.style.setProperty('--accent-bg', accentBg);
+        }
+
+        async function restoreDefaultTheme() {
+            if(!confirm("¿Regresar a los colores originales?")) return;
+            document.getElementById('theme_bg_main').value = '#0f172a';
+            document.getElementById('theme_primary_color').value = '#3b82f6';
+            document.getElementById('theme_accent_bg').value = '#1e293b';
+            document.getElementById('theme_wallpaper').value = '';
+            previewTheme();
+            
+            const form = document.getElementById('themeForm');
+            const data = new FormData(form);
+            await fetch("/api/user/theme", { method: "POST", body: data });
+            window.location.reload();
         }
 
         async function saveTheme(e) {
