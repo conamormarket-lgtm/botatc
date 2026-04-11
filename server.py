@@ -1467,12 +1467,13 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                 
                 tmp_out_name = tmp_in_name + "_out.mp4"
                 
-                # Transcodificar a H.264. Utiliza preset ultrafast para evitar timeouts 
-                # en solicitudes HTTP síncronas antes de enviar a Meta.
+                # Transcodificar a H.264. Utiliza preset ultrafast para evitar timeouts.
+                # IMPORTANTE: -threads 1 evita que FFMPEG detecte los 32 cores del host de Railway
+                # y sature la memoria RAM (OOM Killer) con multiples buffers.
                 result = subprocess.run([
-                    ffmpeg_exe, '-y', '-hide_banner', '-i', tmp_in_name,
+                    ffmpeg_exe, '-y', '-hide_banner', '-loglevel', 'error', '-i', tmp_in_name,
                     '-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2',
-                    '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26',
+                    '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '26', '-threads', '1',
                     '-pix_fmt', 'yuv420p', '-profile:v', 'baseline', '-level', '3.0',
                     '-c:a', 'aac', '-b:a', '64k',
                     '-movflags', '+faststart',
@@ -1485,10 +1486,12 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                     final_mime = "video/mp4"
                     fallback_name = "upload.mp4"
                 else:
-                    err_msg = result.stderr.decode('utf-8','ignore') if result.stderr else "Unknown error"
+                    err_msg = result.stderr.decode('utf-8','ignore') if result.stderr else ""
+                    if result.returncode < 0:
+                        err_msg += f" (Killed by OS, Signal {-result.returncode}, probably OOM/Memory Limit)"
                     print("FFMPEG video error crítico:", err_msg)
-                    # Mostrar el FINAL del error (donde viene la causa real), ya que al principio solo hay logs
-                    return {"ok": False, "error": f"Error FFMPEG: {err_msg[-150:]}"}
+                    # Mostrar el error limpio, ya que loglevel error quita la basura
+                    return {"ok": False, "error": f"Error FFMPEG: {err_msg[:200]}"}
                 
                 os.remove(tmp_in_name)
                 if os.path.exists(tmp_out_name): os.remove(tmp_out_name)
