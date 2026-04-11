@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 255 gotchas, 205 conventions, 148 fixes."
+description: "Project for botatc. 256 gotchas, 206 conventions, 148 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1049 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1053 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **1049 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Added JWT tokens authentication — intro | - > 2199 notes - Score threshold: >40 + > 2201 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2191 notes - Score threshold: >40 + > 2193 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2178 notes - Score threshold: >40 + > 2182 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
@@ -67,7 +68,6 @@ Auto-compiled from **1049 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 1843 notes - Score threshold: >40 + > 1894 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Updated whatsapp_client database schema + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Fixed + - ⚠️ GOTCHA: Updated whatsapp_client database schema - - ⚠️ GOTCHA: |
-| ⚠️ GOTCHA: Optimized Fixed | - - Fixed null crash in HTMLResponse — parallelizes async operations for speed + - Fixed null crash  |
 
 ## 🔧 Problem Playbooks
 
@@ -180,6 +180,6 @@ Auto-compiled from **1049 real patterns** in **botatc**. This skill is auto-rout
 + - problem-fix in agent-rules.md
 - - Patched security issue Patched
 + - Patched security issue Kevin
-- - Patched security issu
+-
 
 ... [Truncated — see individual observations for full content]

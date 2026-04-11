@@ -1418,6 +1418,44 @@ async def admin_upload_media(file: UploadFile = File(...)):
                 print(f"Error procesando audio con ffmpeg: {ex}")
                 return {"ok": False, "error": f"FFMPEG Missing on server: {ex}"}
 
+        # Conversion y estabilizacion nativa de Video a MP4 (H.264)
+        # Esto soluciona los videos horizontales rotados (plancha la metadata a los pixeles)
+        # y soluciona la pantalla blanca en web (porque convierte HEVC de iPhone/Samsung a H264)
+        elif "video" in final_mime.lower() or file.filename.lower().endswith(('.mov', '.mp4', '.avi', '.mkv')):
+            import subprocess, os, tempfile
+            import imageio_ffmpeg
+            ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+            
+            ext = ".mp4" if "mp4" in final_mime else ".mov"
+            try:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp_in:
+                    tmp_in.write(content)
+                    tmp_in_name = tmp_in.name
+                
+                tmp_out_name = tmp_in_name + "_out.mp4"
+                
+                # Transcodificar a H.264. FFMPEG hornea la rotación EXIF nativamente.
+                result = subprocess.run([
+                    ffmpeg_exe, '-y', '-i', tmp_in_name,
+                    '-c:v', 'libx264', '-preset', 'fast', '-crf', '26',
+                    '-c:a', 'aac', '-b:a', '64k',
+                    '-movflags', '+faststart',
+                    tmp_out_name
+                ], capture_output=True)
+                
+                if result.returncode == 0 and os.path.exists(tmp_out_name):
+                    with open(tmp_out_name, "rb") as f_out:
+                        content = f_out.read()
+                    final_mime = "video/mp4"
+                    fallback_name = "upload.mp4"
+                else:
+                    print("FFMPEG video fallback error ignorado:", result.stderr.decode('utf-8','ignore') if result.stderr else "")
+                
+                os.remove(tmp_in_name)
+                if os.path.exists(tmp_out_name): os.remove(tmp_out_name)
+            except Exception as ex:
+                print(f"Error procesando video con ffmpeg: {ex}")
+
         media_id = await subir_media(content, final_mime, file.filename or fallback_name)
         
         if media_id:
