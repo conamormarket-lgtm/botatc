@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2182 notes | Score threshold: >40
+> 2191 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,41 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2167 notes | Score threshold: >40
-+ > 2178 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Added JW
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2164 notes | Score threshold: >40
-+ > 2167 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2124 notes | Score threshold: >40
-+ > 2164 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: problem-fix in agent-
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in POST — wraps unsafe operation in error boundar
+- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes** — -                     if (oldScroll.innerHTML !== newScroll.innerHTML)
+- **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -     except Exception as e:
++         return response.text.strip()
+
+- **⚠️ GOTCHA: Replaced auth Conserva** — -     except Exception as e:
++         return ""
+-         import tr
+- **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft** — -                                 try:
++                             
+- **⚠️ GOTCHA: Updated whatsapp_client database schema** — - class EnviarPlantillaPayload(BaseModel):
++ 
+-     wa_id: str
++ cl
+- **⚠️ GOTCHA: Fixed null crash in DOTALL — parallelizes async operations for speed** — -     with open("inbox.html", "r", encoding="utf-8") as f:
++     
+- 
+
+## Active: `.`
+
+- **⚠️ GOTCHA: Fixed null crash in Array — prevents null/undefined runtime crashes**
+- **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Replaced auth Conserva**
+- **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Updated whatsapp_client database schema**
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 5x
-- what-changed in shared-context.json — confirmed 18x
-- problem-fix in agent-rules.md — confirmed 14x
-- Added JWT tokens authentication — confirmed 3x
-- Patched security issue Kevin — confirmed 4x
-- Strengthened types Respuestas
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
+- Fixed null crash in Logout — reduces excessive function call frequency — confirmed 5x
+- Fixed null crash in EMOJI — wraps unsafe operation in error boundary — confirmed 3x
+- Fixed null crash in CUSTOM — wraps unsafe operation in error boundary — confirmed 3x
+- Fixed null crash in Alternar — wraps unsafe operation in error boundary — confirmed 4x
+- Fixed null crash in LEFT — prevents null/undefined runtime crashes — confirmed 3x
+- Fixed null crash in Opcional — wraps unsafe operation in error boundary — confirmed 3x
+- Fixed null crash in Sticker — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in inbox.html — confirmed 3x
 
 ## Known Fixes
 
@@ -53,10 +66,10 @@
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized GOTCHA — introduces API versioning for backward compatibility
-- decision in server.py
+- decision in inbox.html
+- decision in inbox.html
+- decision in inbox.html
+- decision in inbox.html
 
 ## Learned Patterns
 

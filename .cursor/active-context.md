@@ -2,6 +2,106 @@
 > Dynamically loaded for active file: `inbox.html` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
+- **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft**: -     except Exception as e:
++         return response.text.strip()
+-         import traceback
++     except Exception as e:
+-         with open("error_gemini.txt", "w") as f:
++         import traceback
+-             f.write(traceback.format_exc())
++         with open("error_gemini.txt", "w") as f:
+-         print(f"❌ Error Gemini: {e}")
++             f.write(traceback.format_exc())
+-         return ""
++         print(f"❌ Error Gemini: {e}")
+- 
++         return ""
+- def recortar_historial(historial: list[dict]) -> list[dict]:
++ 
+-     """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
++ def recortar_historial(historial: list[dict]) -> list[dict]:
+-     system = [historial[0]]
++     """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
+-     turnos = historial[1:]
++     system = [historial[0]]
+-     
++     turnos = historial[1:]
+-     # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
++     
+-     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
++     # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
+-         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
++     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
+-         
++         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
+-         # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
++         
+-         # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
++         # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
+-         if turnos and turnos[0]["role"] == "assistant":
++         # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
+-             turnos = turnos[1:]
++         if turnos and turnos[0]["role"] == "assistant":
+-             
++             turnos = turnos[1:]
+-     return system + turnos
++             
+- 
++     return system + turn
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
+- **⚠️ GOTCHA: Replaced auth Conserva**: -     except Exception as e:
++         return ""
+-         import traceback
++ 
+-         with open("error_gemini.txt", "w") as f:
++ 
+-             f.write(traceback.format_exc())
++ def recortar_historial(historial: list[dict]) -> list[dict]:
+-         print(f"❌ Error Gemini: {e}")
++     """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
+-         return "Disculpa, tuve un problema técnico. Intenta en un momento. 🙏"
++     system = [historial[0]]
+- 
++     turnos = historial[1:]
+- 
++     
+- def recortar_historial(historial: list[dict]) -> list[dict]:
++     # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
+-     """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
++     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
+-     system = [historial[0]]
++         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
+-     turnos = historial[1:]
++         
+-     
++         # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
+-     # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
++         # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
+-     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
++         if turnos and turnos[0]["role"] == "assistant":
+-         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
++             turnos = turnos[1:]
+-         
++             
+-         # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
++     return system + turnos
+-         # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
++ 
+-         if turnos and turnos[0]["role"] == "assistant":
++ 
+-             turnos = turnos[1:]
++ # ─────────────────────────────────────────────
+-             
++ #  Lógica de escalación
+-     return system + turnos
++ # ─────────────────────────────────────────────
+- 
++ def procesar_escalacion(nu
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
 - **⚠️ GOTCHA: Fixed null crash in Ignorar — protects against XSS and CSRF token theft**: -                                 try:
 +                                 import time
 -                                     from firebase_client import guardar_sesion_chat
@@ -46,95 +146,97 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
-- **⚠️ GOTCHA: Updated whatsapp_client database schema**: - class EnviarPlantillaPayload(BaseModel):
-+ 
--     wa_id: str
-+ class EnviarPlantillaPayload(BaseModel):
--     template_name: str
-+     wa_id: str
--     language_code: str = "es"
-+     template_name: str
-- 
-+     language_code: str = "es"
-- @app.post("/api/admin/enviar_plantilla")
-+     body_params: list[str] = None
-- async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request):
-+ 
--     if not verificar_sesion(request):
-+ 
--         raise HTTPException(status_code=403, detail="No autorizado")
-+ @app.post("/api/admin/enviar_plantilla")
--         
-+ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request):
--     from whatsapp_client import enviar_plantilla
-+     if not verificar_sesion(request):
--     wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code)
-+         raise HTTPException(status_code=403, detail="No autorizado")
--     
-+         
--     if wamid:
-+     
--         # Registrar el envío en el historial del dashboard
-+     from whatsapp_client import enviar_plantilla
--         from firebase_client import cargar_sesion_chat, guardar_sesion_chat
-+     wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code, payload.body_params)
--         s = cargar_sesion_chat(payload.wa_id)
-+ 
--         if s:
-+     
--             if "historial" not in s: s["historial"] = []
-+     if wamid:
--             s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
-+         # Registrar el envío en el historial del dashboard
--             from datetime import datetime
-+         from firebase_client import cargar_sesion_chat, guardar_sesion_chat
--             s["ultima_actividad"] = datetime.utcnow()
-+         s = cargar_sesion_chat(payload.wa_id)
--             guardar_sesion_chat(payload.wa_id, s)
-+         if s:
--         return {"ok": True, "wamid": wamid
-… [diff truncated]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[problem-fix] Fixed null crash in POST — reduces excessive function call frequency**: -         window.enviarMensajeDirecto = async function(wa_id, msj) {
-+         window._nextQuickReplyTitle = null;
--             if (!msj) return {ok: false};
-+ 
--             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
-+         window.enviarMensajeDirecto = async function(wa_id, msj, qrTitle = null) {
--             try {
-+             if (!msj) return {ok: false};
--                 const res = await fetch('/api/admin/enviar_manual', {
-+             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
--                     method: 'POST',
-+             try {
--                     headers: { 'Content-Type': 'application/json' },
-+                 const res = await fetch('/api/admin/enviar_manual', {
--                     body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid })
-+                     method: 'POST',
--                 });
-+                     headers: { 'Content-Type': 'application/json' },
-- 
-+                     body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyToWamid, quick_reply_title: qrTitle || window._nextQuickReplyTitle || null })
--                 const data = await res.json();
-+                 });
--                 if(!data.ok) { console.error("Error direct send json", data); }
-+ 
--                 return data;
-+                 const data = await res.json();
--             } catch(e) {
-+                 if(!data.ok) { console.error("Error direct send json", data); }
--                 console.error("Error direct send", e);
-+                 return data;
--                 return {ok: false, error: e.message || "Red Error"};
-+             } catch(e) {
+- **[problem-fix] Fixed null crash in Cargar — wraps unsafe operation in error boundary**: -                     alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
++                     // Cargar el chat inmediatamente para ver la burbuja
+-                 } else {
++                     window.location.reload();
+-                     alert("❌ Error: " + data.error);
++                 } else {
+-                 }
++                     alert("❌ Error: " + data.error);
+-             } catch (e) {
++                 }
+-                 alert("Falla de conectividad");
++             } catch (e) {
 -             }
-+                 console.error("Error direct send", e);
--         };
-+                 return {ok: false, error: e.message || "Red Error"};
-- 
++                 alert("Falla de conectividad");
+-         }
 +             }
 - 
++         }
+-         // ================= ETIQUETAS (LABELS) LOGIC =================
++ 
+-         function crearGlobalLabel() {
++         // ================= ETIQUETAS (LABELS) LOGIC =================
+-             // Abrir el modal en lugar de prompt()
++         function crearGlobalLabel() {
+-             const modal = document.getElementById("createLabelModal");
++             // Abrir el modal en lugar de prompt()
+-             if (modal) {
++             const modal = document.getElementById("createLabelModal");
+-                 document.getElementById("newLabelName").value = "";
++             if (modal) {
+-                 // Reset a color por defecto
++                 document.getElementById("newLabelName").value = "";
+-                 const firstColor = document.getElementById("color-grid-container").querySelector('.color-option');
++                 // Reset a color por defecto
+-                 if (firstColor) seleccionarColorEtiqueta("#3b82f6", firstColor);
++                 const firstColor = document.getElementById("color-grid-container").querySelector('.color-option');
+-                 modal.style.display = "flex";
++                 if (firstColor) seleccionarColorEtiqueta("#3b82f6", firstColor);
+-             }
++                 modal.style.display = "flex";
+-         }
++    
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[problem-fix] Fixed null crash in POST — wraps unsafe operation in error boundary**: -             document.getElementById("templateMenu").style.display = "none";
++             const tMenu = document.getElementById("templateMenu");
+- 
++             if(tMenu) tMenu.style.display = "none";
+-             try {
++ 
+-                 const res = await fetch("/api/admin/enviar_plantilla", {
++             try {
+-                     method: "POST",
++                 const res = await fetch("/api/admin/enviar_plantilla", {
+-                     headers: { "Content-Type": "application/json" },
++                     method: "POST",
+-                     body: JSON.stringify({ wa_id: wa_id, template_name: name, language_code: lang })
++                     headers: { "Content-Type": "application/json" },
+-                 });
++                     body: JSON.stringify({ wa_id: wa_id, template_name: name, language_code: lang })
+-                 const data = await res.json();
++                 });
+-                 if (data.ok) {
++                 const data = await res.json();
+-                     alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
++                 if (data.ok) {
+-                 } else {
++                     alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
+-                     alert("❌ Error: " + data.error);
++                 } else {
+-                 }
++                     alert("❌ Error: " + data.error);
+-             } catch (e) {
++                 }
+-                 alert("Falla de conectividad");
++             } catch (e) {
+-             }
++                 alert("Falla de conectividad");
+-         }
++             }
+- 
++         }
+-         // ================= ETIQUETAS (LABELS) LOGIC =================
++ 
+-         function crearGlobalLabel() {
++         // ================= ETIQUETAS (LABELS) LOGIC =================
+-             // Abrir el modal en lugar de prompt()
++         function crearGlobalL
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
@@ -179,80 +281,90 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in Logout — reduces excessive function call frequency — confirmed 5x**: -         <!-- Logout Icon -->
-+         
--         <a href="/logout" class="nav-item" title="Cerrar Sesión" style="margin-top: auto; color: #ef4444;">
-+ 
--             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-+ 
--                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-+         
--                 <polyline points="16 17 21 12 16 7"></polyline>
-+         <!-- Logout Button (reemplazando al dot) -->
--                 <line x1="21" y1="12" x2="9" y2="12"></line>
-+         <a href="/logout" class="nav-item" title="Cerrar Sesión" style="margin-top: auto; margin-bottom: 20px; color: #ef4444; display: flex; justify-content: center; text-decoration: none;">
--             </svg>
-+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px; opacity: 0.8; transition: opacity 0.2s;">
--         </a>
-+                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+- **[problem-fix] Fixed null crash in Formatear — parallelizes async operations for speed**: -             wamid = m.get("msg_id", "")
++             # Formatear la vista de plantillas salientes
+-             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
++             match_tpl = re.match(r"^\[Plantilla enviada:\s*(.*?)\]$", texto_renderizado)
+-             
++             if match_tpl:
+-             meta_html = ""
++                 tpl_name = match_tpl.group(1)
+-             ts_html = ""
++                 texto_renderizado = f'<div style="background:rgba(255,255,255,0.05); border-left:3px solid #10b981; padding:0.6rem; border-radius:6px; margin:-0.2rem;"><div style="font-size:0.7rem; color:#10b981; font-weight:600; text-transform:uppercase; margin-bottom:0.3rem; display:flex; align-items:center; gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> PLANTILLA META</div><div style="font-size:0.95rem; font-weight:500;">{tpl_name}</div></div>'
+-             status_html = ""
++                 
 - 
-+                 <polyline points="16 17 21 12 16 7"></polyline>
-- 
-+                 <line x1="21" y1="12" x2="9" y2="12"></line>
--         <!-- Indicador global abajo -->
-+             </svg>
--         <div class="bot-status-indicator" title="Estado Global del Bot"></div>
-+         </a>
--     </nav>
++             wamid = m.get("msg_id", "")
+-             if "timestamp" in m:
++             wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
+-                 try:
++             
+-                     ts_val = int(m["timestamp"])
++             meta_html = ""
+-                     if ts_val > 1e11: ts_val //= 1000
++             ts_html = ""
+-                     utc_dt = datetime.utcfromtimestamp(ts_val)
++             status_html = ""
+-                     lima_dt = utc_dt - timedelta(hours=5)
 + 
-- 
-+     </nav>
--     <!-- 2. PANEL CENTRAL (Lista de Chats) -->
-+ 
--     <div class="chat-list-panel">
-+     <!-- 2. PANEL CENTRAL (Lista de Chats) -->
--         <div class="list-header">
-+     <div class="chat-list-panel">
--             <h2>Bandeja de Entrada</h2>
-+         <div class="list-header">
--             <div class="list-tabs">
-+             <h2>Bandeja de Entrada</h2>
--                 <a href="/inbox?tab=all" class="tab {tab_all_active}">Todos</a>
-+             <div class="list-tabs">
--                 <a href="/inbox?tab=human" class="tab {tab_
+-                     ts_str = lima_dt.strftime("%H:%M")
++             if "timestamp" in m:
+-                     ts_html = f'<span class="msg-ts">{ts_str}</span>'
++                 try:
+-                 except:
++          
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[problem-fix] Fixed null crash in Click — parallelizes async operations for speed**: -                 extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}"'
-+                 qr_title_val = m.get("quick_reply_title", "")
--             
-+                 extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}" data-quick-reply="{qr_title_val}"'
--             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{meta_html}</div>'
-+             
+📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
+- **[convention] Fixed null crash in Exception — protects against XSS and CSRF token theft — confirmed 3x**: -         return response.text.strip()
++     except Exception as e:
+-         return ""
++         import traceback
 - 
-+             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{meta_html}</div>'
--             
-+ 
--         if not burbujas:
-+             
--             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
-+         if not burbujas:
++         with open("error_gemini.txt", "w") as f:
 - 
-+             burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
--         # Cabecera superior del chat
++             f.write(traceback.format_exc())
+- def recortar_historial(historial: list[dict]) -> list[dict]:
++         print(f"❌ Error Gemini: {e}")
+-     """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
++         return ""
+-     system = [historial[0]]
 + 
--         status_bar = ""
-+         # Cabecera superior del chat
--         if not activo_chat:
-+         status_bar = ""
--             status_bar = f"""
-+         if not activo_chat:
--             <div style="background:var(--danger-color);color:white;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
-+             status_bar = f"""
--                 Atención manual en curso
-+             <div style="background:var(--danger-color);color:white;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
--                 <form method="post" action="/admin/reactivar/{wa_id}" style="margin:0">
+-     turnos = historial[1:]
++ 
+-     
++ def recortar_historial(historial: list[dict]) -> list[dict]:
+-     # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
++     """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
+-     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
++     system = [historial[0]]
+-         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
++     turnos = historial[1:]
+-         
 +     
+-         # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
++     # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
+-         # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
++     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
+-         if turnos and turnos[0]["role"] == "assistant":
++         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
+-             turnos = turnos[1:]
++         
+-             
++         # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
+-     return system + turnos
++         # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
+- 
++         if turnos and turnos[0]["role"] == "assistant":
+- 
++             turnos = turnos[1:]
+- # ─────────────────────────────────────────────
++             
+- #  Lógica de escalación
++     return system + turnos
+- # ─────────────────────────────────────────────
++ 
+- def procesar_escalacion(numero_wa: str, sesion:
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
@@ -427,148 +539,3 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
-- **[convention] Replaced auth server — confirmed 3x**: -         save_sessions()
-+     delete_session_from_firebase(token)
-
-📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
-- **[what-changed] Replaced dependency Plantilla**: -             s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
-+         s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
--             from datetime import datetime
-+         from datetime import datetime
--             s["ultima_actividad"] = datetime.utcnow()
-+         s["ultima_actividad"] = datetime.utcnow()
--             guardar_sesion_chat(payload.wa_id, s)
-+         guardar_sesion_chat(payload.wa_id, s)
-
-📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
-- **[what-changed] Added session cookies authentication**: -         if s:
-+         if not s:
--             if "historial" not in s: s["historial"] = []
-+             # Create a brand new session if it doesn't exist so it appears in Inbox immediately
--             s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
-+             s = {
--             from datetime import datetime
-+                 "historial": [], 
--             s["ultima_actividad"] = datetime.utcnow()
-+                 "estado_bot": "activo",
--             guardar_sesion_chat(payload.wa_id, s)
-+                 "etiquetas": [],
--         return {"ok": True, "wamid": wamid}
-+                 "ultimo_mensaje": "",
--     return {"ok": False, "error": "No se pudo enviar (Verifica que el WABA ID sea el correcto o Meta la rechazó)."}
-+                 "clienteNombre": "Desconocido (Plantilla saliente)"
-- 
-+             }
-- 
-+         
-- # ============================================================
-+         if "historial" not in s: s["historial"] = []
-- #  API DE GESTOR DE ETIQUETAS Y ASIGNACIONES
-+ 
-- # ============================================================
-+             s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {payload.template_name}]", "msg_id": wamid})
-- 
-+             from datetime import datetime
-- from typing import Optional
-+             s["ultima_actividad"] = datetime.utcnow()
-- 
-+             guardar_sesion_chat(payload.wa_id, s)
-- class InitChatPayload(BaseModel):
-+         return {"ok": True, "wamid": wamid}
--     wa_id: str
-+     return {"ok": False, "error": "No se pudo enviar (Verifica que el WABA ID sea el correcto o Meta la rechazó)."}
-- @app.post("/api/admin/chat/init")
-+ 
-- async def api_init_chat(payload: InitChatPayload, request: Request):
-+ # ============================================================
--     if not verificar_sesion(request): raise HTTPException(status_code=403)
-+ #  API D
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
-- **[problem-fix] problem-fix in whatsapp_client.py**: -     }
-+     try:
--     try:
-+         async with httpx.AsyncClient() as client:
--         async with httpx.AsyncClient() as client:
-+             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
--             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
-+             res.raise_for_status()
--             res.raise_for_status()
-+             data = res.json()
--             data = res.json()
-+             return data.get("messages", [{}])[0].get("id")
--             return data.get("messages", [{}])[0].get("id")
-+     except httpx.HTTPStatusError as e:
--     except httpx.HTTPStatusError as e:
-+         print(f"❌ Error Meta Plantilla ({e.response.status_code}): {e.response.text}")
--         print(f"❌ Error Meta Plantilla ({e.response.status_code}): {e.response.text}")
-+         return None
--         return None
-+     except Exception as e:
--     except Exception as e:
-+         print(f"❌ Error enviando plantilla: {e}")
--         print(f"❌ Error enviando plantilla: {e}")
-+         return None
--         return None
-+ 
-- 
-
-📌 IDE AST Context: Modified symbols likely include [META_API_URL, enviar_mensaje, enviar_media, enviar_mensaje_texto, obtener_media_url]
-- **[convention] Added JWT tokens authentication — confirmed 4x**: - async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es") -> str | None:
-+ 
--     """Envía un Message Template preaprobado por Meta."""
-+ async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es", body_params: list[str] = None) -> str | None:
--     headers = {
-+     """Envía un Message Template preaprobado por Meta."""
--         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
-+     headers = {
--         "Content-Type": "application/json",
-+         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
--     }
-+         "Content-Type": "application/json",
--     payload = {
-+     }
--         "messaging_product": "whatsapp",
-+     
--         "recipient_type": "individual",
-+     template_data = {
--         "to": numero_destino,
-+         "name": template_name,
--         "type": "template",
-+         "language": {
--         "template": {
-+             "code": language_code
--             "name": template_name,
-+         }
--             "language": {
-+     }
--                 "code": language_code
-+     
--             }
-+     if body_params:
--         }
-+         template_data["components"] = [
--     }
-+             {
--     try:
-+                 "type": "body",
--         async with httpx.AsyncClient() as client:
-+                 "parameters": [
--             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
-+                     {"type": "text", "text": str(p)} for p in body_params
--             res.raise_for_status()
-+                 ]
--             data = res.json()
-+             }
--             return data.get("messages", [{}])[0].get("id")
-+         ]
--     except httpx.HTTPStatusError as e:
-+ 
--         print(f"❌ Error Meta Plantilla ({e.response.status_code}): {e.response.text}")
-+     payload = {
--         return None
-+         "messaging_product": "whatsapp",
--     except Exception as e:
-+         "recipient_
-… [diff truncated]

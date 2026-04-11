@@ -1393,20 +1393,20 @@ async def admin_upload_media(file: UploadFile = File(...)):
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp_in:
                     tmp_in.write(content)
                     tmp_in_name = tmp_in.name
-                tmp_out_name = tmp_in_name.replace(".webm", ".mp4")
+                tmp_out_name = tmp_in_name.replace(".webm", ".ogg")
 
                 # Ejecutar FFMPEG (via imageio-ffmpeg PIP)
                 result = subprocess.run([
                     ffmpeg_exe, '-y', '-i', tmp_in_name,
-                    '-c:a', 'aac', '-b:a', '64k',
+                    '-c:a', 'libopus', '-b:a', '24k',
                     tmp_out_name
                 ], capture_output=True)
                 
                 if result.returncode == 0 and os.path.exists(tmp_out_name):
                     with open(tmp_out_name, "rb") as f_out:
                         content = f_out.read()
-                    final_mime = "audio/mp4"
-                    fallback_name = "voice.mp4"
+                    final_mime = "audio/ogg"
+                    fallback_name = "voice.ogg"
                 else:
                     err_msg = result.stderr.decode('utf-8', 'ignore') if result.stderr else "ExitCode!=0"
                     print("FFMPEG fallback ignorado o error:", err_msg)
