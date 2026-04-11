@@ -1404,10 +1404,10 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
         fallback_name = "upload.bin"
         final_mime = file.content_type or "application/octet-stream"
         
-        if mode == "video" and "octet-stream" in final_mime:
+        if mode == "video":
             final_mime = "video/mp4"
             fallback_name = "upload.mp4"
-        elif mode == "audio" and "octet-stream" in final_mime:
+        elif mode == "audio":
             final_mime = "audio/webm"
             fallback_name = "upload.webm"
             
@@ -1484,7 +1484,9 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                     final_mime = "video/mp4"
                     fallback_name = "upload.mp4"
                 else:
-                    print("FFMPEG video fallback error ignorado:", result.stderr.decode('utf-8','ignore') if result.stderr else "")
+                    err_msg = result.stderr.decode('utf-8','ignore') if result.stderr else "Unknown error"
+                    print("FFMPEG video error crítico:", err_msg)
+                    return {"ok": False, "error": f"Error procesando el video: {err_msg[:100]}"}
                 
                 os.remove(tmp_in_name)
                 if os.path.exists(tmp_out_name): os.remove(tmp_out_name)

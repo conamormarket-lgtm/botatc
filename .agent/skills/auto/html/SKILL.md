@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 2 gotchas, 33 conventions, 66 fixes, 3 error→fix pairs."
+description: "Html for botatc. 2 gotchas, 33 conventions, 67 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **153 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **154 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -45,6 +45,27 @@ Auto-compiled from **153 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 6x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in POST — reduces excessive function call frequency
+- 
++             formData.append("mode", mode);
+-             try {
++ 
+-                 const res = await fetch('/api/admin/upload_media', {
++             try {
+-                     method: 'POST',
++                 const res = await fetch('/api/admin/upload_media', {
+-                     body: formData
++                     method: 'POST',
+-                 });
++                    
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: POST
+3. identifier: Error
+4. identifier: Desconocido
+5. identifier: Escribe
 
 ### Fixed null crash in POST — wraps unsafe operation in error boundary
 -             document.getElementById("templateMenu").style.display = "none";
@@ -313,23 +334,6 @@ Auto-compiled from **153 real patterns** in **botatc**. This skill is auto-route
 -             /* 2. Nivel de Color de Acento (translú
 
 **Actionable Steps:**
-1. Modified 1 files
-2. identifier: Nivel
-3. identifier: Color
-4. identifier: Principal
-5. identifier: Acento
-
-### Fixed null crash in Vaciar — wraps unsafe operation in error boundary
--         // Manejar subida de archivos (cámara/galería)
-+         window.enviarMensajeManual = async function (e, wa_id) {
--         window.uploadAdminMedia = async function(inputElem, wa_id) {
-+             e.preventDefault();
--             if (!inputElem.files || inputElem.files.length === 0) return;
-+             const input = document.getElementById('manualMsgInput');
--             
-+ 
-
-**Actionable Steps:**
-1. Modified 1 fil
+1. Modified 1 fi
 
 ... [Truncated — see individual observations for full content]
