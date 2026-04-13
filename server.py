@@ -2155,6 +2155,7 @@ async def ver_chat(request: Request, numero_wa: str):
 # ==========================================
 
 def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None):
+    import os
     # Si estamos en Vercel (servidor sin estado fraccionado), forzamos lectura de BD para el chat activo actual
     if wa_id and os.environ.get("VERCEL"):
         try:

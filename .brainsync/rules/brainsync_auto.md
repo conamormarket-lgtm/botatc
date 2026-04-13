@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2511 notes | Score threshold: >40
+> 2515 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Score** — - > 2510 notes | Score threshold: >40
++ > 2511 notes | Score threshold
 - **⚠️ GOTCHA: Fixed null crash in True** — -     import os
 +     from firebase_client import guardar_sticker_en_
 - **⚠️ GOTCHA: Fixed null crash in Retorna** — -     """Retorna la lista de stickers webp disponibles localmente."""
@@ -29,8 +31,6 @@
 + > 2469 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2460 notes | Score threshold: >40
 + > 2465 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — introduces API versioning for backward compatibility** — - > 2455 notes | Score threshold: >40
-+ > 2460 notes | Score threshold
 
 ## Project Standards
 
