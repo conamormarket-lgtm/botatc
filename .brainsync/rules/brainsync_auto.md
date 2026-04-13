@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2455 notes | Score threshold: >40
+> 2460 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2449 notes | Score threshold: >40
++ > 2455 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to su
 - **⚠️ GOTCHA: Replaced auth Score — introduces API versioning for backward compatibility** — - > 2444 notes | Score threshold: >40
 + > 2449 notes | Score threshold
@@ -33,11 +35,10 @@
 - }
 +       "id": "806072c4dc4af997",
 +
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2422 notes | Score threshold: >40
-+ > 2426 notes | Score threshold
 
 ## Project Standards
 
+- Patched security issue Kevin — confirmed 3x
 - trade-off in shared-context.json — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 8x
@@ -45,7 +46,6 @@
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - problem-fix in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 
 ## Known Fixes
 

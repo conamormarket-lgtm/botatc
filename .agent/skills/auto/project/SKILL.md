@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 287 gotchas, 234 conventions, 164 fixes."
+description: "Project for botatc. 288 gotchas, 235 conventions, 164 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1182 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1185 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **1182 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2449 notes - Score threshold: >40 + > 2455 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replace |
 | ⚠️ GOTCHA: Replaced auth GOTCHA — introduces API v | - - ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements + - ⚠️  |
 | ⚠️ GOTCHA: Replaced auth Score — introduces API ve | - > 2444 notes - Score threshold: >40 + > 2449 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2426 notes - Score threshold: >40 + > 2444 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replace |
@@ -67,7 +68,6 @@ Auto-compiled from **1182 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication | - > 2104 notes - Score threshold: >40 + > 2107 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2088 notes - Score threshold: >40 + > 2104 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 2080 notes - Score threshold: >40 + > 2083 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 
 ## 🔧 Problem Playbooks
 
@@ -179,6 +179,6 @@ Auto-compiled from **1182 real patterns** in **botatc**. This skill is auto-rout
 - - problem-fix in shared-context.json
 + - problem-fix in inbox.html
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelli
+📌 IDE AST Context: Modified symbols likely include [# Project
 
 ... [Truncated — see individual observations for full content]
