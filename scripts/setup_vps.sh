@@ -59,6 +59,9 @@ sudo bash -c "cat > $NGINX_CONF" <<EOL
 server {
     listen 80;
     server_name $DOMAIN_NAME;
+    
+    # Permitir subir fotos y videos pesados
+    client_max_body_size 100M;
 
     location / {
         proxy_pass http://127.0.0.1:8000;
