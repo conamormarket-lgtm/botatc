@@ -139,7 +139,7 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 def startup_event():
     # ── Restaurar toda la memoria y stickers desde Firebase ──
     try:
-        from firebase_client import cargar_todas_las_sesiones, cargar_stickers_de_bd
+        from firebase_client import cargar_todas_las_sesiones
         # Restaurar sesiones (Inbox)
         sesiones_restauradas = cargar_todas_las_sesiones()
         for wa_id, s in sesiones_restauradas.items():
