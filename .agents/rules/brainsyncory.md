@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2505 notes | Score threshold: >40
+> 2507 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -34,14 +34,14 @@
 
 ## Project Standards
 
+- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
+- Replaced auth Patched — confirmed 3x
 - what-changed in shared-context.json — confirmed 8x
 - Fixed null crash in True — confirmed 4x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

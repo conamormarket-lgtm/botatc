@@ -1075,7 +1075,7 @@ def obtener_login_html(error="", success=False):
 
             <div style="text-align: center; margin-bottom: 10px; font-size: 14px; color: #94a3b8;">o continúa con</div>
             <div id="g_id_onload"
-                 data-client_id="572322137024-dh5ueu5kpln5scjckfvcr970cupi20gp.apps.googleusercontent.com"
+                 data-client_id="572322137024-327259i0fp8ige2gnt6nu9188k4b19cm.apps.googleusercontent.com"
                  data-context="use"
                  data-ux_mode="popup"
                  data-callback="handleGoogleCredential"
