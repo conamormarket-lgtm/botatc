@@ -1158,19 +1158,41 @@
             container.querySelector('.cap-time').textContent = window.formatAudioTime(audio.currentTime);
         };
 
+        window.autoResizeInput = function() {
+            const el = document.getElementById('manualMsgInput');
+            if(!el) return;
+            el.style.height = '42px'; // Reset for recalculation
+            const newHeight = Math.min(el.scrollHeight, 160);
+            el.style.height = newHeight + 'px';
+            el.style.overflowY = el.scrollHeight > 160 ? 'auto' : 'hidden';
+            
+            // Si regresa a 1 linea, asegura que este centrado todo
+            if (newHeight <= 42) {
+                el.style.paddingTop = '10px';
+            }
+        };
+
         window.toggleSendMicButton = function() {
             if (window._isAudioRecording) return; // No alternar si estamos grabando
             const input = document.getElementById('manualMsgInput');
             const submitMenu = document.getElementById('btnSubmitForm');
             const micMenu = document.getElementById('btnRecordAudio');
-            if (input && submitMenu && micMenu) {
-                if (input.value.trim().length > 0) {
-                    submitMenu.style.display = 'flex';
-                    micMenu.style.display = 'none';
-                } else {
-                    submitMenu.style.display = 'none';
-                    micMenu.style.display = 'flex';
+            
+            const btnRightQR = document.getElementById('btnRightQR');
+            const btnRightPhoto = document.getElementById('btnRightPhoto');
+            const btnRightVideo = document.getElementById('btnRightVideo');
+            
+            if (input) {
+                const hasText = input.value.trim().length > 0;
+                
+                if (submitMenu && micMenu) {
+                    submitMenu.style.display = hasText ? 'flex' : 'none';
+                    micMenu.style.display = hasText ? 'none' : 'flex';
                 }
+                
+                if (btnRightQR) btnRightQR.style.display = hasText ? 'none' : 'flex';
+                if (btnRightPhoto) btnRightPhoto.style.display = hasText ? 'none' : 'flex';
+                if (btnRightVideo) btnRightVideo.style.display = hasText ? 'none' : 'flex';
             }
         };
 
@@ -1182,7 +1204,7 @@
         });
         
         // Interceptar asignaciones programáticas a value
-        const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
         setTimeout(() => {
             const msgInput = document.getElementById('manualMsgInput');
             if (msgInput && msgInput.__valueInterceptor !== true) {
@@ -1190,13 +1212,15 @@
                     set: function(val) {
                         originalValueSetter.call(this, val);
                         if (window.toggleSendMicButton) window.toggleSendMicButton();
+                        if (window.autoResizeInput) window.autoResizeInput();
                     },
                     get: function() {
-                        return Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").get.call(this);
+                        return Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").get.call(this);
                     }
                 });
                 msgInput.__valueInterceptor = true;
                 if(window.toggleSendMicButton) window.toggleSendMicButton();
+                if(window.autoResizeInput) window.autoResizeInput();
             }
         }, 1000); // Darle tiempo a la creacion del SPA
         

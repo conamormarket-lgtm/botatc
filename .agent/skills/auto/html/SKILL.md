@@ -1,6 +1,6 @@
 ---
 name: html
-description: "Html for botatc. 3 gotchas, 37 conventions, 73 fixes, 3 error→fix pairs."
+description: "Html for botatc. 3 gotchas, 37 conventions, 75 fixes, 3 error→fix pairs."
 domain: html
 triggers:
   - glob: "**/*.html"
@@ -10,7 +10,7 @@ enabled: true
 
 # Html
 
-Auto-compiled from **168 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
+Auto-compiled from **170 real patterns** in **botatc**. This skill is auto-routed to agents when working on html files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -31,6 +31,37 @@ Auto-compiled from **168 real patterns** in **botatc**. This skill is auto-route
 | `- - Fixed null crash in HTMLResponse — prevents nu` | problem-fix in agent-rules.md | 7x |
 | `+     except Exception:` | Fixed null crash in HTMLResponse — parallelizes async operat | 2x |
 | `-     return HTMLResponse(obtener_login_html(error` | Fixed null crash in Request — protects against XSS and CSRF  | 2x |
+
+### Fixed null crash in Object — reduces excessive function call frequency
+-         const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
++         const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+-                     },
++                         if (window.autoResizeInput) window.autoResizeInput();
+-                     get: function() {
++        
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Object
+3. identifier: HTMLTextAreaElement
+4. identifier: Darle
+5. identifier: SPA
+
+### Fixed null crash in Reset — reduces excessive function call frequency
+-         window.toggleSendMicButton = function() {
++         window.autoResizeInput = function() {
+-             if (window._isAudioRecording) return; // No alternar si estamos grabando
++             const el = document.getElementById('manualMsgInput');
+-             const input = document.getElementById('manualMsgInput');
++             if(!el) return;
+-             const submitMenu = docum
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Reset
+3. identifier: Math
+4. identifier: Escuchar
+5. identifier: Interceptar
 
 ### Fixed null crash in Falla — reduces excessive function call frequency
 -                     } else {
@@ -292,37 +323,6 @@ Auto-compiled from **168 real patterns** in **botatc**. This skill is auto-route
 ### Fixed null crash in Admin — reduces excessive function call frequency
 -         <!-- System Settings Icon -->
 +         <!-- Admin Users Icon -->
--         <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
-+         <a href="/usuarios" class="nav-item" title="Panel de Usuarios">
--             <svg viewBox="0 0 24 24">
-+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin=
 
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Admin
-3. identifier: Users
-4. identifier: Icon
-5. identifier: Panel
-
-### Fixed null crash in Apply — reduces excessive function call frequency
--             const savedScroll = sessionStorage.getItem('chatListScrollTop');
-+             const applyScroll = () => {
--             if (savedScroll) {
-+                 const s = sessionStorage.getItem('chatListScrollTop');
--                 setTimeout(() => { chatsContainerDiv.scrollTop = parseInt(savedScroll); }, 50);
-+                 if (s) chatsContainerDiv.scrollTop = parseInt(s);
--
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Apply
-3. identifier: Record
-4. identifier: Adicionalmente
-5. identifier: EMOJI
-
-### Fixed null crash in POST — wraps unsafe operation in error boundary
--                 try {
-+                 let final_wa_id = wa_id;
--                     aw
 
 ... [Truncated — see individual observations for full content]

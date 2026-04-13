@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2413 notes | Score threshold: >40
+> 2444 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,23 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Updated schema Score — introduces API versioning for backward compatibility** — - > 2409 notes | Score threshold: >40
-+ > 2410 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2399 notes | Score threshold: >40
-+ > 2401 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Object — reduces excessive function call frequ
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "806072c4dc4af997",
++
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2422 notes | Score threshold: >40
++ > 2426 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2419 notes | Score threshold: >40
++ > 2422 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2418 notes | Score threshold: >40
++ > 2419 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2410 notes | Score threshold: >40
++ > 2413 notes | Score threshold
 
 ## Project Standards
 
+- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
+- problem-fix in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Updated schema Score — introduces API versioning for backward compatibility — confirmed 3x
 - Optimized Score — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Fixed null crash in Clear — confirmed 3x
-- what-changed in shared-context.json
-- what-changed in shared-context.json — confirmed 8x
 - what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes

@@ -19,7 +19,7 @@ Auto-compiled from **71 real patterns** in **botatc**. This skill is auto-routed
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - **⚠️ GOTCHA: Fixed null crash in Exception — p` | Patched security issue Score — evolves the database schema t | 7x |
-| `- - **⚠️ GOTCHA: Fixed null crash in Aislar — redu` | Patched security issue Score — evolves the database schema t | 3x |
+| `- - **⚠️ GOTCHA: Fixed null crash in Aislar — redu` | Patched security issue Score — evolves the database schema t | 4x |
 
 ## 📐 Conventions & Best Practices
 

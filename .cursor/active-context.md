@@ -82,47 +82,6 @@
 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[problem-fix] Fixed null crash in Falla — reduces excessive function call frequency**: -                     } else {
-+                         setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
--                         showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
-+                     } else {
--                     }
-+                         showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
--                 }
-+                     }
--             } catch (e) {
-+                 }
--                 if (loadingBubble && document.body.contains(loadingBubble)) {
-+             } catch (e) {
--                     loadingBubble.innerHTML = `❌ Falló la conexión de fondo.`;
-+                 if (loadingBubble && document.body.contains(loadingBubble)) {
--                 } else {
-+                     loadingBubble.innerHTML = `❌ Falló la conexión de fondo.`;
--                     showGlobalToast(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red.`);
-+                     loadingBubble.style.border = "1px solid red";
--                 }
-+                     setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
--             }
-+                 } else {
--         };
-+                     showGlobalToast(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red.`);
-- 
-+                 }
--         // NOTIFICACIONES GLOBALES INDESTRUCTIBLES
-+             }
--         window.showGlobalToast = function(msg) {
-+         };
--             const toast = document.createElement('div');
-+ 
--             toast.style.position = 'fixed';
-+         // NOTIFICACIONES GLOBALES INDESTRUCTIBLES
--             toast.style.bottom = '20px';
-+         window.showGlobalToast = function(msg) {
--             toast.style.left = '50%';
-+             const toast = document.createElement('div')
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
 - **[convention] Fixed null crash in Configuraci — reduces excessive function call frequency — confirmed 3x**: -         <!-- Logout Button (reemplazando al dot) -->
 +         <!-- Configuración de Perfil Usuario -->
 -         <a href="/logout" class="nav-item" title="Cerrar Sesión" style="margin-top: auto; margin-bottom: 20px; color: #ef4444; display: flex; justify-content: center; text-decoration: none;">
@@ -226,51 +185,6 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in Cargar — wraps unsafe operation in error boundary — confirmed 3x**: -                     alert("✅ Plantilla enviada. La ventana de 24 horas se debería abrir si el cliente responde.");
-+                     // Cargar el chat inmediatamente para ver la burbuja
--                 } else {
-+                     window.location.reload();
--                     alert("❌ Error: " + data.error);
-+                 } else {
--                 }
-+                     alert("❌ Error: " + data.error);
--             } catch (e) {
-+                 }
--                 alert("Falla de conectividad");
-+             } catch (e) {
--             }
-+                 alert("Falla de conectividad");
--         }
-+             }
-- 
-+         }
--         // ================= ETIQUETAS (LABELS) LOGIC =================
-+ 
--         function crearGlobalLabel() {
-+         // ================= ETIQUETAS (LABELS) LOGIC =================
--             // Abrir el modal en lugar de prompt()
-+         function crearGlobalLabel() {
--             const modal = document.getElementById("createLabelModal");
-+             // Abrir el modal en lugar de prompt()
--             if (modal) {
-+             const modal = document.getElementById("createLabelModal");
--                 document.getElementById("newLabelName").value = "";
-+             if (modal) {
--                 // Reset a color por defecto
-+                 document.getElementById("newLabelName").value = "";
--                 const firstColor = document.getElementById("color-grid-container").querySelector('.color-option');
-+                 // Reset a color por defecto
--                 if (firstColor) seleccionarColorEtiqueta("#3b82f6", firstColor);
-+                 const firstColor = document.getElementById("color-grid-container").querySelector('.color-option');
--                 modal.style.display = "flex";
-+                 if (firstColor) seleccionarColorEtiqueta("#3b82f6", firstColor);
--             }
-+                 modal.style.display = "flex";
--         }
-+    
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
 - **[what-changed] Updated schema FormData**: -             previewTheme();
 +             
 -             
@@ -322,7 +236,7 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[problem-fix] Fixed null crash in Clear**: -         function previewTheme() {
+- **[convention] Fixed null crash in Clear — confirmed 3x**: -         function previewTheme() {
 +         function previewLocalWallpaper(input) {
 -             const bgMain = document.getElementById('theme_bg_main').value;
 +             if (input.files && input.files[0]) {
@@ -361,51 +275,6 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[problem-fix] Fixed null crash in Sino — protects against XSS and CSRF token theft**: - 
-+     wp_opacity = float(prefs.get('wallpaper_opacity', '0.15'))
--     c_acc_hex = c_acc.lstrip('#')
-+ 
--     if len(c_acc_hex) == 6:
-+     c_acc_hex = c_acc.lstrip('#')
--         c_acc_rgb = tuple(int(c_acc_hex[i:i+2], 16) for i in (0, 2, 4))
-+     if len(c_acc_hex) == 6:
--         accent_bg_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.05)"
-+         c_acc_rgb = tuple(int(c_acc_hex[i:i+2], 16) for i in (0, 2, 4))
--         accent_border_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.1)"
-+         accent_bg_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.05)"
--         accent_hover_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.08)"
-+         accent_border_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.1)"
--     else:
-+         accent_hover_rgba = f"rgba({c_acc_rgb[0]}, {c_acc_rgb[1]}, {c_acc_rgb[2]}, 0.08)"
--         accent_bg_rgba = "rgba(255, 255, 255, 0.05)"
-+     else:
--         accent_border_rgba = "rgba(255, 255, 255, 0.1)"
-+         accent_bg_rgba = "rgba(255, 255, 255, 0.05)"
--         accent_hover_rgba = "rgba(255, 255, 255, 0.08)"
-+         accent_border_rgba = "rgba(255, 255, 255, 0.1)"
-- 
-+         accent_hover_rgba = "rgba(255, 255, 255, 0.08)"
--     css = f'''
-+ 
--         :root {{
-+     css = f'''
--             --bg-main: {c_bg} !important;
-+         :root {{
--             --bg-sidebar: {c_bg} !important;
-+             --bg-main: {c_bg} !important;
--             --bg-list: {c_bg} !important;
-+             --bg-sidebar: {c_bg} !important;
--             --primary-color: {c_prim} !important;
-+             --bg-list: {c_bg} !important;
--             --accent-bg: {accent_bg_rgba} !important;
-+             --primary-color: {c_prim} !important;
--             --accent-border: {accent_border_rgba} !important;
-+             --accent-bg: {accent_bg_rgba} !important;
--             --accent-hover-soft: {accent_hover_rgba} !important;
-+
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
 - **[what-changed] Updated schema FormData**: -             previewTheme();
 +             document.getElementById('theme_wallpaper_opacity').value = '0.15';
 -             

@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 279 gotchas, 231 conventions, 162 fixes."
+description: "Project for botatc. 284 gotchas, 234 conventions, 164 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1158 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1175 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,11 @@ Auto-compiled from **1158 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Object — reduces excessive function call frequency + - problem-fix in agent- |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2422 notes - Score threshold: >40 + > 2426 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replace |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2419 notes - Score threshold: >40 + > 2422 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replace |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2418 notes - Score threshold: >40 + > 2419 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2410 notes - Score threshold: >40 + > 2413 notes - Score threshold: >40 - - **⚠️ GOTCHA: Replace |
 | ⚠️ GOTCHA: Updated schema Score — introduces API v | - > 2409 notes - Score threshold: >40 + > 2410 notes - Score threshold: >40 - - Optimized Score — in |
 | ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2399 notes - Score threshold: >40 + > 2401 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
@@ -63,13 +68,35 @@ Auto-compiled from **1158 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Optimized Score | - > 2078 notes - Score threshold: >40 + > 2080 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2048 notes - Score threshold: >40 + > 2061 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Added JWT tokens authentication + - ⚠️ GOTCHA: Optimized Score — evolves the database |
-| ⚠️ GOTCHA: Optimized Score — evolves the database  | - > 2032 notes - Score threshold: >40 + > 2048 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Object — reduces excessive function call frequency
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Reset — reduces excessive function call frequency
++ - Fixed null crash in Object — reduces excessive function call frequency
+- - Patched security issue Fixed
++ - Fixed null crash in Reset — reduces excessive function call frequency
+- - Patched security issue Kevin
++ 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Reset — reduces excessive function call frequency
++ - Fixed null crash in Object — reduces excessive function call frequency
+- - Patched security issue Fixed
++ - Fixed null crash in Reset — reduces excessive function call frequency
+- - Patched security issue Kevin
++ - Patched security issue Fixed
+- - problem-fix in whatsapp_client.py
++ - Patched security issue Kevin
+- - pro
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Patched security issue Fixed
 - - Patched security issue Kevin
@@ -152,35 +179,6 @@ Auto-compiled from **1158 real patterns** in **botatc**. This skill is auto-rout
 - - problem-fix in shared-context.json
 + - problem-fix in inbox.html
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Ru
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Patched security issue Score — evolves the database schema to support new req...
-- > 2294 notes | Score threshold: >40
-+ > 2300 notes | Score threshold: >40
-- - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - **gotcha in shared-context.json** — -     }
-- + - problem-fix in agent-rules.md
-+ +     },
-- - -
-+ -   ]
-- - **⚠️ GOTCHA: Fixed null crash in Aislar — reduces excessive function call frequency** — -                     const cleanHTML =
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Score
-3. identifier: GOTCHA
-4. identifier: Patched
-5. identifier: Kevin
-
-### problem-fix in agent-rules.md
-- - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue Kevin
-- - Fixed null crash in Video — reduces excessive function call frequency
-+ - problem-fix in shared-context.json
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intell
 
 ... [Truncated — see individual observations for full content]
