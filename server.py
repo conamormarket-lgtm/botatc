@@ -2404,7 +2404,33 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         burbujas = ""
         if len(all_msgs) > MAX_MENSAJES and not load_all:
             burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo (⚠️ Más lento)</button></div>'
+        last_date_str = ""
         for m in msgs:
+            # Insertar separador de fecha si cambia el día
+            ts_unix = m.get("timestamp", "")
+            date_str = ""
+            if ts_unix:
+                try:
+                    ts_val = int(ts_unix)
+                    if ts_val > 1e11: ts_val //= 1000
+                    from datetime import datetime, timedelta
+                    lima_dt = datetime.utcfromtimestamp(ts_val) - timedelta(hours=5)
+                    today_dt = datetime.utcnow() - timedelta(hours=5)
+                    
+                    if lima_dt.date() == today_dt.date():
+                        date_str = "Hoy"
+                    elif lima_dt.date() == (today_dt - timedelta(days=1)).date():
+                        date_str = "Ayer"
+                    else:
+                        meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+                        date_str = f"{lima_dt.day} de {meses[lima_dt.month - 1]} de {lima_dt.year}"
+                except:
+                    pass
+            
+            if date_str and date_str != last_date_str:
+                burbujas += f'<div style="text-align:center; clear:both; margin: 1rem 0;"><span style="display:inline-block; background:var(--accent-bg); color:var(--text-muted); font-weight:600; font-size:0.75rem; padding:0.3rem 0.8rem; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,0.1); border:1px solid var(--accent-border);">{date_str}</span></div>'
+                last_date_str = date_str
+
             es_bot = m["role"] == "assistant"
             clase  = "bubble-bot" if es_bot else "bubble-user"
             lado   = "lado-der" if es_bot else "lado-izq"
