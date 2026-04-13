@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2515 notes | Score threshold: >40
+> 2536 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,29 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Replaced auth Score
++ - ⚠️ GOTCHA: Added JWT tokens aut
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2523 notes | Score threshold: >40
++ > 2525 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score** — - > 2520 notes | Score threshold: >40
++ > 2521 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Fixed null crash in True
++ - ⚠️ GOTCHA: Replaced auth S
+- **⚠️ GOTCHA: Replaced auth Score** — - > 2511 notes | Score threshold: >40
++ > 2515 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score** — - > 2510 notes | Score threshold: >40
 + > 2511 notes | Score threshold
-- **⚠️ GOTCHA: Fixed null crash in True** — -     import os
-+     from firebase_client import guardar_sticker_en_
-- **⚠️ GOTCHA: Fixed null crash in Retorna** — -     """Retorna la lista de stickers webp disponibles localmente."""
-- **⚠️ GOTCHA: Fixed null crash in True — protects against XSS and CSRF token theft** — -         os.makedirs("static/stickers", exist_ok=True)
-+         try
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2465 notes | Score threshold: >40
-+ > 2469 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2460 notes | Score threshold: >40
-+ > 2465 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- Replaced auth Patched — confirmed 3x
-- what-changed in shared-context.json — confirmed 8x
-- Fixed null crash in True — confirmed 4x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
