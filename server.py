@@ -3824,11 +3824,11 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
         s = obtener_o_crear_sesion(payload.wa_id)
         
         import urllib.request, json
-        from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID
+        from config import META_ACCESS_TOKEN
         tpl_full_text = payload.template_name
         try:
             req = urllib.request.Request(
-                f'https://graph.facebook.com/v19.0/{META_PHONE_NUMBER_ID}/message_templates?name={payload.template_name}',
+                f'https://graph.facebook.com/v19.0/1672706204042046/message_templates?name={payload.template_name}',
                 headers={'Authorization': 'Bearer ' + META_ACCESS_TOKEN}
             )
             data = json.loads(urllib.request.urlopen(req).read().decode())
