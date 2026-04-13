@@ -1946,23 +1946,18 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const tab = urlParams.get('tab') || 'all';
                     
-                    if (window.isSendingSequence) {
-                        // Soft Virtual Exit to keep sequence sending in background
-                        window.history.pushState(null, '', `/inbox${window.location.search}`);
-                        
-                        document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
-                        
-                        const viewer = document.querySelector('.chat-viewer-panel');
-                        if (viewer) {
-                            viewer.innerHTML = `
-                            <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
-                                <h3>Bandeja de Entrada</h3>
-                                <p style="font-size:0.9rem; max-width:400px;">Selecciona una conversación para empezar o continuar chateando.</p>
-                            </div>`;
-                        }
-                    } else {
-                        // Normal Hard Exit
-                        window.location.href = `/inbox?tab=${tab}`;
+                    // Soft Virtual Exit to instantly clear chat UI without reloading
+                    window.history.replaceState(null, '', `/inbox?tab=${tab}`);
+                    
+                    document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
+                    
+                    const viewer = document.querySelector('.chat-viewer-panel');
+                    if (viewer) {
+                        viewer.innerHTML = `
+                        <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
+                            <h3>Bandeja de Entrada</h3>
+                            <p style="font-size:0.9rem; max-width:400px; text-align:center;">Selecciona una conversación para empezar o continuar chateando.</p>
+                        </div>`;
                     }
                 }
             }
