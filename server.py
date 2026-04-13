@@ -3820,25 +3820,15 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
 
     
     if wamid:
-        # Registrar el envío en el historial del dashboard
-        from firebase_client import cargar_sesion_chat, guardar_sesion_chat
-        s = cargar_sesion_chat(payload.wa_id)
-        if not s:
-            # Create a brand new session if it doesn't exist so it appears in Inbox immediately
-            s = {
-                "historial": [], 
-                "estado_bot": "activo",
-                "etiquetas": [],
-                "ultimo_mensaje": "",
-                "clienteNombre": "Desconocido (Plantilla saliente)"
-            }
+        # PULL FROM MEMORY (not just firestore) so the Dashboard immediately sees the template
+        s = obtener_o_crear_sesion(payload.wa_id)
         
         import urllib.request, json
-        from config import META_ACCESS_TOKEN
+        from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID
         tpl_full_text = payload.template_name
         try:
             req = urllib.request.Request(
-                f'https://graph.facebook.com/v19.0/1672706204042046/message_templates?name={payload.template_name}',
+                f'https://graph.facebook.com/v19.0/{META_PHONE_NUMBER_ID}/message_templates?name={payload.template_name}',
                 headers={'Authorization': 'Bearer ' + META_ACCESS_TOKEN}
             )
             data = json.loads(urllib.request.urlopen(req).read().decode())
@@ -3857,14 +3847,17 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
         except Exception:
             pass
             
-        if "historial" not in s: s["historial"] = []
-
         s["historial"].append({"role": "assistant", "content": f"[Plantilla enviada: {tpl_full_text}]", "msg_id": wamid})
         from datetime import datetime
         s["ultima_actividad"] = datetime.utcnow()
-        guardar_sesion_chat(payload.wa_id, s)
+        try:
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(payload.wa_id, s)
+        except Exception as e:
+            print(f"Error guardando sesión en BD tras enviar plantilla: {e}")
+            
         return {"ok": True, "wamid": wamid}
-    return {"ok": False, "error": "No se pudo enviar (Verifica que el WABA ID sea el correcto o Meta la rechazó)."}
+    return {"ok": False, "error": "No se pudo enviar (Verifica que la Plantilla ya haya sido aprobada por Meta)."}
 
 
 # ============================================================
