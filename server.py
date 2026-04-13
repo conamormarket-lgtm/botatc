@@ -337,7 +337,12 @@ def llamar_gemini(historial: list[dict]) -> str:
                 print(f"❌ Error Gemini definitivo: {e}")
                 return ""
         return ""
-
+    except Exception as general_e:
+        import traceback
+        with open("error_gemini.txt", "w") as f:
+            f.write(traceback.format_exc())
+        print(f"❌ Error crítico en llamar_gemini (fuera del reintento): {general_e}")
+        return ""
 
 def recortar_historial(historial: list[dict]) -> list[dict]:
     """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
