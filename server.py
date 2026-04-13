@@ -2155,6 +2155,15 @@ async def ver_chat(request: Request, numero_wa: str):
 # ==========================================
 
 def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None):
+    # Si estamos en Vercel (servidor sin estado fraccionado), forzamos lectura de BD para el chat activo actual
+    if wa_id and os.environ.get("VERCEL"):
+        try:
+            from firebase_client import cargar_sesion_chat
+            s_db = cargar_sesion_chat(wa_id)
+            if s_db:
+                sesiones[wa_id] = s_db
+        except Exception:
+            pass
     # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
     global global_labels
     if not global_labels:
