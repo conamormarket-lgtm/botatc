@@ -1642,7 +1642,7 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
             media_cache[media_id] = (content, final_mime)
             return {"ok": True, "media_id": media_id}
         
-        return {"ok": False, "error": "No se pudo subir a Meta"}
+        return {"ok": False, "error": f"Meta rechazó archivo: {media_id}"}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
