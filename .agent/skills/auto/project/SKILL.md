@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 274 gotchas, 226 conventions, 162 fixes."
+description: "Project for botatc. 279 gotchas, 231 conventions, 162 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1141 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1158 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,11 @@ Auto-compiled from **1141 real patterns** in **botatc**. This skill is auto-rout
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Updated schema Score — introduces API v | - > 2409 notes - Score threshold: >40 + > 2410 notes - Score threshold: >40 - - Optimized Score — in |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2399 notes - Score threshold: >40 + > 2401 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
+| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (81 lines): # Project Intelligen |
+| ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility + - ⚠️ GOTCHA |
+| ⚠️ GOTCHA: Replaced auth Score — evolves the datab | - > 2365 notes - Score threshold: >40 + > 2386 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility + - ⚠️ GOTCHA |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue Kevin - - problem-fix in shared-co |
 | ⚠️ GOTCHA: Optimized GOTCHA — introduces API versi | - - ⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility + - ⚠️ GOTCHA: |
@@ -63,11 +68,6 @@ Auto-compiled from **1141 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Added JWT tokens authentication - - gotc |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1999 notes - Score threshold: >40 + > 2032 notes - Score threshold: >40 - - **gotcha in shared-c |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue Kevin - - Fixed null crash in BARRA — r |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Panel — reduces excessive function call frequency + - problem-fix in agent-r |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1990 notes - Score threshold: >40 + > 1991 notes - Score threshold: >40 - - what-changed in shar |
-| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1984 notes - Score threshold: >40 + > 1987 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
 
 ## 🔧 Problem Playbooks
 
@@ -182,6 +182,5 @@ Auto-compiled from **1141 real patterns** in **botatc**. This skill is auto-rout
 + - Patched security issue Kevin
 - - Fixed null crash in Video — reduces excessive function call frequency
 + - problem-fix in shared-context.json
-- - Fixed null cr
 
 ... [Truncated — see individual observations for full content]

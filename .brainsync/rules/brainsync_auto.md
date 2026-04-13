@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2386 notes | Score threshold: >40
+> 2413 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,26 +20,23 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backwa
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - Patched security issue Kevi
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — introduces API versioning for backwar
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Optimized Score — int
-- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2361 notes | Score threshold: >40
-+ > 2365 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2359 notes | Score threshold: >40
-+ > 2361 notes | Score threshold
+- **⚠️ GOTCHA: Updated schema Score — introduces API versioning for backward compatibility** — - > 2409 notes | Score threshold: >40
++ > 2410 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2399 notes | Score threshold: >40
++ > 2401 notes | Score threshold
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
 
 ## Project Standards
 
+- what-changed in brainsync_auto.md — confirmed 3x
+- Updated schema Score — introduces API versioning for backward compatibility — confirmed 3x
+- Optimized Score — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 7x
-- problem-fix in agent-rules.md — confirmed 6x
-- problem-fix in shared-context.json — confirmed 4x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- Fixed null crash in Clear — confirmed 3x
+- what-changed in shared-context.json
+- what-changed in shared-context.json — confirmed 8x
 - what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes

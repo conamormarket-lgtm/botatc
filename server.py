@@ -309,18 +309,33 @@ def llamar_gemini(historial: list[dict]) -> str:
                 types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
             ]
         )
+        import time
+        max_retries = 3
         
-        response = gemini_client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=gemini_contents,
-            config=config,
-        )
-        return response.text.strip()
-    except Exception as e:
-        import traceback
-        with open("error_gemini.txt", "w") as f:
-            f.write(traceback.format_exc())
-        print(f"❌ Error Gemini: {e}")
+        for attempt in range(max_retries):
+            try:
+                response = gemini_client.models.generate_content(
+                    model=GEMINI_MODEL,
+                    contents=gemini_contents,
+                    config=config,
+                )
+                return response.text.strip()
+            except Exception as e:
+                err_str = str(e)
+                # Retry on rate limits or temporary unavailability
+                if "503" in err_str or "unloaded" in err_str or "UNAVAILABLE" in err_str or "429" in err_str or "ResourceExhausted" in err_str or "quota" in err_str.lower():
+                    if attempt < max_retries - 1:
+                        wait_t = 2 ** attempt  # 1s, 2s, 4s
+                        print(f"  [⚠️ Gemini saturado: {err_str} | Reintentando en {wait_t}s (Intento {attempt+1}/{max_retries})]")
+                        time.sleep(wait_t)
+                        continue
+                
+                # If it's not a retriable error or we exhausted retries
+                import traceback
+                with open("error_gemini.txt", "w") as f:
+                    f.write(traceback.format_exc())
+                print(f"❌ Error Gemini definitivo: {e}")
+                return ""
         return ""
 
 
