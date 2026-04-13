@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 37 gotchas, 39 conventions, 85 fixes."
+description: "Python for botatc. 38 gotchas, 39 conventions, 86 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **220 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **222 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **220 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in True | -     import os +     from firebase_client import guardar_sticker_en_bd -     from firebase_client |
 | ⚠️ GOTCHA: Fixed null crash in Retorna | -     """Retorna la lista de stickers webp disponibles localmente.""" +     """Retorna la lista de  |
 | ⚠️ GOTCHA: Fixed null crash in True — protects aga | -         os.makedirs("static/stickers", exist_ok=True) +         try: -         count_stickers =  |
 | ⚠️ GOTCHA: Fixed null crash in Botones — paralleli | -     # Inyectar CSS dinámico exacto al de inbox +  -     custom_theme_css = "" +      -     c_b |
@@ -57,6 +58,23 @@ Auto-compiled from **220 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Recibe
+-     """Recibe múltiples archivos webp/png, los guarda en disco ephemeral y sincroniza a Firestore."""
++     """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
+-         os.makedirs("static/stickers", exist_ok=True)
++         count = 0
+-         count = 0
++         for file in files:
+-         for file in files:
++             if file.filename.endswith(".webp") 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Recibe
+3. identifier: Firestore
+4. identifier: Extraemos
+5. identifier: Guardar
 
 ### problem-fix in server.py
 -                     src_url = f"/static/stickers/{media_id}"
@@ -190,25 +208,6 @@ Auto-compiled from **220 real patterns** in **botatc**. This skill is auto-route
 -         async with httpx.AsyncClient() as client:
 +             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
 -             res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
-+             res.raise_for_status()
--             res.raise_for_sta
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in server.py
--                  data-client_id="REEMPLAZAR_CON_TU_CLIENT_ID"
-+                  data-client_id="572322137024-dtrf5gg7tn2a7ifn1msai8d13ej93n9a.apps.googleusercontent.com"
-
-📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, startup_event, sesiones]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Response — protects against XSS and CSRF token theft
-- @app.post("/login")
-+ 
-- async def login_post(response: Response, username: str = Form(...), [REDACTED] = Form(...), action: str = Form("login")):
-+ @app.post("/
++             re
 
 ... [Truncated — see individual observations for full content]

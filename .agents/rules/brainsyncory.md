@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2495 notes | Score threshold: >40
+> 2505 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in True** — -     import os
++     from firebase_client import guardar_sticker_en_
 - **⚠️ GOTCHA: Fixed null crash in Retorna** — -     """Retorna la lista de stickers webp disponibles localmente."""
 - **⚠️ GOTCHA: Fixed null crash in True — protects against XSS and CSRF token theft** — -         os.makedirs("static/stickers", exist_ok=True)
 +         try
@@ -29,19 +31,17 @@
 + > 2465 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — introduces API versioning for backward compatibility** — - > 2455 notes | Score threshold: >40
 + > 2460 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2449 notes | Score threshold: >40
-+ > 2455 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 8x
+- Fixed null crash in True — confirmed 4x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
 - trade-off in shared-context.json — confirmed 3x
-- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 8x
 
 ## Known Fixes
 

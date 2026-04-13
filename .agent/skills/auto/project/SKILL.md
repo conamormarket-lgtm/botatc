@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for botatc. 291 gotchas, 238 conventions, 165 fixes."
+description: "Project for botatc. 291 gotchas, 240 conventions, 166 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **1203 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **1208 real patterns** in **botatc**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -70,6 +70,23 @@ Auto-compiled from **1203 real patterns** in **botatc**. This skill is auto-rout
 | ⚠️ GOTCHA: Added JWT tokens authentication | - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements + - ⚠️ GOTC |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - problem-fix in server.py
++ - Fixed null crash in Recibe
+- - Patched security issue Fixed
++ - problem-fix in server.py
+- - Patched security issue Kevin
++ - Patched security issue Fixed
+- - problem-fix in whatsapp_client.py
++ - Patched security issue Kevin
+- - problem-fix in inbox.html
++ - problem-fix in whatsapp_client.py
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intellige
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Patched security issue Fixed
 - - Patched security issue Kevin
@@ -167,17 +184,6 @@ Auto-compiled from **1203 real patterns** in **botatc**. This skill is auto-rout
 - - problem-fix in shared-context.json
 + - problem-fix in agent-rules.md
 - - problem-fix in whatsapp_client.py
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Configuraci — reduces excessive function call frequency
-+ - problem-fix in shared-context.json
-- - Patched security issue Score — evolves the database schema to support new req...
-+ -
++ - pr
 
 ... [Truncated — see individual observations for full content]

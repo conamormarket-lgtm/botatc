@@ -123,7 +123,15 @@ async def custom_exception_handler(request: Request, exc: Exception):
 
 import os
 from fastapi.staticfiles import StaticFiles
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+if not os.path.exists("static"):
+    try:
+        os.makedirs("static", exist_ok=True)
+    except Exception:
+        pass
+
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
