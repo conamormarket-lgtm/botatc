@@ -1,6 +1,6 @@
 ---
 name: python
-description: "Python for botatc. 35 gotchas, 38 conventions, 83 fixes."
+description: "Python for botatc. 37 gotchas, 39 conventions, 85 fixes."
 domain: python
 triggers:
   - glob: "**/*.py"
@@ -10,7 +10,7 @@ enabled: true
 
 # Python
 
-Auto-compiled from **214 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
+Auto-compiled from **220 real patterns** in **botatc**. This skill is auto-routed to agents when working on python files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **214 real patterns** in **botatc**. This skill is auto-route
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in Retorna | -     """Retorna la lista de stickers webp disponibles localmente.""" +     """Retorna la lista de  |
+| ⚠️ GOTCHA: Fixed null crash in True — protects aga | -         os.makedirs("static/stickers", exist_ok=True) +         try: -         count_stickers =  |
 | ⚠️ GOTCHA: Fixed null crash in Botones — paralleli | -     # Inyectar CSS dinámico exacto al de inbox +  -     custom_theme_css = "" +      -     c_b |
 | ⚠️ GOTCHA: Fixed null crash in Exception — protect | -     except Exception as e: +         return response.text.strip() -         import traceback +  |
 | ⚠️ GOTCHA: Replaced auth Conserva | -     except Exception as e: +         return "" -         import traceback +  -         with op |
@@ -55,6 +57,36 @@ Auto-compiled from **214 real patterns** in **botatc**. This skill is auto-route
 | gotcha in debug_telefono.py | File updated (external): debug_telefono.py  Content summary (25 lines): from firebase_client import  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in server.py
+-                     src_url = f"/static/stickers/{media_id}"
++                     src_url = f"/api/media/sticker/{media_id}"
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in StaticFiles — protects against XSS and CSRF token theft
+- try:
++ app.mount("/static", StaticFiles(directory="static"), name="static")
+-     os.makedirs("static/stickers", exist_ok=True)
++ 
+-     os.makedirs("static/wallpapers", exist_ok=True)
++ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+- except Exception:
++ 
+-     pass
++ @app.on_event("startup")
+- app.mount("/static", StaticFiles(directory="static"), name="static")
++ def startup_e
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: StaticFiles
+3. identifier: Client
+4. identifier: Restaurar
+5. identifier: Firebase
 
 ### Fixed null crash in Sino — protects against XSS and CSRF token theft
 - 
@@ -177,43 +209,6 @@ Auto-compiled from **214 real patterns** in **botatc**. This skill is auto-route
 - @app.post("/login")
 + 
 - async def login_post(response: Response, username: str = Form(...), [REDACTED] = Form(...), action: str = Form("login")):
-+ @app.post("/login")
--     if action == "register":
-+ async def login_post(response: Response, username: str = Form(None), [REDACTED] = Form(None), google_token: str = Form(None), action: str = Form("login")):
--         from firebase_client imp
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Response
-3. identifier: Form
-4. identifier: None
-5. identifier: TODO
-
-### Fixed null crash in Ingresar — parallelizes async operations for speed
--     <script>
-+     
--       function setMode(mode) {{
-+     <script src="https://accounts.google.com/gsi/client" async defer></script>
--           document.getElementById('action').value = mode;
-+     <script>
--           document.getElementById('btn-login').classList.toggle('active', mode==='login');
-+       function setMode(mode) {
--           document.getElementById('btn-register').cl
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Ingresar
-3. identifier: Registrarse
-4. identifier: POST
-5. identifier: ATC
-
-### Fixed null crash in HTMLResponse — parallelizes async operations for speed
-- .replace("__ERR_HTML__", err_html)
-+ 
-- 
-+ @app.get("/settings", response_class=HTMLResponse)
-- @app.get("/settings", response_class=HTMLResponse)
-+ async def settings_panel(request: Request):
-- async def se
++ @app.post("/
 
 ... [Truncated — see individual observations for full content]

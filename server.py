@@ -123,7 +123,6 @@ async def custom_exception_handler(request: Request, exc: Exception):
 
 import os
 from fastapi.staticfiles import StaticFiles
-os.makedirs("static/stickers", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
@@ -139,11 +138,7 @@ def startup_event():
             sesiones[wa_id] = s
         print(f"✅ Se restauraron {len(sesiones_restauradas)} conversaciones en memoria desde Firebase.")
         
-        # Restaurar Libreria de Stickers estatica
-        import os
-        os.makedirs("static/stickers", exist_ok=True)
-        count_stickers = cargar_stickers_de_bd("static/stickers")
-        print(f"✅ Se restauraron {count_stickers} stickers desde la DB al FileSystem efímero.")
+        # Stickers are now loaded on-demand via Serverless Endpoints.
         
         # Restaurar Etiquetas
         from firebase_client import cargar_etiquetas_bd, cargar_grupos_bd
@@ -2456,7 +2451,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 media_id = match.group(2)
                 
                 if tipo == "sticker-local":
-                    src_url = f"/static/stickers/{media_id}"
+                    src_url = f"/api/media/sticker/{media_id}"
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: transparent; margin-bottom: 5px; display:inline-block;" alt="Sticker Local {media_id}"></div>"""
                     
                 src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
@@ -3431,15 +3426,12 @@ async def update_user_theme(
     
     # Manejar subida de archivo si existe
     if wallpaper_file and wallpaper_file.filename:
-        import os
-        os.makedirs("static/wallpapers", exist_ok=True)
+        from firebase_client import guardar_wallpaper_en_bd
         ext = wallpaper_file.filename.split(".")[-1]
         filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
-        filepath = os.path.join("static", "wallpapers", filename)
         content = await wallpaper_file.read()
-        with open(filepath, "wb") as f:
-            f.write(content)
-        wallpaper = f"/static/wallpapers/{filename}"
+        guardar_wallpaper_en_bd(filename, content, ext)
+        wallpaper = f"/api/media/wallpaper/{filename}"
 
     prefs = {
         "bg_main": bg_main or "#0f172a",
@@ -3466,22 +3458,16 @@ from typing import List
 
 @app.post("/api/admin/stickers/upload")
 async def upload_stickers(files: List[UploadFile] = File(...)):
-    """Recibe múltiples archivos webp/png, los guarda en disco ephemeral y sincroniza a Firestore."""
+    """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
     try:
         import os
         from firebase_client import guardar_sticker_en_bd
-        os.makedirs("static/stickers", exist_ok=True)
         count = 0
         for file in files:
             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
                 # Extraemos solo el nombre del archivo, ignorando subcarpetas
                 basename = os.path.basename(file.filename)
-                filepath = os.path.join("static", "stickers", basename)
                 content = await file.read()
-                
-                # Guardar local efímero (para el render estático actual)
-                with open(filepath, "wb") as f:
-                    f.write(content)
                 
                 # Guardar en Base de Datos (Persistente)
                 guardar_sticker_en_bd(basename, content)
@@ -3509,29 +3495,47 @@ async def save_sticker_media(payload: SaveMediaPayload, request: Request):
     contenido, mime_type = await descargar_media(url)
     if not contenido: return {"ok": False, "error": "No se pudo descargar content"}
     
-    import os
     from firebase_client import guardar_sticker_en_bd
     basename = f"fav_{media_id}.webp"
     
-    os.makedirs("static/stickers", exist_ok=True)
-    filepath = os.path.join("static", "stickers", basename)
-    with open(filepath, "wb") as f:
-        f.write(contenido)
-        
     guardar_sticker_en_bd(basename, contenido)
     return {"ok": True, "filename": basename}
 
 
 @app.get("/api/stickers")
 def get_stickers():
-    """Retorna la lista de stickers webp disponibles localmente."""
+    """Retorna la lista de stickers webp disponibles dinámicamente desde Firestore."""
     try:
-        if not os.path.exists("static/stickers"): return {"ok": True, "stickers": []}
-        files = os.listdir("static/stickers")
-        stickers = [f for f in files if f.endswith(".webp") or f.endswith(".png")]
+        from firebase_client import obtener_todos_los_nombres_stickers
+        stickers = obtener_todos_los_nombres_stickers()
+        # Filter to webp or png to be safe
+        stickers = [f for f in stickers if f.endswith(".webp") or f.endswith(".png")]
         return {"ok": True, "stickers": stickers}
     except Exception as e:
         return {"ok": False, "error": str(e)}
+
+@app.get("/api/media/sticker/{filename}")
+def get_sticker_image(filename: str):
+    from firebase_client import obtener_sticker_de_bd
+    from fastapi.responses import Response
+    bytes_data = obtener_sticker_de_bd(filename)
+    if bytes_data is None:
+        return Response(status_code=404, content="Not found")
+    media_type = "image/webp" if filename.endswith(".webp") else "image/png"
+    return Response(content=bytes_data, media_type=media_type, headers={"Cache-Control": "public, s-maxage=31536000, max-age=31536000"})
+
+@app.get("/api/media/wallpaper/{filename}")
+def get_wallpaper_image(filename: str):
+    from firebase_client import obtener_wallpaper_de_bd
+    from fastapi.responses import Response
+    bytes_data = obtener_wallpaper_de_bd(filename)
+    if bytes_data is None:
+        return Response(status_code=404, content="Not found")
+    ext = filename.split(".")[-1].lower()
+    media_type = f"image/{ext}" if ext in ["jpeg", "jpg", "png", "webp", "gif"] else "application/octet-stream"
+    if media_type == "image/jpg": media_type = "image/jpeg"
+    return Response(content=bytes_data, media_type=media_type, headers={"Cache-Control": "public, s-maxage=31536000, max-age=31536000"})
+
 
 @app.get("/inbox/{wa_id}", response_class=HTMLResponse)
 async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None):

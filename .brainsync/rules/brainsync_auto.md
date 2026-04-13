@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2465 notes | Score threshold: >40
+> 2495 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Retorna** — -     """Retorna la lista de stickers webp disponibles localmente."""
+- **⚠️ GOTCHA: Fixed null crash in True — protects against XSS and CSRF token theft** — -         os.makedirs("static/stickers", exist_ok=True)
++         try
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2465 notes | Score threshold: >40
++ > 2469 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2460 notes | Score threshold: >40
++ > 2465 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — introduces API versioning for backward compatibility** — - > 2455 notes | Score threshold: >40
 + > 2460 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2449 notes | Score threshold: >40
 + > 2455 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Replaced auth Score — evolves the database schema to su
-- **⚠️ GOTCHA: Replaced auth Score — introduces API versioning for backward compatibility** — - > 2444 notes | Score threshold: >40
-+ > 2449 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2426 notes | Score threshold: >40
-+ > 2444 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Object — reduces excessive function call frequ
 
 ## Project Standards
 
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
 - trade-off in shared-context.json — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 8x
-- problem-fix in agent-rules.md — confirmed 3x
-- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Sino — protects against XSS and CSRF token theft
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
@@ -52,10 +53,10 @@
 
 ## Recent Decisions
 
+- decision in inbox.html
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — introduces API versioning for backward compatibility
 - Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 

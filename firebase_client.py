@@ -201,26 +201,48 @@ def guardar_sticker_en_bd(filename: str, file_bytes: bytes):
         "updatedAt": firestore.SERVER_TIMESTAMP
     })
 
-def cargar_stickers_de_bd(directorio: str):
-    """Descarga todos los stickers desde Firestore al directorio temporal en memoria."""
+def obtener_sticker_de_bd(filename: str) -> bytes | None:
+    """Recupera un sticker individual decodificado desde Firestore."""
     db = inicializar_firebase()
-    docs = db.collection("bot_stickers").limit(300).stream()
-    import os
-    os.makedirs(directorio, exist_ok=True)
-    count = 0
-    for doc in docs:
-        try:
-            data = doc.to_dict()
-            filename = data.get("filename")
-            b64 = data.get("base64")
-            if filename and b64:
-                filepath = os.path.join(directorio, filename)
-                with open(filepath, "wb") as f:
-                    f.write(base64.b64decode(b64))
-                count += 1
-        except Exception as e:
-            print(f"Error cargando sticker {doc.id}: {e}")
-    return count
+    doc = db.collection("bot_stickers").document(filename).get()
+    if doc.exists:
+        data = doc.to_dict()
+        b64 = data.get("base64")
+        if b64:
+            return base64.b64decode(b64)
+    return None
+
+def obtener_todos_los_nombres_stickers() -> list[str]:
+    """Devuelve solo los nombres de archivo de los stickers para listar en la UI sin descargar los bytes."""
+    db = inicializar_firebase()
+    docs = db.collection("bot_stickers").select(["filename"]).limit(300).stream()
+    return [doc.to_dict().get("filename") for doc in docs if doc.to_dict().get("filename")]
+
+# ============================================================
+#  PERSISTENCIA DE WALLPAPERS EN FIRESTORE
+# ============================================================
+
+def guardar_wallpaper_en_bd(filename: str, file_bytes: bytes, ext: str):
+    """Guarda un wallpaper en la base de datos convirtiéndolo a Base64."""
+    db = inicializar_firebase()
+    b64_data = base64.b64encode(file_bytes).decode('utf-8')
+    db.collection("bot_wallpapers").document(filename).set({
+        "filename": filename,
+        "extension": ext,
+        "base64": b64_data,
+        "updatedAt": firestore.SERVER_TIMESTAMP
+    })
+
+def obtener_wallpaper_de_bd(filename: str) -> bytes | None:
+    """Recupera un wallpaper devuelto como bytes decodificados."""
+    db = inicializar_firebase()
+    doc = db.collection("bot_wallpapers").document(filename).get()
+    if doc.exists:
+        data = doc.to_dict()
+        b64 = data.get("base64")
+        if b64:
+            return base64.b64decode(b64)
+    return None
 
 
 # ============================================================
