@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2798 notes | Score threshold: >40
+> 2837 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,46 +18,50 @@
 
 **Stack:** Python · FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Optimized 
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2742 notes | Score threshold: >40
-+ > 2791 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Agent — reduces excessive function call freque
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Contenedor — reduces excessive function call f
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Admin
-+ - problem-fix in agent-rules.md
-- - Fi
-- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Inbox
-+ - Fixed null crash in System
-- - Fixed
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2830 notes | Score threshold: >40
++ > 2834 notes | Score threshold
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "27693849beb8da88",
++
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2827 notes | Score threshold: >40
++ > 2830 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2824 notes | Score threshold: >40
++ > 2827 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2819 notes | Score threshold: >40
++ > 2824 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in HTMLResponse — parallelizes async operations f
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
+- what-changed in shared-context.json — confirmed 7x
+- Fixed null crash in HTMLResponse — parallelizes async operations for speed — confirmed 3x
+- problem-fix in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 5x
 - what-changed in shared-context.json — confirmed 20x
-- problem-fix in agent-rules.md — confirmed 8x
-- discovery in shared-context.json — confirmed 3x
-- Fixed null crash in Agent — reduces excessive function call frequency — confirmed 10x
-- Optimized Fixed — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Archivo — parallelizes async operations for speed
-- ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in HTMLResponse — parallelizes async operations for speed
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -     → ✅ Patched security issue Score — evolves the database schema to support new req...
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
 - decision in inbox.html
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — introduces API versioning for backward compatibility
-- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

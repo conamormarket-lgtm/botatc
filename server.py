@@ -46,6 +46,8 @@ def inyectar_tema_global(request, html: str) -> str:
     c_acc = prefs.get('accent_bg', '#1e293b')
     wp = prefs.get('wallpaper', '')
     wp_opacity = float(prefs.get('wallpaper_opacity', '0.15'))
+    t_main = prefs.get('text_main', '#f8fafc')
+    t_muted = prefs.get('text_muted', '#94a3b8')
 
     c_acc_hex = c_acc.lstrip('#')
     if len(c_acc_hex) == 6:
@@ -67,6 +69,8 @@ def inyectar_tema_global(request, html: str) -> str:
             --accent-bg: {accent_bg_rgba} !important;
             --accent-border: {accent_border_rgba} !important;
             --accent-hover-soft: {accent_hover_rgba} !important;
+            --text-main: {t_main} !important;
+            --text-muted: {t_muted} !important;
         }}
     '''
     
@@ -105,6 +109,8 @@ def inyectar_tema_global(request, html: str) -> str:
     html = html.replace("{accent_bg}", c_acc)
     html = html.replace("{wallpaper}", wp)
     html = html.replace("{wallpaper_opacity}", str(wp_opacity))
+    html = html.replace("{text_main}", t_main)
+    html = html.replace("{text_muted}", t_muted)
     return html
 
 import traceback
@@ -3370,6 +3376,8 @@ async def update_user_theme(
     bg_main: str = Form(None), 
     accent_bg: str = Form(None), 
     primary_color: str = Form(None), 
+    text_main: str = Form(None),
+    text_muted: str = Form(None),
     wallpaper: str = Form(None), 
     wallpaper_opacity: str = Form("0.15"),
     wallpaper_file: UploadFile = File(None)
@@ -3393,6 +3401,8 @@ async def update_user_theme(
         "bg_main": bg_main or "#0f172a",
         "accent_bg": accent_bg or "#1e293b",
         "primary_color": primary_color or "#3b82f6",
+        "text_main": text_main or "#f8fafc",
+        "text_muted": text_muted or "#94a3b8",
         "wallpaper": wallpaper or "",
         "wallpaper_opacity": wallpaper_opacity or "0.15"
     }

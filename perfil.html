@@ -99,7 +99,7 @@
                 <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Configura tus propios colores de interfaz y fondo del chat. Al guardar, se inyectarán en la plataforma sin afectar a otros miembros del equipo.</p>
 
                 <form id="themeForm" style="display:flex; flex-direction:column; gap:1.5rem;" onsubmit="saveTheme(event)">
-                    <div style="display:flex; gap:2rem; flex-wrap:wrap;">
+                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; margin-top:0.5rem; gap:1rem;">
                         <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-start;">
                             <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Color de Fondo Principal</label>
                             <input type="color" id="theme_bg_main" name="bg_main" value="{bg_main}" style="background:transparent; border:none; width:45px; height:45px; cursor:pointer;" onchange="previewTheme()">
@@ -111,6 +111,14 @@
                         <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-start;">
                             <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Color Acento (Paneles/Cajas)</label>
                             <input type="color" id="theme_accent_bg" name="accent_bg" value="{accent_bg}" style="background:transparent; border:none; width:45px; height:45px; cursor:pointer;" onchange="previewTheme()">
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-start;">
+                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Texto Principal</label>
+                            <input type="color" id="theme_text_main" name="text_main" value="{text_main}" style="background:transparent; border:none; width:45px; height:45px; cursor:pointer;" onchange="previewTheme()">
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-start;">
+                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Texto Secundario</label>
+                            <input type="color" id="theme_text_muted" name="text_muted" value="{text_muted}" style="background:transparent; border:none; width:45px; height:45px; cursor:pointer;" onchange="previewTheme()">
                         </div>
                     </div>
                     
@@ -136,8 +144,11 @@
                         <button type="submit" class="btn-save">
                             Aplicar Tema
                         </button>
-                        <button type="button" onclick="restoreDefaultTheme()" style="background:transparent; color:var(--primary-color); border:1px solid var(--primary-color); padding:0.75rem 1.5rem; border-radius:8px; font-weight:600; cursor:pointer;">
-                            Restaurar por Defecto
+                        <button type="button" onclick="applyPresetTheme('dark')" style="background:transparent; color:#f8fafc; border:1px solid #334155; padding:0.75rem 1.5rem; border-radius:8px; font-weight:600; cursor:pointer;">
+                            Tema Oscuro
+                        </button>
+                        <button type="button" onclick="applyPresetTheme('light')" style="background:transparent; color:#f8fafc; border:1px solid #334155; padding:0.75rem 1.5rem; border-radius:8px; font-weight:600; cursor:pointer;">
+                            Tema Claro
                         </button>
                     </div>
                     
@@ -165,17 +176,34 @@
             const bgMain = document.getElementById('theme_bg_main').value;
             const primaryColor = document.getElementById('theme_primary_color').value;
             const accentBg = document.getElementById('theme_accent_bg').value;
+            const textMain = document.getElementById('theme_text_main').value;
+            const textMuted = document.getElementById('theme_text_muted').value;
             
             document.documentElement.style.setProperty('--bg-main', bgMain);
             document.documentElement.style.setProperty('--primary-color', primaryColor);
             document.documentElement.style.setProperty('--accent-bg', accentBg);
+            document.documentElement.style.setProperty('--text-main', textMain);
+            document.documentElement.style.setProperty('--text-muted', textMuted);
         }
 
-        async function restoreDefaultTheme() {
-            if(!confirm("¿Regresar a los colores originales?")) return;
-            document.getElementById('theme_bg_main').value = '#0f172a';
-            document.getElementById('theme_primary_color').value = '#3b82f6';
-            document.getElementById('theme_accent_bg').value = '#1e293b';
+        async function applyPresetTheme(type) {
+            if(!confirm(`¿Aplicar Tema ${type === 'dark' ? 'Oscuro' : 'Claro'}?`)) return;
+            
+            if(type === 'dark') {
+                document.getElementById('theme_bg_main').value = '#161717';
+                document.getElementById('theme_primary_color').value = '#1d1f1f';
+                document.getElementById('theme_accent_bg').value = '#ffffff';
+                document.getElementById('theme_text_main').value = '#f8fafc';
+                document.getElementById('theme_text_muted').value = '#94a3b8';
+            } else {
+                // Tema claro
+                document.getElementById('theme_bg_main').value = '#ffffff';
+                document.getElementById('theme_primary_color').value = '#d9fdd3';
+                document.getElementById('theme_accent_bg').value = '#000000';
+                document.getElementById('theme_text_main').value = '#111827';
+                document.getElementById('theme_text_muted').value = '#6b7280';
+            }
+            
             document.getElementById('theme_wallpaper').value = '';
             document.getElementById('theme_wallpaper_opacity').value = '0.15';
             document.getElementById('opacityVal').innerText = '0.15';
