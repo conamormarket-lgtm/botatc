@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2908 notes | Score threshold: >40
+> 2943 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,26 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "9afd5c695ef5bf56",
-+
-- **⚠️ GOTCHA: Fixed null crash in GRUPO** — -     html = html.replace("{tab_all_active}", "active" if tab != "huma
-- **⚠️ GOTCHA: Fixed null crash in Reset — parallelizes async operations for speed** — -     todas = sorted(list(sesiones.items()) + grupos_sesiones, key=lam
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2856 notes | Score threshold: >40
-+ > 2859 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2848 notes | Score threshold: >40
-+ > 2851 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2841 notes | Score threshold: >40
-+ > 2848 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2935 notes | Score threshold: >40
++ > 2941 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backwa
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2932 notes | Score threshold: >40
++ > 2935 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2925 notes | Score threshold: >40
++ > 2932 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — introduces API versioning for backwar
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 12x
-- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
-- Added JWT tokens authentication — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 4x
-- Patched security issue Kevin — confirmed 4x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Replaced auth Kevin — confirmed 3x
+- Patched security issue Kevin — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Patched security issue Kevin — confirmed 3x
+- Fixed null crash in Archivar — reduces excessive function call frequency — confirmed 3x
 
 ## Known Fixes
 
@@ -59,8 +53,8 @@
 
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - decision in task.md
-- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

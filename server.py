@@ -4095,7 +4095,10 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         try:
             db = inicializar_firebase()
             db.collection("chats_atc").document(wa_id).delete()
-        except: pass
+            print(f"🗑️ [BD] Chat {wa_id} eliminado exitosamente de Firebase.")
+        except Exception as e: 
+            print(f"❌ [BD] Error eliminando {wa_id} de Firebase: {e}")
+            pass
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}

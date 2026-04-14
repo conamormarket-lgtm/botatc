@@ -135,7 +135,10 @@ def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
             "datos_pedido": sesion_dict.get("datos_pedido"),
             "pedidos_multiples": sesion_dict.get("pedidos_multiples"),
             "esperando_pedido_tester": sesion_dict.get("esperando_pedido_tester", False),
-            "etiquetas": sesion_dict.get("etiquetas", [])
+            "etiquetas": sesion_dict.get("etiquetas", []),
+            "is_pinned": sesion_dict.get("is_pinned", False),
+            "is_archived": sesion_dict.get("is_archived", False),
+            "unread_count": sesion_dict.get("unread_count", 0)
         }
         
         # Firestore maneja datetimes nativamente
