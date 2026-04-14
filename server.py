@@ -1815,10 +1815,10 @@ async def enviar_manual_endpoint(request: Request):
                 w_id_current = enviar_media(wa_id, "audio", match_audio.group(1), reply_to_wamid)
             elif match_sticker_local:
                 filename = match_sticker_local.group(1)
-                filepath = os.path.join("static", "stickers", filename)
-                if os.path.exists(filepath):
-                    with open(filepath, "rb") as f: file_bytes = f.read()
-                    mime = "image/webp" if filepath.endswith(".webp") else "image/png"
+                from firebase_client import obtener_sticker_de_bd
+                file_bytes = obtener_sticker_de_bd(filename)
+                if file_bytes:
+                    mime = "image/webp" if filename.endswith(".webp") else "image/png"
                     w_id_meta = await subir_media(file_bytes, mime, filename)
                     if w_id_meta:
                         tipo = "sticker" if mime == "image/webp" else "image"

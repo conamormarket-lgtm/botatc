@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2866 notes | Score threshold: >40
+> 2873 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -35,14 +35,14 @@
 
 ## Project Standards
 
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 
 ## Known Fixes
 
