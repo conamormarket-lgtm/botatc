@@ -3976,9 +3976,16 @@ async def api_assign_chat_labels(payload: AssignLabelPayload, request: Request):
     
     from firebase_client import cargar_sesion_chat, guardar_sesion_chat
     s = cargar_sesion_chat(payload.wa_id)
+    if not s:
+        s = sesiones.get(payload.wa_id)
+        
     if s:
         s["etiquetas"] = payload.label_ids
-        guardar_sesion_chat(payload.wa_id, s)
+        try:
+            guardar_sesion_chat(payload.wa_id, s)
+        except Exception as e:
+            print(f"Error guardando etiquetas en BD: {e}")
+            
         if payload.wa_id in sesiones:
             sesiones[payload.wa_id]["etiquetas"] = payload.label_ids
         return {"ok": True}
@@ -4016,7 +4023,10 @@ async def api_toggle_chat_label(payload: ToggleLabelPayload, request: Request):
                 current_labels.add(payload.label_id)
         
         s["etiquetas"] = list(current_labels)
-        guardar_sesion_chat(payload.wa_id, s)
+        try:
+            guardar_sesion_chat(payload.wa_id, s)
+        except Exception as e:
+            print(f"Error toggleando etiqueta en BD: {e}")
         
         if payload.wa_id in sesiones:
             sesiones[payload.wa_id]["etiquetas"] = list(current_labels)
