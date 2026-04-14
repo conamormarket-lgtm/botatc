@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2837 notes | Score threshold: >40
+> 2841 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2834 notes | Score threshold: >40
++ > 2837 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2830 notes | Score threshold: >40
 + > 2834 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
@@ -35,7 +37,6 @@
 + > 2827 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2819 notes | Score threshold: >40
 + > 2824 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in HTMLResponse — parallelizes async operations f
 
 ## Project Standards
 
