@@ -42,7 +42,7 @@ def inyectar_tema_global(request, html: str) -> str:
     usuario_sesion = obtener_usuario_sesion(request)
     prefs = usuario_sesion.get("preferencias_ui", {}) if usuario_sesion else {}
     c_bg = prefs.get('bg_main', '#0f172a')
-    c_prim = prefs.get('primary_color', '#3b82f6')
+    c_prim = prefs.get('primary_color', '#717f7f')
     c_acc = prefs.get('accent_bg', '#1e293b')
     wp = prefs.get('wallpaper', '')
     wp_opacity = float(prefs.get('wallpaper_opacity', '0.15'))
@@ -1034,7 +1034,7 @@ def obtener_login_html(error="", success=False):
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
     <style>
       :root {{
-          --primary-color: #3b82f6; --primary-hover: #2563eb;
+          --primary-color: #717f7f; --primary-hover: #2563eb;
           --bg-main: #0f172a; --bg-card: #1e293b; --text-color: #f8fafc;
       }}
       body {{
@@ -1212,7 +1212,7 @@ async def settings_panel(request: Request):
     usuario_sesion = obtener_usuario_sesion(request)
     prefs = usuario_sesion.get("preferencias_ui", {}) if usuario_sesion else {}
     html = html.replace("{bg_main}", prefs.get("bg_main", "#0f172a"))
-    html = html.replace("{primary_color}", prefs.get("primary_color", "#3b82f6"))
+    html = html.replace("{primary_color}", prefs.get("primary_color", "#717f7f"))
     html = html.replace("{accent_bg}", prefs.get("accent_bg", "#1e293b"))
     html = html.replace("{wallpaper}", prefs.get("wallpaper", ""))
 
@@ -2410,7 +2410,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 elif tipo == "video":
                     return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>"""
                 elif tipo == "audio":
-                    return f"""<div class="custom-audio-player" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; max-width:300px; margin: 5px 0;">
+                    return f"""<div class="custom-audio-player" oncontextmenu="event.preventDefault(); event.stopPropagation(); if(window.descargarMedia) window.descargarMedia('{src_url}?', 'audio_whatsapp.ogg');" title="Descargar Audio (Clic derecho)" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; max-width:300px; margin: 5px 0; cursor:context-menu;">
                         <audio src="{src_url}" preload="metadata" style="display:none;" 
                             onloadedmetadata="this.parentElement.querySelector('.cap-time').textContent = window.formatAudioTime(this.duration);" 
                             ontimeupdate="this.parentElement.querySelector('.cap-progress').style.width = (this.currentTime / this.duration * 100) + '%'; this.parentElement.querySelector('.cap-time').textContent = window.formatAudioTime(this.currentTime);" 
@@ -2983,7 +2983,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const div = document.createElement('div');
                 div.style.cssText = 'background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:8px; padding:0.6rem; position:relative;';
                 
-                const typeColors = {{text:'#10b981', image:'#3b82f6', video:'#8b5cf6', audio:'#f59e0b'}};
+                const typeColors = {{text:'#10b981', image:'#717f7f', video:'#8b5cf6', audio:'#f59e0b'}};
                 const typeIcons = {{text:'📝', image:'🖼', video:'🎬', audio:'🎵'}};
                 const color = typeColors[type] || '#10b981';
                 const icon = typeIcons[type] || '📝';
@@ -3322,7 +3322,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     if usuario_sesion and "preferencias_ui" in usuario_sesion:
         prefs = usuario_sesion["preferencias_ui"]
         c_bg = prefs.get('bg_main', '#213668')
-        c_prim = prefs.get('primary_color', '#3b82f6')
+        c_prim = prefs.get('primary_color', '#717f7f')
         c_acc = prefs.get('accent_bg', '#ffffff')
         
         c_acc = c_acc.lstrip('#')
@@ -3382,7 +3382,7 @@ async def update_user_theme(
     prefs = {
         "bg_main": bg_main or "#0f172a",
         "accent_bg": accent_bg or "#1e293b",
-        "primary_color": primary_color or "#3b82f6",
+        "primary_color": primary_color or "#717f7f",
         "text_main": text_main or "#f8fafc",
         "text_muted": text_muted or "#94a3b8",
         "wallpaper": wallpaper or "",
@@ -4040,3 +4040,6 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
+
+

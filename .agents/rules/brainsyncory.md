@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2976 notes | Score threshold: >40
+> 2987 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,11 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in server.py
+- - prob
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2967 notes | Score threshold: >40
++ > 2976 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
 - **gotcha in shared-context.json** — -     }
 +     },
@@ -32,11 +37,10 @@
 + - ⚠️ GOTCHA: Optimized 
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2951 notes | Score threshold: >40
 + > 2967 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Error — reduces excessive function call freque
-- **⚠️ GOTCHA: Fixed null crash in Reset — parallelizes async operations for speed** — -     # Reset unread count for active chat ONLY IF it's > 0 (meaning n
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
@@ -44,11 +48,10 @@
 - Replaced auth Score — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Replaced auth Kevin — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in HTMLResponse — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
