@@ -1322,10 +1322,13 @@
                 if (m) m.style.display = 'none';
 
                 // Auto-enviar la etiqueta (sticker)
+                if(window.toggleSendMicButton) window.toggleSendMicButton(); // Fuerza a mostrar el btn de Enviar
+                
                 const form = input.closest('form');
                 if (form) {
                     const btn = form.querySelector('button[type="submit"]');
                     if (btn) btn.click();
+                    else form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
                 }
             }
         };
