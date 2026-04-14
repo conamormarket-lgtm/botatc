@@ -164,15 +164,16 @@ def cargar_sesion_chat(numero_wa: str) -> dict | None:
         # lo convertimos o lo dejamos, usualmente FastAPI/Python lo maneja bien si es naive/aware
         
         # Convertimos DatetimeWithNanoseconds a datetime ingenuo para evitar conflictos de zona horaria con datetime.utcnow()
+        import datetime
         if data.get("ultima_actividad"):
             from google.api_core.datetime_helpers import DatetimeWithNanoseconds
             if isinstance(data["ultima_actividad"], DatetimeWithNanoseconds):
-                data["ultima_actividad"] = data["ultima_actividad"].replace(tzinfo=None)
+                data["ultima_actividad"] = datetime.datetime.fromtimestamp(data["ultima_actividad"].timestamp())
                 
         if data.get("escalado_en"):
             from google.api_core.datetime_helpers import DatetimeWithNanoseconds
             if isinstance(data["escalado_en"], DatetimeWithNanoseconds):
-                data["escalado_en"] = data["escalado_en"].replace(tzinfo=None)
+                data["escalado_en"] = datetime.datetime.fromtimestamp(data["escalado_en"].timestamp())
                 
         return data
     return None
@@ -185,13 +186,14 @@ def cargar_todas_las_sesiones() -> dict:
     
     sesiones_restauradas = {}
     from google.api_core.datetime_helpers import DatetimeWithNanoseconds
+    import datetime
     
     for doc in docs:
         data = doc.to_dict()
         if data.get("ultima_actividad") and isinstance(data["ultima_actividad"], DatetimeWithNanoseconds):
-            data["ultima_actividad"] = data["ultima_actividad"].replace(tzinfo=None)
+            data["ultima_actividad"] = datetime.datetime.fromtimestamp(data["ultima_actividad"].timestamp())
         if data.get("escalado_en") and isinstance(data["escalado_en"], DatetimeWithNanoseconds):
-            data["escalado_en"] = data["escalado_en"].replace(tzinfo=None)
+            data["escalado_en"] = datetime.datetime.fromtimestamp(data["escalado_en"].timestamp())
         sesiones_restauradas[doc.id] = data
         
     return sesiones_restauradas
