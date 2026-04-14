@@ -2782,7 +2782,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
 
                 
-                <div style="padding:1rem 1rem;border-top:1px solid var(--accent-border);background:var(--accent-bg);width:100%;max-width:100vw;box-sizing:border-box;">
+                <div style="padding:1rem 1rem;border-top:1px solid var(--accent-border);background:transparent;width:100%;max-width:100vw;box-sizing:border-box;">
                     {chat_box}
                 </div>
             </div>
