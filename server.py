@@ -2747,7 +2747,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         chat_viewer_html = f"""
         <div style="display:flex; flex-direction:row; height:100%; width:100%;">
             <!-- START CHAT MAIN COLUMN -->
-            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent;">
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent; position:relative;">
                 {status_bar}
                 <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
                     <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
@@ -2776,14 +2776,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     </div>
                 </div>
                 
-                <div style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
+                <div style="flex:1;overflow-y:auto;padding:1.5rem 1.5rem 7rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
                     {burbujas}
                 </div>
                 
-
-                
-                <div style="padding:1rem 1rem;border-top:1px solid var(--accent-border);background:transparent;width:100%;max-width:100vw;box-sizing:border-box;">
-                    {chat_box}
+                <div style="position:absolute; bottom:0; left:0; width:100%; padding:1rem 1rem 1.5rem 1rem; background:transparent; box-sizing:border-box; z-index:10; pointer-events:none;">
+                    <div style="pointer-events:auto; width:100%;">
+                        {chat_box}
+                    </div>
                 </div>
             </div>
             <!-- END CHAT MAIN COLUMN -->
