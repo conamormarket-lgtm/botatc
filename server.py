@@ -488,17 +488,32 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             texto_cliente = f"[sticker:{media_id}]"
             background_tasks.add_task(cachear_media, media_id)
         elif tipo_mensaje == "image":
-            media_id = mensaje_data.get("image", {}).get("id", "")
-            caption  = mensaje_data.get("image", {}).get("caption", "")
-            texto_cliente = f"[imagen:{media_id}]" + (f" {caption}" if caption else "")
-            background_tasks.add_task(cachear_media, media_id)
+            img_data = mensaje_data.get("image", {})
+            is_view_once = img_data.get("view_once", False)
+            media_id = img_data.get("id", "")
+            caption  = img_data.get("caption", "")
+            if is_view_once:
+                texto_cliente = f"[vista_unica:imagen]" + (f" {caption}" if caption else "")
+            else:
+                texto_cliente = f"[imagen:{media_id}]" + (f" {caption}" if caption else "")
+                background_tasks.add_task(cachear_media, media_id)
         elif tipo_mensaje in ["audio", "voice"]:
             # WhatsApp puede enviar audio (grabados) o voice (voice notes)
-            media_id = mensaje_data.get(tipo_mensaje, {}).get("id", "")
-            texto_cliente = f"[audio:{media_id}]"
-            background_tasks.add_task(cachear_media, media_id)
+            aud_data = mensaje_data.get(tipo_mensaje, {})
+            is_view_once = aud_data.get("view_once", False)
+            media_id = aud_data.get("id", "")
+            if is_view_once:
+                texto_cliente = f"[vista_unica:audio]"
+            else:
+                texto_cliente = f"[audio:{media_id}]"
+                background_tasks.add_task(cachear_media, media_id)
         elif tipo_mensaje == "video":
-            texto_cliente = "[🎥 Video]"
+            vid_data = mensaje_data.get("video", {})
+            is_view_once = vid_data.get("view_once", False)
+            if is_view_once:
+                texto_cliente = "[vista_unica:video]"
+            else:
+                texto_cliente = "[🎥 Video]"
         elif tipo_mensaje == "document":
             filename = mensaje_data.get("document", {}).get("filename", "archivo")
             media_id = mensaje_data.get("document", {}).get("id", "")
@@ -2508,11 +2523,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     doc_name = partes[1] if len(partes) > 1 else "Documento"
                     doc_url = f"/api/media/{doc_id}"
                     return f'<div style="margin-bottom: 5px;"><a href="{doc_url}" download="{doc_name}" target="_blank" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-decoration: none; color: inherit; font-size: 0.9rem; border: 1px solid var(--accent-border);">📎 {doc_name} <span style="font-size:0.8rem; margin-left:auto; opacity:0.6;">📥 Bajar</span></a></div>' 
+                elif tipo == "vista_unica":
+                    icono = "📷" if media_id == "imagen" else ("🎬" if media_id == "video" else "🎤")
+                    return f'<div style="margin-bottom: 5px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2); text-align: center; color: var(--text-dim); display:flex; flex-direction:column; align-items:center; gap:4px;"><span style="font-size: 1.2rem;">{icono} 👁️</span><span style="font-size: 0.8rem; font-weight: 500;">Archivo de Vista Única</span><span style="font-size: 0.75rem; opacity: 0.7;">(Bloqueado por privacidad de WhatsApp)</span></div>'
                 return match.group(0)
 
             # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
             # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
-            texto_renderizado = re.sub(r"\[(sticker-local|sticker|imagen|audio|video|documento):([^\]]+)\]", reemplazar_archivos_inline, texto)
+            texto_renderizado = re.sub(r"\[(sticker-local|sticker|imagen|audio|video|documento|vista_unica):([^\]]+)\]", reemplazar_archivos_inline, texto)
 
             def reemplazar_ubicacion(match):
                 coords_str = match.group(1)
