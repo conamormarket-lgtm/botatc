@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2987 notes | Score threshold: >40
+> 3009 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,36 +18,37 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in server.py
-- - prob
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2967 notes | Score threshold: >40
-+ > 2976 notes | Score threshold
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - gotcha in shared-cont
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "abc289409a102efd",
++       "id": "97602ad657c38071",
 +
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Optimized 
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2951 notes | Score threshold: >40
-+ > 2967 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in server.py
+- - prob
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2976 notes | Score threshold: >40
++ > 2987 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in server.py
+- - prob
 
 ## Project Standards
 
+- what-changed in perfil.html — confirmed 3x
+- what-changed in admin.html — confirmed 3x
+- what-changed in inbox.html — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Replaced auth Score — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Replaced auth Kevin — confirmed 3x
 
 ## Known Fixes
 

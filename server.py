@@ -2410,7 +2410,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 elif tipo == "video":
                     return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>"""
                 elif tipo == "audio":
-                    return f"""<div class="custom-audio-player" oncontextmenu="event.preventDefault(); event.stopPropagation(); if(window.descargarMedia) window.descargarMedia('{src_url}?', 'audio_whatsapp.ogg');" title="Descargar Audio (Clic derecho)" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; max-width:300px; margin: 5px 0; cursor:context-menu;">
+                    return f"""<div class="custom-audio-player" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; max-width:300px; margin: 5px 0; cursor:context-menu;">
                         <audio src="{src_url}" preload="metadata" style="display:none;" 
                             onloadedmetadata="this.parentElement.querySelector('.cap-time').textContent = window.formatAudioTime(this.duration);" 
                             ontimeupdate="this.parentElement.querySelector('.cap-progress').style.width = (this.currentTime / this.duration * 100) + '%'; this.parentElement.querySelector('.cap-time').textContent = window.formatAudioTime(this.currentTime);" 
@@ -4040,6 +4040,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 

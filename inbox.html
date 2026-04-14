@@ -568,6 +568,10 @@
             </svg>
             Citar (Modo Texto)
         </div>
+        <div class="ctx-item" id="ctxDownloadAudio" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:none; align-items:center; gap:0.5rem; transition:background 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Descargar Audio
+        </div>
         <div class="ctx-item" id="ctxDownloadImage"
             style="display:none; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; color:var(--text-main); align-items:center; gap:0.5rem; transition:background 0.2s; border-bottom:1px solid var(--accent-border);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -730,6 +734,7 @@
         let ctxTargetMediaId = "";
         let ctxTargetBubble = null;
         let ctxTargetImageUrl = "";
+        let ctxTargetAudioUrl = "";
 
         document.addEventListener("contextmenu", function (e) {
             const bubble = e.target.closest('.bubble');
@@ -780,6 +785,16 @@
                     ctxTargetImageUrl = "";
                     ctxCopyImage.style.display = 'none';
                     ctxDownloadImage.style.display = 'none';
+                }
+
+                let clickedAudio = e.target.closest('.custom-audio-player') ? e.target.closest('.custom-audio-player').querySelector('audio') : bubble.querySelector('audio');
+                let ctxDownloadAudio = document.getElementById('ctxDownloadAudio');
+                if (clickedAudio) {
+                    ctxTargetAudioUrl = clickedAudio.src;
+                    if(ctxDownloadAudio) ctxDownloadAudio.style.display = 'flex';
+                } else {
+                    ctxTargetAudioUrl = "";
+                    if(ctxDownloadAudio) ctxDownloadAudio.style.display = 'none';
                 }
 
                 const cm = document.getElementById("bubbleContextMenu");
@@ -873,6 +888,13 @@
             } catch(e) {
                 console.error("Error copy image", e);
                 alert("No se pudo copiar la imagen.");
+            }
+        });
+
+        document.getElementById('ctxDownloadAudio')?.addEventListener('click', function () {
+            document.getElementById('bubbleContextMenu').style.display = 'none';
+            if (ctxTargetAudioUrl && window.descargarMedia) {
+                window.descargarMedia(ctxTargetAudioUrl, 'audio_whatsapp.ogg');
             }
         });
 
@@ -2231,4 +2253,8 @@
 </body>
 
 </html>
+
+
+
+
 
