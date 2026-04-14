@@ -1710,6 +1710,112 @@ async def enviar_media_manual_endpoint(request: Request, wa_id: str = Form(...),
     else:
         return {"ok": False, "error": "Error enviando vía Meta"}
 
+@app.get("/api/frequent_chats")
+async def get_frequent_chats(request: Request):
+    """Devuelve los 6 chats con más mensajes en su historial."""
+    if not verificar_sesion(request): raise HTTPException(status_code=403, detail="No autorizado")
+    chats = []
+    for w_id, data in sesiones.items():
+        if w_id == "system": continue
+        nombre = w_id
+        if "contacts" in data and data["contacts"]:
+            nombre = data["contacts"][0].get("profile", {}).get("name", w_id)
+        msg_count = len(data.get("historial", []))
+        if msg_count > 0:
+            chats.append({"wa_id": w_id, "nombre": nombre, "msg_count": msg_count})
+    chats.sort(key=lambda x: x["msg_count"], reverse=True)
+    return {"chats": chats[:6]}
+
+@app.post("/api/forward_messages")
+async def forward_messages(request: Request):
+    """Reenvía mensajes de un chat origen a múltiples destinos."""
+    if not verificar_sesion(request): raise HTTPException(status_code=403, detail="No autorizado")
+    data = await request.json()
+    source_wa_id = data.get("source_wa_id")
+    wamids = data.get("wamids", [])
+    targets = data.get("targets", [])
+    
+    if not source_wa_id or not wamids or not targets:
+        return {"ok": False, "error": "Datos incompletos"}
+        
+    s = sesiones.get(source_wa_id)
+    if not s: return {"ok": False, "error": "Chat origen no encontrado"}
+    
+    msgs_to_forward = [m for m in s.get("historial", []) if m.get("msg_id") in wamids]
+    if not msgs_to_forward: return {"ok": False, "error": "Mensajes no encontrados, recargue la web."}
+    msgs_to_forward.sort(key=lambda x: x.get("timestamp", 0))
+    
+    from whatsapp_client import enviar_media, enviar_mensaje, subir_media
+    import re
+    import time
+    from datetime import datetime
+    
+    usuario_sesion = obtener_usuario_sesion(request)
+    sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
+    
+    success_count = 0
+    for target in targets:
+        # limpiar posibles caracteres de separación humana (espacios, guiones)
+        target = normalizar_numero(target.replace(" ", "").replace("+", "").replace("-", ""))
+        if not target.isdigit(): continue
+        
+        target_sesion = obtener_o_crear_sesion(target)
+        
+        for msg in msgs_to_forward:
+            texto = msg.get("content", "")
+            if not texto: continue
+            
+            partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[video:[^\]]+\]|\[audio:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
+            
+            for p in partes:
+                p = p.strip()
+                if not p: continue
+                
+                match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
+                match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
+                match_video = re.match(r"^\[video:([^\]]+)\]$", p)
+                match_audio = re.match(r"^\[audio:([^\]]+)\]$", p)
+                match_sticker_local = re.match(r"^\[sticker-local:([^\]]+)\]$", p)
+                
+                w_id_current = None
+                try:
+                    if match_sticker: 
+                        w_id_current = enviar_media(target, "sticker", match_sticker.group(1))
+                    elif match_img: 
+                        w_id_current = enviar_media(target, "image", match_img.group(1))
+                    elif match_video:
+                        w_id_current = enviar_media(target, "video", match_video.group(1))
+                    elif match_audio:
+                        w_id_current = enviar_media(target, "audio", match_audio.group(1))
+                    elif match_sticker_local:
+                        filename = match_sticker_local.group(1)
+                        from firebase_client import obtener_sticker_de_bd
+                        file_bytes = obtener_sticker_de_bd(filename)
+                        if file_bytes:
+                            mime = "image/webp" if filename.endswith(".webp") else "image/png"
+                            w_id_meta = await subir_media(file_bytes, mime, filename)
+                            if w_id_meta:
+                                tipo = "sticker" if mime == "image/webp" else "image"
+                                w_id_current = enviar_media(target, tipo, w_id_meta)
+                    else: 
+                        w_id_current = enviar_mensaje(target, p)
+                except Exception as e:
+                    print(f"Error reenviando mensaje a {target}: {e}")
+                    continue
+                
+                if w_id_current:
+                    target_sesion["historial"].append({"role": "assistant", "content": p, "msg_id": w_id_current, "status": "sent", "timestamp": int(time.time()), "sent_by": sent_by_name})
+                    target_sesion["ultima_actividad"] = datetime.utcnow()
+                    
+        try:
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(target, target_sesion)
+        except: pass
+        success_count += 1
+        
+    return {"ok": True, "count": success_count}
+
+
 @app.post("/api/admin/enviar_manual")
 async def enviar_manual_endpoint(request: Request):
     """Recibe mensaje del panel web y lo despacha a WhatsApp nativamente."""

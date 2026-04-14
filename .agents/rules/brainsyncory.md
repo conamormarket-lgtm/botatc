@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3009 notes | Score threshold: >40
+> 3046 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,37 +18,33 @@
 
 **Stack:** Python · FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in prompts.py
+- - pr
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in prompts.py
++ - problem-fix in agent-rules.md
+- - Fi
+- **⚠️ GOTCHA: Fixed null crash in Descargar — reduces excessive function call frequency** — -         <div class="ctx-item" id="ctxDownloadAudio" style="padding:0
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in server.py
++ - problem-fix in agent-rules.md
+- - Fix
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2987 notes | Score threshold: >40
++ > 3009 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - gotcha in shared-cont
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "97602ad657c38071",
-+
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in server.py
-- - prob
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2976 notes | Score threshold: >40
-+ > 2987 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in server.py
-- - prob
 
 ## Project Standards
 
-- what-changed in perfil.html — confirmed 3x
-- what-changed in admin.html — confirmed 3x
-- what-changed in inbox.html — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 7x
+- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 6x
+- what-changed in shared-context.json — confirmed 9x
 - problem-fix in agent-rules.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- Optimized Kevin — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Fixed null crash in Descargar — reduces excessive function call frequency — confirmed 5x
+- what-changed in shared-context.json — confirmed 10x
 
 ## Known Fixes
 
