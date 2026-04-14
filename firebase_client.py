@@ -120,25 +120,33 @@ def buscar_pedido_por_id(numero_pedido: str) -> dict | None:
 
 def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
     """Guarda toda la sesión del cliente en Firestore."""
-    db = inicializar_firebase()
-    doc_ref = db.collection("chats_atc").document(numero_wa)
-    
-    # Preparamos el dict para guardar
-    data_to_save = {
-        "bot_activo": sesion_dict.get("bot_activo", True),
-        "ultima_actividad": sesion_dict.get("ultima_actividad"), # datetime object
-        "escalado_en": sesion_dict.get("escalado_en"),           # datetime object o None
-        "motivo_escalacion": sesion_dict.get("motivo_escalacion"),
-        "nombre_cliente": sesion_dict.get("nombre_cliente", "Cliente"),
-        "historial": sesion_dict.get("historial", []),
-        "datos_pedido": sesion_dict.get("datos_pedido"),
-        "pedidos_multiples": sesion_dict.get("pedidos_multiples"),
-        "esperando_pedido_tester": sesion_dict.get("esperando_pedido_tester", False),
-        "etiquetas": sesion_dict.get("etiquetas", [])
-    }
-    
-    # Firestore maneja datetimes nativamente
-    doc_ref.set(data_to_save)
+    try:
+        db = inicializar_firebase()
+        doc_ref = db.collection("chats_atc").document(numero_wa)
+        
+        # Preparamos el dict para guardar
+        data_to_save = {
+            "bot_activo": sesion_dict.get("bot_activo", True),
+            "ultima_actividad": sesion_dict.get("ultima_actividad"), # datetime object
+            "escalado_en": sesion_dict.get("escalado_en"),           # datetime object o None
+            "motivo_escalacion": sesion_dict.get("motivo_escalacion"),
+            "nombre_cliente": sesion_dict.get("nombre_cliente", "Cliente"),
+            "historial": sesion_dict.get("historial", []),
+            "datos_pedido": sesion_dict.get("datos_pedido"),
+            "pedidos_multiples": sesion_dict.get("pedidos_multiples"),
+            "esperando_pedido_tester": sesion_dict.get("esperando_pedido_tester", False),
+            "etiquetas": sesion_dict.get("etiquetas", [])
+        }
+        
+        # Firestore maneja datetimes nativamente
+        doc_ref.set(data_to_save)
+    except Exception as e:
+        import traceback
+        with open("firebase_debug_error.log", "a", encoding="utf-8") as f:
+            f.write(f"ERROR GUARDANDO {numero_wa}:\n")
+            traceback.print_exc(file=f)
+            f.write("-" * 50 + "\n")
+        raise e
 
 
 def cargar_sesion_chat(numero_wa: str) -> dict | None:
