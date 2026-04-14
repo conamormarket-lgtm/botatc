@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2841 notes | Score threshold: >40
+> 2856 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,12 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2848 notes | Score threshold: >40
++ > 2851 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2841 notes | Score threshold: >40
++ > 2848 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2837 notes | Score threshold: >40
++ > 2841 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2834 notes | Score threshold: >40
 + > 2837 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2830 notes | Score threshold: >40
@@ -31,23 +37,17 @@
 - }
 +       "id": "27693849beb8da88",
 +
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2827 notes | Score threshold: >40
-+ > 2830 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2824 notes | Score threshold: >40
-+ > 2827 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2819 notes | Score threshold: >40
-+ > 2824 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
 - what-changed in shared-context.json — confirmed 7x
 - Fixed null crash in HTMLResponse — parallelizes async operations for speed — confirmed 3x
 - problem-fix in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 5x
-- what-changed in shared-context.json — confirmed 20x
 
 ## Known Fixes
 
@@ -59,10 +59,9 @@
 
 ## Recent Decisions
 
+- decision in task.md
 - Optimized Score — evolves the database schema to support new requirements
 - decision in inbox.html
-- Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized Score — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 
