@@ -456,7 +456,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         mensaje_id    = mensaje_data.get("id", "")
         mensaje_ts    = mensaje_data.get("timestamp", "")
         
-        # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta
+        # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta (sesión actual)
         if mensaje_id in mensajes_procesados_ids:
             return {"status": "ok"}
         mensajes_procesados_ids[mensaje_id] = True
@@ -468,6 +468,12 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             
         numero_wa     = mensaje_data["from"]           # ej: "51945257117"
         tipo_mensaje  = mensaje_data.get("type", "")
+
+        # Ignorar si el webhook trata de entregar un mensaje que YA fue guardado históricamente (ej. al reiniciar server)
+        if numero_wa in sesiones:
+            for it_hist in reversed(sesiones[numero_wa].get("historial", [])):
+                if it_hist.get("msg_id") == mensaje_id:
+                    return {"status": "ok"}
 
         # Obtener nombre de contacto
         nombre = "Cliente"
