@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2902 notes | Score threshold: >40
+> 2908 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
 - **gotcha in shared-context.json** — -     }
 +     },
@@ -38,14 +38,14 @@
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 12x
+- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
+- Added JWT tokens authentication — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 4x
+- Patched security issue Kevin — confirmed 4x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -59,8 +59,8 @@
 
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized GOTCHA — introduces API versioning for backward compatibility
 - decision in task.md
+- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

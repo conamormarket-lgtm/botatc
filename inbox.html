@@ -654,8 +654,12 @@
         window.showChatMenu = function(e, num, isArchived, isPinned) {
             e.preventDefault();
             ctxChatNum = num;
-            document.getElementById('btnArchivar').innerText = isArchived == "true" ? 'Desarchivar chat' : 'Archivar chat';
-            document.getElementById('btnFijar').innerText = isPinned == "true" ? 'Desfijar chat' : 'Fijar chat';
+            // Manejar tanto string como boolean que pueda mandar Python
+            let arch = (isArchived === true || isArchived === "true");
+            let pin = (isPinned === true || isPinned === "true");
+            
+            document.getElementById('btnArchivar').innerText = arch ? 'Desarchivar chat' : 'Archivar chat';
+            document.getElementById('btnFijar').innerText = pin ? 'Desfijar chat' : 'Fijar chat';
             
             let menu = document.getElementById('chatListMenu');
             menu.style.display = 'flex';

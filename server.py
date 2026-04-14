@@ -2190,7 +2190,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             "historial": hist_total[-50:],
             "is_virtual_group": True,
             "vg_id": vg.get("id"),
-            "etiquetas": []
+            "etiquetas": [],
+            "is_pinned": vg.get("is_pinned", False),
+            "is_archived": vg.get("is_archived", False)
         }
         grupos_sesiones.append((vg.get("id"), s_fake))
 
@@ -4032,9 +4034,31 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
         
-    from firebase_client import cargar_sesion_chat, guardar_sesion_chat, inicializar_firebase
+    from firebase_client import cargar_sesion_chat, guardar_sesion_chat, inicializar_firebase, guardar_grupo_bd, eliminar_grupo_bd
     wa_id = payload.wa_id
     action = payload.action
+    global global_groups
+    
+    if wa_id.startswith("vg_"):
+        found_g = next((g for g in global_groups if g.get("id") == wa_id), None)
+        if not found_g and action != "delete": return {"ok": False, "error": "Grupo no existe"}
+        
+        if action == "archive":
+            found_g["is_archived"] = not found_g.get("is_archived", False)
+            try: guardar_grupo_bd(found_g)
+            except: pass
+            return {"ok": True, "state": found_g["is_archived"]}
+        elif action == "pin":
+            found_g["is_pinned"] = not found_g.get("is_pinned", False)
+            try: guardar_grupo_bd(found_g)
+            except: pass
+            return {"ok": True, "state": found_g["is_pinned"]}
+        elif action == "delete":
+            global_groups = [g for g in global_groups if g.get("id") != wa_id]
+            try: eliminar_grupo_bd(wa_id)
+            except: pass
+            return {"ok": True}
+        return {"ok": True}
     
     s = cargar_sesion_chat(wa_id)
     if not s:
@@ -4064,6 +4088,10 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
     elif action == "delete":
         if wa_id in sesiones:
             del sesiones[wa_id]
+        if wa_id in mensajes_pendientes:
+            del mensajes_pendientes[wa_id]
+        if wa_id in retry_attempts:
+            del retry_attempts[wa_id]
         try:
             db = inicializar_firebase()
             db.collection("chats_atc").document(wa_id).delete()
