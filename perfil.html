@@ -191,10 +191,14 @@
                         cropper.destroy();
                     }
                     
-                    // Inicializar Cropper asumiendo formato chat mobile (aprox 9:16)
+                    // Calcular la relación de aspecto REAL del panel de chat basándose en la pantalla
+                    const isMobile = window.innerWidth <= 768;
+                    const chatWidth = isMobile ? window.innerWidth : window.innerWidth - 405; // 350px lista + 55px sidebar
+                    const chatHeight = isMobile ? window.innerHeight - 65 : window.innerHeight; // -65px nav bottom en movil
+                    
                     cropper = new Cropper(img, {
-                        aspectRatio: NaN, // Libre elección para que encuadre estático o movil
-                        viewMode: 1, // Restrict the crop box not to exceed the size of the canvas
+                        aspectRatio: chatWidth / chatHeight, // Relación fija estricta
+                        viewMode: 1,
                         background: false
                     });
                 };
