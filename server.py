@@ -494,6 +494,8 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             caption  = img_data.get("caption", "")
             if is_view_once:
                 texto_cliente = f"[vista_unica:imagen]" + (f" {caption}" if caption else "")
+                from whatsapp_client import enviar_mensaje_texto
+                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar archivos enviados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo y atenderte.")
             else:
                 texto_cliente = f"[imagen:{media_id}]" + (f" {caption}" if caption else "")
                 background_tasks.add_task(cachear_media, media_id)
@@ -504,6 +506,8 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             media_id = aud_data.get("id", "")
             if is_view_once:
                 texto_cliente = f"[vista_unica:audio]"
+                from whatsapp_client import enviar_mensaje_texto
+                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos escuchar audios marcados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo de forma normal* para que podamos escucharlo.")
             else:
                 texto_cliente = f"[audio:{media_id}]"
                 background_tasks.add_task(cachear_media, media_id)
@@ -512,6 +516,8 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             is_view_once = vid_data.get("view_once", False)
             if is_view_once:
                 texto_cliente = "[vista_unica:video]"
+                from whatsapp_client import enviar_mensaje_texto
+                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar videos enviados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo.")
             else:
                 texto_cliente = "[🎥 Video]"
         elif tipo_mensaje == "document":
