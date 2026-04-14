@@ -1898,7 +1898,22 @@ async def panel_usuarios(request: Request):
     if not es_admin(request):
         return RedirectResponse(url="/inbox", status_code=303)
         
-    return obtener_usuarios_html()
+    import os
+    if not os.path.exists("usuarios.html"): return HTMLResponse("404: usuarios.html no encontrado")
+        
+    with open("usuarios.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    admin_btn = """<a href="/admin" class="nav-item" title="Panel Estadístico"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></a>"""
+    settings_btn = """<a href="/settings" class="nav-item" title="Personalizar Agente IA"><svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></a>"""
+    usuarios_btn = """<a href="/usuarios" class="nav-item active" title="Panel de Usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a>"""
+    
+    html = html.replace("{admin_button}", admin_btn)
+    html = html.replace("{settings_button}", settings_btn)
+    html = html.replace("{usuarios_button}", usuarios_btn)
+    html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
+    
+    return HTMLResponse(inyectar_tema_global(request, html))
 
 @app.get("/api/usuarios/list")
 async def api_usuarios_list(request: Request):
@@ -1917,115 +1932,12 @@ async def api_usuarios_update(request: Request, data: dict):
     permisos = data.get("permisos", [])
     nombre = data.get("nombre", "")
     if actualizar_permisos_usuario(username, estado, permisos, nombre):
-        # Si el usuario tiene sesión activa, actualizar su nombre en memoria
         for token, user in active_sessions.items():
             if user.get("username") == username:
                 user["nombre"] = nombre
                 break
         return {"ok": True}
     return {"ok": False}
-
-def obtener_usuarios_html():
-    return '''
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>Panel de Usuarios — IA-ATC</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
-        <style>
-          :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --primary: #3b82f6; --danger: #ef4444; --success: #10b981; }
-          body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 20px; }
-          .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 20px; margin-bottom: 20px; }
-          h1 { font-family: 'Outfit'; margin: 0; }
-          .btn { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 14px; }
-          table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; }
-          th, td { padding: 15px; text-align: left; border-bottom: 1px solid #334155; }
-          th { background: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 12px; color: #94a3b8; }
-          .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-          .badge.pendiente { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-          .badge.aprobado { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-          select { background: #334155; color: white; border: 1px solid #475569; padding: 5px 10px; border-radius: 5px; }
-          .action-btn { background: #475569; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <h1>Gestión de Usuarios</h1>
-            <div>
-                <a href="/inbox" class="btn" style="background:#475569">← Volver al Inbox</a>
-            </div>
-        </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Nombre Visible</th>
-                    <th>Estado</th>
-                    <th>Permisos</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="users-body">
-                <tr><td colspan="4" style="text-align:center">Cargando...</td></tr>
-            </tbody>
-        </table>
-
-        <script>
-            async function loadUsers() {
-                const res = await fetch('/api/usuarios/list');
-                const users = await res.json();
-                const tbody = document.getElementById('users-body');
-                tbody.innerHTML = '';
-                
-                users.forEach(u => {
-                    const isAdmin = u.permisos.includes('admin');
-                    tbody.innerHTML += `<tr>
-                            <td>${u.username}</td>
-                            <td><input type="text" id="nombre-${u.username}" value="${u.nombre || ''}" placeholder="Nombre visible..." style="background:#0f172a; color:white; border:1px solid #475569; padding:5px 8px; border-radius:5px; width:140px; font-size:13px;"></td>
-                            <td><span class="badge ${u.estado}">${u.estado}</span></td>
-                            <td>${isAdmin ? 'Admin' : 'Estándar'}</td>
-                            <td>
-                                <select id="estado-${u.username}">
-                                    <option value="pendiente" ${u.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-                                    <option value="aprobado" ${u.estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>
-                                </select>
-                                <select id="permiso-${u.username}">
-                                    <option value="">Estándar</option>
-                                    <option value="admin" ${isAdmin ? 'selected' : ''}>Admin</option>
-                                </select>
-                                <button class="action-btn" onclick="saveUser('${u.username}')">Guardar</button>
-                            </td>
-                        </tr>`;
-                });
-            }
-            
-            async function saveUser(username) {
-                const estado = document.getElementById(`estado-${username}`).value;
-                const perm = document.getElementById(`permiso-${username}`).value;
-                const permisos = perm ? [perm] : [];
-                const nombre = document.getElementById(`nombre-${username}`)?.value?.trim() || '';
-                
-                const res = await fetch('/api/usuarios/update', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username, estado, permisos, nombre})
-                });
-                
-                if (res.ok) {
-                    alert("Usuario actualizado");
-                    loadUsers();
-                } else {
-                    alert("Error al actualizar");
-                }
-            }
-            
-            loadUsers();
-        </script>
-    </body>
-    </html>
-    '''
 
 @app.get("/")
 

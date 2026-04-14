@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2791 notes | Score threshold: >40
+> 2798 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,12 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Optimized 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2742 notes | Score threshold: >40
++ > 2791 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Agent — reduces excessive function call freque
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Contenedor — reduces excessive function call f
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Admin
@@ -28,22 +32,17 @@
 - **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Inbox
 + - Fixed null crash in System
 - - Fixed
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2687 notes | Score threshold: >40
-+ > 2700 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
 
 ## Project Standards
 
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- Optimized Score — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 5x
+- what-changed in shared-context.json — confirmed 20x
+- problem-fix in agent-rules.md — confirmed 8x
+- discovery in shared-context.json — confirmed 3x
+- Fixed null crash in Agent — reduces excessive function call frequency — confirmed 10x
 - Optimized Fixed — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel de Usuarios - IA-ATC</title>
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 1. Nivel de Color Principal */
+            --primary-color: #3b82f6;       
+            --primary-hover: #2563eb;       
+            /* 2. Nivel de Color de Acento */
+            --accent-bg: #1e293b;           
+            --accent-border: #334155;       
+            --accent-hover-soft: #334155;   
+            /* 3. Nivel de Color de Fondo General */
+            --bg-main: #0f172a;             
+            /* 4. Tipografías */
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+            /* Otros */
+            --text-main: #f8fafc;           
+            --text-muted: #94a3b8;          
+            --danger-color: #ef4444;        
+            --success-color: #10b981;       
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100dvh;
+            display: flex;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        a { text-decoration: none; color: inherit; }
+
+        /* --------- SIDEBAR NAV --------- */
+        .sidebar-nav { width: 55px; background-color: var(--bg-sidebar, var(--bg-main)); border-right: 1px solid var(--accent-border); display: flex; flex-direction: column; align-items: center; padding: 1.5rem 0; z-index: 10; }
+        .nav-item { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 1rem; transition: all 0.2s ease; text-decoration: none; }
+        .nav-item:hover { color: var(--text-main); background-color: var(--accent-hover-soft); }
+        .nav-item.active { color: var(--primary-color); background-color: rgba(59, 130, 246, 0.1); }
+        .nav-item svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .bot-status-indicator { margin-bottom: 5px; width: 12px; height: 12px; border-radius: 50%; background-color: {color_global}; box-shadow: 0 0 10px {color_global}; cursor: pointer; }
+
+        /* --------- MAIN PANEL ------------ */
+        .admin-main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            min-width: 0;
+            background-color: var(--bg-main);
+        }
+        .admin-main-panel::-webkit-scrollbar { width: 6px; }
+        .admin-main-panel::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 10px; }
+
+        .admin-header {
+            padding: 2rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--accent-border);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        .admin-header h1 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .container {
+            padding: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .table-card {
+            background-color: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .admin-table th {
+            background-color: rgba(0,0,0,0.2);
+            padding: 1.25rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--accent-border);
+        }
+        .admin-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--accent-border);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table tr:hover td { background-color: rgba(255,255,255,0.02); }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 600;
+            background-color: var(--accent-border);
+            color: var(--text-main);
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .badge.pendiente { background-color: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge.aprobado { background-color: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        select { background: var(--bg-main); color: white; border: 1px solid var(--accent-border); padding: 5px 10px; border-radius: 5px; }
+        
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-danger { background-color: transparent; border: 1px solid var(--danger-color); color: var(--danger-color); }
+        .btn-danger:hover { background-color: var(--danger-color); color: white; }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar-nav {
+                flex-direction: row;
+                width: 100%;
+                height: 65px;
+                padding: 0;
+                border-right: none;
+                border-top: 1px solid var(--accent-border);
+                order: 3;
+                justify-content: space-around;
+                background-color: var(--bg-sidebar, var(--bg-main));
+            }
+            .nav-item { margin-bottom: 0; }
+            .admin-main-panel { order: 1; }
+            
+            .admin-header { padding: 1.5rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .container { padding: 1.5rem; }
+            
+            /* Responsive tables: overflow horizontal */
+            .table-card { overflow-x: auto; width: calc(100vw - 3rem); }
+            .admin-table th, .admin-table td { white-space: nowrap; }
+        }
+    </style>
+    <style id="custom-theme-css">
+{custom_theme_css}
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar-nav">
+        <!-- Inbox Icon -->
+        <a href="/inbox" class="nav-item" title="Bandeja de Entrada (Inbox)">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
+        </a>
+        <!-- Agent Settings Icon -->
+        {settings_button}
+        
+        <!-- Admin Users Icon -->
+        {usuarios_button}
+        
+        <!-- System Settings Icon -->
+        {admin_button}
+        
+        <div style="flex:1;"></div>
+        
+        <a href="/perfil" class="nav-item" title="Mi Perfil" style="margin-bottom: 5px; color: var(--text-muted); display: flex; justify-content: center; text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
+        <a href="/logout" class="nav-item" title="Cerrar Sesión" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; opacity: 0.8; transition: opacity 0.2s;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </a>
+    </nav>
+
+    <!-- 2. PANEL PRINCIPAL (Admin Dashboard) -->
+    <div class="admin-main-panel">
+        <header class="admin-header">
+            <h1>Gestión de Usuarios</h1>
+        </header>
+
+        <div class="container">
+            <div class="table-card">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Nombre Visible</th>
+                            <th>Estado</th>
+                            <th>Permisos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-body">
+                        <tr><td colspan="5" style="text-align:center">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            const res = await fetch('/api/usuarios/list');
+            const usersResp = await res.json();
+            const tbody = document.getElementById('users-body');
+            tbody.innerHTML = '';
+            
+            // FIltrar los rechazados para que desaparezcan de la interfaz
+            const users = usersResp.filter(u => u.estado !== 'rechazado');
+
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);font-style:italic;">No hay usuarios pendientes ni aprobados.</td></tr>';
+                return;
+            }
+            
+            users.forEach(u => {
+                const isAdmin = u.permisos.includes('admin');
+                tbody.innerHTML += `<tr>
+                        <td><strong>${u.username}</strong></td>
+                        <td><input type="text" id="nombre-${u.username}" value="${u.nombre || ''}" placeholder="Nombre visible..." style="background:var(--bg-main); color:white; border:1px solid var(--accent-border); padding:5px 8px; border-radius:5px; width:140px; font-size:13px;"></td>
+                        <td><span class="badge ${u.estado}">${u.estado}</span></td>
+                        <td>${isAdmin ? 'Admin' : 'Estándar'}</td>
+                        <td style="display: flex; gap: 0.5rem; align-items: center;">
+                            <select id="estado-${u.username}">
+                                <option value="pendiente" ${u.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                                <option value="aprobado" ${u.estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>
+                            </select>
+                            <select id="permiso-${u.username}">
+                                <option value="">Estándar</option>
+                                <option value="admin" ${isAdmin ? 'selected' : ''}>Admin</option>
+                            </select>
+                            <button class="btn-action btn-primary" onclick="saveUser('${u.username}')">Guardar</button>
+                            <button class="btn-action btn-danger" onclick="rejectUser('${u.username}')" title="Rechazar y ocultar">Rechazar</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+        
+        async function saveUser(username) {
+            const estado = document.getElementById(`estado-${username}`).value;
+            const perm = document.getElementById(`permiso-${username}`).value;
+            const permisos = perm ? [perm] : [];
+            const nombre = document.getElementById(`nombre-${username}`)?.value?.trim() || '';
+            
+            const res = await fetch('/api/usuarios/update', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, estado, permisos, nombre})
+            });
+            
+            if (res.ok) {
+                // Remove alert to make it smoother
+                loadUsers();
+            } else {
+                alert("Error al actualizar");
+            }
+        }
+
+        async function rejectUser(username) {
+            if(!confirm("¿Estás seguro de rechazar esta solicitud? El usuario desaparecerá de tu listado y no podrá acceder.")) return;
+            const permisos = []; // sin permisos
+            const nombre = document.getElementById(`nombre-${username}`)?.value?.trim() || '';
+            
+            const res = await fetch('/api/usuarios/update', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, estado: 'rechazado', permisos, nombre})
+            });
+            
+            if (res.ok) {
+                loadUsers();
+            } else {
+                alert("Error al rechazar usuario");
+            }
+        }
+        
+        loadUsers();
+    </script>
+</body>
+</html>
