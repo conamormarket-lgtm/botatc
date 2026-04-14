@@ -705,9 +705,13 @@
                     body: JSON.stringify({wa_id: ctxChatNum, action: action})
                 });
                 if(res.ok) {
-                    window.location.reload();
+                    if (action === 'unread' && ctxChatNum === curWaId) {
+                        window.location.href = '/inbox';
+                    } else {
+                        window.location.reload();
+                    }
                 } else {
-                    alert('Error realizando acción');
+                    alert('Error realizando accin');
                 }
             } catch(e) {
                 console.error(e);
@@ -943,7 +947,7 @@
             try {
                 // Prevenir caché del navegador
                 const url = window.location.href;
-                const fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+                const fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
 
                 const res = await fetch(fetchUrl, {
                     cache: 'no-store',

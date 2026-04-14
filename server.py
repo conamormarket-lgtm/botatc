@@ -2196,8 +2196,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         }
         grupos_sesiones.append((vg.get("id"), s_fake))
 
-    # Reset unread count for active chat
-    if wa_id and wa_id in sesiones:
+    # Reset unread count for active chat ONLY IF it's not an AJAX poll.
+    # When the user clicks a chat, the browser navigates to `/inbox/{wa_id}` (not ajax).
+    # When the sidebar updates in the background, it appends `?ajax=1`.
+    is_ajax = request.query_params.get("ajax") == "1"
+    if wa_id and wa_id in sesiones and not is_ajax:
         if sesiones[wa_id].get("unread_count", 0) != 0:
             sesiones[wa_id]["unread_count"] = 0
             try:
