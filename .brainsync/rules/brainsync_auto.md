@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2554 notes | Score threshold: >40
+> 2791 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,35 +20,36 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Replaced auth Score
-+ - ⚠️ GOTCHA: Added JWT tokens aut
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2523 notes | Score threshold: >40
-+ > 2525 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score** — - > 2520 notes | Score threshold: >40
-+ > 2521 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Fixed null crash in True
-+ - ⚠️ GOTCHA: Replaced auth S
-- **⚠️ GOTCHA: Replaced auth Score** — - > 2511 notes | Score threshold: >40
-+ > 2515 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score** — - > 2510 notes | Score threshold: >40
-+ > 2511 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Agent — reduces excessive function call freque
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Contenedor — reduces excessive function call f
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Admin
++ - problem-fix in agent-rules.md
+- - Fi
+- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Inbox
++ - Fixed null crash in System
+- - Fixed
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2687 notes | Score threshold: >40
++ > 2700 notes | Score threshold
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Optimized Score — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Optimized Fixed — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
-- ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Archivo — parallelizes async operations for speed
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -     → ✅ Patched security issue Score — evolves the database schema to support new req...
 

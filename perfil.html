@@ -26,13 +26,11 @@
         a { text-decoration: none; color: inherit; }
 
         /* --------- SIDEBAR NAV --------- */
-        .sidebar-nav { width: 70px; background-color: var(--bg-main); border-right: 1px solid var(--accent-border); display: flex; flex-direction: column; align-items: center; padding: 1.5rem 0; z-index: 10; }
-        .nav-item { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 1rem; transition: all 0.2s ease; cursor: pointer; }
+        .sidebar-nav { width: 55px; background-color: var(--bg-sidebar, var(--bg-main)); border-right: 1px solid var(--accent-border); display: flex; flex-direction: column; align-items: center; padding: 1.5rem 0; z-index: 10; }
+        .nav-item { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 1rem; transition: all 0.2s ease; text-decoration: none; }
         .nav-item:hover { color: var(--text-main); background-color: var(--accent-hover-soft); }
         .nav-item.active { color: var(--primary-color); background-color: rgba(59, 130, 246, 0.1); }
-        .nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        
-        .spacer { margin-top: auto; }
+        .nav-item svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         /* --------- MAIN PANEL ------------ */
         .settings-main-panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; min-width: 0; background-color: var(--bg-main); }
@@ -64,34 +62,25 @@
 
 <body>
 
-    <!-- 1. BARRA LATERAL -->
     <nav class="sidebar-nav">
+        <!-- Inbox Icon -->
         <a href="/inbox" class="nav-item" title="Bandeja de Entrada (Inbox)">
-            <svg viewBox="0 0 24 24">
-                <path d="M22 12h-6l-2 3h-4l-2-3H2" />
-                <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
-            </svg>
+            <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
         </a>
-        
+        <!-- Agent Settings Icon -->
         {settings_button}
-        
+        <!-- Admin Users Icon -->
+        {usuarios_button}
+        <!-- System Settings Icon -->
         {admin_button}
-
-        <div class="spacer"></div>
         
-        <a href="/perfil" class="nav-item active" title="Mi Perfil" style="margin-bottom: 15px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
+        <div style="flex:1;"></div>
+        
+        <a href="/perfil" class="nav-item active" title="Mi Perfil" style="margin-bottom: 5px; color: var(--text-muted); display: flex; justify-content: center; text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </a>
-        
-        <a href="/logout" class="nav-item" title="Cerrar Sesión" style="margin-bottom: 20px; color: #ef4444;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16 17 21 12 16 7"></polyline>
-                <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
+        <a href="/logout" class="nav-item" title="Cerrar Sesión" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; opacity: 0.8; transition: opacity 0.2s;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         </a>
     </nav>
 
