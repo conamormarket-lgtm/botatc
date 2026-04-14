@@ -2706,31 +2706,25 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         <button type="button" id="btnRightClip" onclick="const m = document.getElementById('attachMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Adjuntar">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(45deg);"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                         </button>
-                        <!-- Cámara (Foto) -->
-                        <button type="button" id="btnRightPhoto" onclick="document.getElementById('hiddenFileInput').setAttribute('data-mode', 'imagen'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').setAttribute('capture', 'environment'); document.getElementById('hiddenFileInput').click();" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Foto (Cámara)">
+                        <!-- Cámara (Foto y Video) -->
+                        <button type="button" id="btnRightPhoto" onclick="document.getElementById('hiddenFileInput').setAttribute('data-mode', 'media'); document.getElementById('hiddenFileInput').accept='image/*,video/*'; document.getElementById('hiddenFileInput').setAttribute('capture', 'environment'); document.getElementById('hiddenFileInput').click();" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Cámara (Foto y Video)">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         </button>
-                        <!-- Cámara (Video) -->
-                        <button type="button" id="btnRightVideo" onclick="document.getElementById('hiddenFileInput').setAttribute('data-mode', 'video'); document.getElementById('hiddenFileInput').accept='video/*'; document.getElementById('hiddenFileInput').setAttribute('capture', 'environment'); document.getElementById('hiddenFileInput').click();" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Video (Cámara Nativa)">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        
+                        <!-- Micrófono o Enviar -->
+                        <!-- Send Button (Toggle) -->
+                        <button type="submit" id="btnSubmitForm" style="background:transparent;color:var(--text-muted);border:none;width:32px;height:32px;display:none;align-items:center;justify-content:center;cursor:pointer;transition:color 0.2s; flex-shrink:0;" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--text-muted)'" title="Enviar">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="margin-left: 2px;"><line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                        <!-- Record Audio Button (Toggle) -->
+                        <button type="button" id="btnRecordAudio" style="background:transparent;color:var(--text-muted);border:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color 0.2s; flex-shrink:0;" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--text-muted)'" title="Grabar nota de voz">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                        </button>
+                        <!-- Cancel Audio -->
+                        <button type="button" id="btnCancelAudio" style="background:transparent; color:var(--danger-color); border:none; width:32px; height:32px; display:none; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.2s; flex-shrink:0;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Cancelar grabación">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
                     </div>
-                </div>
-
-                <!-- DERECHA EXTREMA: Mic o Send -->
-                <div style="flex:0 0 46px; display:flex; align-items:flex-end; justify-content:center;">
-                    <!-- Send Button (Toggle) -->
-                    <button type="submit" id="btnSubmitForm" style="background:var(--primary-color);color:white;border:none;border-radius:50%;width:46px;height:46px;display:none;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.2s; box-shadow:0 3px 5px rgba(0,0,0,0.2); flex-shrink:0;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Enviar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="margin-left: 2px;"><line x1="22" y1="2" x2="11" y2="13" stroke="white" stroke-width="2"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
-                    <!-- Record Audio Button (Toggle) -->
-                    <button type="button" id="btnRecordAudio" style="background:var(--primary-color);color:white;border:none;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.2s; box-shadow:0 3px 5px rgba(0,0,0,0.2); flex-shrink:0;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Grabar nota de voz">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                    </button>
-                    <!-- Cancel Audio -->
-                    <button type="button" id="btnCancelAudio" style="background:var(--danger-color); color:white; border:none; border-radius:50%; height:46px; width:46px; display:none; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.2s; flex-shrink:0;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" title="Cancelar grabación">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
                 </div>
             </form>            """
 
@@ -2747,7 +2741,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         chat_viewer_html = f"""
         <div style="display:flex; flex-direction:row; height:100%; width:100%;">
             <!-- START CHAT MAIN COLUMN -->
-            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent; position:relative;">
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent;">
                 {status_bar}
                 <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
                     <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
@@ -2776,14 +2770,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     </div>
                 </div>
                 
-                <div style="flex:1;overflow-y:auto;padding:1.5rem 1.5rem 7rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
+                <div style="flex:1;overflow-y:auto;padding:1.5rem 1.5rem 0.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
                     {burbujas}
                 </div>
                 
-                <div style="position:absolute; bottom:0; left:0; width:100%; padding:1rem 1rem 1.5rem 1rem; background:transparent; box-sizing:border-box; z-index:10; pointer-events:none;">
-                    <div style="pointer-events:auto; width:100%;">
-                        {chat_box}
-                    </div>
+                <div style="padding:0.2rem 1rem 1rem 1rem; background:transparent; width:100%; max-width:100vw; box-sizing:border-box;">
+                    {chat_box}
                 </div>
             </div>
             <!-- END CHAT MAIN COLUMN -->
