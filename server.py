@@ -72,6 +72,11 @@ def inyectar_tema_global(request, html: str) -> str:
             --text-main: {t_main} !important;
             --text-muted: {t_muted} !important;
         }}
+        .nav-item.active {{
+            color: {t_main} !important;
+            background-color: {accent_bg_rgba} !important;
+            border-left: 3px solid {c_prim} !important;
+        }}
     '''
     
     if wp:
