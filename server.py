@@ -93,7 +93,6 @@ def inyectar_tema_global(request, html: str) -> str:
             background: linear-gradient({overlay_rgba}, {overlay_rgba}), url('{wp}') !important;
             background-size: cover !important;
             background-position: center !important;
-            background-attachment: fixed !important;
         }}
         .appearance-card, .proactive-card, .pdf-card, .backup-card, .editor-card {{
             background: var(--accent-bg) !important;

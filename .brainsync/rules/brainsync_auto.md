@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2856 notes | Score threshold: >40
+> 2866 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2856 notes | Score threshold: >40
++ > 2859 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2848 notes | Score threshold: >40
 + > 2851 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2841 notes | Score threshold: >40
@@ -30,24 +32,17 @@
 + > 2837 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2830 notes | Score threshold: >40
 + > 2834 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "27693849beb8da88",
-+
 
 ## Project Standards
 
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
-- what-changed in shared-context.json — confirmed 7x
-- Fixed null crash in HTMLResponse — parallelizes async operations for speed — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
