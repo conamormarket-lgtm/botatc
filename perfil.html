@@ -127,9 +127,9 @@
                     
                     <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:0.5rem;">
                         <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1; min-width:250px;">
-                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Imagen de Fondo del Chat (URL o Archivo local)</label>
+                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Imagen de Fondo del Chat</label>
                             <div style="display:flex; gap:0.5rem;">
-                                <input type="url" id="theme_wallpaper" name="wallpaper" value="{wallpaper}" placeholder="Ej: https://..." style="background:rgba(0,0,0,0.2); border:1px solid var(--accent-border); color:white; padding:0.8rem 1rem; border-radius:8px; outline:none; font-family:var(--font-main); flex:1;">
+                                <input type="text" id="theme_wallpaper" name="wallpaper" value="{wallpaper}" placeholder="Sube una imagen o deja vacío..." style="background:rgba(0,0,0,0.2); border:1px solid var(--accent-border); color:white; padding:0.8rem 1rem; border-radius:8px; outline:none; font-family:var(--font-main); flex:1;">
                                 <label style="background:var(--accent-bg); border:1px solid var(--accent-border); padding:0.8rem 1rem; border-radius:8px; cursor:pointer; display:flex; align-items:center; transition:background 0.2s;" title="Subir archivo" onmouseover="this.style.background='var(--primary-color)'" onmouseout="this.style.background='var(--accent-bg)'">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                     <input type="file" name="wallpaper_file" accept="image/*" style="display:none;" onchange="previewLocalWallpaper(this)">
