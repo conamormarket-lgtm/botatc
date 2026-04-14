@@ -140,12 +140,14 @@ def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
         
         # Firestore maneja datetimes nativamente
         doc_ref.set(data_to_save)
+        print(f"✅ [FIREBASE-DEBUG] Guardado exitoso: {numero_wa}")
     except Exception as e:
         import traceback
         with open("firebase_debug_error.log", "a", encoding="utf-8") as f:
             f.write(f"ERROR GUARDANDO {numero_wa}:\n")
             traceback.print_exc(file=f)
             f.write("-" * 50 + "\n")
+        print(f"❌ [FIREBASE-DEBUG] ERROR CATCHED IN FIREBASE CLIENT: {e}")
         raise e
 
 
