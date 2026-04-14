@@ -655,6 +655,12 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         import time
         ts = int(time.time()) # fallback
         sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id, "timestamp": ts})
+        
+        # Incrementar contador de mensajes no leídos
+        cur_unread = sesion.get("unread_count", 0)
+        if cur_unread == -1: cur_unread = 0
+        sesion["unread_count"] = cur_unread + 1
+        
         # ¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
         try: 
             from firebase_client import guardar_sesion_chat
@@ -2188,7 +2194,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         }
         grupos_sesiones.append((vg.get("id"), s_fake))
 
-    todas = sorted(list(sesiones.items()) + grupos_sesiones, key=lambda x: x[1].get("ultima_actividad", datetime.min), reverse=True)
+    # Reset unread count for active chat
+    if wa_id and wa_id in sesiones:
+        if sesiones[wa_id].get("unread_count", 0) != 0:
+            sesiones[wa_id]["unread_count"] = 0
+            try:
+                from firebase_client import guardar_sesion_chat
+                guardar_sesion_chat(wa_id, sesiones[wa_id])
+            except: pass
+
+    todas = sorted(list(sesiones.items()) + grupos_sesiones, key=lambda x: (x[1].get("is_pinned", False), x[1].get("ultima_actividad", datetime.min)), reverse=True)
     lista_chats_html = ""
     
     # ------------------ Generador de Filtro de Etiquetas HTML ------------------
@@ -2233,10 +2248,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     for num, s in todas:
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
         activo = s.get("bot_activo", True)
+        is_archived = s.get("is_archived", False)
         
         # Filtro de Tab
-        if tab == "human" and activo:
-            continue
+        if tab == "archived":
+            if not is_archived: continue
+        else:
+            if is_archived: continue
+            if tab == "human" and activo:
+                continue
             
         session_tags = s.get("etiquetas", [])
         if session_tags is None: session_tags = []
@@ -2281,15 +2301,30 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if label_filter: extra_params += f"&label={label_filter}"
         if unread: extra_params += f"&unread={unread}"
         
+        is_pinned = s.get("is_pinned", False)
+        pin_html = '<svg width="12" height="12" viewBox="0 0 24 24" fill="var(--primary-color)" style="margin-right:4px;"><path d="M16 3H8a1 1 0 0 0-1 1v5.586a1 1 0 0 1-.293.707l-2.414 2.414A1 1 0 0 0 5 13.414V19a1 1 0 0 0 1 1h5v3l1 2 1-2v-3h5a1 1 0 0 0 1-1v-5.586a1 1 0 0 0-.293-.707l-2.414-2.414A1 1 0 0 1 16 9.586V4a1 1 0 0 0-1-1z"/></svg>' if is_pinned else ''
+        
+        unread_count = s.get("unread_count", 0)
+        unread_html = ""
+        if unread_count == -1: # Indicador sin número (marcado manual)
+            unread_html = '<div style="width:10px; height:10px; border-radius:50%; background:var(--primary-color); flex-shrink:0;"></div>'
+        elif unread_count > 0:
+            unread_html = f'<div style="min-width:20px; height:20px; border-radius:10px; background:var(--primary-color); color:var(--bg-main); font-size:0.75rem; font-weight:bold; display:flex; align-items:center; justify-content:center; padding:0 6px; flex-shrink:0;">{unread_count}</div>'
+            
         lista_chats_html += f"""
-        <a href="/inbox/{num}{extra_params}" class="chat-row {active_class}">
-            <div class="chat-row-header">
-                <span class="chat-name">{nombre}</span>
-                <span class="chat-time">{time_str}</span>
+        <a href="/inbox/{num}{extra_params}" class="chat-row {active_class}" oncontextmenu="if(window.showChatMenu) window.showChatMenu(event, '{num}', {'true' if is_archived else 'false'}, {'true' if is_pinned else 'false'}); return false;">
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+                {unread_html}
+                <div style="flex:1; min-width:0;">
+                    <div class="chat-row-header">
+                        <span class="chat-name">{pin_html}{nombre}</span>
+                        <span class="chat-time">{time_str}</span>
+                    </div>
+                    <div class="chat-preview">{preview}</div>
+                    <div class="chat-badges">{badge_html}</div>
+                    {tags_html}
+                </div>
             </div>
-            <div class="chat-preview">{preview}</div>
-            <div class="chat-badges">{badge_html}</div>
-            {tags_html}
         </a>"""
 
     if not lista_chats_html:
@@ -3324,8 +3359,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     # Reemplazos finales en la plantilla
     es_chat_valido = bool(wa_id and wa_id in sesiones)
     html = html.replace("{body_class}", "view-chat" if es_chat_valido else "view-list")
-    html = html.replace("{tab_all_active}", "active" if tab != "human" else "")
+    html = html.replace("{tab_all_active}", "active" if tab not in ("human", "archived") else "")
     html = html.replace("{tab_human_active}", "active" if tab == "human" else "")
+    html = html.replace("{tab_archived_active}", "active" if tab == "archived" else "")
     html = html.replace("{lista_chats_html}", lista_chats_html)
     html = html.replace("{labels_filter_html}", labels_filter_html)
     html = html.replace("{chat_viewer_html}", chat_viewer_html)
@@ -3986,3 +4022,52 @@ async def api_toggle_chat_label(payload: ToggleLabelPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Chat no existe en memoria ni BD"}
+
+class ChatActionPayload(BaseModel):
+    wa_id: str
+    action: str
+
+@app.post("/api/admin/chat/action")
+async def api_chat_action(payload: ChatActionPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+        
+    from firebase_client import cargar_sesion_chat, guardar_sesion_chat, inicializar_firebase
+    wa_id = payload.wa_id
+    action = payload.action
+    
+    s = cargar_sesion_chat(wa_id)
+    if not s:
+        s = sesiones.get(wa_id)
+        
+    if not s and action != "delete":
+        return {"ok": False, "error": "Chat no existe"}
+        
+    if action == "archive":
+        s["is_archived"] = not s.get("is_archived", False)
+        if wa_id in sesiones: sesiones[wa_id] = s
+        guardar_sesion_chat(wa_id, s)
+        return {"ok": True, "state": s["is_archived"]}
+        
+    elif action == "pin":
+        s["is_pinned"] = not s.get("is_pinned", False)
+        if wa_id in sesiones: sesiones[wa_id] = s
+        guardar_sesion_chat(wa_id, s)
+        return {"ok": True, "state": s["is_pinned"]}
+        
+    elif action == "unread":
+        s["unread_count"] = -1
+        if wa_id in sesiones: sesiones[wa_id] = s
+        guardar_sesion_chat(wa_id, s)
+        return {"ok": True}
+        
+    elif action == "delete":
+        if wa_id in sesiones:
+            del sesiones[wa_id]
+        try:
+            db = inicializar_firebase()
+            db.collection("chats_atc").document(wa_id).delete()
+        except: pass
+        return {"ok": True}
+        
+    return {"ok": False, "error": "Acción inválida"}

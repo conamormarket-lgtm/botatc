@@ -448,8 +448,13 @@
 {custom_theme_css}
     </style>
 </head>
-
 <body class="{body_class}">
+    <div id="chatListMenu" style="display:none; position:fixed; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); z-index:9999; flex-direction:column; overflow:hidden; min-width:180px;">
+        <div id="btnArchivar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('archive'); return false;">Archivar chat</div>
+        <div id="btnFijar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('pin'); return false;">Fijar chat</div>
+        <div id="btnMarcarNoLeido" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('unread'); return false;">Marcar como no leído</div>
+        <div id="btnBorrarChat" style="padding:0.8rem 1rem; color:#ef4444; font-size:0.85rem; cursor:pointer; font-weight:bold;" onclick="window.chatAction('delete'); return false;">Borrar chat</div>
+    </div>
 
     <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
     <nav class="sidebar-nav">
@@ -488,6 +493,7 @@
             <div class="list-tabs">
                 <a href="/inbox?tab=all" class="tab {tab_all_active}">Todos</a>
                 <a href="/inbox?tab=human" class="tab {tab_human_active}">Humanos</a>
+                <a href="/inbox?tab=archived" class="tab {tab_archived_active}">Archivados</a>
             </div>
 
             {labels_filter_html}
@@ -643,7 +649,74 @@
     </style>
 
     <script>
-        // LOGICA DE MENÚ CONTEXTUAL
+        // CHAT LIST CONTEXT MENU
+        let ctxChatNum = null;
+        window.showChatMenu = function(e, num, isArchived, isPinned) {
+            e.preventDefault();
+            ctxChatNum = num;
+            document.getElementById('btnArchivar').innerText = isArchived == "true" ? 'Desarchivar chat' : 'Archivar chat';
+            document.getElementById('btnFijar').innerText = isPinned == "true" ? 'Desfijar chat' : 'Fijar chat';
+            
+            let menu = document.getElementById('chatListMenu');
+            menu.style.display = 'flex';
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+            return false;
+        };
+
+        window.chatAction = async function(action) {
+            if(!ctxChatNum) return;
+            if(action === 'delete') {
+                const modalHtml = `
+                    <div id="deleteConfirmModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; display:flex; align-items:center; justify-content:center;">
+                        <div style="background:var(--bg-main); padding:2rem; border-radius:12px; max-width:400px; text-align:center; border:1px solid var(--accent-border);">
+                            <h3 style="margin-top:0; color:#ef4444;">¿Borrar este chat?</h3>
+                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Esta acción eliminará el chat permanentemente y no se puede deshacer.</p>
+                            <div style="display:flex; justify-content:center; gap:1rem;">
+                                <button onclick="document.body.removeChild(document.getElementById('deleteConfirmModal'))" style="padding:0.6rem 1.5rem; border-radius:8px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); cursor:pointer;">Cancelar</button>
+                                <button onclick="window.confirmDeleteChat()" style="padding:0.6rem 1.5rem; border-radius:8px; border:none; background:#ef4444; color:white; cursor:pointer;">Borrar Permanente</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                document.getElementById('chatListMenu').style.display = 'none';
+                return;
+            }
+            
+            await executeChatAction(action);
+        };
+
+        window.confirmDeleteChat = async function() {
+            const modal = document.getElementById('deleteConfirmModal');
+            if(modal) document.body.removeChild(modal);
+            await executeChatAction('delete');
+        };
+
+        async function executeChatAction(action) {
+            try {
+                const res = await fetch("/api/admin/chat/action", {
+                    method: "POST",
+                    headers: {"Content-Type":"application/json"},
+                    body: JSON.stringify({wa_id: ctxChatNum, action: action})
+                });
+                if(res.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Error realizando acción');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+            document.getElementById('chatListMenu').style.display = 'none';
+        }
+
+        document.addEventListener('click', function(e) {
+            let menu1 = document.getElementById('chatListMenu');
+            if(menu1 && !menu1.contains(e.target)) menu1.style.display = 'none';
+        });
+
+        // LOGICA DE MENÚs CONTEXTUAL
         let ctxTargetWamid = "";
         let ctxTargetText = "";
         let ctxTargetMediaId = "";

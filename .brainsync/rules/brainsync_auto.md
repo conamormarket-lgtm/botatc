@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2873 notes | Score threshold: >40
+> 2902 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,21 +20,25 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "9afd5c695ef5bf56",
++
+- **⚠️ GOTCHA: Fixed null crash in GRUPO** — -     html = html.replace("{tab_all_active}", "active" if tab != "huma
+- **⚠️ GOTCHA: Fixed null crash in Reset — parallelizes async operations for speed** — -     todas = sorted(list(sesiones.items()) + grupos_sesiones, key=lam
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 2856 notes | Score threshold: >40
 + > 2859 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2848 notes | Score threshold: >40
 + > 2851 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2841 notes | Score threshold: >40
 + > 2848 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2837 notes | Score threshold: >40
-+ > 2841 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 2834 notes | Score threshold: >40
-+ > 2837 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2830 notes | Score threshold: >40
-+ > 2834 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
@@ -42,7 +46,6 @@
 - what-changed in shared-context.json — confirmed 3x
 - Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Updated schema GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 
 ## Known Fixes
 
@@ -54,9 +57,10 @@
 
 ## Recent Decisions
 
+- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - decision in task.md
-- Optimized Score — evolves the database schema to support new requirements
-- decision in inbox.html
 
 ## Learned Patterns
 
