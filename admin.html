@@ -293,51 +293,6 @@
                 </div>
             </div>
 
-            <!-- TABLA: ESPERANDO HUMANO -->
-            <h3 class="section-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger-color)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                Atención Crítica Requerida
-            </h3>
-            <div class="table-card">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Pedido</th>
-                            <th>Tiempo Espera</th>
-                            <th>Motivo / Regla Gatillada</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filas_esperando_humano}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- TABLA: TODAS LAS SESIONES -->
-            <h3 class="section-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Historial Fresco (Últimas 4h)
-            </h3>
-            <div class="table-card">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Pedido</th>
-                            <th>Propietario</th>
-                            <th>Última Actividad</th>
-                            <th>Mensaje Previo</th>
-                            <th>Acciones Rápidas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filas_todas}
-                    </tbody>
-                </table>
-            </div>
-
             <!-- GESTIÓN DE GRUPOS VIRTUALES -->
             <h3 class="section-title">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>

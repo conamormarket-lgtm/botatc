@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2951 notes | Score threshold: >40
+> 2976 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,26 +20,31 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2935 notes | Score threshold: >40
-+ > 2941 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backwa
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2932 notes | Score threshold: >40
-+ > 2935 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2925 notes | Score threshold: >40
-+ > 2932 notes | Score threshold
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — introduces API versioning for backwar
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "abc289409a102efd",
++
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Optimized 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 2951 notes | Score threshold: >40
++ > 2967 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Error — reduces excessive function call freque
+- **⚠️ GOTCHA: Fixed null crash in Reset — parallelizes async operations for speed** — -     # Reset unread count for active chat ONLY IF it's > 0 (meaning n
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Replaced auth Kevin — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -54,7 +59,7 @@
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- decision in task.md
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 

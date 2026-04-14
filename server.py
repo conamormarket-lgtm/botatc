@@ -1453,69 +1453,7 @@ async def panel_admin(request: Request):
     n_escalados = len(escalados)
     n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
 
-    def tiempo_relativo(dt):
-        diff = ahora - dt
-        m = int(diff.total_seconds() / 60)
-        if m < 1:   return "ahora"
-        if m < 60:  return f"hace {m}m"
-        return f"hace {m//60}h {m%60}m"
-
-    def ultimo_msg(sesion):
-        hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
-        if not hist: return "—"
-        return hist[-1]["content"][:60] + ("…" if len(hist[-1]["content"]) > 60 else "")
-
-    # ── Tabla: Esperando humano ──────────────────────────
-    filas_esc = ""
-    for num, s in escalados:
-        hace   = tiempo_relativo(s["escalado_en"])
-        nombre = s.get("nombre_cliente", num)
-        motivo = (s.get("motivo_escalacion") or "—")[:55]
-        pedido = s.get("datos_pedido", {}).get("id", "—") if s.get("datos_pedido") else "—"
-        
-        filas_esc += f"""
-        <tr>
-          <td><div style="font-weight:600;color:var(--text-main)">{nombre}</div><div style="font-size:0.75rem;color:var(--text-muted)">+{num}</div></td>
-          <td><span class="badge pedido">#{pedido}</span></td>
-          <td style="color:var(--danger-color);font-weight:600">{hace}</td>
-          <td><span style="font-size:0.85rem;color:var(--text-muted)">{motivo}</span></td>
-          <td style="display:flex;gap:0.5rem;align-items:center;">
-            <a href="/inbox/{num}" class="btn-action btn-outline">Ir a Inbox</a>
-            <form method="post" action="/admin/reactivar/{num}" style="margin:0">
-              <button type="submit" class="btn-action btn-primary">Reactivar IA</button>
-            </form>
-          </td>
-        </tr>"""
-    if not filas_esc:
-        filas_esc = '<tr class="empty-row"><td colspan="5">Ningún chat está esperando atención manual. Todo fluye automatizado. ✅</td></tr>'
-
-    # ── Tabla: Todas las sesiones ────────────────────────
-    todas = sorted(sesiones.items(), key=lambda x: x[1]["ultima_actividad"], reverse=True)
-    filas_all = ""
-    for num, s in todas:
-        inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
-        activo   = s.get("bot_activo", True)
-            
-        nombre   = s.get("nombre_cliente", num)
-        pedido   = s.get("datos_pedido", {}).get("id", "—") if s.get("datos_pedido") else "—"
-        ult_act  = tiempo_relativo(s["ultima_actividad"])
-        preview  = ultimo_msg(s)
-        
-        badge = '<span class="badge active">IA Bot</span>' if activo else '<span class="badge danger">Humano</span>'
-        
-        filas_all += f"""
-        <tr>
-          <td><div style="font-weight:600;color:var(--text-main)">{nombre}</div><div style="font-size:0.75rem;color:var(--text-muted)">+{num}</div></td>
-          <td><span class="badge pedido">#{pedido}</span></td>
-          <td>{badge}</td>
-          <td style="color:var(--text-muted);font-size:0.85rem">{ult_act}</td>
-          <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-muted);font-size:0.85rem">{preview}</td>
-          <td>
-            <a href="/inbox/{num}" class="btn-action btn-outline">Espiar Chat</a>
-          </td>
-        </tr>"""
-    if not filas_all:
-        filas_all = '<tr class="empty-row"><td colspan="6">Sin sesiones activas recientes.</td></tr>'
+    # removed ──────────────────────────
 
     # Reemplazos
     html = html.replace("{pwd}", "")
@@ -1525,8 +1463,7 @@ async def panel_admin(request: Request):
     html = html.replace("{total_sesiones}", str(total))
     html = html.replace("{bots_activos}", str(n_activos))
     html = html.replace("{humanos_requeridos}", str(n_escalados))
-    html = html.replace("{filas_esperando_humano}", filas_esc)
-    html = html.replace("{filas_todas}", filas_all)
+    # replaced
     
     return HTMLResponse(inyectar_tema_global(request, html))
 
