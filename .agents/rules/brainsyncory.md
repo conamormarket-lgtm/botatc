@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 2943 notes | Score threshold: >40
+> 2947 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -32,14 +32,14 @@
 
 ## Project Standards
 
+- what-changed in brainsync_auto.md — confirmed 3x
+- Replaced auth Score — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Replaced auth Kevin — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
 - trade-off in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
-- Fixed null crash in Archivar — reduces excessive function call frequency — confirmed 3x
 
 ## Known Fixes
 

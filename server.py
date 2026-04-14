@@ -2315,9 +2315,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             
         lista_chats_html += f"""
         <a href="/inbox/{num}{extra_params}" class="chat-row {active_class}" oncontextmenu="if(window.showChatMenu) window.showChatMenu(event, '{num}', {'true' if is_archived else 'false'}, {'true' if is_pinned else 'false'}); return false;">
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-                {unread_html}
-                <div style="flex:1; min-width:0;">
+            <div style="display:flex; align-items:center; gap:0.5rem; justify-content:space-between;">
+                <div style="flex:1; min-width:0; margin-right: 0.5rem;">
                     <div class="chat-row-header">
                         <span class="chat-name">{pin_html}{nombre}</span>
                         <span class="chat-time">{time_str}</span>
@@ -2326,6 +2325,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <div class="chat-badges">{badge_html}</div>
                     {tags_html}
                 </div>
+                {unread_html}
             </div>
         </a>"""
 
@@ -4090,8 +4090,6 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
             del sesiones[wa_id]
         if wa_id in mensajes_pendientes:
             del mensajes_pendientes[wa_id]
-        if wa_id in retry_attempts:
-            del retry_attempts[wa_id]
         try:
             db = inicializar_firebase()
             db.collection("chats_atc").document(wa_id).delete()
