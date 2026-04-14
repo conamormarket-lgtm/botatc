@@ -80,7 +80,7 @@ def inyectar_tema_global(request, html: str) -> str:
             overlay_rgba = f"rgba(15, 23, 42, {1.0 - wp_opacity})"
             
         css += f'''
-        #chatScroll {{
+        .chat-viewer-panel {{
             background: linear-gradient({overlay_rgba}, {overlay_rgba}), url('{wp}') !important;
             background-size: cover !important;
             background-position: center !important;
@@ -3412,16 +3412,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             --accent-hover-soft: {accent_hover_rgba} !important;
         }}
         '''
-        wp = prefs.get('wallpaper', '')
-        if wp:
-            custom_theme_css += f'''
-            .chat-viewer-panel {{
-                background-image: url('{wp}') !important;
-                background-size: cover !important;
-                background-position: center !important;
-                background-repeat: no-repeat !important;
-            }}
-            '''
+
     html = html.replace("{custom_theme_css}", custom_theme_css)
 
     return HTMLResponse(inyectar_tema_global(request, html))
