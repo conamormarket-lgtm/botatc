@@ -1623,6 +1623,10 @@
             if (combinedEmojiMenu && !e.target.closest('#combinedEmojiMenu') && !e.target.closest('button[title="Emojis y Stickers"]')) {
                 combinedEmojiMenu.style.display = "none";
             }
+            const cameraMenu = document.getElementById("cameraMenu");
+            if (cameraMenu && !e.target.closest('#cameraMenu') && !e.target.closest('#btnRightPhoto')) {
+                cameraMenu.style.display = "none";
+            }
 
             const attachMenu = document.getElementById("attachMenu");
             if (attachMenu && !e.target.closest('#attachMenu') && !e.target.closest('button[title="Adjuntar"]')) {
