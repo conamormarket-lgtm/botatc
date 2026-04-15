@@ -2576,7 +2576,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         activo_chat = s.get("bot_activo", True)
         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
         
-        load_all = request.query_params.get("history") == "all"
+        load_all = request.query_params.get("history") == "all" or bool(request.query_params.get("msg_id"))
         MAX_MENSAJES = 70
         msgs = all_msgs if load_all else all_msgs[-MAX_MENSAJES:]
         

@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3519 notes | Score threshold: >40
+> 3521 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3510 notes | Score threshold: >40
 + > 3513 notes | Score threshold
