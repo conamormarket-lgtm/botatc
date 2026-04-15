@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3306 notes | Score threshold: >40
+> 3320 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3310 notes | Score threshold: >40
++ > 3311 notes | Score threshold
 - **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 
 Content summary (8
@@ -35,18 +37,17 @@ Content summary (8
 +
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3234 notes | Score threshold: >40
 + > 3278 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in Servidor — protects against XSS and CSRF token
 
 ## Project Standards
 
+- Optimized Patched — confirmed 3x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in prompts.py — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json
 - Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 14x
-- discovery in shared-context.json — confirmed 4x
-- Fixed null crash in Volver — parallelizes async operations for speed — confirmed 7x
 
 ## Known Fixes
 
@@ -59,9 +60,9 @@ Content summary (8
 ## Recent Decisions
 
 - Optimized Score — introduces API versioning for backward compatibility
+- Optimized Score — introduces API versioning for backward compatibility
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
-- decision in temp_check.js
 
 ## Learned Patterns
 

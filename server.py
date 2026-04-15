@@ -751,7 +751,37 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 except: pass
                 return None
     else:
-        # Ya hay sesión con datos_pedido.
+        # Refrescar los datos para evitar estado obsoleto
+        from config import NUMEROS_TESTER
+        numero_local = normalizar_numero(numero_wa)
+        es_tester = numero_local in NUMEROS_TESTER or numero_wa in NUMEROS_TESTER
+        
+        if not es_tester:
+            datos_lista_fresca = buscar_pedido_por_telefono(numero_local)
+            if datos_lista_fresca:
+                pedidos_no_diseno = [d for d in datos_lista_fresca if d.get("estadoGeneral", "") not in ESTADOS_DISEÑO]
+                if pedidos_no_diseno:
+                    sesion["datos_pedido"] = pedidos_no_diseno[0]
+                    sesion["pedidos_multiples"] = pedidos_no_diseno
+                    if sesion["historial"] and sesion["historial"][0]["role"] == "system":
+                        sesion["historial"][0]["content"] = get_system_prompt(pedidos_no_diseno)
+        else:
+            # Re-fetch the specific manual ID for the tester
+            id_tester = sesion["datos_pedido"].get("id")
+            if id_tester:
+                from firebase_client import inicializar_firebase
+                db = inicializar_firebase()
+                try:
+                    doc = db.collection("pedidos").document(id_tester).get()
+                    if doc.exists:
+                        datos_tester = doc.to_dict()
+                        sesion["datos_pedido"] = datos_tester
+                        if sesion["historial"] and sesion["historial"][0]["role"] == "system":
+                            # Mantener formato de lista si usa el nuevo modelo multipedido
+                            sesion["historial"][0]["content"] = get_system_prompt([datos_tester] if "pedidos_multiples" in sesion else datos_tester)
+                except:
+                    pass
+
         estado_actual = sesion["datos_pedido"].get("estadoGeneral", "")
         if estado_actual in ESTADOS_DISEÑO:
             print(f"  [🎨 Pedido volvió a Diseño → silencio]")
