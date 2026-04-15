@@ -1713,21 +1713,7 @@
 
                 upObj.media_id = uploadData.media_id;
                 window.renderPendingMediaUI();
-
-                // Si la caja de texto está vacía, enviar automáticamente (comportamiento original).
-                // Si hay texto escrito, dejar en cola para que el usuario lo use como caption.
-                const inputEl = document.getElementById('manualMsgInput');
-                const hasInputText = inputEl && inputEl.value.trim().length > 0;
-                if (!hasInputText) {
-                    // Auto-enviar: extraer de la cola y despachar sin caption
-                    const idx = window.pendingUploads.indexOf(upObj);
-                    if (idx !== -1) window.pendingUploads.splice(idx, 1);
-                    window.renderPendingMediaUI();
-                    const msjFake = `[${mode}:${uploadData.media_id}]`;
-                    await window._sendRawTextManual(msjFake, wa_id, '', null);
-                    setTimeout(() => { if(window.pulseScroll) window.pulseScroll(true); }, 800);
-                }
-                // Si hay texto, el usuario envía manualmente para agregar caption
+                // Siempre queda en la cola — el usuario decide si agrega pie de imagen y presiona Enviar
 
             } catch (e) {
                 console.error("Fallo de red al enviar media:", e);
