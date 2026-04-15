@@ -449,9 +449,17 @@
     </style>
 </head>
 <body class="{body_class}">
-    <div id="chatListMenu" style="display:none; position:fixed; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); z-index:9999; flex-direction:column; overflow:hidden; min-width:180px;">
+    <div id="chatListMenu" style="display:none; position:fixed; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); z-index:9999; flex-direction:column; overflow:visible; min-width:180px;">
         <div id="btnArchivar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('archive'); return false;">Archivar chat</div>
         <div id="btnFijar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('pin'); return false;">Fijar chat</div>
+        <div class="ctx-menu-item" style="position:relative;" onmouseover="document.getElementById('ctxSubMenuLabels').style.display='flex'" onmouseout="document.getElementById('ctxSubMenuLabels').style.display='none'">
+            <div style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                Añadir etiqueta <span style="font-size:0.7rem;">▶</span>
+            </div>
+            <div id="ctxSubMenuLabels" style="display:none; position:absolute; top:0; left:100%; min-width:180px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; overflow-y:auto; max-height:250px;">
+                <!-- LABEL_CONTEXT_INJECTION -->
+            </div>
+        </div>
         <div id="btnMarcarNoLeido" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('unread'); return false;">Marcar como no leído</div>
         <div id="btnBorrarChat" style="padding:0.8rem 1rem; color:#ef4444; font-size:0.85rem; cursor:pointer; font-weight:bold;" onclick="window.chatAction('delete'); return false;">Borrar chat</div>
     </div>
@@ -734,6 +742,26 @@
             }
             document.getElementById('chatListMenu').style.display = 'none';
         }
+
+        window.chatActionLabel = async function(labelId) {
+            if(!ctxChatNum) return;
+            try {
+                const res = await fetch("/api/admin/chats/labels/toggle", {
+                    method: "POST",
+                    headers: {"Content-Type":"application/json"},
+                    body: JSON.stringify({wa_id: ctxChatNum, label_id: labelId, action: "toggle"})
+                });
+                if(res.ok) {
+                    window.location.reload();
+                } else {
+                    const data = await res.json();
+                    alert("Error: " + data.error);
+                }
+            } catch(e) {
+                console.error(e);
+            }
+            document.getElementById('chatListMenu').style.display = 'none';
+        };
 
         document.addEventListener('click', function(e) {
             let menu1 = document.getElementById('chatListMenu');
@@ -1898,7 +1926,7 @@
                 });
                 if (res.ok) {
                     document.getElementById("createLabelModal").style.display = "none";
-                    cargarChatLabels();
+                    window.location.reload();
                 } else {
                     alert("Error guardando etiqueta (Respuesta del servidor).");
                 }

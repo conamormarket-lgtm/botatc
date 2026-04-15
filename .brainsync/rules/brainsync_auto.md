@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3331 notes | Score threshold: >40
+> 3371 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,31 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Arrastra — wraps unsafe operation in error bou
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Editar — wraps unsafe operation in error bound
+- **⚠️ GOTCHA: Fixed null crash in Procesar — parallelizes async operations for speed** — - 
++     es_admin_str = "true" if es_admin(request) else "false"
+-  
 - **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
 - **⚠️ GOTCHA: Updated firebase_client database schema** — -     from firebase_client import guardar_etiqueta_bd
 +     if not es
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3310 notes | Score threshold: >40
 + > 3311 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Optimized GOTCHA — in
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - Optimized Patched — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in prompts.py — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Mensaje — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
@@ -53,9 +52,9 @@ Content summary (8
 
 ## Recent Decisions
 
-- Optimized Score — introduces API versioning for backward compatibility
-- Optimized Score — introduces API versioning for backward compatibility
-- Optimized Score — evolves the database schema to support new requirements
+- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns

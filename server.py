@@ -2286,6 +2286,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     es_admin_str = "true" if es_admin(request) else "false"
     html = html.replace("<style id=\"custom-theme-css\">", f"<script>window.ES_ADMIN = {es_admin_str};</script><style id=\"custom-theme-css\">")
 
+    labels_ctx_html = ""
+    for l in global_labels:
+        labels_ctx_html += f'<div style="padding:0.6rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;" onmouseover="this.style.background=\'var(--accent-hover)\'" onmouseout="this.style.background=\'transparent\'" onclick="window.chatActionLabel(\'{l.get("id")}\'); return false;"><div style="width:10px;height:10px;border-radius:50%;background:{l.get("color", "#ccc")};"></div> {l.get("name")}</div>'
+    
+    if not labels_ctx_html:
+        labels_ctx_html = '<div style="padding:0.6rem 1rem; color:var(--text-muted); font-size:0.85rem; text-align:center;">Sin etiquetas globales</div>'
+
+    html = html.replace("<!-- LABEL_CONTEXT_INJECTION -->", labels_ctx_html)
 
     ahora = datetime.utcnow()
     
