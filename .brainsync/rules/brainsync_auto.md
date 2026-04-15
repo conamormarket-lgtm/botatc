@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3320 notes | Score threshold: >40
+> 3325 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -40,6 +40,7 @@ Content summary (8
 
 ## Project Standards
 
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - Optimized Patched — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
@@ -47,7 +48,6 @@ Content summary (8
 - what-changed in prompts.py — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json
-- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
 
 ## Known Fixes
 

@@ -265,14 +265,15 @@
                 document.getElementById('theme_text_muted').value = '#6b7280';
             }
             
-            document.getElementById('theme_wallpaper').value = '';
-            document.getElementById('theme_wallpaper_opacity').value = '0.15';
-            document.getElementById('opacityVal').innerText = '0.15';
+            // Se comenta la lógica que borraba el fondo actual para preservarlo
+            // document.getElementById('theme_wallpaper').value = '';
+            // document.getElementById('theme_wallpaper_opacity').value = '0.15';
+            // document.getElementById('opacityVal').innerText = '0.15';
             
             // clear file input
-            document.querySelector('input[name="wallpaper_file"]').value = '';
-            document.getElementById('localFileLabel').style.display = 'none';
-            document.getElementById('localFileName').innerText = '';
+            // document.querySelector('input[name="wallpaper_file"]').value = '';
+            // document.getElementById('localFileLabel').style.display = 'none';
+            // document.getElementById('localFileName').innerText = '';
 
             previewTheme();
             
