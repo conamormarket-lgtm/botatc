@@ -2470,7 +2470,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             unread_html = f'<div style="min-width:20px; height:20px; border-radius:10px; background:var(--primary-color); color:var(--bg-main); font-size:0.75rem; font-weight:bold; display:flex; align-items:center; justify-content:center; padding:0 6px; flex-shrink:0;">{unread_count}</div>'
             
         lista_chats_html += f"""
-        <a href="/inbox/{num}{extra_params}" class="chat-row {active_class}" oncontextmenu="if(window.showChatMenu) window.showChatMenu(event, '{num}', {'true' if is_archived else 'false'}, {'true' if is_pinned else 'false'}); return false;">
+        <a href="/inbox/{num}{extra_params}" class="chat-row {active_class}" oncontextmenu="if(window.showChatMenu) window.showChatMenu(event, '{num}', {'true' if is_archived else 'false'}, {'true' if is_pinned else 'false'}, {'true' if activo else 'false'}); return false;">
             <div style="display:flex; align-items:center; gap:0.5rem; justify-content:space-between;">
                 <div style="flex:1; min-width:0; margin-right: 0.5rem;">
                     <div class="chat-row-header">
@@ -4377,6 +4377,19 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         if wa_id in sesiones: sesiones[wa_id] = s
         guardar_sesion_chat(wa_id, s)
         return {"ok": True}
+        
+    elif action == "toggleBot":
+        current_active = s.get("bot_activo", True)
+        s["bot_activo"] = not current_active
+        if not s["bot_activo"]:
+            s["escalado_en"] = datetime.utcnow()
+            s["motivo_escalacion"] = "Intervención manual"
+        else:
+            s["escalado_en"] = None
+            s["motivo_escalacion"] = None
+        if wa_id in sesiones: sesiones[wa_id] = s
+        guardar_sesion_chat(wa_id, s)
+        return {"ok": True, "state": s["bot_activo"]}
         
     elif action == "delete":
         if wa_id in sesiones:

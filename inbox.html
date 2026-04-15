@@ -452,6 +452,7 @@
     <div id="chatListMenu" style="display:none; position:fixed; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); z-index:9999; flex-direction:column; overflow:visible; min-width:180px;">
         <div id="btnArchivar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('archive'); return false;">Archivar chat</div>
         <div id="btnFijar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('pin'); return false;">Fijar chat</div>
+        <div id="btnToggleBot" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('toggleBot'); return false;">Pausar/Reactivar Bot</div>
         <div class="ctx-menu-item" style="position:relative;" onmouseover="document.getElementById('ctxSubMenuLabels').style.display='flex'" onmouseout="document.getElementById('ctxSubMenuLabels').style.display='none'">
             <div style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                 Añadir etiqueta <span style="font-size:0.7rem;">▶</span>
@@ -675,15 +676,18 @@
     <script>
         // CHAT LIST CONTEXT MENU
         let ctxChatNum = null;
-        window.showChatMenu = function(e, num, isArchived, isPinned) {
+        window.showChatMenu = function(e, num, isArchived, isPinned, isBotActive) {
             e.preventDefault();
             ctxChatNum = num;
             // Manejar tanto string como boolean que pueda mandar Python
             let arch = (isArchived === true || isArchived === "true");
             let pin = (isPinned === true || isPinned === "true");
+            let bot = (isBotActive === true || isBotActive === "true");
             
             document.getElementById('btnArchivar').innerText = arch ? 'Desarchivar chat' : 'Archivar chat';
             document.getElementById('btnFijar').innerText = pin ? 'Desfijar chat' : 'Fijar chat';
+            document.getElementById('btnToggleBot').innerText = bot ? 'Pausar Bot' : 'Reactivar Bot';
+            document.getElementById('btnToggleBot').style.color = bot ? '#ef4444' : '#10b981';
             
             let menu = document.getElementById('chatListMenu');
             menu.style.display = 'flex';
