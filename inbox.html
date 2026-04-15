@@ -1438,8 +1438,14 @@
                 qContainer = document.createElement('div');
                 qContainer.id = 'pendingMediaQueue';
                 qContainer.className = 'media-queue-container';
-                const chatInputWrap = document.querySelector('.chat-input-wrapper');
-                chatInputWrap.parentNode.insertBefore(qContainer, chatInputWrap);
+                // Insertar encima del reply preview o del form de envío
+                const anchor = document.getElementById('replyPreviewContainer') ||
+                               document.querySelector('form[onsubmit*="enviarMensajeManual"]');
+                if (anchor && anchor.parentNode) {
+                    anchor.parentNode.insertBefore(qContainer, anchor);
+                } else {
+                    document.body.appendChild(qContainer);
+                }
             }
             
             if (window.pendingUploads.length === 0) {
