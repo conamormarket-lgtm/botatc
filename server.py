@@ -314,7 +314,7 @@ def llamar_gemini(historial: list[dict]) -> str:
         config = types.GenerateContentConfig(
             system_instruction=system_text,
             temperature=TEMPERATURE,
-            max_output_tokens=800,
+            max_output_tokens=2048,
             safety_settings=[
                 types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_HARASSMENT, threshold=types.HarmBlockThreshold.BLOCK_NONE),
                 types.SafetySetting(category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold=types.HarmBlockThreshold.BLOCK_NONE),
@@ -2539,7 +2539,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             es_bot = m["role"] == "assistant"
             clase  = "bubble-bot" if es_bot else "bubble-user"
             lado   = "lado-der" if es_bot else "lado-izq"
-            texto  = m["content"].replace("\n", "<br>")
+            texto  = m["content"].replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
             
             # Virtual group: Include visual author tag for user messages
             if not es_bot and "sender_name_override" in m:
@@ -2857,8 +2857,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         pinned_html = ""
         if pinned_messages:
             last_pinned = pinned_messages[-1]
-            p_content = last_pinned.get("content", "Mensaje multimedia").replace('\n', ' ')
-            if len(p_content) > 60: p_content = p_content[:60] + "..."
+            p_content = last_pinned.get("content", "Mensaje multimedia").replace('\n', ' ').replace("<", "&lt;").replace(">", "&gt;")
+            if len(p_content) > 200: p_content = p_content[:200] + "..."
             p_wamid = last_pinned.get("msg_id", "")
             pinned_html = f'''
             <div style="background:var(--accent-bg); color:var(--text-main); padding:8px 12px; border-bottom:1px solid var(--accent-border); display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.85rem;" onclick="document.getElementById('msg-{p_wamid}')?.scrollIntoView({{behavior: 'smooth', block: 'center'}})">
@@ -2869,8 +2869,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
         starred_items_html = ""
         for st in reversed(starred_messages):
-            s_content = st.get("content", "Mensaje multimedia").replace('\n', ' ')
-            if len(s_content) > 100: s_content = s_content[:100] + "..."
+            s_content = st.get("content", "Mensaje multimedia").replace('\n', ' ').replace("<", "&lt;").replace(">", "&gt;")
+            if len(s_content) > 300: s_content = s_content[:300] + "..."
             s_wamid = st.get("msg_id", "")
             
             # Formatear la hora

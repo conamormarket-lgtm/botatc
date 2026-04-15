@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3283 notes | Score threshold: >40
+> 3306 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,37 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Optimized GOTCHA — in
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "779a3279393b3b54",
++
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3234 notes | Score threshold: >40
 + > 3278 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in Servidor — protects against XSS and CSRF token
-- **⚠️ GOTCHA: Fixed null crash in Insertar — parallelizes async operations for speed** — -         last_date_str = ""
-+         pinned_messages = []
--       
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
-- **⚠️ GOTCHA: Patched security issue Fixed** — - - Patched security issue Kevin
-+ - Fixed null crash in Servidor — pr
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
 
 ## Project Standards
 
+- what-changed in prompts.py — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json
+- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 14x
 - discovery in shared-context.json — confirmed 4x
 - Fixed null crash in Volver — parallelizes async operations for speed — confirmed 7x
-- Replaced auth Fixed — confirmed 5x
-- Patched security issue Endpoints — prevents null/undefined runtime crashes — confirmed 5x
-- what-changed in shared-context.json — confirmed 15x
-- problem-fix in agent-rules.md — confirmed 3x
-- convention in shared-context.json
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Volver — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Mensaje — parallelizes async operations for speed
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
@@ -52,10 +58,10 @@
 
 ## Recent Decisions
 
-- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized Score — introduces API versioning for backward compatibility
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 - decision in temp_check.js
-- Optimized GOTCHA — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 
