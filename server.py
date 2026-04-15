@@ -1885,26 +1885,33 @@ async def forward_messages(request: Request):
             texto = msg.get("content", "")
             if not texto: continue
             
-            partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[video:[^\]]+\]|\[audio:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
+            partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
             
             for p in partes:
                 p = p.strip()
                 if not p: continue
                 
-                match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
-                match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
-                match_video = re.match(r"^\[video:([^\]]+)\]$", p)
-                match_audio = re.match(r"^\[audio:([^\]]+)\]$", p)
-                match_sticker_local = re.match(r"^\[sticker-local:([^\]]+)\]$", p)
+                match_sticker = re.match(r"^\[sticker:([^\|\]]+)\]$", p)
+                match_img = re.match(r"^\[imagen:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+                match_video = re.match(r"^\[video:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+                match_audio = re.match(r"^\[audio:([^\|\]]+)\]$", p)
+                match_doc = re.match(r"^\[documento:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+                match_sticker_local = re.match(r"^\[sticker-local:([^\|\]]+)\]$", p)
                 
                 w_id_current = None
                 try:
+                    import urllib.parse
                     if match_sticker: 
                         w_id_current = enviar_media(target, "sticker", match_sticker.group(1))
-                    elif match_img: 
-                        w_id_current = enviar_media(target, "image", match_img.group(1))
+                    elif match_img:
+                        cap = urllib.parse.unquote(match_img.group(2)) if match_img.group(2) else None
+                        w_id_current = enviar_media(target, "image", match_img.group(1), caption=cap)
                     elif match_video:
-                        w_id_current = enviar_media(target, "video", match_video.group(1))
+                        cap = urllib.parse.unquote(match_video.group(2)) if match_video.group(2) else None
+                        w_id_current = enviar_media(target, "video", match_video.group(1), caption=cap)
+                    elif match_doc:
+                        cap = urllib.parse.unquote(match_doc.group(2)) if match_doc.group(2) else None
+                        w_id_current = enviar_media(target, "document", match_doc.group(1), caption=cap)
                     elif match_audio:
                         w_id_current = enviar_media(target, "audio", match_audio.group(1))
                     elif match_sticker_local:
@@ -1959,7 +1966,7 @@ async def enviar_manual_endpoint(request: Request):
     
     async def process_and_send():
         from whatsapp_client import enviar_media, enviar_mensaje, subir_media
-        partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\]|\[video:[^\]]+\]|\[audio:[^\]]+\]|\[sticker-local:[^\]]+\])', texto)
+        partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
         last_wamid = None
         exito_alguna_parte = False
         
@@ -1967,19 +1974,26 @@ async def enviar_manual_endpoint(request: Request):
             p = p.strip()
             if not p: continue
             
-            match_sticker = re.match(r"^\[sticker:([^\]]+)\]$", p)
-            match_img = re.match(r"^\[imagen:([^\]]+)\]$", p)
-            match_video = re.match(r"^\[video:([^\]]+)\]$", p)
-            match_audio = re.match(r"^\[audio:([^\]]+)\]$", p)
-            match_sticker_local = re.match(r"^\[sticker-local:([^\]]+)\]$", p)
+            match_sticker = re.match(r"^\[sticker:([^\|\]]+)\]$", p)
+            match_img = re.match(r"^\[imagen:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+            match_video = re.match(r"^\[video:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+            match_audio = re.match(r"^\[audio:([^\|\]]+)\]$", p)
+            match_doc = re.match(r"^\[documento:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+            match_sticker_local = re.match(r"^\[sticker-local:([^\|\]]+)\]$", p)
             
             w_id_current = None
+            import urllib.parse
             if match_sticker: 
                 w_id_current = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid)
-            elif match_img: 
-                w_id_current = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid)
+            elif match_img:
+                cap = urllib.parse.unquote(match_img.group(2)) if match_img.group(2) else None
+                w_id_current = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid, caption=cap)
             elif match_video:
-                w_id_current = enviar_media(wa_id, "video", match_video.group(1), reply_to_wamid)
+                cap = urllib.parse.unquote(match_video.group(2)) if match_video.group(2) else None
+                w_id_current = enviar_media(wa_id, "video", match_video.group(1), reply_to_wamid, caption=cap)
+            elif match_doc:
+                cap = urllib.parse.unquote(match_doc.group(2)) if match_doc.group(2) else None
+                w_id_current = enviar_media(wa_id, "document", match_doc.group(1), reply_to_wamid, caption=cap)
             elif match_audio:
                 w_id_current = enviar_media(wa_id, "audio", match_audio.group(1), reply_to_wamid)
             elif match_sticker_local:
@@ -2635,7 +2649,18 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             
             def reemplazar_archivos_inline(match):
                 tipo = match.group(1)
-                media_id = match.group(2)
+                media_id_raw = match.group(2)
+                
+                caption = None
+                import urllib.parse
+                if "|caption:" in media_id_raw:
+                    parts = media_id_raw.split("|caption:", 1)
+                    media_id = parts[0]
+                    caption = urllib.parse.unquote(parts[1])
+                else:
+                    media_id = media_id_raw
+                
+                caption_html = f"""<div style="font-size:0.85rem; padding:6px; max-width:350px; margin:0 auto; background:rgba(0,0,0,0.3); border-bottom-left-radius:8px; border-bottom-right-radius:8px; color:var(--text-main); word-break:break-word; border:1px solid rgba(255,255,255,0.05); border-top:none; margin-top:-5px; box-sizing:border-box;">{caption.replace('<', '&lt;').replace('>', '&gt;')}</div>""" if caption else ""
                 
                 if tipo == "sticker-local":
                     src_url = f"/api/media/sticker/{media_id}"
@@ -2646,9 +2671,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 if tipo == "sticker":
                     return f"""<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/150x150?text=Sticker';"></div>"""
                 elif tipo == "imagen":
-                    return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><img src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+                    res = f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><img src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; {'border-bottom-left-radius:0; border-bottom-right-radius:0;' if caption else ''} background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src='https://placehold.co/250x150?text=Imagen';"></div>"""
+                    return res + caption_html
                 elif tipo == "video":
-                    return f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>"""
+                    res = f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; {'border-bottom-left-radius:0; border-bottom-right-radius:0;' if caption else ''} background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>"""
+                    return res + caption_html
                 elif tipo == "audio":
                     return f"""<div class="custom-audio-player" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; max-width:300px; margin: 5px 0; cursor:context-menu;">
                         <audio src="{src_url}" preload="metadata" style="display:none;" 
@@ -4475,6 +4502,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 
