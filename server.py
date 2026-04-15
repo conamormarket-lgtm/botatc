@@ -2507,6 +2507,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         import re
         burbujas = ""
         pinned_messages = []
+        starred_messages = []
         if len(all_msgs) > MAX_MENSAJES and not load_all:
             burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo (⚠️ Más lento)</button></div>'
         last_date_str = ""
@@ -2641,7 +2642,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 texto_renderizado = f'<div style="background:rgba(255,255,255,0.05); border-left:3px solid #10b981; padding:0.6rem; border-radius:6px; margin:-0.2rem;"><div style="font-size:0.7rem; color:#10b981; font-weight:600; text-transform:uppercase; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> PLANTILLA META: {tpl_title}</div>{tpl_body}</div>'
                 
             wamid = m.get("msg_id", "")
-            wamid_attr = f' data-wamid="{wamid}"' if wamid else ""
+            wamid_attr = f' id="msg-{wamid}" data-wamid="{wamid}"' if wamid else ""
             
             meta_html = ""
             ts_html = ""
@@ -2696,6 +2697,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             
             if is_starred:
                 meta_html += '<span style="color:#fbbf24; margin-left:4px; font-size:12px;">★</span>'
+                starred_messages.append(m)
             if is_pinned:
                 pinned_messages.append(m)
             
@@ -2860,10 +2862,53 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             p_wamid = last_pinned.get("msg_id", "")
             pinned_html = f'''
             <div style="background:var(--accent-bg); color:var(--text-main); padding:8px 12px; border-bottom:1px solid var(--accent-border); display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.85rem;" onclick="document.getElementById('msg-{p_wamid}')?.scrollIntoView({{behavior: 'smooth', block: 'center'}})">
-                <span style="color:#fbbf24; font-size:16px;">??</span>
+                <span style="color:#fbbf24; font-size:16px;">📌</span>
                 <div style="flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">{p_content}</div>
             </div>
             '''
+
+        starred_items_html = ""
+        for st in reversed(starred_messages):
+            s_content = st.get("content", "Mensaje multimedia").replace('\n', ' ')
+            if len(s_content) > 100: s_content = s_content[:100] + "..."
+            s_wamid = st.get("msg_id", "")
+            
+            # Formatear la hora
+            s_date_str = ""
+            if st.get("timestamp"):
+                try:
+                    ts_val = int(st.get("timestamp"))
+                    if ts_val > 1e11: ts_val //= 1000
+                    s_dt = datetime.utcfromtimestamp(ts_val) - timedelta(hours=5)
+                    s_date_str = s_dt.strftime("%d/%m/%Y %H:%M")
+                except:
+                    pass
+
+            starred_items_html += f'''
+            <div style="background:var(--bg-main); padding:10px; border-radius:6px; margin-bottom:8px; border:1px solid var(--accent-border); cursor:pointer; font-size:0.85rem; transition: background 0.2s;" onmouseover="this.style.background='var(--primary-color)'; this.style.color='white'" onmouseout="this.style.background='var(--bg-main)'; this.style.color='inherit'" onclick="document.getElementById('msg-{s_wamid}')?.scrollIntoView({{behavior: 'smooth', block: 'center'}}); document.getElementById('modalDestacados').style.display='none';">
+                <div style="opacity:0.7; font-size:0.75rem; margin-bottom:4px; display:flex; justify-content:space-between;">
+                    <span>{st.get("role", "user").capitalize()}</span>
+                    <span>{s_date_str}</span>
+                </div>
+                <div>{s_content}</div>
+            </div>
+            '''
+        if not starred_items_html:
+            starred_items_html = "<div style='text-align:center; color:var(--text-muted); font-size:0.85rem; padding:2rem 0;'>No hay mensajes destacados en esta conversación.</div>"
+            
+        starred_modal_html = f'''
+        <div id="modalDestacados" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; backdrop-filter:blur(2px);">
+            <div style="background:var(--accent-bg); width:90%; max-width:400px; max-height:80vh; border-radius:12px; display:flex; flex-direction:column; box-shadow:0 10px 25px rgba(0,0,0,0.5); overflow:hidden;">
+                <div style="padding:15px; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center; background:var(--bg-main);">
+                    <h3 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px;"><span style="color:#fbbf24;">⭐️</span> Mensajes Destacados</h3>
+                    <button onclick="document.getElementById('modalDestacados').style.display='none'" style="background:none; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; padding:0; line-height:1;">&times;</button>
+                </div>
+                <div class="hide-scrollbar" style="padding:15px; overflow-y:auto; flex:1; background:var(--accent-bg);">
+                    {starred_items_html}
+                </div>
+            </div>
+        </div>
+        '''
 
         chat_viewer_html = f"""
         <div style="display:flex; flex-direction:row; height:100%; width:100%;">
@@ -2871,15 +2916,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent;">
                 {status_bar}
                 {pinned_html}
-                {pinned_html}
-            {pinned_html}
             <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
                     <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
                     <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
                     <div style="min-width:0; flex:1;">
-                        <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;">
+                        <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;cursor:context-menu;" title="Click derecho para ver mensajes destacados" oncontextmenu="document.getElementById('modalDestacados').style.display='flex'; return false;">
                             {nombre_chat} {tags_bar}
                         </h3>
                         <small style="color:var(--text-muted)">+{wa_id}</small>
@@ -2907,13 +2950,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <div style="padding:0.2rem 1rem 1rem 1rem; background:transparent; width:100%; max-width:100vw; box-sizing:border-box;">
                     {chat_box}
                 </div>
+                {starred_modal_html}
             </div>
             <!-- END CHAT MAIN COLUMN -->
 
             <!-- START RIGHT SIDEBAR (CRM Tools) -->
             <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
-                {pinned_html}
-            {pinned_html}
             <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
                     <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
