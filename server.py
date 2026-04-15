@@ -1365,13 +1365,14 @@ def delete_quick_reply(request: Request, qr_id: str):
     return {"status": "ok"}
 
 @app.post("/api/quick-replies/reorder")
-def reorder_quick_replies(request: Request, payload: ReorderPayload):
+def reorder_quick_replies(request: Request, payload: dict):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     if not es_admin(request):
         raise HTTPException(status_code=403, detail="Solo administradores pueden reordenar")
     from firebase_client import reordenar_quick_replies_bd
-    reordenar_quick_replies_bd(payload.order)
+    orden_list = payload.get("order", [])
+    reordenar_quick_replies_bd(orden_list)
     return {"status": "ok"}
 
 
