@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3196 notes | Score threshold: >40
+> 3234 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,26 +20,21 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operat
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
+- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed** — - @app.post("/api/message/star")
++ @app.post("/api/message/star")
+- a
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Request — prevents null/undefined runtime cras
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3192 notes | Score threshold: >40
++ > 3196 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Added** — - - problem-fix in server.py
 + - problem-fix in prompts.py
 - - Fixed n
-- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in Servidor — protects against XSS and CSRF token
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "ab740a25fa746ecc",
-+
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3160 notes | Score threshold: >40
-+ > 3175 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Added JWT 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3126 notes | Score threshold: >40
-+ > 3160 notes | Score threshold
 
 ## Project Standards
 
+- convention in shared-context.json
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in server.py — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
@@ -47,7 +42,6 @@
 - Patched security issue Kevin — confirmed 3x
 - Replaced auth Fixed — confirmed 3x
 - what-changed in server.py — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

@@ -2088,6 +2088,7 @@ async def ver_chat(request: Request, numero_wa: str):
     msgs    = [m for m in sesion.get("historial", []) if m["role"] != "system"]
 
     burbujas = ""
+        pinned_messages = []
     for m in msgs:
         es_bot    = m["role"] == "assistant"
         clase     = "burbuja-bot" if es_bot else "burbuja-user"
@@ -2505,6 +2506,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         
         import re
         burbujas = ""
+        pinned_messages = []
         if len(all_msgs) > MAX_MENSAJES and not load_all:
             burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo (⚠️ Más lento)</button></div>'
         last_date_str = ""
