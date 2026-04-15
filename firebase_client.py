@@ -372,8 +372,19 @@ def cargar_quick_replies_bd() -> list:
             data["mensajes"] = normalized
             # Ensure etiquetas field exists
             data.setdefault("etiquetas", [])
+            data["orden"] = data.get("orden", 999)
             qrs.append(data)
+    
+    qrs.sort(key=lambda x: (x.get("orden", 999), x.get("category", "") or "", x.get("title", "") or ""))
     return qrs
+
+def reordenar_quick_replies_bd(lista_ids: list):
+    db = inicializar_firebase()
+    batch = db.batch()
+    for idx, doc_id in enumerate(lista_ids):
+        doc_ref = db.collection("bot_quick_replies").document(doc_id)
+        batch.update(doc_ref, {"orden": idx})
+    batch.commit()
 
 def guardar_grupo_bd(grupo: dict):
     db = inicializar_firebase()

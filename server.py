@@ -1358,8 +1358,20 @@ async def qr_upload_media(request: Request, file: UploadFile = File(...)):
 def delete_quick_reply(request: Request, qr_id: str):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores pueden eliminar")
     from firebase_client import eliminar_quick_reply_bd
     eliminar_quick_reply_bd(qr_id)
+    return {"status": "ok"}
+
+@app.post("/api/quick-replies/reorder")
+def reorder_quick_replies(request: Request, payload: ReorderPayload):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores pueden reordenar")
+    from firebase_client import reordenar_quick_replies_bd
+    reordenar_quick_replies_bd(payload.order)
     return {"status": "ok"}
 
 
@@ -3489,6 +3501,45 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         container.style.cssText = "display:flex; flex-direction:column; background:var(--accent-bg); padding:0.65rem 0.75rem; border-radius:8px; border:1px solid var(--accent-border); transition:border-color 0.15s; position:relative;";
                         container.onmouseover = function() {{this.style.borderColor='var(--primary-color)';}};
                         container.onmouseout = function() {{this.style.borderColor='var(--accent-border)';}};
+                        if (window.ES_ADMIN) {{
+                            container.draggable = true;
+                            container.dataset.qrId = qr.id;
+                            container.title = "Arrastra para reordenar";
+                            container.addEventListener("dragstart", function(e) {{
+                                e.dataTransfer.effectAllowed = "move";
+                                window._draggedQrItem = this;
+                                setTimeout(() => this.style.opacity = "0.3", 0);
+                            }});
+                            container.addEventListener("dragover", function(e) {{
+                                e.preventDefault();
+                                this.style.borderTop = "2px solid var(--primary-color)";
+                            }});
+                            container.addEventListener("dragleave", function(e) {{
+                                this.style.borderTop = "";
+                            }});
+                            container.addEventListener("drop", async function(e) {{
+                                e.preventDefault(); e.stopPropagation(); this.style.borderTop = "";
+                                const dragged = window._draggedQrItem;
+                                if (dragged && dragged !== this) {{
+                                    const listContainer = this.parentNode;
+                                    const items = Array.from(listContainer.children);
+                                    if (items.indexOf(dragged) < items.indexOf(this)) listContainer.insertBefore(dragged, this.nextSibling);
+                                    else listContainer.insertBefore(dragged, this);
+                                    const newOrder = Array.from(listContainer.children).map(c => c.dataset.qrId).filter(id => id);
+                                    try {{
+                                        const res = await fetch("/api/quick-replies/reorder", {{
+                                            method: "POST", headers: {{"Content-Type": "application/json"}},
+                                            body: JSON.stringify({{order: newOrder}})
+                                        }});
+                                        if (res.ok) cargarQuickReplies();
+                                    }} catch(err) {{ console.error(err); }}
+                                }}
+                            }});
+                            container.addEventListener("dragend", function() {{
+                                this.style.opacity = "1";
+                                window._draggedQrItem = null;
+                            }});
+                        }}
                         const btn = document.createElement("button");
                         btn.type = "button";
                         btn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); width:100%; display:flex; flex-direction:column; gap:0.25rem;";
@@ -3506,7 +3557,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         editBtn.style.cssText = "background:none; border:none; color:var(--primary-color); cursor:pointer; padding:0 0.2rem; font-size:0.9rem; margin-right:1.4rem; flex-shrink:0;";
                         editBtn.onclick = (e) => {{ e.stopPropagation(); abrirModalCrearQR(qr.id); }};
                         headerRow.appendChild(titleWrap);
-                        headerRow.appendChild(editBtn);
+                        if (window.ES_ADMIN) {{ headerRow.appendChild(editBtn); }}
                         btn.appendChild(headerRow);
                         const msgs = qr.mensajes || [];
                         const previewParts = msgs.slice(0,3).map(m => {{
@@ -3536,15 +3587,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             btn.appendChild(labelsRow);
                         }}
                         btn.onclick = () => aplicarQuickReply(qr.id);
-                        const delBtn = document.createElement("button");
-                        delBtn.innerHTML = "×";
-                        delBtn.title = "Eliminar";
-                        delBtn.style.cssText = "position:absolute; top:0.4rem; right:0.4rem; background:rgba(0,0,0,0.3); border:none; color:#ef4444; border-radius:50%; width:18px; height:18px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0; transition:opacity 0.2s; font-size:0.75rem;";
-                        container.onmouseenter = () => {{ delBtn.style.opacity = "1"; }};
-                        container.onmouseleave = () => {{ delBtn.style.opacity = "0"; }};
-                        delBtn.onclick = (e) => {{ e.stopPropagation(); eliminarQR(qr.id); }};
-                        container.appendChild(btn);
-                        container.appendChild(delBtn);
+                        if (window.ES_ADMIN) {{
+                            const delBtn = document.createElement("button");
+                            delBtn.innerHTML = "×";
+                            delBtn.title = "Eliminar";
+                            delBtn.style.cssText = "position:absolute; top:0.4rem; right:0.4rem; background:rgba(0,0,0,0.3); border:none; color:#ef4444; border-radius:50%; width:18px; height:18px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0; transition:opacity 0.2s; font-size:0.75rem;";
+                            container.onmouseenter = () => {{ delBtn.style.opacity = "1"; }};
+                            container.onmouseleave = () => {{ delBtn.style.opacity = "0"; }};
+                            delBtn.onclick = (e) => {{ e.stopPropagation(); eliminarQR(qr.id); }};
+                            container.appendChild(delBtn);
+                        }}
                         catContent.appendChild(container);
                     }});
                 }});

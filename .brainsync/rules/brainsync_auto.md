@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3371 notes | Score threshold: >40
+> 3439 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Arrastra — wraps unsafe operation in error bou
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Editar — wraps unsafe operation in error bound
-- **⚠️ GOTCHA: Fixed null crash in Procesar — parallelizes async operations for speed** — - 
-+     es_admin_str = "true" if es_admin(request) else "false"
--  
-- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
-- **⚠️ GOTCHA: Updated firebase_client database schema** — -     from firebase_client import guardar_etiqueta_bd
-+     if not es
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3310 notes | Score threshold: >40
-+ > 3311 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Added JWT 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3397 notes | Score threshold: >40
++ > 3434 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Editar — prevents null/undefined runtime crash
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - gotcha in shared-cont
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "3215a1a4454118bf",
++
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Arrastra — prevents null/undefined runtime cra
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- Optimized Patched — confirmed 3x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in prompts.py — confirmed 3x
+- what-changed in shared-context.json — confirmed 14x
+- problem-fix in agent-rules.md — confirmed 6x
+- convention in shared-context.json
+- Fixed null crash in Editar — prevents null/undefined runtime crashes — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 7x
+- Patched security issue Kevin — confirmed 5x
 
 ## Known Fixes
 
@@ -52,7 +57,7 @@
 
 ## Recent Decisions
 
-- Optimized GOTCHA — introduces API versioning for backward compatibility
+- decision in shared-context.json
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — evolves the database schema to support new requirements
