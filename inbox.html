@@ -1686,7 +1686,7 @@
                                     r.matches.forEach(m => {
                                         let icon = m.role === 'assistant' ? '🤖' : '👤';
                                         html += `
-                                        <a href="/inbox/${r.wa_id}" class="chat-row search-msg-row" style="display:block; text-decoration:none; background:var(--accent-bg); border-radius:8px; margin-bottom:0.5rem; padding:0.8rem; border:1px solid transparent; transition:border 0.2s;">
+                                        <a href="/inbox/${r.wa_id}?msg_id=${m.msg_id}" class="chat-row search-msg-row" style="display:block; text-decoration:none; background:var(--accent-bg); border-radius:8px; margin-bottom:0.5rem; padding:0.8rem; border:1px solid transparent; transition:border 0.2s;">
                                             <div style="font-weight:600; color:var(--text-main); font-size:0.9rem; margin-bottom:0.3rem; display:flex; justify-content:space-between;">
                                                 <span>${r.nombre}</span>
                                             </div>
