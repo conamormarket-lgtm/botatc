@@ -3642,8 +3642,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     if (targetEl) {{
                         window._isSearching = true;
                         setTimeout(() => {{
-                            const topPos = targetEl.offsetTop - c.offsetTop - (c.clientHeight / 2) + (targetEl.clientHeight / 2);
-                            c.scrollTo({{ top: topPos, behavior: 'smooth' }});
+                            targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
                             targetEl.style.transition = 'all 0.5s ease';
                             const oldShadow = targetEl.style.boxShadow || '';
                             targetEl.style.boxShadow = '0 0 0 4px var(--primary-color)';
@@ -3657,7 +3656,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             setTimeout(() => {{
                                 targetEl.style.boxShadow = oldShadow;
                                 targetEl.style.transform = 'scale(1)';
-                                setTimeout(() => window._isSearching = false, 1000);
+                                setTimeout(() => window._isSearching = false, 3000);
                             }}, 2500);
                         }}, 300);
                     }} else {{

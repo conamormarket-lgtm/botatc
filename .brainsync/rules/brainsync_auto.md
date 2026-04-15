@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3513 notes | Score threshold: >40
+> 3517 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3510 notes | Score threshold: >40
++ > 3513 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3501 notes | Score threshold: >40
 + > 3510 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Reemplazos
@@ -31,8 +33,6 @@
 + > 3464 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3457 notes | Score threshold: >40
 + > 3461 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3450 notes | Score threshold: >40
-+ > 3457 notes | Score threshold
 
 ## Project Standards
 
