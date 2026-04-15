@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3073 notes | Score threshold: >40
+> 3126 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,45 +20,40 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin — hardens HTTP security headers
-+ - F
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nivel — reduces excessive function call freque
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Selecciona — prevents null/undefined runtime c
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE
++ - Fixed null crash in DOCTYPE — redu
 - **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for ba
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - Fixed null crash in DOCTYPE — pr
-- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Replaced auth GOTCHA 
-- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - gotcha in shared-cont
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "d43791988b580f79",
-+
++ - Fixed null crash in DOCTYPE
+
+📌 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin — hardens HTTP security headers
++ - F
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 9x
+- Patched security issue Kevin — confirmed 3x
+- Fixed null crash in DOCTYPE — reduces excessive function call frequency — confirmed 4x
 - Replaced auth Score — introduces API versioning for backward compatibility — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 6x
 - what-changed in shared-context.json — confirmed 9x
 - problem-fix in agent-rules.md — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
-- Optimized Kevin — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- Fixed null crash in Descargar — reduces excessive function call frequency — confirmed 5x
 
 ## Known Fixes
 
 - ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ - - **⚠️ GOTCHA: Fixed null crash in Exception — protects against XSS and CSRF token theft** — -     → ✅ Patched security issue Score — evolves the database schema to support new req...
 
 ## Recent Decisions
 
-- Optimized GOTCHA — introduces API versioning for backward compatibility
+- decision in temp_check.js
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
