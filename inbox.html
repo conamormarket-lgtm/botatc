@@ -1316,9 +1316,14 @@
         window.autoResizeInput = function() {
             const el = document.getElementById('manualMsgInput');
             if(!el) return;
+            
+            el.style.transition = 'none'; // Apagar transition temporalmente
             el.style.height = '42px'; // Reset for recalculation
             const newHeight = Math.min(el.scrollHeight, 160);
             el.style.height = newHeight + 'px';
+            el.offsetHeight; // Forzar redibujado
+            el.style.transition = 'height 0.1s ease-out'; // Reactivar transition
+            
             el.style.overflowY = el.scrollHeight > 160 ? 'auto' : 'hidden';
             
             // Si regresa a 1 linea, asegura que este centrado todo
