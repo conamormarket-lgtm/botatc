@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3234 notes | Score threshold: >40
+> 3278 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,36 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operat
+- **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in Servidor — protects against XSS and CSRF token
+- **⚠️ GOTCHA: Fixed null crash in Insertar — parallelizes async operations for speed** — -         last_date_str = ""
++         pinned_messages = []
+-       
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
-- **⚠️ GOTCHA: Fixed null crash in Request — parallelizes async operations for speed** — - @app.post("/api/message/star")
-+ @app.post("/api/message/star")
-- a
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Request — prevents null/undefined runtime cras
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3192 notes | Score threshold: >40
-+ > 3196 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Added** — - - problem-fix in server.py
-+ - problem-fix in prompts.py
-- - Fixed n
+- **⚠️ GOTCHA: Patched security issue Fixed** — - - Patched security issue Kevin
++ - Fixed null crash in Servidor — pr
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "1fb86ea2c2bfb4b8",
++
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 15x
+- problem-fix in agent-rules.md — confirmed 3x
 - convention in shared-context.json
+- Fixed null crash in Request — prevents null/undefined runtime crashes — confirmed 5x
+- Optimized Fixed — confirmed 3x
+- Added JWT tokens authentication — confirmed 5x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in server.py — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
-- Fixed null crash in None — parallelizes async operations for speed — confirmed 4x
-- Patched security issue Kevin — confirmed 3x
-- Replaced auth Fixed — confirmed 3x
-- what-changed in server.py — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Volver — parallelizes async operations for speed
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
@@ -53,8 +57,8 @@
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
 - decision in temp_check.js
-- Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 

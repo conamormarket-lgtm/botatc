@@ -2088,7 +2088,7 @@ async def ver_chat(request: Request, numero_wa: str):
     msgs    = [m for m in sesion.get("historial", []) if m["role"] != "system"]
 
     burbujas = ""
-        pinned_messages = []
+    pinned_messages = []
     for m in msgs:
         es_bot    = m["role"] == "assistant"
         clase     = "burbuja-bot" if es_bot else "burbuja-user"
@@ -2871,7 +2871,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent;">
                 {status_bar}
                 {pinned_html}
-                <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
+                {pinned_html}
+            {pinned_html}
+            <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
                     <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
@@ -2910,7 +2912,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
             <!-- START RIGHT SIDEBAR (CRM Tools) -->
             <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
-                <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
+                {pinned_html}
+            {pinned_html}
+            <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
                     <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
                 </div>
