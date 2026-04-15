@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3126 notes | Score threshold: >40
+> 3160 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,27 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nivel — reduces excessive function call freque
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Selecciona — prevents null/undefined runtime c
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE
-+ - Fixed null crash in DOCTYPE — redu
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Selecciona
++ - problem-fix in agent-rules.md
+-
 - **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for ba
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - Fixed null crash in DOCTYPE
-
-📌 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin — hardens HTTP security headers
-+ - F
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Nivel — reduces excessive function call freque
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DOCTYPE — reduces excessive function call freq
+- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Replaced a
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 3073 notes | Score threshold: >40
++ > 3126 notes | Score threshold
 
 ## Project Standards
 
+- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
+- what-changed in shared-context.json — confirmed 22x
+- problem-fix in agent-rules.md — confirmed 13x
+- Fixed null crash in Nivel — reduces excessive function call frequency — confirmed 6x
+- Added JWT tokens authentication — evolves the database schema to support new ... — confirmed 3x
 - what-changed in shared-context.json — confirmed 9x
 - Patched security issue Kevin — confirmed 3x
 - Fixed null crash in DOCTYPE — reduces excessive function call frequency — confirmed 4x
-- Replaced auth Score — introduces API versioning for backward compatibility — confirmed 3x
-- Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 6x
-- what-changed in shared-context.json — confirmed 9x
-- problem-fix in agent-rules.md — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

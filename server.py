@@ -1,14 +1,14 @@
-# ============================================================
-#  server.py — Servidor FastAPI: webhook de WhatsApp + panel admin
+﻿# ============================================================
+#  server.py â€” Servidor FastAPI: webhook de WhatsApp + panel admin
 #
 #  FLUJO POR MENSAJE:
-#  1. Meta envía POST /webhook con el mensaje del cliente
-#  2. Extraemos número y texto del cliente
-#  3. Normalizamos número → buscamos en Firebase
-#  4. Si pedido en Diseño o no existe → silencio
-#  5. Si bot activo → normalizar texto → llamar Groq → responder
-#  6. Si [ESCALAR] detectado → pausar bot → marcar para humano
-#  PANEL ADMIN: GET /admin → lista de chats escalados + botón reactivar
+#  1. Meta envÃ­a POST /webhook con el mensaje del cliente
+#  2. Extraemos nÃºmero y texto del cliente
+#  3. Normalizamos nÃºmero â†’ buscamos en Firebase
+#  4. Si pedido en DiseÃ±o o no existe â†’ silencio
+#  5. Si bot activo â†’ normalizar texto â†’ llamar Groq â†’ responder
+#  6. Si [ESCALAR] detectado â†’ pausar bot â†’ marcar para humano
+#  PANEL ADMIN: GET /admin â†’ lista de chats escalados + botÃ³n reactivar
 # ============================================================
 import re
 import json
@@ -24,7 +24,7 @@ from google.genai import types
 
 from config import (
     GEMINI_API_KEY, GEMINI_MODEL, TEMPERATURE,
-    META_VERIFY_TOKEN, SESION_EXPIRA_HORAS, ESTADOS_DISEÑO,
+    META_VERIFY_TOKEN, SESION_EXPIRA_HORAS, ESTADOS_DISEÃ‘O,
     MAX_HISTORIAL_TURNOS, ADMIN_PASSWORD
 )
 from prompts import get_system_prompt, MENSAJE_BIENVENIDA
@@ -32,10 +32,10 @@ from firebase_client import buscar_pedido_por_telefono
 from whatsapp_client import enviar_mensaje, enviar_media
 from bot_atc import normalizar_texto, preprocesar_mensaje
 
-# ─────────────────────────────────────────────
-#  Inicialización
-# ─────────────────────────────────────────────
-app = FastAPI(title="Bot ATC — IA-ATC")
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  InicializaciÃ³n
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+app = FastAPI(title="Bot ATC â€” IA-ATC")
 
 def inyectar_tema_global(request, html: str) -> str:
     from server import obtener_usuario_sesion # ensure available
@@ -101,7 +101,7 @@ def inyectar_tema_global(request, html: str) -> str:
         '''
 
     # Si la template tiene lugar para {custom_theme_css}, insertalo. 
-    # Sino, mételo antes de cerrar </head>
+    # Sino, mÃ©telo antes de cerrar </head>
     if "{custom_theme_css}" in html:
         html = html.replace("{custom_theme_css}", css)
     elif "</head>" in html:
@@ -147,14 +147,14 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 @app.on_event("startup")
 def startup_event():
-    # ── Restaurar toda la memoria y stickers desde Firebase ──
+    # â”€â”€ Restaurar toda la memoria y stickers desde Firebase â”€â”€
     try:
         from firebase_client import cargar_todas_las_sesiones
         # Restaurar sesiones (Inbox)
         sesiones_restauradas = cargar_todas_las_sesiones()
         for wa_id, s in sesiones_restauradas.items():
             sesiones[wa_id] = s
-        print(f"✅ Se restauraron {len(sesiones_restauradas)} conversaciones en memoria desde Firebase.")
+        print(f"âœ… Se restauraron {len(sesiones_restauradas)} conversaciones en memoria desde Firebase.")
         
         # Stickers are now loaded on-demand via Serverless Endpoints.
         
@@ -162,11 +162,11 @@ def startup_event():
         from firebase_client import cargar_etiquetas_bd, cargar_grupos_bd
         global global_labels, global_groups
         global_labels = cargar_etiquetas_bd()
-        print(f"✅ Se restauraron {len(global_labels)} etiquetas globales.")
+        print(f"âœ… Se restauraron {len(global_labels)} etiquetas globales.")
         global_groups = cargar_grupos_bd()
-        print(f"✅ Se restauraron {len(global_groups)} grupos virtuales.")
+        print(f"âœ… Se restauraron {len(global_groups)} grupos virtuales.")
     except Exception as e:
-        print(f"❌ Error al restaurar datos desde Firebase: {e}")
+        print(f"âŒ Error al restaurar datos desde Firebase: {e}")
 
     try:
         from pedidos_observer import iniciar_observador_pedidos
@@ -176,21 +176,21 @@ def startup_event():
     except: pass
 
 # Sesiones en memoria: {numero_wa: SesionDict}
-# numero_wa tiene código de país: "51945257117"
+# numero_wa tiene cÃ³digo de paÃ­s: "51945257117"
 sesiones: dict[str, dict] = {}
 global_labels: list = []
 global_groups: list = []
 
-# Interruptor global — False = bot completamente apagado
+# Interruptor global â€” False = bot completamente apagado
 BOT_GLOBAL_ACTIVO: bool = True
 
-# Cola para debouncing (acumular múltiples mensajes rápidos del mismo usuario)
+# Cola para debouncing (acumular mÃºltiples mensajes rÃ¡pidos del mismo usuario)
 mensajes_pendientes: dict[str, list[str]] = {}
 import asyncio
 user_locks: dict[str, asyncio.Lock] = {}
 mensajes_procesados_ids = {}
 
-# Caché de archivos multimedia (Audios, Imágenes, etc.) para que Gemini y el UI los lean
+# CachÃ© de archivos multimedia (Audios, ImÃ¡genes, etc.) para que Gemini y el UI los lean
 media_cache: dict[str, tuple[bytes, str]] = {}
 
 async def cachear_media(media_id: str):
@@ -204,7 +204,7 @@ async def cachear_media(media_id: str):
     except: pass
 
 
-# Regex para detectar escalación desde el mensaje del cliente
+# Regex para detectar escalaciÃ³n desde el mensaje del cliente
 REGEX_ESCALAR = re.compile(
     r"\b(hablar con|comunicarme|persona real|humano|agente|asesor|"
     r"encargado|gerente|queja formal|reclamo|denuncia|responsable|"
@@ -213,32 +213,32 @@ REGEX_ESCALAR = re.compile(
 )
 
 
-# ─────────────────────────────────────────────
-#  Gestión de sesiones
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  GestiÃ³n de sesiones
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def obtener_o_crear_sesion(numero_wa: str) -> dict:
     """
-    Retorna la sesión existente si está dentro del tiempo válido,
-    la recupera de Firestore si el bot se reinició, o crea una nueva.
+    Retorna la sesiÃ³n existente si estÃ¡ dentro del tiempo vÃ¡lido,
+    la recupera de Firestore si el bot se reiniciÃ³, o crea una nueva.
     """
     ahora = datetime.utcnow()
     sesion = sesiones.get(numero_wa)
 
     if not sesion:
-        # 1. Intentar cargar desde Firebase si el servidor se reinició
+        # 1. Intentar cargar desde Firebase si el servidor se reiniciÃ³
         try:
             from firebase_client import cargar_sesion_chat
             sesion_db = cargar_sesion_chat(numero_wa)
             if sesion_db:
                 sesiones[numero_wa] = sesion_db
                 sesion = sesion_db
-                print(f"  [☁️ Historial recuperado desde la nube para {numero_wa}]")
+                print(f"  [â˜ï¸ Historial recuperado desde la nube para {numero_wa}]")
         except Exception as e:
-            print(f"  [❌ Error al cargar historial de Firestore: {e}]")
+            print(f"  [âŒ Error al cargar historial de Firestore: {e}]")
 
     if sesion:
-        pass # La sesión ya no expira nunca, como en un Inbox real
+        pass # La sesiÃ³n ya no expira nunca, como en un Inbox real
 
     if not sesion:
         sesiones[numero_wa] = {
@@ -256,8 +256,8 @@ def obtener_o_crear_sesion(numero_wa: str) -> dict:
 
 def normalizar_numero(numero_wa: str) -> str:
     """
-    Quita el código de país peruano para buscar en Firebase.
-    '51945257117' → '945257117'
+    Quita el cÃ³digo de paÃ­s peruano para buscar en Firebase.
+    '51945257117' â†’ '945257117'
     """
     digitos = numero_wa.replace("+", "").strip()
     if digitos.startswith("51") and len(digitos) == 11:
@@ -265,9 +265,9 @@ def normalizar_numero(numero_wa: str) -> str:
     return digitos
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  Llamada al modelo (Gemini)
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def llamar_gemini(historial: list[dict]) -> str:
     """Llama a Gemini con el historial y retorna la respuesta del modelo."""
@@ -280,7 +280,7 @@ def llamar_gemini(historial: list[dict]) -> str:
         for msg in historial[1:]:
             role = "model" if msg["role"] == "assistant" else "user"
             
-            # CRÍTICO: Gemini exige que la conversación inicie obligatoriamente con el usuario.
+            # CRÃTICO: Gemini exige que la conversaciÃ³n inicie obligatoriamente con el usuario.
             if not gemini_contents and role == "model":
                 continue
             
@@ -298,7 +298,7 @@ def llamar_gemini(historial: list[dict]) -> str:
                     if not mime_type: mime_type = "audio/ogg" 
                     part = types.Part.from_bytes(data=contenido_bytes, mime_type=mime_type)
                 else:
-                    part = types.Part.from_text(text="[🎤 Mensaje de voz (Audio expirado o no disponible en caché)]")
+                    part = types.Part.from_text(text="[ðŸŽ¤ Mensaje de voz (Audio expirado o no disponible en cachÃ©)]")
             else:
                 part = types.Part.from_text(text=msg["content"])
                 
@@ -307,9 +307,9 @@ def llamar_gemini(historial: list[dict]) -> str:
             else:
                 gemini_contents.append(types.Content(role=role, parts=[part]))
                 
-        # Doble verificación final: si por alguna razón no quedó nada
+        # Doble verificaciÃ³n final: si por alguna razÃ³n no quedÃ³ nada
         if not gemini_contents:
-            gemini_contents.append(types.Content(role="user", parts=[types.Part.from_text(text="[Retomando la conversación]")]))
+            gemini_contents.append(types.Content(role="user", parts=[types.Part.from_text(text="[Retomando la conversaciÃ³n]")]))
             
         config = types.GenerateContentConfig(
             system_instruction=system_text,
@@ -339,7 +339,7 @@ def llamar_gemini(historial: list[dict]) -> str:
                 if "503" in err_str or "unloaded" in err_str or "UNAVAILABLE" in err_str or "429" in err_str or "ResourceExhausted" in err_str or "quota" in err_str.lower():
                     if attempt < max_retries - 1:
                         wait_t = 2 ** attempt  # 1s, 2s, 4s
-                        print(f"  [⚠️ Gemini saturado: {err_str} | Reintentando en {wait_t}s (Intento {attempt+1}/{max_retries})]")
+                        print(f"  [âš ï¸ Gemini saturado: {err_str} | Reintentando en {wait_t}s (Intento {attempt+1}/{max_retries})]")
                         time.sleep(wait_t)
                         continue
                 
@@ -347,40 +347,40 @@ def llamar_gemini(historial: list[dict]) -> str:
                 import traceback
                 with open("error_gemini.txt", "w") as f:
                     f.write(traceback.format_exc())
-                print(f"❌ Error Gemini definitivo: {e}")
+                print(f"âŒ Error Gemini definitivo: {e}")
                 return ""
         return ""
     except Exception as general_e:
         import traceback
         with open("error_gemini.txt", "w") as f:
             f.write(traceback.format_exc())
-        print(f"❌ Error crítico en llamar_gemini (fuera del reintento): {general_e}")
+        print(f"âŒ Error crÃ­tico en llamar_gemini (fuera del reintento): {general_e}")
         return ""
 
 def recortar_historial(historial: list[dict]) -> list[dict]:
-    """Conserva system prompt + últimos N turnos, asegurando que inicie con 'user'."""
+    """Conserva system prompt + Ãºltimos N turnos, asegurando que inicie con 'user'."""
     system = [historial[0]]
     turnos = historial[1:]
     
-    # Si excede el límite (ej. 6 = 3 turnos usuario-asistente)
+    # Si excede el lÃ­mite (ej. 6 = 3 turnos usuario-asistente)
     if len(turnos) > MAX_HISTORIAL_TURNOS * 2:
         turnos = turnos[-(MAX_HISTORIAL_TURNOS * 2):]
         
-        # Gemini (y Groq) requieren que el primer mensaje después del system sea del 'user'.
-        # Si al cortar el array el primer elemento quedó como 'assistant' (model), lo volamos para emparejar.
+        # Gemini (y Groq) requieren que el primer mensaje despuÃ©s del system sea del 'user'.
+        # Si al cortar el array el primer elemento quedÃ³ como 'assistant' (model), lo volamos para emparejar.
         if turnos and turnos[0]["role"] == "assistant":
             turnos = turnos[1:]
             
     return system + turnos
 
 
-# ─────────────────────────────────────────────
-#  Lógica de escalación
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  LÃ³gica de escalaciÃ³n
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def procesar_escalacion(numero_wa: str, sesion: dict, respuesta_bot: str) -> str:
     """
-    Detecta [ESCALAR] en la respuesta del bot y actualiza la sesión.
+    Detecta [ESCALAR] en la respuesta del bot y actualiza la sesiÃ³n.
     Retorna la respuesta limpia (sin la etiqueta).
     """
     if "[ESCALAR]" in respuesta_bot:
@@ -388,19 +388,19 @@ def procesar_escalacion(numero_wa: str, sesion: dict, respuesta_bot: str) -> str
         sesion["bot_activo"] = False
         sesion["escalado_en"] = datetime.utcnow()
         sesion["motivo_escalacion"] = "Detectado por el modelo"
-        print(f"  [🚨 ESCALADO → {numero_wa} | {sesion['nombre_cliente']}]")
+        print(f"  [ðŸš¨ ESCALADO â†’ {numero_wa} | {sesion['nombre_cliente']}]")
         return respuesta_limpia
     return respuesta_bot
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  Webhook de Meta
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @app.get("/webhook")
 async def verificar_webhook(request: Request):
     """
-    Meta hace un GET para verificar que el servidor es legítimo.
+    Meta hace un GET para verificar que el servidor es legÃ­timo.
     Responde con hub.challenge si el token coincide.
     """
     params = dict(request.query_params)
@@ -409,23 +409,23 @@ async def verificar_webhook(request: Request):
     challenge = params.get("hub.challenge")
 
     if mode == "subscribe" and token == META_VERIFY_TOKEN:
-        print("✅ Webhook de Meta verificado correctamente.")
+        print("âœ… Webhook de Meta verificado correctamente.")
         return int(challenge)
 
-    raise HTTPException(status_code=403, detail="Token de verificación incorrecto.")
+    raise HTTPException(status_code=403, detail="Token de verificaciÃ³n incorrecto.")
 
 
 @app.post("/webhook")
 async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     """
-    Recibe mensajes entrantes de Meta y procesa la conversación.
+    Recibe mensajes entrantes de Meta y procesa la conversaciÃ³n.
     """
     try:
         body = await request.json()
     except Exception:
-        raise HTTPException(status_code=400, detail="JSON inválido")
+        raise HTTPException(status_code=400, detail="JSON invÃ¡lido")
 
-    # Meta envía varios tipos de eventos; solo nos interesan mensajes de texto
+    # Meta envÃ­a varios tipos de eventos; solo nos interesan mensajes de texto
     try:
         entry    = body["entry"][0]
         changes  = entry["changes"][0]["value"]
@@ -466,12 +466,12 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         mensaje_id    = mensaje_data.get("id", "")
         mensaje_ts    = mensaje_data.get("timestamp", "")
         
-        # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta (sesión actual)
+        # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta (sesiÃ³n actual)
         if mensaje_id in mensajes_procesados_ids:
             return {"status": "ok"}
         mensajes_procesados_ids[mensaje_id] = True
         
-        # Mantener solo los últimos 1000 IDs para evitar fugas sin vaciar el historial reciente
+        # Mantener solo los Ãºltimos 1000 IDs para evitar fugas sin vaciar el historial reciente
         if len(mensajes_procesados_ids) > 1000:
             oldest = next(iter(mensajes_procesados_ids))
             del mensajes_procesados_ids[oldest]
@@ -479,7 +479,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         numero_wa     = mensaje_data["from"]           # ej: "51945257117"
         tipo_mensaje  = mensaje_data.get("type", "")
 
-        # Ignorar si el webhook trata de entregar un mensaje que YA fue guardado históricamente (ej. al reiniciar server)
+        # Ignorar si el webhook trata de entregar un mensaje que YA fue guardado histÃ³ricamente (ej. al reiniciar server)
         if numero_wa in sesiones:
             for it_hist in reversed(sesiones[numero_wa].get("historial", [])):
                 if it_hist.get("msg_id") == mensaje_id:
@@ -490,7 +490,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         if "contacts" in changes and changes["contacts"]:
             nombre = changes["contacts"][0].get("profile", {}).get("name", "Cliente")
 
-        # Procesar según tipo de mensaje
+        # Procesar segÃºn tipo de mensaje
         if tipo_mensaje == "text":
             texto_cliente = mensaje_data["text"]["body"].strip()
         elif tipo_mensaje == "sticker":
@@ -505,7 +505,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             if is_view_once:
                 texto_cliente = f"[vista_unica:imagen]" + (f" {caption}" if caption else "")
                 from whatsapp_client import enviar_mensaje_texto
-                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar archivos enviados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo y atenderte.")
+                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar archivos enviados como *Vista Ãšnica*. ðŸš«ðŸ‘ï¸\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo y atenderte.")
             else:
                 texto_cliente = f"[imagen:{media_id}]" + (f" {caption}" if caption else "")
                 background_tasks.add_task(cachear_media, media_id)
@@ -517,7 +517,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             if is_view_once:
                 texto_cliente = f"[vista_unica:audio]"
                 from whatsapp_client import enviar_mensaje_texto
-                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos escuchar audios marcados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo de forma normal* para que podamos escucharlo.")
+                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos escuchar audios marcados como *Vista Ãšnica*. ðŸš«ðŸ‘ï¸\n\nPor favor, *vuelve a enviarlo de forma normal* para que podamos escucharlo.")
             else:
                 texto_cliente = f"[audio:{media_id}]"
                 background_tasks.add_task(cachear_media, media_id)
@@ -527,9 +527,9 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             if is_view_once:
                 texto_cliente = "[vista_unica:video]"
                 from whatsapp_client import enviar_mensaje_texto
-                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar videos enviados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo.")
+                background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar videos enviados como *Vista Ãšnica*. ðŸš«ðŸ‘ï¸\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo.")
             else:
-                texto_cliente = "[🎥 Video]"
+                texto_cliente = "[ðŸŽ¥ Video]"
         elif tipo_mensaje == "document":
             filename = mensaje_data.get("document", {}).get("filename", "archivo")
             media_id = mensaje_data.get("document", {}).get("id", "")
@@ -550,32 +550,32 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
                         break
             
             if emoji:
-                texto_cliente = f"[💬 Reacción: {emoji} a «{texto_original}»]"
+                texto_cliente = f"[ðŸ’¬ ReacciÃ³n: {emoji} a Â«{texto_original}Â»]"
             else:
-                texto_cliente = f"[❌ Quitó reacción a «{texto_original}»]"
+                texto_cliente = f"[âŒ QuitÃ³ reacciÃ³n a Â«{texto_original}Â»]"
         elif tipo_mensaje == "location":
             lat = mensaje_data.get("location", {}).get("latitude", "")
             lon = mensaje_data.get("location", {}).get("longitude", "")
             addr = mensaje_data.get("location", {}).get("address", "")
             texto_cliente = f"[ubicacion:{lat},{lon},{addr}]"
         elif tipo_mensaje == "button":
-            texto_cliente = "🎯 " + mensaje_data.get("button", {}).get("text", "Botón")
+            texto_cliente = "ðŸŽ¯ " + mensaje_data.get("button", {}).get("text", "BotÃ³n")
         elif tipo_mensaje == "interactive":
             inter = mensaje_data.get("interactive", {})
             tipo_inter = inter.get("type", "")
             if tipo_inter == "button_reply":
-                texto_cliente = "🎯 " + inter.get("button_reply", {}).get("title", "Botón")
+                texto_cliente = "ðŸŽ¯ " + inter.get("button_reply", {}).get("title", "BotÃ³n")
             elif tipo_inter == "list_reply":
-                texto_cliente = "📋 " + inter.get("list_reply", {}).get("title", "Opción")
+                texto_cliente = "ðŸ“‹ " + inter.get("list_reply", {}).get("title", "OpciÃ³n")
             else:
-                texto_cliente = "[Interacción]"
+                texto_cliente = "[InteracciÃ³n]"
         else:
             texto_cliente = f"[{tipo_mensaje}]"
 
     except (KeyError, IndexError):
-        return {"status": "ok"}   # payload inesperado → ignorar sin error
+        return {"status": "ok"}   # payload inesperado â†’ ignorar sin error
 
-    # Detectar si el cliente está usando la función de deslizar/responder
+    # Detectar si el cliente estÃ¡ usando la funciÃ³n de deslizar/responder
     contexto = changes["messages"][0].get("context", {})
     if "id" in contexto:
         reply_id = contexto["id"]
@@ -593,8 +593,8 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
                     
         texto_cliente = f"[[REPLY|{texto_citado}]]{texto_cliente}"
 
-    print(f"\n{'─'*50}")
-    print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
+    print(f"\n{'â”€'*50}")
+    print(f"ðŸ“¨ {nombre} ({numero_wa}): {texto_cliente}")
 
     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
     if numero_wa not in mensajes_pendientes:
@@ -608,13 +608,13 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
 
 async def procesador_agregado(numero_wa: str, nombre: str):
     """
-    Espera 3.0 segundos de 'silencio' para ver si el cliente manda otro mensaje rápido.
-    Si llegan más, se agregan a la cola en el endpoint y luego se procesan juntos.
+    Espera 3.0 segundos de 'silencio' para ver si el cliente manda otro mensaje rÃ¡pido.
+    Si llegan mÃ¡s, se agregan a la cola en el endpoint y luego se procesan juntos.
     """
     import asyncio
     import anyio
     
-    await asyncio.sleep(3.0)  # Ventana de agregación de 3.0s
+    await asyncio.sleep(3.0)  # Ventana de agregaciÃ³n de 3.0s
     
     # Obtener el lock del usuario para evitar llamadas superpuestas al modelo
     if numero_wa not in user_locks:
@@ -623,7 +623,7 @@ async def procesador_agregado(numero_wa: str, nombre: str):
     lock = user_locks[numero_wa]
     
     async with lock:
-        # Extraemos los mensajes RECIÉN AHORA
+        # Extraemos los mensajes RECIÃ‰N AHORA
         textos_dicts = mensajes_pendientes.pop(numero_wa, [])
         if not textos_dicts:
             return
@@ -636,16 +636,16 @@ async def procesador_agregado(numero_wa: str, nombre: str):
             texto_unido = " | ".join([m["texto"] for m in textos_dicts])
             last_id = textos_dicts[-1]["id"]
         
-        # Ejecutar el proceso pesado sincrónico en un hilo separado
+        # Ejecutar el proceso pesado sincrÃ³nico en un hilo separado
         await anyio.to_thread.run_sync(
             procesar_mensaje_interno, numero_wa, nombre, texto_unido, False, last_id
         )
 
 
 def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None) -> str | None:
-    """Procesa un mensaje y devuelve la respuesta del bot (si la hay) sin enviarla si es simulación."""
+    """Procesa un mensaje y devuelve la respuesta del bot (si la hay) sin enviarla si es simulaciÃ³n."""
 
-    # ── Obtener/crear sesión ──────────────────────────────
+    # â”€â”€ Obtener/crear sesiÃ³n â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     sesion = obtener_o_crear_sesion(numero_wa)
     sesion["ultima_actividad"] = datetime.utcnow()
     sesion["nombre_cliente"]   = nombre
@@ -656,24 +656,24 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         ts = int(time.time()) # fallback
         sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id, "timestamp": ts})
         
-        # Incrementar contador de mensajes no leídos
+        # Incrementar contador de mensajes no leÃ­dos
         cur_unread = sesion.get("unread_count", 0)
         if cur_unread == -1: cur_unread = 0
         sesion["unread_count"] = cur_unread + 1
         
-        # ¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
+        # Â¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
         try: 
             from firebase_client import guardar_sesion_chat
             guardar_sesion_chat(numero_wa, sesion)
         except Exception as e:
-            print(f"  [⚠️ Error guardando sesión temprana: {e}]")
+            print(f"  [âš ï¸ Error guardando sesiÃ³n temprana: {e}]")
 
     global BOT_GLOBAL_ACTIVO
     if not BOT_GLOBAL_ACTIVO:
-        print(f"  [⏹ Bot APAGADO globalmente → silencio (guardado en BD)]")
+        print(f"  [â¹ Bot APAGADO globalmente â†’ silencio (guardado en BD)]")
         return None
 
-    # ── Buscar pedido en Firebase (con número del WA) ─────
+    # â”€â”€ Buscar pedido en Firebase (con nÃºmero del WA) â”€â”€â”€â”€â”€
     if sesion["datos_pedido"] is None:
         from config import NUMEROS_TESTER
         numero_local = normalizar_numero(numero_wa)
@@ -688,9 +688,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 
 
 
-        # ── MODO TESTER: preguntar N° de pedido manualmente ──
+        # â”€â”€ MODO TESTER: preguntar NÂ° de pedido manualmente â”€â”€
         if es_tester:
-            # Si ya nos dijo el número de pedido, buscarlo por ID
+            # Si ya nos dijo el nÃºmero de pedido, buscarlo por ID
             if sesion.get("esperando_pedido_tester"):
                 from firebase_client import inicializar_firebase
                 db = inicializar_firebase()
@@ -706,16 +706,16 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     sesion["datos_pedido"] = datos
                     sesion["nombre_cliente"] = f"{datos.get('clienteNombre','')} {datos.get('clienteApellidos','')}".strip() or nombre
                     sesion["historial"][0] = {"role": "system", "content": get_system_prompt(datos)}
-                    print(f"  [🧪 TESTER: Pedido '{id_pedido}' cargado]")
+                    print(f"  [ðŸ§ª TESTER: Pedido '{id_pedido}' cargado]")
                 else:
-                    msg = f"❌ No encontré ningún pedido con el ID '{texto_cliente.strip()}'. Inténtalo de nuevo (escribe solo el ID exacto)."
+                    msg = f"âŒ No encontrÃ© ningÃºn pedido con el ID '{texto_cliente.strip()}'. IntÃ©ntalo de nuevo (escribe solo el ID exacto)."
                     if not is_simulacion:
                         enviar_mensaje(numero_wa, msg)
                     return msg
             else:
                 # Primera vez: pedir el ID de pedido
                 sesion["esperando_pedido_tester"] = True
-                msg = "🧪 *Modo prueba activado.*\n\nEscríbeme el ID del pedido que deseas probar (tal como aparece en Firebase):"
+                msg = "ðŸ§ª *Modo prueba activado.*\n\nEscrÃ­beme el ID del pedido que deseas probar (tal como aparece en Firebase):"
                 import time
                 ts = int(time.time())
                 sesion["historial"].append({"role": "assistant", "content": msg, "status": "sent", "timestamp": ts})
@@ -725,18 +725,18 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         else:
             datos_lista = buscar_pedido_por_telefono(numero_local)
             if datos_lista:
-                # Excluir pedidos que están en Diseño
-                pedidos_no_diseno = [d for d in datos_lista if d.get("estadoGeneral", "") not in ESTADOS_DISEÑO]
+                # Excluir pedidos que estÃ¡n en DiseÃ±o
+                pedidos_no_diseno = [d for d in datos_lista if d.get("estadoGeneral", "") not in ESTADOS_DISEÃ‘O]
                 
                 if not pedidos_no_diseno:
-                    print(f"  [🎨 Todos en Diseño → silencio]")
+                    print(f"  [ðŸŽ¨ Todos en DiseÃ±o â†’ silencio]")
                     return None
                     
                 nombre_cliente = f"{pedidos_no_diseno[0].get('clienteNombre','')} {pedidos_no_diseno[0].get('clienteApellidos','')}".strip()
                 sesion["nombre_cliente"] = nombre_cliente or nombre
                 
                 ids = [p.get("id") for p in pedidos_no_diseno]
-                print(f"  [✅ Pedidos encontrados: {ids} | Evitando Diseño]")
+                print(f"  [âœ… Pedidos encontrados: {ids} | Evitando DiseÃ±o]")
                 
                 sesion["datos_pedido"] = pedidos_no_diseno[0]  # Backward compatibility for inbox
                 sesion["pedidos_multiples"] = pedidos_no_diseno
@@ -746,34 +746,34 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     "content": get_system_prompt(pedidos_no_diseno)
                 }
             else:
-                print(f"  [❓ Sin pedido registrado → silencio]")
+                print(f"  [â“ Sin pedido registrado â†’ silencio]")
                 try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
                 except: pass
                 return None
     else:
-        # Ya hay sesión con datos_pedido.
+        # Ya hay sesiÃ³n con datos_pedido.
         estado_actual = sesion["datos_pedido"].get("estadoGeneral", "")
-        if estado_actual in ESTADOS_DISEÑO:
-            print(f"  [🎨 Pedido volvió a Diseño → silencio]")
+        if estado_actual in ESTADOS_DISEÃ‘O:
+            print(f"  [ðŸŽ¨ Pedido volviÃ³ a DiseÃ±o â†’ silencio]")
             try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
             except: pass
             return None
 
-    # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
+    # â”€â”€ Si el bot estÃ¡ pausado (modo humano) â†’ guardar el msg y silenciar â”€â”€â”€
     if not sesion["bot_activo"]:
         sesion["ultima_actividad"] = datetime.utcnow()
-        print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
+        print(f"  [ðŸ‘¤ Bot pausado â†’ mensaje guardado en historial, humano atiende]")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
         except: pass
         return None
 
-    # ── Escalación rápida por keywords del cliente ────────
+    # â”€â”€ EscalaciÃ³n rÃ¡pida por keywords del cliente â”€â”€â”€â”€â”€â”€â”€â”€
     if REGEX_ESCALAR.search(texto_cliente):
-        print(f"  [🚨 Escalación por keyword detectada]")
+        print(f"  [ðŸš¨ EscalaciÃ³n por keyword detectada]")
         sesion["bot_activo"]        = False
         sesion["escalado_en"]       = datetime.utcnow()
         sesion["motivo_escalacion"] = f"Keyword: '{texto_cliente[:60]}'"
-        msg = "Voy a avisarle a uno de nuestros asesores para que te escriba por aquí en breve. 😊"
+        msg = "Voy a avisarle a uno de nuestros asesores para que te escriba por aquÃ­ en breve. ðŸ˜Š"
         if not is_simulacion:
             enviar_mensaje(numero_wa, msg)
             
@@ -782,31 +782,31 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         
         return msg
 
-    # ── Preprocesar texto (normalizar + cancelar=pagar) ───
+    # â”€â”€ Preprocesar texto (normalizar + cancelar=pagar) â”€â”€â”€
     texto_modelo = preprocesar_mensaje(normalizar_texto(texto_cliente))
 
-    # ── Agregar al historial y llamar al modelo ───────────
+    # â”€â”€ Agregar al historial y llamar al modelo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     # Reemplazamos el texto original (raw) con el normalizado para Gemini
     if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
         sesion["historial"][-1]["content"] = texto_modelo
         
     historial_para_gemini = recortar_historial(sesion["historial"])
-    print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
+    print(f"  [ðŸ§  Enviando {len(historial_para_gemini)} turnos a Gemini]")
     respuesta_bot = llamar_gemini(historial_para_gemini)
     
     if not respuesta_bot.strip():
-        # Falla silenciosamente si Gemini no genera respuesta útil o tira error
-        print("  [❌ Respuesta vacía de Gemini. Ignorando...]")
+        # Falla silenciosamente si Gemini no genera respuesta Ãºtil o tira error
+        print("  [âŒ Respuesta vacÃ­a de Gemini. Ignorando...]")
         return None
 
-    # ── Procesar escalación si el modelo la detectó ───────
+    # â”€â”€ Procesar escalaciÃ³n si el modelo la detectÃ³ â”€â”€â”€â”€â”€â”€â”€
     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
 
-    # ── Enviar respuesta al cliente por WhatsApp ──────────
-    print(f"🤖 María: {respuesta_final[:80]}...")
+    # â”€â”€ Enviar respuesta al cliente por WhatsApp â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    print(f"ðŸ¤– MarÃ­a: {respuesta_final[:80]}...")
     wamid_out = None
     if not is_simulacion:
-        # Parsear si el bot incluyó etiquetas [sticker:...], [imagen:...]
+        # Parsear si el bot incluyÃ³ etiquetas [sticker:...], [imagen:...]
         partes = re.split(r'(\[sticker:[^\]]+\]|\[imagen:[^\]]+\])', respuesta_final)
         for p in partes:
             p = p.strip()
@@ -819,7 +819,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             elif match_img: wamid_out = enviar_media(numero_wa, "image", match_img.group(1)) or wamid_out
             else: wamid_out = enviar_mensaje(numero_wa, p) or wamid_out
 
-    # ── Guardar respuesta en historial ────────────────────
+    # â”€â”€ Guardar respuesta en historial â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     import time
     ts = int(time.time())
     sesion["historial"].append({"role": "assistant", "content": respuesta_final, "msg_id": wamid_out, "status": "sent", "timestamp": ts, "sent_by": "IA Bot"})
@@ -831,9 +831,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     return respuesta_final
 
 
-# ─────────────────────────────────────────────
-#  Panel de administración
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Panel de administraciÃ³n
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 
@@ -842,7 +842,7 @@ from fastapi import Response
 VALID_USERS = {"admin": ADMIN_PASSWORD, "operador": "operadorATC2026"}
 import json, os
 
-# ─── Sesiones de usuarios (auth) persitidas en Firebase ───────────────────────
+# â”€â”€â”€ Sesiones de usuarios (auth) persitidas en Firebase â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # active_sessions: {token: user_dict}
 active_sessions = {}
 
@@ -856,9 +856,9 @@ def _load_sessions_from_firebase():
         docs = db.collection("auth_sessions").stream()
         for doc in docs:
             active_sessions[doc.id] = doc.to_dict()
-        print(f"✅ Se restauraron {len(active_sessions)} sesiones de usuario desde Firebase.")
+        print(f"âœ… Se restauraron {len(active_sessions)} sesiones de usuario desde Firebase.")
     except Exception as e:
-        print(f"❌ Error cargando sesiones de usuario: {e}")
+        print(f"âŒ Error cargando sesiones de usuario: {e}")
 
 _load_sessions_from_firebase()
 
@@ -873,10 +873,10 @@ def save_sessions():
         for token, user_data in active_sessions.items():
             col.document(token).set(user_data)
     except Exception as e:
-        print(f"❌ Error guardando sesiones de usuario: {e}")
+        print(f"âŒ Error guardando sesiones de usuario: {e}")
 
 def delete_session_from_firebase(token: str):
-    """Elimina una sesión específica de Firestore al hacer logout."""
+    """Elimina una sesiÃ³n especÃ­fica de Firestore al hacer logout."""
     try:
         from firebase_client import inicializar_firebase
         db = inicializar_firebase()
@@ -925,7 +925,7 @@ async def login_post(response: Response, username: str = Form(None), password: s
             from google.oauth2 import id_token
             import google.auth.transport.requests
             request_g = google.auth.transport.requests.Request()
-            # Idealmente deberíamos validar el CLIENT_ID passandolo a audience=..., por ahora solo validamos firma
+            # Idealmente deberÃ­amos validar el CLIENT_ID passandolo a audience=..., por ahora solo validamos firma
             val = id_token.verify_oauth2_token(google_token, request_g)
             email = val.get("email")
             parsed_username = email.split('@')[0]
@@ -937,7 +937,7 @@ async def login_post(response: Response, username: str = Form(None), password: s
                 return HTMLResponse(obtener_login_html(error="Cuenta vinculada con Google. Espera a que un administrador apruebe tu cuenta.", success=True), status_code=200)
                 
             if user_data.get("estado") != "aprobado":
-                return HTMLResponse(obtener_login_html(error="Tu cuenta de Google está pendiente de aprobación."), status_code=403)
+                return HTMLResponse(obtener_login_html(error="Tu cuenta de Google estÃ¡ pendiente de aprobaciÃ³n."), status_code=403)
                 
         except Exception as e:
             return HTMLResponse(obtener_login_html(error=f"Error validando Google Token: {str(e)}"), status_code=401)
@@ -961,7 +961,7 @@ async def login_post(response: Response, username: str = Form(None), password: s
             if not user_data or user_data.get("password") != hash_password(password):
                 return HTMLResponse(obtener_login_html(error="Usuario o clave incorrectos."), status_code=401)
             if user_data.get("estado") != "aprobado":
-                return HTMLResponse(obtener_login_html(error="Tu cuenta está pendiente de aprobación."), status_code=403)
+                return HTMLResponse(obtener_login_html(error="Tu cuenta estÃ¡ pendiente de aprobaciÃ³n."), status_code=403)
 
     import uuid
     token = str(uuid.uuid4())
@@ -971,9 +971,9 @@ async def login_post(response: Response, username: str = Form(None), password: s
 
     resp = RedirectResponse(url="/inbox", status_code=303)
     if remember == "yes" or google_token:
-        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=2592000) # 30 días
+        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=2592000) # 30 dÃ­as
     else:
-        resp.set_cookie(key="session_token", value=token, httponly=True) # cookie de sesión (se borra al cerrar el navegador)
+        resp.set_cookie(key="session_token", value=token, httponly=True) # cookie de sesiÃ³n (se borra al cerrar el navegador)
     return resp
 
 
@@ -997,7 +997,7 @@ async def login_post(response: Response, username: str = Form(None), password: s
             return HTMLResponse(obtener_login_html(error="Usuario o clave incorrectos."), status_code=401)
         
         if user_data.get("estado") != "aprobado":
-            return HTMLResponse(obtener_login_html(error="Tu cuenta está pendiente de aprobación por un administrador."), status_code=403)
+            return HTMLResponse(obtener_login_html(error="Tu cuenta estÃ¡ pendiente de aprobaciÃ³n por un administrador."), status_code=403)
 
     import uuid
     token = str(uuid.uuid4())
@@ -1008,9 +1008,9 @@ async def login_post(response: Response, username: str = Form(None), password: s
 
     resp = RedirectResponse(url="/inbox", status_code=303)
     if remember == "yes" or google_token:
-        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=2592000) # 30 días
+        resp.set_cookie(key="session_token", value=token, httponly=True, max_age=2592000) # 30 dÃ­as
     else:
-        resp.set_cookie(key="session_token", value=token, httponly=True) # cookie de sesión (se borra al cerrar el navegador)
+        resp.set_cookie(key="session_token", value=token, httponly=True) # cookie de sesiÃ³n (se borra al cerrar el navegador)
     return resp
 
 
@@ -1029,7 +1029,7 @@ async def logout(request: Request):
 def obtener_login_html(error="", success=False):
     msg_html = f'<div class="error" style="color: {"#10b981" if success else "#ef4444"}; background: {"#064e3b" if success else "#451a1e"}; border: 1px solid {"#059669" if success else "#991b1b"}; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9em; text-align: center;">{error}</div>' if error else ''
     return f"""
-    <html><head><title>Acceso Restringido — IA-ATC</title>
+    <html><head><title>Acceso Restringido â€” IA-ATC</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
     <style>
@@ -1109,14 +1109,14 @@ def obtener_login_html(error="", success=False):
             <input type="hidden" id="action" name="action" value="login" />
             <input type="text" name="username" id="username" placeholder="Usuario" autocomplete="off" />
 
-            <input type="password" name="password" id="password" placeholder="Contraseña" />
+            <input type="password" name="password" id="password" placeholder="ContraseÃ±a" />
             <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:5px; margin-bottom:5px; font-size:13px; color:#94a3b8; user-select:none;">
                 <input type="checkbox" name="remember" id="remember" value="yes" style="cursor:pointer; width:auto; margin:0;" checked>
-                <label for="remember" style="cursor:pointer; margin:0;">Mantener sesión iniciada</label>
+                <label for="remember" style="cursor:pointer; margin:0;">Mantener sesiÃ³n iniciada</label>
             </div>
             <button type="submit" id="submit-btn" style="margin-top: 15px; margin-bottom: 20px;">Ingresar</button>
 
-            <div style="text-align: center; margin-bottom: 10px; font-size: 14px; color: #94a3b8;">o continúa con</div>
+            <div style="text-align: center; margin-bottom: 10px; font-size: 14px; color: #94a3b8;">o continÃºa con</div>
             <div id="g_id_onload"
                  data-client_id="572322137024-s9knspr9emg17mtg2g4bhferuj9frrp7.apps.googleusercontent.com"
                  data-context="use"
@@ -1142,7 +1142,7 @@ def obtener_login_html(error="", success=False):
 
 @app.get("/perfil", response_class=HTMLResponse)
 async def perfil_panel(request: Request):
-    """Personalización de Usuario."""
+    """PersonalizaciÃ³n de Usuario."""
     if not verificar_sesion(request):
         return HTMLResponse(obtener_login_html(), status_code=200)
 
@@ -1159,7 +1159,7 @@ async def perfil_panel(request: Request):
     
     # Botones Admin
     if es_admin(request):
-        admin_btn = """<a href="/admin" class="nav-item" title="Panel Estadístico"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></a>"""
+        admin_btn = """<a href="/admin" class="nav-item" title="Panel EstadÃ­stico"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></a>"""
         settings_btn = """<a href="/settings" class="nav-item" title="Personalizar Agente IA"><svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></a>"""
         usuarios_btn = """<a href="/usuarios" class="nav-item" title="Panel de Usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a>"""
     else:
@@ -1175,7 +1175,7 @@ async def perfil_panel(request: Request):
 
 @app.get("/settings", response_class=HTMLResponse)
 async def settings_panel(request: Request):
-    """Personalización de Agente y Base de Conocimiento."""
+    """PersonalizaciÃ³n de Agente y Base de Conocimiento."""
     if not es_admin(request):
         return HTMLResponse(obtener_login_html(), status_code=200)
 
@@ -1199,7 +1199,7 @@ async def settings_panel(request: Request):
 
     html = html.replace("{guia_content}", guia_content)
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
-    html = html.replace("{proactive_text}", "Desactivar Envíos" if proact_activo else "Activar Sistema Proactivo")
+    html = html.replace("{proactive_text}", "Desactivar EnvÃ­os" if proact_activo else "Activar Sistema Proactivo")
     html = html.replace("{proactive_color}", "#ef4444" if proact_activo else "#10b981")
     
     import glob
@@ -1207,7 +1207,7 @@ async def settings_panel(request: Request):
     for pdf in glob.glob("*.pdf"):
         pdfs_html += f"<li class='pdf-list-item'><div style='display:flex;align-items:center;gap:0.5rem;'><svg class='icon-pdf' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/></svg> {pdf}</div> <button onclick=\"deletePdf('{pdf}')\" class='pdf-delete-btn'><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 6h18'/><path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/><path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/></svg> Borrar</button></li>"
     
-    html = html.replace("{lista_pdfs}", pdfs_html or "<li style='color:var(--text-muted);font-style:italic;padding:0.5rem;'>Ningún archivo PDF subido.</li>")
+    html = html.replace("{lista_pdfs}", pdfs_html or "<li style='color:var(--text-muted);font-style:italic;padding:0.5rem;'>NingÃºn archivo PDF subido.</li>")
     
     usuario_sesion = obtener_usuario_sesion(request)
     prefs = usuario_sesion.get("preferencias_ui", {}) if usuario_sesion else {}
@@ -1241,7 +1241,7 @@ async def get_media_endpoint(media_id: str, request: Request):
         return RedirectResponse("https://placehold.co/250x150?text=Media+Expirado", status_code=302)
         
     # SOPORTE ESTRICTO PARA VIDEOS/AUDIOS EN NAVEGADORES MOVILES (HTTP 206 Range Requests)
-    # Safari (iOS) y Chrome Móvil exigen que el servidor responda rangos parciales
+    # Safari (iOS) y Chrome MÃ³vil exigen que el servidor responda rangos parciales
     range_header = request.headers.get("Range")
     if range_header and ("video" in mime or "audio" in mime):
         import re
@@ -1376,7 +1376,7 @@ async def import_backup(request: Request, file: UploadFile = File(...)):
                         color=lb.get("color", "#000000")
                     )
                     
-        return {"status": "ok", "message": "Importación exitosa"}
+        return {"status": "ok", "message": "ImportaciÃ³n exitosa"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
@@ -1388,7 +1388,7 @@ async def save_settings(request: Request, guia_content: str = Form(...)):
     with open("guia_respuestas.md", "w", encoding="utf-8") as f:
         f.write(guia_content)
         
-    # Limpiamos caché del bot nativo para que levante los nuevos conocimientos
+    # Limpiamos cachÃ© del bot nativo para que levante los nuevos conocimientos
     import prompts
     prompts._GUIA_CACHE = ""
 
@@ -1435,11 +1435,11 @@ async def toggle_proactive(request: Request):
 
 @app.get("/admin", response_class=HTMLResponse)
 async def panel_admin(request: Request):
-    """Panel web de administración mejorado."""
+    """Panel web de administraciÃ³n mejorado."""
     if not verificar_sesion(request):
         return HTMLResponse(obtener_login_html(), status_code=200)
 
-    # ── Datos para el panel ──────────────────────────────
+    # â”€â”€ Datos para el panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     import os
     if not os.path.exists("admin.html"): return HTMLResponse("404: admin.html no encontrado")
         
@@ -1453,7 +1453,7 @@ async def panel_admin(request: Request):
     n_escalados = len(escalados)
     n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
 
-    # removed ──────────────────────────
+    # removed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     # Reemplazos
     html = html.replace("{pwd}", "")
@@ -1470,7 +1470,7 @@ async def panel_admin(request: Request):
 
 @app.post("/admin/reactivar/{numero_wa}")
 async def reactivar_bot(request: Request, numero_wa: str):
-    """Reactiva el bot para un número específico y limpia la sesión."""
+    """Reactiva el bot para un nÃºmero especÃ­fico y limpia la sesiÃ³n."""
     if not verificar_sesion(request):
         return RedirectResponse(url="/login", status_code=303)
 
@@ -1480,7 +1480,7 @@ async def reactivar_bot(request: Request, numero_wa: str):
         sesiones[numero_wa]["escalado_en"] = None
         sesiones[numero_wa]["motivo_escalacion"] = None
         sesiones[numero_wa]["ultima_actividad"] = datetime.utcnow()
-        print(f"  [▶ Bot reactivado para {numero_wa} desde panel admin]")
+        print(f"  [â–¶ Bot reactivado para {numero_wa} desde panel admin]")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
         except: pass
 
@@ -1490,15 +1490,15 @@ async def reactivar_bot(request: Request, numero_wa: str):
 
 @app.post("/api/admin/pausar/{numero_wa}")
 async def pausar_bot_manual(request: Request, numero_wa: str):
-    """Pausa al bot de forma manual para un WA específico."""
+    """Pausa al bot de forma manual para un WA especÃ­fico."""
     if not verificar_sesion(request):
         return RedirectResponse(url="/login", status_code=303)
 
     if numero_wa in sesiones:
         sesiones[numero_wa]["bot_activo"] = False
         sesiones[numero_wa]["escalado_en"] = datetime.utcnow()
-        sesiones[numero_wa]["motivo_escalacion"] = "Intervención manual forzada"
-        print(f"  [⏸ Bot pausado manualmente para {numero_wa}]")
+        sesiones[numero_wa]["motivo_escalacion"] = "IntervenciÃ³n manual forzada"
+        print(f"  [â¸ Bot pausado manualmente para {numero_wa}]")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesiones[numero_wa])
         except: pass
         
@@ -1602,7 +1602,7 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                     err_msg = result.stderr.decode('utf-8','ignore') if result.stderr else ""
                     if result.returncode < 0:
                         err_msg += f" (Killed by OS, Signal {-result.returncode}, probably OOM/Memory Limit)"
-                    print("FFMPEG video error crítico:", err_msg)
+                    print("FFMPEG video error crÃ­tico:", err_msg)
                     # Mostrar el error limpio, ya que loglevel error quita la basura
                     return {"ok": False, "error": f"Error FFMPEG: {err_msg[:200]}"}
                 
@@ -1625,7 +1625,7 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
             media_cache[media_id] = (content, final_mime)
             return {"ok": True, "media_id": media_id}
         
-        return {"ok": False, "error": f"Meta rechazó archivo: {media_id}"}
+        return {"ok": False, "error": f"Meta rechazÃ³ archivo: {media_id}"}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
@@ -1646,7 +1646,7 @@ async def buscar_mensajes(q: str, request: Request):
         nombre = session.get("nombre_cliente", wa_id)
         
         matches_en_chat = []
-        # Inverso para los más recientes
+        # Inverso para los mÃ¡s recientes
         for msg in reversed(historial):
             content = msg.get("content", "")
             if content and q in content.lower() and msg.get("role") != "system":
@@ -1708,11 +1708,11 @@ async def enviar_media_manual_endpoint(request: Request, wa_id: str = Form(...),
         except: pass
         return {"ok": True}
     else:
-        return {"ok": False, "error": "Error enviando vía Meta"}
+        return {"ok": False, "error": "Error enviando vÃ­a Meta"}
 
 @app.get("/api/frequent_chats")
 async def get_frequent_chats(request: Request):
-    """Devuelve los 6 chats con más mensajes en su historial."""
+    """Devuelve los 6 chats con mÃ¡s mensajes en su historial."""
     if not verificar_sesion(request): raise HTTPException(status_code=403, detail="No autorizado")
     chats = []
     for w_id, data in sesiones.items():
@@ -1728,7 +1728,7 @@ async def get_frequent_chats(request: Request):
 
 @app.post("/api/forward_messages")
 async def forward_messages(request: Request):
-    """Reenvía mensajes de un chat origen a múltiples destinos."""
+    """ReenvÃ­a mensajes de un chat origen a mÃºltiples destinos."""
     if not verificar_sesion(request): raise HTTPException(status_code=403, detail="No autorizado")
     data = await request.json()
     source_wa_id = data.get("source_wa_id")
@@ -1755,8 +1755,9 @@ async def forward_messages(request: Request):
     
     success_count = 0
     for target in targets:
-        # limpiar posibles caracteres de separación humana (espacios, guiones)
-        target = normalizar_numero(target.replace(" ", "").replace("+", "").replace("-", ""))
+        # limpiar posibles caracteres de separaciÃ³n humana (espacios, guiones)
+        target = target.replace(" ", "").replace("+", "").replace("-", "")
+        if len(target) == 9 and target.startswith("9"): target = "51" + target
         if not target.isdigit(): continue
         
         target_sesion = obtener_o_crear_sesion(target)
@@ -1832,7 +1833,7 @@ async def enviar_manual_endpoint(request: Request):
         return {"ok": False}
         
     s = sesiones[wa_id]
-    # No guardamos en historial todavía, hasta confirmar envío
+    # No guardamos en historial todavÃ­a, hasta confirmar envÃ­o
     
     from whatsapp_client import enviar_mensaje, enviar_media
     import re
@@ -1887,12 +1888,12 @@ async def enviar_manual_endpoint(request: Request):
     if exito:
         import time
         ts = int(time.time())
-        # Obtener usuario que envió el mensaje — usar nombre visible si está configurado
+        # Obtener usuario que enviÃ³ el mensaje â€” usar nombre visible si estÃ¡ configurado
         usuario_sesion = obtener_usuario_sesion(request)
         sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
         s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name, "quick_reply_title": quick_reply_title})
         s["ultima_actividad"] = datetime.utcnow()
-        print(f"  [👤 Humano -> {wa_id}]: {texto}")
+        print(f"  [ðŸ‘¤ Humano -> {wa_id}]: {texto}")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
         except: pass
         return {"ok": True}
@@ -1915,15 +1916,15 @@ async def admin_reaccionar(payload: ReaccionPayload, request: Request):
     exito = await enviar_reaccion_async(payload.wa_id, payload.message_id, payload.emoji)
     
     if exito:
-        # Añadir al historial local? (Opcional, pero para mantener registro)
+        # AÃ±adir al historial local? (Opcional, pero para mantener registro)
         s = sesiones.get(payload.wa_id)
         if s:
-            s["historial"].append({"role": "assistant", "content": f"*[Reacción enviada: {payload.emoji}]*"})
+            s["historial"].append({"role": "assistant", "content": f"*[ReacciÃ³n enviada: {payload.emoji}]*"})
             s["ultima_actividad"] = datetime.utcnow()
             try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(payload.wa_id, s)
             except: pass
         return {"ok": True}
-    return {"ok": False, "error": "No se pudo enviar la reacción a Meta"}
+    return {"ok": False, "error": "No se pudo enviar la reacciÃ³n a Meta"}
 
 @app.post("/admin/toggle")
 async def toggle_bot_global(request: Request):
@@ -1947,9 +1948,9 @@ async def debug_historial(wa_id: str):
 from fastapi.responses import Response
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  Health check y Debug
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 @app.get("/usuarios", response_class=HTMLResponse)
@@ -1963,7 +1964,7 @@ async def panel_usuarios(request: Request):
     with open("usuarios.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    admin_btn = """<a href="/admin" class="nav-item" title="Panel Estadístico"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></a>"""
+    admin_btn = """<a href="/admin" class="nav-item" title="Panel EstadÃ­stico"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></a>"""
     settings_btn = """<a href="/settings" class="nav-item" title="Personalizar Agente IA"><svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></a>"""
     usuarios_btn = """<a href="/usuarios" class="nav-item active" title="Panel de Usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a>"""
     
@@ -2018,17 +2019,17 @@ async def debug_error():
 
 @app.get("/admin/chat/{numero_wa}", response_class=HTMLResponse)
 async def ver_chat(request: Request, numero_wa: str):
-    """Vista de conversación estilo WhatsApp para un número específico."""
+    """Vista de conversaciÃ³n estilo WhatsApp para un nÃºmero especÃ­fico."""
     if not verificar_sesion(request):
         return RedirectResponse(url=f"/admin", status_code=302)
 
     sesion = sesiones.get(numero_wa)
     if not sesion:
-        return HTMLResponse("<h2 style='font-family:sans-serif;padding:2rem'>Sesión no encontrada o ya expiró.</h2>")
+        return HTMLResponse("<h2 style='font-family:sans-serif;padding:2rem'>SesiÃ³n no encontrada o ya expirÃ³.</h2>")
 
     nombre  = sesion.get("nombre_cliente", numero_wa)
-    pedido  = sesion.get("datos_pedido", {}).get("id", "—") if sesion.get("datos_pedido") else "—"
-    estado  = sesion.get("datos_pedido", {}).get("estadoGeneral", "—") if sesion.get("datos_pedido") else "—"
+    pedido  = sesion.get("datos_pedido", {}).get("id", "â€”") if sesion.get("datos_pedido") else "â€”"
+    estado  = sesion.get("datos_pedido", {}).get("estadoGeneral", "â€”") if sesion.get("datos_pedido") else "â€”"
     activo  = sesion.get("bot_activo", True)
     msgs    = [m for m in sesion.get("historial", []) if m["role"] != "system"]
 
@@ -2037,7 +2038,7 @@ async def ver_chat(request: Request, numero_wa: str):
         es_bot    = m["role"] == "assistant"
         clase     = "burbuja-bot" if es_bot else "burbuja-user"
         lado      = "bot-lado" if es_bot else "user-lado"
-        remitente = "🤖 María" if es_bot else f"👤 {nombre}"
+        remitente = "ðŸ¤– MarÃ­a" if es_bot else f"ðŸ‘¤ {nombre}"
         texto     = m["content"].replace("\n", "<br>")
         def wrap_phone(match):
             phone = match.group(1)
@@ -2053,16 +2054,16 @@ async def ver_chat(request: Request, numero_wa: str):
         </div>"""
 
     if not burbujas:
-        burbujas = '<p style="text-align:center;color:#aaa;padding:2rem">Sin mensajes aún en esta sesión</p>'
+        burbujas = '<p style="text-align:center;color:#aaa;padding:2rem">Sin mensajes aÃºn en esta sesiÃ³n</p>'
 
-    estado_badge = "🟢 Bot activo" if activo else "🔴 Esperando humano"
+    estado_badge = "ðŸŸ¢ Bot activo" if activo else "ðŸ”´ Esperando humano"
     color_badge  = "#2e7d32" if activo else "#c62828"
     bg_badge     = "#e8f5e9" if activo else "#ffebee"
 
     btn_reactivar = "" if activo else f"""
     <form method="post" action="/admin/reactivar/{numero_wa}" style="margin:0">
       <button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;
-                     border-radius:8px;cursor:pointer;font-weight:600">▶ Reactivar bot</button>
+                     border-radius:8px;cursor:pointer;font-weight:600">â–¶ Reactivar bot</button>
     </form>"""
 
     return HTMLResponse(f"""
@@ -2081,7 +2082,7 @@ async def ver_chat(request: Request, numero_wa: str):
       }}
       *{{box-sizing:border-box;margin:0;padding:0}}
       body{{font-family:'Inter',sans-serif;background-color:var(--wa-chat-bg);
-            /* Patrón sutil de fondo tipo WhatsApp */
+            /* PatrÃ³n sutil de fondo tipo WhatsApp */
             background-image: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z" fill="%23dfd8d1" fill-opacity="0.4" fill-rule="evenodd"/%3E%3C/svg%3E');
             min-height:100vh;display:flex;flex-direction:column;
             -webkit-font-smoothing: antialiased;}}
@@ -2136,14 +2137,14 @@ async def ver_chat(request: Request, numero_wa: str):
       <div class="topbar-right">
         <span class="estado-chip">{estado_badge}</span>
         {btn_reactivar.replace('button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;\\n                     border-radius:8px;cursor:pointer;font-weight:600"', 'button class="btn-reactivar"')}
-        <a href="/admin" class="back-btn">← Volver al Panel</a>
+        <a href="/admin" class="back-btn">â† Volver al Panel</a>
       </div>
     </div>
     <div class="info-bar">
-      <span>👤 <b>{nombre}</b></span>
-      <span>📦 Pedido <b>#{pedido}</b></span>
-      <span>📌 Estado <b>{estado}</b></span>
-      <span>💬 <b>{len(msgs)}</b> mensajes</span>
+      <span>ðŸ‘¤ <b>{nombre}</b></span>
+      <span>ðŸ“¦ Pedido <b>#{pedido}</b></span>
+      <span>ðŸ“Œ Estado <b>{estado}</b></span>
+      <span>ðŸ’¬ <b>{len(msgs)}</b> mensajes</span>
     </div>
     <div class="chat-area">
       {burbujas}
@@ -2166,7 +2167,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 sesiones[wa_id] = s_db
         except Exception:
             pass
-    # Si las etiquetas están vacías por un hot-reload fallido, recuperarlas
+    # Si las etiquetas estÃ¡n vacÃ­as por un hot-reload fallido, recuperarlas
     global global_labels
     if not global_labels:
         try:
@@ -2210,8 +2211,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
     def ultimo_msg(sesion):
         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
-        if not hist: return "—"
-        return hist[-1]["content"][:50] + ("…" if len(hist[-1]["content"]) > 50 else "")
+        if not hist: return "â€”"
+        return hist[-1]["content"][:50] + ("â€¦" if len(hist[-1]["content"]) > 50 else "")
 
     # Procesar Lista de Chats
     grupos_sesiones = []
@@ -2272,7 +2273,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         </button>
         
         <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={'false' if is_unread else 'true'}" style="background:{unread_btn_bg}; border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:{unread_btn_text}; font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; text-decoration:none;">
-            No leídos
+            No leÃ­dos
         </a>
         
         <div id="inboxFilterMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
@@ -2313,7 +2314,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if label_filter and label_filter not in session_tags:
             continue
             
-        # Filtro de No leídos (Verifica si el último mensaje lo envió el usuario)
+        # Filtro de No leÃ­dos (Verifica si el Ãºltimo mensaje lo enviÃ³ el usuario)
         if is_unread:
             hist_sin_sys = [m for m in s.get("historial", []) if m["role"] != "system"]
             if not hist_sin_sys or hist_sin_sys[-1]["role"] != "user":
@@ -2326,11 +2327,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         
         is_vg = s.get("is_virtual_group", False)
         if is_vg:
-            badge_html = '<span class="badge" style="background:rgba(168, 85, 247, 0.15); color:#a855f7; border: 1px solid rgba(168, 85, 247, 0.3);">👥 GRUPO VIRTUAL</span>'
+            badge_html = '<span class="badge" style="background:rgba(168, 85, 247, 0.15); color:#a855f7; border: 1px solid rgba(168, 85, 247, 0.3);">ðŸ‘¥ GRUPO VIRTUAL</span>'
         else:
-            badge_html = '<span class="badge">🟢 Bot Activo</span>'
+            badge_html = '<span class="badge">ðŸŸ¢ Bot Activo</span>'
             if not activo:
-                badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
+                badge_html = '<span class="badge badge-alert">ðŸ”´ Esperando</span>'
             
         active_class = "active-row" if wa_id == num else ""
             
@@ -2354,7 +2355,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         
         unread_count = s.get("unread_count", 0)
         unread_html = ""
-        if unread_count == -1: # Indicador sin número (marcado manual)
+        if unread_count == -1: # Indicador sin nÃºmero (marcado manual)
             unread_html = '<div style="width:10px; height:10px; border-radius:50%; background:var(--primary-color); flex-shrink:0;"></div>'
         elif unread_count > 0:
             unread_html = f'<div style="min-width:20px; height:20px; border-radius:10px; background:var(--primary-color); color:var(--bg-main); font-size:0.75rem; font-weight:bold; display:flex; align-items:center; justify-content:center; padding:0 6px; flex-shrink:0;">{unread_count}</div>'
@@ -2388,7 +2389,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if vg:
             s_fake_vg = {
                 "is_virtual_group": True,
-                "nombre_cliente": f"👥 {vg.get('name')}",
+                "nombre_cliente": f"ðŸ‘¥ {vg.get('name')}",
                 "historial": [],
                 "bot_activo": True,
                 "ultima_actividad": datetime.utcnow()
@@ -2408,10 +2409,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if not s_fake_vg["historial"]:
                 chat_viewer_html = f'''<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.95rem;flex-direction:column;gap:10px;">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    <p>Grupo Virtual "{vg.get('name')}".</p><p>Todavía no hay mensajes correspondientes a sus miembros.</p>
+                    <p>Grupo Virtual "{vg.get('name')}".</p><p>TodavÃ­a no hay mensajes correspondientes a sus miembros.</p>
                 </div>'''
 
-    # Auto-inicializar chat nuevo si se manda un número válido (ej. desde el buscador UI)
+    # Auto-inicializar chat nuevo si se manda un nÃºmero vÃ¡lido (ej. desde el buscador UI)
     elif wa_id and wa_id not in sesiones:
         import re
         if re.match(r'^51\d{9}$', str(wa_id)):
@@ -2434,8 +2435,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         chat_viewer_html = """
         <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <h3>Tu Inbox está vacío</h3>
-            <p>Selecciona una conversación a la izquierda o navega por números nuevos.</p>
+            <h3>Tu Inbox estÃ¡ vacÃ­o</h3>
+            <p>Selecciona una conversaciÃ³n a la izquierda o navega por nÃºmeros nuevos.</p>
         </div>"""
     else:
         # Renderizar Chat Activo
@@ -2451,10 +2452,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         import re
         burbujas = ""
         if len(all_msgs) > MAX_MENSAJES and not load_all:
-            burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo (⚠️ Más lento)</button></div>'
+            burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando Ãºltimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">ðŸ“¥ Cargar historial completo (âš ï¸ MÃ¡s lento)</button></div>'
         last_date_str = ""
         for m in msgs:
-            # Insertar separador de fecha si cambia el día
+            # Insertar separador de fecha si cambia el dÃ­a
             ts_unix = m.get("timestamp", "")
             date_str = ""
             if ts_unix:
@@ -2487,7 +2488,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if not es_bot and "sender_name_override" in m:
                 s_name = m.get("sender_name_override", "")
                 s_waid = m.get("sender_wa_id", "")
-                texto = f'<div style="background:rgba(255,255,255,0.08); padding:0.4rem 0.6rem; border-radius:4px; font-size:0.8rem; margin-bottom:0.4rem; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;"><strong style="color:var(--text-main); font-family:var(--font-heading);">{s_name}</strong> <a href="/inbox/{s_waid}" style="color:var(--primary-color); text-decoration:none; font-weight:bold; padding:0.2rem 0.4rem; background:rgba(59, 130, 246, 0.15); border-radius:4px;">Responder ↗</a></div>' + texto
+                texto = f'<div style="background:rgba(255,255,255,0.08); padding:0.4rem 0.6rem; border-radius:4px; font-size:0.8rem; margin-bottom:0.4rem; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;"><strong style="color:var(--text-main); font-family:var(--font-heading);">{s_name}</strong> <a href="/inbox/{s_waid}" style="color:var(--primary-color); text-decoration:none; font-weight:bold; padding:0.2rem 0.4rem; background:rgba(59, 130, 246, 0.15); border-radius:4px;">Responder â†—</a></div>' + texto
             def wrap_phone2(match):
                 phone = match.group(1)
                 clean_phone = __import__('re').sub(r'[\s\-]', '', phone)
@@ -2536,13 +2537,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     doc_id = partes[0]
                     doc_name = partes[1] if len(partes) > 1 else "Documento"
                     doc_url = f"/api/media/{doc_id}"
-                    return f'<div style="margin-bottom: 5px;"><a href="{doc_url}" download="{doc_name}" target="_blank" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-decoration: none; color: inherit; font-size: 0.9rem; border: 1px solid var(--accent-border);">📎 {doc_name} <span style="font-size:0.8rem; margin-left:auto; opacity:0.6;">📥 Bajar</span></a></div>' 
+                    return f'<div style="margin-bottom: 5px;"><a href="{doc_url}" download="{doc_name}" target="_blank" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-decoration: none; color: inherit; font-size: 0.9rem; border: 1px solid var(--accent-border);">ðŸ“Ž {doc_name} <span style="font-size:0.8rem; margin-left:auto; opacity:0.6;">ðŸ“¥ Bajar</span></a></div>' 
                 elif tipo == "vista_unica":
-                    icono = "📷" if media_id == "imagen" else ("🎬" if media_id == "video" else "🎤")
-                    return f'<div style="margin-bottom: 5px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2); text-align: center; color: var(--text-dim); display:flex; flex-direction:column; align-items:center; gap:4px;"><span style="font-size: 1.2rem;">{icono} 👁️</span><span style="font-size: 0.8rem; font-weight: 500;">Archivo de Vista Única</span><span style="font-size: 0.75rem; opacity: 0.7;">(Bloqueado por privacidad de WhatsApp)</span></div>'
+                    icono = "ðŸ“·" if media_id == "imagen" else ("ðŸŽ¬" if media_id == "video" else "ðŸŽ¤")
+                    return f'<div style="margin-bottom: 5px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2); text-align: center; color: var(--text-dim); display:flex; flex-direction:column; align-items:center; gap:4px;"><span style="font-size: 1.2rem;">{icono} ðŸ‘ï¸</span><span style="font-size: 0.8rem; font-weight: 500;">Archivo de Vista Ãšnica</span><span style="font-size: 0.75rem; opacity: 0.7;">(Bloqueado por privacidad de WhatsApp)</span></div>'
                 return match.group(0)
 
-            # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una función regex,
+            # Reemplazar todas las etiquetas multimedia incrustadas en el texto usando una funciÃ³n regex,
             # permitiendo que coexistan con texto (ej: "[sticker:123] | Hola")
             texto_renderizado = re.sub(r"\[(sticker-local|sticker|imagen|audio|video|documento|vista_unica):([^\]]+)\]", reemplazar_archivos_inline, texto)
 
@@ -2552,12 +2553,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 lat, lon = partes[0], partes[1]
                 addr = partes[2] if len(partes) > 2 else ""
                 maps_url = f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
-                addr_text = f"<br><span style='font-size:0.75rem;opacity:0.8'>📍 {addr}</span>" if addr else ""
-                return f'<div style="text-align:center; margin-bottom: 4px;"><a href="{maps_url}" target="_blank" style="display:inline-block; background:rgba(255,255,255,0.05); padding:0.6rem 1rem; border-radius:12px; color:var(--text-main); text-decoration:none; border:1px solid var(--accent-border); font-size:0.85rem;">🗺️ <span style="text-decoration:underline;">Ver Ubicación de WhatsApp en Google Maps</span>{addr_text}</a></div>'
+                addr_text = f"<br><span style='font-size:0.75rem;opacity:0.8'>ðŸ“ {addr}</span>" if addr else ""
+                return f'<div style="text-align:center; margin-bottom: 4px;"><a href="{maps_url}" target="_blank" style="display:inline-block; background:rgba(255,255,255,0.05); padding:0.6rem 1rem; border-radius:12px; color:var(--text-main); text-decoration:none; border:1px solid var(--accent-border); font-size:0.85rem;">ðŸ—ºï¸ <span style="text-decoration:underline;">Ver UbicaciÃ³n de WhatsApp en Google Maps</span>{addr_text}</a></div>'
 
             texto_renderizado = re.sub(r"\[ubicacion:([^\]]+)\]", reemplazar_ubicacion, texto_renderizado)
             
-            # Limpiar posibles delimitadores huérfanos si quedó un texto como "<HTML> | PN" 
+            # Limpiar posibles delimitadores huÃ©rfanos si quedÃ³ un texto como "<HTML> | PN" 
             texto_renderizado = texto_renderizado.replace("</div> | ", "</div><br>")
             
             if texto.startswith('[sticker') and texto.endswith(']'):
@@ -2569,7 +2570,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if match:
                 texto_citado = match.group(1)
                 texto_restante = match.group(2)
-                html_reply = f'<div style="font-size:0.75rem; color:var(--text-muted); background:rgba(0,0,0,0.15); padding:0.35rem 0.6rem; border-radius:6px; margin-bottom:0.4rem; border-left:3px solid var(--primary-color); display:flex; flex-direction:column; max-width:100%; overflow:hidden;"><span style="font-weight:600;font-size:0.65rem;margin-bottom:0.1rem;opacity:0.8;">Respondió a:</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{texto_citado}</span></div>'
+                html_reply = f'<div style="font-size:0.75rem; color:var(--text-muted); background:rgba(0,0,0,0.15); padding:0.35rem 0.6rem; border-radius:6px; margin-bottom:0.4rem; border-left:3px solid var(--primary-color); display:flex; flex-direction:column; max-width:100%; overflow:hidden;"><span style="font-weight:600;font-size:0.65rem;margin-bottom:0.1rem;opacity:0.8;">RespondiÃ³ a:</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{texto_citado}</span></div>'
                 texto_renderizado = html_reply + texto_restante
                 
             # Formatear la vista de plantillas salientes
@@ -2605,16 +2606,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if es_bot and "status" in m:
                 st = m["status"]
                 if st == "sent":
-                    tick = "✓"
+                    tick = "âœ“"
                     color = "rgba(255,255,255,0.7)"
                 elif st == "delivered":
-                    tick = "✓✓"
+                    tick = "âœ“âœ“"
                     color = "rgba(255,255,255,0.7)"
                 elif st == "read":
-                    tick = "✓✓"
+                    tick = "âœ“âœ“"
                     color = "#34b7f1" 
                 else:
-                    tick = "✓"
+                    tick = "âœ“"
                     color = "rgba(255,255,255,0.7)"
                 status_html = f'<span class="msg-status" style="color:{color}; font-size:0.75rem; margin-left:4px; font-weight: bold;">{tick}</span>'
 
@@ -2637,26 +2638,26 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
             
         if not burbujas:
-            burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">Conversación iniciada...</div>'
+            burbujas = '<div style="text-align:center;opacity:0.5;margin-top:2rem">ConversaciÃ³n iniciada...</div>'
 
         # Cabecera superior del chat
         status_bar = ""
         if not activo_chat:
             status_bar = f"""
             <div style="background:var(--danger-color);color:white;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
-                Atención manual en curso
+                AtenciÃ³n manual en curso
                 <form method="post" action="/admin/reactivar/{wa_id}" style="margin:0">
                   <input type="hidden" name="redirect" value="/inbox/{wa_id}?tab={tab}">
-                  <button type="submit" style="background:white;color:var(--danger-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">✅ Reactivar Bot</button>
+                  <button type="submit" style="background:white;color:var(--danger-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">âœ… Reactivar Bot</button>
                 </form>
             </div>"""
         else:
             status_bar = f"""
             <div style="background:var(--success-color);color:white;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;">
-                Bot IA respondiendo automáticamente
+                Bot IA respondiendo automÃ¡ticamente
                 <form method="post" action="/api/admin/pausar/{wa_id}" style="margin:0">
                   <input type="hidden" name="redirect" value="/inbox/{wa_id}?tab={tab}">
-                  <button type="submit" style="background:white;color:var(--success-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">⏸️ Pausar IA</button>
+                  <button type="submit" style="background:white;color:var(--success-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">â¸ï¸ Pausar IA</button>
                 </form>
             </div>"""
 
@@ -2670,7 +2671,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <div style="width:100%; height:6px; background:var(--bg-main); border-radius:4px; overflow:hidden;"><div id="qrProgressFill" style="height:100%; width:0%; background:var(--primary-color); transition:width 0.3s;"></div></div>
             </div>
             <div style="opacity:0.6;font-size:0.85rem;color:var(--text-muted);display:flex;align-items:center;justify-content:center;padding:0.5rem;">
-                El Bot IA está controlando este chat. Pausa al bot para intervenir.
+                El Bot IA estÃ¡ controlando este chat. Pausa al bot para intervenir.
             </div>"""
         else:
             chat_box = f"""
@@ -2680,7 +2681,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             </div>
             <div id="replyPreviewContainer" style="display:none; align-items:center; justify-content:space-between; background:var(--accent-bg); padding: 0.5rem 1rem; border-left: 3px solid var(--primary-color); font-size: 0.85rem; color: var(--text-muted); border-radius: 8px 8px 0 0; margin-bottom: -0.5rem; position: relative;">
                 <span style="font-family:var(--font-main);">Respondiendo a: <span id="replyPreviewTxt" style="color:var(--text-main);font-weight:600;">...</span></span>
-                <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">×</button>
+                <button type="button" onclick="document.getElementById('replyPreviewContainer').style.display='none'; document.getElementById('replyToWamid').value='';" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:0;">Ã—</button>
             </div>
             
             <form onsubmit="window.enviarMensajeManual(event, '{wa_id}'); return false;" style="display:flex; gap:0.4rem; width:100%; margin:0; position:relative; align-items:flex-end; box-sizing:border-box; max-width:100%;">
@@ -2708,7 +2709,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     </div>
                 </div>
 
-                <!-- CENTRO: Input Píldora que abarca todo lo central -->
+                <!-- CENTRO: Input PÃ­ldora que abarca todo lo central -->
                 <div style="flex:1; display:flex; align-items:flex-end; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:24px; padding:0.2rem 0.4rem; position:relative; min-height:46px; min-width:0; box-sizing:border-box;">
                     
                     <!-- attach menu -->
@@ -2736,8 +2737,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     
                     <!-- Right utilities inside -->
                     <div style="display:flex; flex-shrink:0; align-items:center; margin-bottom: 3px;">
-                        <!-- Respuestas Rápidas & Plantillas -->
-                        <button type="button" id="btnRightQR" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){{ side.style.display='flex'; if(window.cargarQuickReplies) window.cargarQuickReplies(); if(window.cargarPlantillas) window.cargarPlantillas(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); }} else {{ side.style.display='none'; }}" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas y Plantillas">
+                        <!-- Respuestas RÃ¡pidas & Plantillas -->
+                        <button type="button" id="btnRightQR" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){{ side.style.display='flex'; if(window.cargarQuickReplies) window.cargarQuickReplies(); if(window.cargarPlantillas) window.cargarPlantillas(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); }} else {{ side.style.display='none'; }}" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas RÃ¡pidas y Plantillas">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                         </button>
                         <!-- Clip -->
@@ -2747,19 +2748,19 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         <!-- Camera Mode Selector Menu -->
                         <div id="cameraMenu" style="display:none; position:absolute; bottom:calc(100% + 0.8rem); right:40px; width:160px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.2rem; z-index:100;">
                             <button type="button" onclick="document.getElementById('cameraMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'media'); document.getElementById('hiddenFileInput').accept='image/*'; document.getElementById('hiddenFileInput').setAttribute('capture', 'environment'); document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
-                                📷 Tomar Foto
+                                ðŸ“· Tomar Foto
                             </button>
                             <button type="button" onclick="document.getElementById('cameraMenu').style.display='none'; document.getElementById('hiddenFileInput').setAttribute('data-mode', 'media'); document.getElementById('hiddenFileInput').accept='video/*'; document.getElementById('hiddenFileInput').setAttribute('capture', 'environment'); document.getElementById('hiddenFileInput').click();" style="padding:0.7rem 1rem; border:none; background:transparent; cursor:pointer; text-align:left; color:var(--text-main); font-size:0.9rem; border-radius:8px; transition:background 0.2s; display:flex; align-items:center; gap:0.6rem;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='transparent'">
-                                🎬 Grabar Video
+                                ðŸŽ¬ Grabar Video
                             </button>
                         </div>
                         
-                        <!-- Cámara (Selector) -->
-                        <button type="button" id="btnRightPhoto" onclick="const cm = document.getElementById('cameraMenu'); cm.style.display = cm.style.display==='none'?'flex':'none';" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Cámara (Foto y Video)">
+                        <!-- CÃ¡mara (Selector) -->
+                        <button type="button" id="btnRightPhoto" onclick="const cm = document.getElementById('cameraMenu'); cm.style.display = cm.style.display==='none'?'flex':'none';" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="CÃ¡mara (Foto y Video)">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         </button>
                         
-                        <!-- Micrófono o Enviar -->
+                        <!-- MicrÃ³fono o Enviar -->
                         <!-- Send Button (Toggle) -->
                         <button type="submit" id="btnSubmitForm" style="background:transparent;color:var(--text-muted);border:none;width:32px;height:32px;display:none;align-items:center;justify-content:center;cursor:pointer;transition:color 0.2s; flex-shrink:0;" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--text-muted)'" title="Enviar">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="margin-left: 2px;"><line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -2769,7 +2770,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                         </button>
                         <!-- Cancel Audio -->
-                        <button type="button" id="btnCancelAudio" style="background:transparent; color:var(--danger-color); border:none; width:32px; height:32px; display:none; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.2s; flex-shrink:0;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Cancelar grabación">
+                        <button type="button" id="btnCancelAudio" style="background:transparent; color:var(--danger-color); border:none; width:32px; height:32px; display:none; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.2s; flex-shrink:0;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Cancelar grabaciÃ³n">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
                     </div>
@@ -2802,7 +2803,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         </h3>
                         <small style="color:var(--text-muted)">+{wa_id}</small>
                     </div>
-                    <!-- Botón de gestionar etiquetas -->
+                    <!-- BotÃ³n de gestionar etiquetas -->
                     <div style="position:relative;">
                         <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
@@ -2831,13 +2832,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <!-- START RIGHT SIDEBAR (CRM Tools) -->
             <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
                 <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
-                    <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
+                    <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas RÃ¡pidas</h3>
+                    <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">Ã—</button>
                 </div>
                 <div style="padding:1rem 1.5rem; border-bottom:1px solid var(--accent-border); background:var(--bg-main);">
                     <div style="display:flex; gap:0.5rem; justify-content:space-between;">
                         <input type="text" id="qrSearchFilter" placeholder="Buscar... (/)" onkeyup="filtrarQuickReplies(this.value)" style="flex:1; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem;">
-                        <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:6px; padding:0 0.8rem; cursor:pointer;" title="Crear nueva respuesta rápida">NUEVA</button>
+                        <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:6px; padding:0 0.8rem; cursor:pointer;" title="Crear nueva respuesta rÃ¡pida">NUEVA</button>
                     </div>
                 </div>
                 <div id="quickRepliesList" style="flex:1; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:0.6rem;">
@@ -2848,7 +2849,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <div style="padding:1rem 1.5rem; border-top:1px solid var(--accent-border); background:var(--accent-bg); display:flex; flex-direction:column; max-height:220px; flex-shrink:0;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
                         <h4 style="margin:0; font-size:0.85rem; color:var(--text-main); font-weight:600;">Plantillas (Meta)</h4>
-                        <button onclick="if(window.crearPlantilla) window.crearPlantilla()" style="background:var(--primary-color); color:white; border:none; border-radius:4px; padding:0.2rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:bold;" title="Añadir Plantilla">AÑADIR</button>
+                        <button onclick="if(window.crearPlantilla) window.crearPlantilla()" style="background:var(--primary-color); color:white; border:none; border-radius:4px; padding:0.2rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:bold;" title="AÃ±adir Plantilla">AÃ‘ADIR</button>
                     </div>
                     <div id="templateList" class="hide-scrollbar" style="overflow-y:auto; display:flex; flex-direction:column; gap:0.4rem; flex:1;">
                         <div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando plantillas...</div>
@@ -2860,12 +2861,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <div style="padding:1.2rem 1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center; background:var(--accent-bg);">
                         <h3 id="modalTitleText" style="font-family:var(--font-heading); font-size:1.05rem; flex:1; margin:0;">Crear Respuesta</h3>
                         <input type="hidden" id="newQrId" value="">
-                        <button onclick="document.getElementById('qrCreateModal').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
+                        <button onclick="document.getElementById('qrCreateModal').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">Ã—</button>
                     </div>
                     <div style="padding:1.2rem 1.5rem; display:flex; flex-direction:column; gap:1rem; flex:1; overflow-y:auto;">
                         <div style="display:flex; gap:0.8rem;">
                             <div style="flex:2;">
-                                <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">Atajo / Título</label>
+                                <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">Atajo / TÃ­tulo</label>
                                 <input type="text" id="newQrTitle" placeholder="ej: saludo" style="width:100%; padding:0.55rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem; box-sizing:border-box;">
                             </div>
                             <div style="flex:1;">
@@ -2878,17 +2879,17 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                                 <label style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Mensajes (Secuencia)</label>
                                 <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
                                     <button onclick="addQrMessageField('text')" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:var(--success-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">+ Texto</button>
-                                    <button onclick="addQrMessageField('image')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🖼 Img</button>
-                                    <button onclick="addQrMessageField('video')" style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.3); color:#a78bfa; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🎬 Vid</button>
-                                    <button onclick="addQrMessageField('audio')" style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:#fbbf24; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🎵 Audio</button>
-                                    <button onclick="addQrMessageField('action_label')" style="background:rgba(236,72,153,0.15); border:1px solid rgba(236,72,153,0.3); color:#ec4899; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">🏷 Acción Tag</button>
+                                    <button onclick="addQrMessageField('image')" style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:var(--primary-color); font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">ðŸ–¼ Img</button>
+                                    <button onclick="addQrMessageField('video')" style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.3); color:#a78bfa; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">ðŸŽ¬ Vid</button>
+                                    <button onclick="addQrMessageField('audio')" style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:#fbbf24; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">ðŸŽµ Audio</button>
+                                    <button onclick="addQrMessageField('action_label')" style="background:rgba(236,72,153,0.15); border:1px solid rgba(236,72,153,0.3); color:#ec4899; font-size:0.75rem; padding:0.3rem 0.6rem; border-radius:5px; font-weight:600; cursor:pointer;">ðŸ· AcciÃ³n Tag</button>
                                 </div>
                             </div>
                             <div id="qrMessagesContainer" style="display:flex; flex-direction:column; gap:0.6rem;"></div>
                             <button onclick="insertarVariableQR('#nombre')" style="margin-top:0.5rem; background:rgba(59,130,246,0.1); border:1px dashed rgba(59,130,246,0.4); color:var(--primary-color); font-size:0.75rem; padding:0.3rem 0.8rem; border-radius:5px; cursor:pointer;">+ insertar #nombre</button>
                         </div>
                         <div>
-                            <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">Categoría</label>
+                            <label style="display:block; font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">CategorÃ­a</label>
                             <input type="text" id="newQrCat" placeholder="General" style="width:100%; padding:0.55rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem; box-sizing:border-box;">
                         </div>
                         <div>
@@ -2911,7 +2912,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             let isSendingSequence = false; window.isSendingSequence = false;
             
             async function aplicarQuickReply(qrId) {{
-                if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
+                if(isSendingSequence) return alert("Hay una secuencia enviÃ¡ndose, por favor espera.");
                 
                 const qr = quickRepliesCache.find(q => q.id === qrId);
                 if(!qr) return;
@@ -2943,7 +2944,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     if(progressBarFill) {{
                         const pct = ((i) / msgs.length) * 100;
                         progressBarFill.style.width = pct + "%";
-                        const typeLabel = msgType === 'text' ? '📝' : msgType === 'image' ? '🖼' : msgType === 'video' ? '🎬' : '🎵';
+                        const typeLabel = msgType === 'text' ? 'ðŸ“' : msgType === 'image' ? 'ðŸ–¼' : msgType === 'video' ? 'ðŸŽ¬' : 'ðŸŽµ';
                         progressText.innerText = `${{typeLabel}} Enviando ${{i+1}}/${{msgs.length}}...`;
                     }}
                     
@@ -2993,7 +2994,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
                 if(progressBarFill) {{
                     progressBarFill.style.width = "100%";
-                    progressText.innerText = `✅ Secuencia enviada (${{msgs.length}} mensaje${{msgs.length>1?'s':''}})`;
+                    progressText.innerText = `âœ… Secuencia enviada (${{msgs.length}} mensaje${{msgs.length>1?'s':''}})`;
                     setTimeout(() => {{
                         progressBarContainer.style.display = 'none';
                     }}, 2500);
@@ -3066,7 +3067,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const badge = document.createElement('span');
                     badge.className = 'qr-sel-badge';
                     badge.style.cssText = `background:${{lbl.color}}22; color:${{lbl.color}}; font-size:0.7rem; padding:0.2rem 0.5rem; border-radius:4px; border:1px solid ${{lbl.color}}44; cursor:pointer; font-weight:600;`;
-                    badge.innerText = lbl.name + ' ×';
+                    badge.innerText = lbl.name + ' Ã—';
                     badge.onclick = () => {{ _qrSelectedLabels.delete(lid); _renderQrLabelPicker(); }};
                     picker.appendChild(badge);
                 }});
@@ -3090,9 +3091,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 div.style.cssText = 'background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:8px; padding:0.6rem; position:relative;';
                 
                 const typeColors = {{text:'#10b981', image:'#717f7f', video:'#8b5cf6', audio:'#f59e0b'}};
-                const typeIcons = {{text:'📝', image:'🖼', video:'🎬', audio:'🎵'}};
+                const typeIcons = {{text:'ðŸ“', image:'ðŸ–¼', video:'ðŸŽ¬', audio:'ðŸŽµ'}};
                 const color = typeColors[type] || '#10b981';
-                const icon = typeIcons[type] || '📝';
+                const icon = typeIcons[type] || 'ðŸ“';
                 
                 div.style.borderLeftColor = color;
                 div.style.borderLeftWidth = '3px';
@@ -3100,7 +3101,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
                 let inner = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
                     <span style="font-size:0.72rem; font-weight:600; color:${{color}};">${{icon}} ${{type.toUpperCase()}}</span>
-                    <button type="button" onclick="this.closest('div[data-msg-type]').remove()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1rem; padding:0;">×</button>
+                    <button type="button" onclick="this.closest('div[data-msg-type]').remove()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1rem; padding:0;">Ã—</button>
                 </div>`;
                 
                 if(type === 'text') {{
@@ -3113,8 +3114,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     }});
                     inner += `
                     <div style="display:flex; flex-direction:column; gap:0.4rem; padding:0.4rem; background:rgba(0,0,0,0.1); border-radius:6px; margin-top:0.3rem;">
-                        <span style="font-size:0.8rem; color:var(--text-main); font-weight:600;">Acción Automática: Poner/Quitar Etiqueta</span>
-                        <span style="font-size:0.7rem; color:var(--text-muted); line-height:1.2;">Al ejecutarse este paso, la etiqueta seleccionada se añadirá al chat (o se quitará si ya existe en él).</span>
+                        <span style="font-size:0.8rem; color:var(--text-main); font-weight:600;">AcciÃ³n AutomÃ¡tica: Poner/Quitar Etiqueta</span>
+                        <span style="font-size:0.7rem; color:var(--text-muted); line-height:1.2;">Al ejecutarse este paso, la etiqueta seleccionada se aÃ±adirÃ¡ al chat (o se quitarÃ¡ si ya existe en Ã©l).</span>
                         <select class="qr-action-select qr-media-id" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem; cursor:pointer;">
                             ${{opts}}
                         </select>
@@ -3125,13 +3126,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const accept = type === 'image' ? 'image/*' : type === 'video' ? 'video/*' : 'audio/*';
                     inner += `
                     <input type="hidden" class="qr-media-id" value="${{hasMedia ? mediaId : ''}}">
-                    <div class="qr-media-preview" style="font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0; min-height:24px;">${{hasMedia ? '✅ ' + displayName : '(sin archivo)'}}</div>
+                    <div class="qr-media-preview" style="font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0; min-height:24px;">${{hasMedia ? 'âœ… ' + displayName : '(sin archivo)'}}</div>
                     <div style="display:flex; gap:0.4rem; margin-top:0.4rem; align-items:center;">
                         <label style="background:rgba(255,255,255,0.07); border:1px solid var(--accent-border); border-radius:5px; padding:0.3rem 0.6rem; cursor:pointer; font-size:0.78rem; color:var(--text-main);">
-                            📂 Subir archivo
+                            ðŸ“‚ Subir archivo
                             <input type="file" accept="${{accept}}" style="display:none;" onchange="uploadQrMedia(this, '${{type}}')">
                         </label>
-                        ${{hasMedia ? `<span style="font-size:0.75rem; color:#10b981;">✓ Listo</span>` : ''}}
+                        ${{hasMedia ? `<span style="font-size:0.75rem; color:#10b981;">âœ“ Listo</span>` : ''}}
                     </div>
                     <textarea rows="1" class="qr-media-caption" style="width:100%; margin-top:0.4rem; padding:0.4rem; border-radius:5px; border:1px solid var(--accent-border); background:var(--bg-main); color:var(--text-main); outline:none; font-size:0.82rem; resize:none; box-sizing:border-box;" placeholder="Pie de foto / caption (opcional)">${{content}}</textarea>`;
                 }}
@@ -3146,7 +3147,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const container = input.closest('div[data-msg-type]');
                 const preview = container.querySelector('.qr-media-preview');
                 const hiddenId = container.querySelector('.qr-media-id');
-                preview.innerHTML = '⏳ Subiendo...';
+                preview.innerHTML = 'â³ Subiendo...';
                 
                 const fd = new FormData();
                 fd.append('file', file);
@@ -3155,12 +3156,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const d = await res.json();
                     if(d.ok) {{
                         hiddenId.value = d.media_id;
-                        preview.innerHTML = `✅ ${{file.name}} <small style="color:#10b981;">(ID: ${{d.media_id.substring(0,12)}}...)</small>`;
+                        preview.innerHTML = `âœ… ${{file.name}} <small style="color:#10b981;">(ID: ${{d.media_id.substring(0,12)}}...)</small>`;
                     }} else {{
-                        preview.innerHTML = `❌ Error: ${{d.error}}`;
+                        preview.innerHTML = `âŒ Error: ${{d.error}}`;
                     }}
                 }} catch(e) {{
-                    preview.innerHTML = '❌ Error de red';
+                    preview.innerHTML = 'âŒ Error de red';
                 }}
             }}
             
@@ -3198,7 +3199,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     }}
                 }});
                 
-                if(!title || mensajes.length === 0) return alert("Se requiere Título y al menos un Mensaje o Media.");
+                if(!title || mensajes.length === 0) return alert("Se requiere TÃ­tulo y al menos un Mensaje o Media.");
                 
                 const etiquetas = Array.from(_qrSelectedLabels);
                 
@@ -3220,7 +3221,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             }}
 
             async function eliminarQR(id) {{
-                if(!confirm("¿Deseas eliminar definitivamente este atajo?")) return;
+                if(!confirm("Â¿Deseas eliminar definitivamente este atajo?")) return;
                 try {{
                     const res = await fetch(`/api/quick-replies/${{id}}`, {{ method: "DELETE" }});
                     if(res.ok) cargarQuickReplies();
@@ -3256,12 +3257,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const list = document.getElementById("quickRepliesList");
                 if(!list) return;
                 if(data.length === 0) {{
-                    list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:1rem; text-align:center;">Sin respuestas rápidas en el sistema.</div>`;
+                    list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:1rem; text-align:center;">Sin respuestas rÃ¡pidas en el sistema.</div>`;
                     return;
                 }}
                 list.innerHTML = "";
                 
-                // Agrupar por categoría
+                // Agrupar por categorÃ­a
                 const groups = {{}};
                 data.forEach(qr => {{
                     const cat = qr.category && qr.category.trim() !== "" ? qr.category : "General";
@@ -3286,7 +3287,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     catTitle.innerText = cat + " (" + groups[cat].length + ")";
                     
                     const catIcon = document.createElement("span");
-                    catIcon.innerHTML = "▼";
+                    catIcon.innerHTML = "â–¼";
                     catIcon.style.cssText = "font-size:0.75rem; transition:transform 0.2s;";
                     if (!isSearching && cat !== "General" && cat !== "General (0)") {{
                         catIcon.style.transform = "rotate(-90deg)"; // Closed by default unless it's General
@@ -3330,11 +3331,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         const titleWrap = document.createElement("div");
                         titleWrap.style.cssText = "display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;";
                         const titleEl = document.createElement("strong");
-                        titleEl.innerText = qr.title || qr.category || '(sin título)';
+                        titleEl.innerText = qr.title || qr.category || '(sin tÃ­tulo)';
                         titleEl.style.fontSize = "0.88rem";
                         titleWrap.appendChild(titleEl);
                         const editBtn = document.createElement("button");
-                        editBtn.innerHTML = "✎";
+                        editBtn.innerHTML = "âœŽ";
                         editBtn.title = "Editar";
                         editBtn.style.cssText = "background:none; border:none; color:var(--primary-color); cursor:pointer; padding:0 0.2rem; font-size:0.9rem; margin-right:1.4rem; flex-shrink:0;";
                         editBtn.onclick = (e) => {{ e.stopPropagation(); abrirModalCrearQR(qr.id); }};
@@ -3345,15 +3346,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         const previewParts = msgs.slice(0,3).map(m => {{
                             if(typeof m === 'string') return m;
                             if(m.type === 'text') return m.content || '';
-                            if(m.type === 'image') return '🖼 Imagen';
-                            if(m.type === 'video') return '🎬 Video';
-                            if(m.type === 'audio') return '🎵 Audio';
+                            if(m.type === 'image') return 'ðŸ–¼ Imagen';
+                            if(m.type === 'video') return 'ðŸŽ¬ Video';
+                            if(m.type === 'audio') return 'ðŸŽµ Audio';
                             return '[media]';
                         }});
                         const prev = document.createElement("span");
                         prev.style.cssText = "font-size:0.78rem; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;";
                         const lenStr = msgs.length > 1 ? ` (${{msgs.length}} msgs)` : '';
-                        prev.innerText = previewParts.join(' → ') + (msgs.length > 3 ? ' ...' : '') + lenStr;
+                        prev.innerText = previewParts.join(' â†’ ') + (msgs.length > 3 ? ' ...' : '') + lenStr;
                         btn.appendChild(prev);
                         if(qr.etiquetas && qr.etiquetas.length > 0) {{
                             const labelsRow = document.createElement("div");
@@ -3370,7 +3371,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         }}
                         btn.onclick = () => aplicarQuickReply(qr.id);
                         const delBtn = document.createElement("button");
-                        delBtn.innerHTML = "×";
+                        delBtn.innerHTML = "Ã—";
                         delBtn.title = "Eliminar";
                         delBtn.style.cssText = "position:absolute; top:0.4rem; right:0.4rem; background:rgba(0,0,0,0.3); border:none; color:#ef4444; border-radius:50%; width:18px; height:18px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0; transition:opacity 0.2s; font-size:0.75rem;";
                         container.onmouseenter = () => {{ delBtn.style.opacity = "1"; }};
@@ -3512,7 +3513,7 @@ from typing import List
 
 @app.post("/api/admin/stickers/upload")
 async def upload_stickers(files: List[UploadFile] = File(...)):
-    """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
+    """Recibe mÃºltiples archivos webp/png y los guarda directamente a Firestore."""
     try:
         import os
         from firebase_client import guardar_sticker_en_bd
@@ -3537,7 +3538,7 @@ class SaveMediaPayload(BaseModel):
 
 @app.post("/api/admin/stickers/save_from_media")
 async def save_sticker_media(payload: SaveMediaPayload, request: Request):
-    """Guarda un sticker enviado por el usuario a la galería global de favoritos."""
+    """Guarda un sticker enviado por el usuario a la galerÃ­a global de favoritos."""
     if not verificar_sesion(request):
         return {"ok": False, "error": "No autorizado"}
         
@@ -3558,7 +3559,7 @@ async def save_sticker_media(payload: SaveMediaPayload, request: Request):
 
 @app.get("/api/stickers")
 def get_stickers():
-    """Retorna la lista de stickers webp disponibles dinámicamente desde Firestore."""
+    """Retorna la lista de stickers webp disponibles dinÃ¡micamente desde Firestore."""
     try:
         from firebase_client import obtener_todos_los_nombres_stickers
         stickers = obtener_todos_los_nombres_stickers()
@@ -3615,9 +3616,9 @@ async def debug_sesiones():
     return resultado
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 #  Simulador Web de Chat
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @app.get("/simulador", response_class=HTMLResponse)
 async def pagina_simulador(request: Request):
@@ -3673,10 +3674,10 @@ async def pagina_simulador(request: Request):
     <body>
       <div class="app">
         <div class="sidebar">
-          <div class="sidebar-header">⚙️ Configuración del Test</div>
+          <div class="sidebar-header">âš™ï¸ ConfiguraciÃ³n del Test</div>
           <div class="sidebar-content">
             <div class="input-group">
-              <label>Teléfono a simular (WA)</label>
+              <label>TelÃ©fono a simular (WA)</label>
               <input type="text" id="sim-numero" value="51999999991">
             </div>
             <div class="input-group">
@@ -3684,24 +3685,24 @@ async def pagina_simulador(request: Request):
               <input type="text" id="sim-nombre" value="Tester Local">
             </div>
             <p style="font-size:0.85rem;color:var(--text-gray);line-height:1.5">
-              Este chat emula al servidor conectándose a Firebase y consultando a Groq, pero <b>no enviará el mensaje real a tu teléfono</b> a través de la API de Meta.
+              Este chat emula al servidor conectÃ¡ndose a Firebase y consultando a Groq, pero <b>no enviarÃ¡ el mensaje real a tu telÃ©fono</b> a travÃ©s de la API de Meta.
             </p>
           </div>
         </div>
         
         <div class="chat-section">
           <div class="chat-header">
-            Bot IA-ATC — Entorno de Prueba Local
-            <a href="/admin" style="margin-left:auto; text-decoration:none; color:var(--text-gray); font-size:0.85rem; font-weight:500">← Volver al Panel</a>
+            Bot IA-ATC â€” Entorno de Prueba Local
+            <a href="/admin" style="margin-left:auto; text-decoration:none; color:var(--text-gray); font-size:0.85rem; font-weight:500">â† Volver al Panel</a>
           </div>
           <div class="chat-area" id="chat">
             <div class="msg msg-bot">
-              ¡Hola! Escribe aquí para probar el bot. Utiliza un número que tenga pedido en tu base de datos para probar la búsqueda.
+              Â¡Hola! Escribe aquÃ­ para probar el bot. Utiliza un nÃºmero que tenga pedido en tu base de datos para probar la bÃºsqueda.
             </div>
           </div>
           <div class="chat-input-area">
             <input type="text" id="mensaje" class="chat-input" placeholder="Escribe un mensaje de prueba..." autofocus onkeypress="handleEnter(event)">
-            <button id="send-btn" class="send-btn" onclick="sendMessage()">➤</button>
+            <button id="send-btn" class="send-btn" onclick="sendMessage()">âž¤</button>
           </div>
         </div>
       </div>
@@ -3744,11 +3745,11 @@ async def pagina_simulador(request: Request):
                 if(data.respuesta) {
                     addMessage(data.respuesta, 'msg-bot');
                 } else {
-                    addMessage("<span style='color:#a0a0a0;font-style:italic'>(El bot no ha respondido. Quizás está apagado, o el pedido está en Diseño)</span>", 'msg-bot');
+                    addMessage("<span style='color:#a0a0a0;font-style:italic'>(El bot no ha respondido. QuizÃ¡s estÃ¡ apagado, o el pedido estÃ¡ en DiseÃ±o)</span>", 'msg-bot');
                 }
             } catch(error) {
                 removeTyping(typingId);
-                addMessage("<span style='color:red'>⚠️ Error de conexión</span>", 'msg-bot');
+                addMessage("<span style='color:red'>âš ï¸ Error de conexiÃ³n</span>", 'msg-bot');
             }
             sendBtn.disabled = false;
             inputMsg.focus();
@@ -3785,11 +3786,11 @@ async def pagina_simulador(request: Request):
 
 @app.post("/api/simulador/send")
 async def api_simular_mensaje(request: Request):
-    """Recibe el mensaje falso del simulador y procesa la lógica nativa del webhook."""
+    """Recibe el mensaje falso del simulador y procesa la lÃ³gica nativa del webhook."""
     try:
         data = await request.json()
     except Exception:
-        raise HTTPException(status_code=400, detail="JSON inválido")
+        raise HTTPException(status_code=400, detail="JSON invÃ¡lido")
         
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
@@ -3798,8 +3799,8 @@ async def api_simular_mensaje(request: Request):
     nombre = data.get("nombre", "Tester")
     texto = data.get("mensaje", "")
     
-    print(f"\n{'─'*50}")
-    print(f"🧪 SIMULADOR | {nombre} ({numero}): {texto}")
+    print(f"\n{'â”€'*50}")
+    print(f"ðŸ§ª SIMULADOR | {nombre} ({numero}): {texto}")
     
     respuesta = procesar_mensaje_interno(numero, nombre, texto, is_simulacion=True)
     
@@ -3877,7 +3878,7 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
                         elif c['type'] == 'FOOTER': body_text += f"\n{c['text']}\n"
                         elif c['type'] == 'BUTTONS':
                             body_text += "\n"
-                            for b in c.get('buttons', []): body_text += f"🔘 {b.get('text')}\n"
+                            for b in c.get('buttons', []): body_text += f"ðŸ”˜ {b.get('text')}\n"
                     if body_text: tpl_full_text = f"{payload.template_name}\n{body_text.strip()}"
                     break
         except Exception:
@@ -3890,7 +3891,7 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
             from firebase_client import guardar_sesion_chat
             guardar_sesion_chat(payload.wa_id, s)
         except Exception as e:
-            print(f"Error guardando sesión en BD tras enviar plantilla: {e}")
+            print(f"Error guardando sesiÃ³n en BD tras enviar plantilla: {e}")
             
         return {"ok": True, "wamid": wamid}
     return {"ok": False, "error": "No se pudo enviar (Verifica que la Plantilla ya haya sido aprobada por Meta)."}
@@ -3996,7 +3997,7 @@ async def api_list_labels(request: Request):
         try:
             from firebase_client import cargar_etiquetas_bd
             global_labels = cargar_etiquetas_bd()
-            print("🔄 Etiquetas recargadas dinámicamente desde Firebase.")
+            print("ðŸ”„ Etiquetas recargadas dinÃ¡micamente desde Firebase.")
         except Exception as e:
             print(f"Error recargando etiquetas: {e}")
     return {"ok": True, "labels": global_labels}
@@ -4139,13 +4140,15 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         try:
             db = inicializar_firebase()
             db.collection("chats_atc").document(wa_id).delete()
-            print(f"🗑️ [BD] Chat {wa_id} eliminado exitosamente de Firebase.")
+            print(f"ðŸ—‘ï¸ [BD] Chat {wa_id} eliminado exitosamente de Firebase.")
         except Exception as e: 
-            print(f"❌ [BD] Error eliminando {wa_id} de Firebase: {e}")
+            print(f"âŒ [BD] Error eliminando {wa_id} de Firebase: {e}")
             pass
         return {"ok": True}
         
-    return {"ok": False, "error": "Acción inválida"}
+    return {"ok": False, "error": "AcciÃ³n invÃ¡lida"}
+
+
 
 
 
