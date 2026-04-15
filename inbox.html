@@ -2296,10 +2296,8 @@
 
         document.getElementById("ctxForward").addEventListener("click", function () {
             document.getElementById("bubbleContextMenu").style.display = "none";
-            let q = window.location.search;
-            let currentParams = new URLSearchParams(q);
-            sourceWaId = currentParams.get('wa_id');
-            if(!sourceWaId) return alert("Debes estar en un chat activo para reenviar.");
+            sourceWaId = window.location.pathname.split('/').pop();
+            if(!sourceWaId || sourceWaId === 'inbox') return alert("Debes estar en un chat activo para reenviar.");
             
             isForwardMode = true;
             forwardSelectedWamids = [];
