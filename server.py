@@ -4133,6 +4133,28 @@ async def api_list_groups(request: Request):
         except: pass
     return {"groups": global_groups}
 
+class ReorderPayload(BaseModel):
+    order: list
+
+@app.post("/api/admin/labels/reorder")
+async def api_reorder_labels(payload: ReorderPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
+        
+    from firebase_client import reordenar_etiquetas_bd
+    reordenar_etiquetas_bd(payload.order)
+    
+    # Update global memory
+    global global_labels
+    order_map = {lbl_id: idx for idx, lbl_id in enumerate(payload.order)}
+    for lbl in global_labels:
+        lbl["orden"] = order_map.get(lbl["id"], 999)
+    global_labels.sort(key=lambda x: x.get("orden", 999))
+    
+    return {"ok": True}
+
 @app.post("/api/admin/labels/delete")
 async def api_delete_label(payload: LabelPayload, request: Request):
     if not verificar_sesion(request):

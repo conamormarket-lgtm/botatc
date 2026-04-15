@@ -311,8 +311,19 @@ def cargar_etiquetas_bd() -> list:
     for doc in docs:
         data = doc.to_dict()
         if "id" in data:
+            data['orden'] = data.get('orden', 999)  # Default order 999 if not set
             etiquetas.append(data)
+    # Sort by 'orden', fallback to 'name' or 'id'
+    etiquetas.sort(key=lambda x: (x.get('orden', 999), x.get('createdAt', 0) if type(x.get('createdAt')) in [int, float] else 0))
     return etiquetas
+
+def reordenar_etiquetas_bd(lista_ids: list):
+    db = inicializar_firebase()
+    batch = db.batch()
+    for idx, doc_id in enumerate(lista_ids):
+        doc_ref = db.collection("bot_labels").document(doc_id)
+        batch.update(doc_ref, {"orden": idx})
+    batch.commit()
 
 
 # ============================================================

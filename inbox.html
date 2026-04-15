@@ -1952,6 +1952,28 @@
                             btn.appendChild(nameSpan);
 
                             if (window.ES_ADMIN) {
+                                btn.draggable = true;
+                                btn.dataset.lblId = lbl.id;
+                                btn.title = "Arrastra para reordenar";
+                                btn.addEventListener("dragstart", function(e) { e.dataTransfer.effectAllowed = "move"; window._draggedLabelItem = this; setTimeout(() => this.style.opacity = "0.3", 0); });
+                                btn.addEventListener("dragover", function(e) { e.preventDefault(); this.style.borderTop = "2px solid var(--primary-color)"; });
+                                btn.addEventListener("dragleave", function(e) { this.style.borderTop = ""; });
+                                btn.addEventListener("drop", async function(e) {
+                                    e.preventDefault(); e.stopPropagation(); this.style.borderTop = "";
+                                    const dragged = window._draggedLabelItem;
+                                    if (dragged && dragged !== this) {
+                                        const listContainer = this.parentNode;
+                                        const items = Array.from(listContainer.children);
+                                        if (items.indexOf(dragged) < items.indexOf(this)) listContainer.insertBefore(dragged, this.nextSibling);
+                                        else listContainer.insertBefore(dragged, this);
+                                        const newOrder = Array.from(listContainer.children).map(c => c.dataset.lblId).filter(id => id);
+                                        try {
+                                            const res = await fetch("/api/admin/labels/reorder", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({order: newOrder})});
+                                            if(!res.ok) alert("Error reordenando etiquetas.");
+                                        } catch(e) { console.error(e); }
+                                    }
+                                });
+                                btn.addEventListener("dragend", function() { this.style.opacity = "1"; window._draggedLabelItem = null; });
                                 const actionsDiv = document.createElement("div");
                                 actionsDiv.style.cssText = "display:flex; align-items:center; gap:0.2rem;";
                                 
