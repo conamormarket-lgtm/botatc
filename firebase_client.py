@@ -18,11 +18,11 @@ def inicializar_firebase():
                 cred_dict = json.loads(FIREBASE_JSON)
                 cred = credentials.Certificate(cred_dict)
             except Exception as e:
-                raise ValueError(f"❌ Error parseando FIREBASE_JSON: {e}")
+                raise ValueError(f"[ERROR] Error parseando FIREBASE_JSON: {e}")
         else:
             if not os.path.exists(FIREBASE_CREDENTIALS_PATH):
                 raise FileNotFoundError(
-                    f"\n❌ No se encontró '{FIREBASE_CREDENTIALS_PATH}' ni la variable FIREBASE_JSON.\n"
+                    f"\n[ERROR] No se encontró '{FIREBASE_CREDENTIALS_PATH}' ni la variable FIREBASE_JSON.\n"
                     "Genera la clave en Firebase Console → Configuración → Cuentas de servicio.\n"
                 )
             cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
@@ -143,14 +143,14 @@ def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
         
         # Firestore maneja datetimes nativamente
         doc_ref.set(data_to_save)
-        print(f"✅ [FIREBASE-DEBUG] Guardado exitoso: {numero_wa}")
+        print(f"[OK] [FIREBASE-DEBUG] Guardado exitoso: {numero_wa}")
     except Exception as e:
         import traceback
         with open("firebase_debug_error.log", "a", encoding="utf-8") as f:
             f.write(f"ERROR GUARDANDO {numero_wa}:\n")
             traceback.print_exc(file=f)
             f.write("-" * 50 + "\n")
-        print(f"❌ [FIREBASE-DEBUG] ERROR CATCHED IN FIREBASE CLIENT: {e}")
+        print(f"[ERROR] [FIREBASE-DEBUG] ERROR CATCHED IN FIREBASE CLIENT: {e}")
         raise e
 
 

@@ -154,7 +154,7 @@ def startup_event():
         sesiones_restauradas = cargar_todas_las_sesiones()
         for wa_id, s in sesiones_restauradas.items():
             sesiones[wa_id] = s
-        print(f"✅ Se restauraron {len(sesiones_restauradas)} conversaciones en memoria desde Firebase.")
+        print(f"[OK] Se restauraron {len(sesiones_restauradas)} conversaciones en memoria desde Firebase.")
         
         # Stickers are now loaded on-demand via Serverless Endpoints.
         
@@ -162,11 +162,11 @@ def startup_event():
         from firebase_client import cargar_etiquetas_bd, cargar_grupos_bd
         global global_labels, global_groups
         global_labels = cargar_etiquetas_bd()
-        print(f"✅ Se restauraron {len(global_labels)} etiquetas globales.")
+        print(f"[OK] Se restauraron {len(global_labels)} etiquetas globales.")
         global_groups = cargar_grupos_bd()
-        print(f"✅ Se restauraron {len(global_groups)} grupos virtuales.")
+        print(f"[OK] Se restauraron {len(global_groups)} grupos virtuales.")
     except Exception as e:
-        print(f"❌ Error al restaurar datos desde Firebase: {e}")
+        print(f"[ERROR] Error al restaurar datos desde Firebase: {e}")
 
     try:
         from pedidos_observer import iniciar_observador_pedidos
@@ -235,7 +235,7 @@ def obtener_o_crear_sesion(numero_wa: str) -> dict:
                 sesion = sesion_db
                 print(f"  [☁️ Historial recuperado desde la nube para {numero_wa}]")
         except Exception as e:
-            print(f"  [❌ Error al cargar historial de Firestore: {e}]")
+            print(f"  [[ERROR] Error al cargar historial de Firestore: {e}]")
 
     if sesion:
         pass # La sesión ya no expira nunca, como en un Inbox real
@@ -339,7 +339,7 @@ def llamar_gemini(historial: list[dict]) -> str:
                 if "503" in err_str or "unloaded" in err_str or "UNAVAILABLE" in err_str or "429" in err_str or "ResourceExhausted" in err_str or "quota" in err_str.lower():
                     if attempt < max_retries - 1:
                         wait_t = 2 ** attempt  # 1s, 2s, 4s
-                        print(f"  [⚠️ Gemini saturado: {err_str} | Reintentando en {wait_t}s (Intento {attempt+1}/{max_retries})]")
+                        print(f"  [[WARN] Gemini saturado: {err_str} | Reintentando en {wait_t}s (Intento {attempt+1}/{max_retries})]")
                         time.sleep(wait_t)
                         continue
                 
@@ -347,14 +347,14 @@ def llamar_gemini(historial: list[dict]) -> str:
                 import traceback
                 with open("error_gemini.txt", "w") as f:
                     f.write(traceback.format_exc())
-                print(f"❌ Error Gemini definitivo: {e}")
+                print(f"[ERROR] Error Gemini definitivo: {e}")
                 return ""
         return ""
     except Exception as general_e:
         import traceback
         with open("error_gemini.txt", "w") as f:
             f.write(traceback.format_exc())
-        print(f"❌ Error crítico en llamar_gemini (fuera del reintento): {general_e}")
+        print(f"[ERROR] Error crítico en llamar_gemini (fuera del reintento): {general_e}")
         return ""
 
 def recortar_historial(historial: list[dict]) -> list[dict]:
@@ -409,7 +409,7 @@ async def verificar_webhook(request: Request):
     challenge = params.get("hub.challenge")
 
     if mode == "subscribe" and token == META_VERIFY_TOKEN:
-        print("✅ Webhook de Meta verificado correctamente.")
+        print("[OK] Webhook de Meta verificado correctamente.")
         return int(challenge)
 
     raise HTTPException(status_code=403, detail="Token de verificación incorrecto.")
@@ -552,7 +552,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             if emoji:
                 texto_cliente = f"[💬 Reacción: {emoji} a «{texto_original}»]"
             else:
-                texto_cliente = f"[❌ Quitó reacción a «{texto_original}»]"
+                texto_cliente = f"[[ERROR] Quitó reacción a «{texto_original}»]"
         elif tipo_mensaje == "location":
             lat = mensaje_data.get("location", {}).get("latitude", "")
             lon = mensaje_data.get("location", {}).get("longitude", "")
@@ -666,7 +666,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             from firebase_client import guardar_sesion_chat
             guardar_sesion_chat(numero_wa, sesion)
         except Exception as e:
-            print(f"  [⚠️ Error guardando sesión temprana: {e}]")
+            print(f"  [[WARN] Error guardando sesión temprana: {e}]")
 
     global BOT_GLOBAL_ACTIVO
     if not BOT_GLOBAL_ACTIVO:
@@ -708,7 +708,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     sesion["historial"][0] = {"role": "system", "content": get_system_prompt(datos)}
                     print(f"  [🧪 TESTER: Pedido '{id_pedido}' cargado]")
                 else:
-                    msg = f"❌ No encontré ningún pedido con el ID '{texto_cliente.strip()}'. Inténtalo de nuevo (escribe solo el ID exacto)."
+                    msg = f"[ERROR] No encontré ningún pedido con el ID '{texto_cliente.strip()}'. Inténtalo de nuevo (escribe solo el ID exacto)."
                     if not is_simulacion:
                         enviar_mensaje(numero_wa, msg)
                     return msg
@@ -736,7 +736,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 sesion["nombre_cliente"] = nombre_cliente or nombre
                 
                 ids = [p.get("id") for p in pedidos_no_diseno]
-                print(f"  [✅ Pedidos encontrados: {ids} | Evitando Diseño]")
+                print(f"  [[OK] Pedidos encontrados: {ids} | Evitando Diseño]")
                 
                 sesion["datos_pedido"] = pedidos_no_diseno[0]  # Backward compatibility for inbox
                 sesion["pedidos_multiples"] = pedidos_no_diseno
@@ -826,7 +826,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     
     if not respuesta_bot.strip():
         # Falla silenciosamente si Gemini no genera respuesta útil o tira error
-        print("  [❌ Respuesta vacía de Gemini. Ignorando...]")
+        print("  [[ERROR] Respuesta vacía de Gemini. Ignorando...]")
         return None
 
     # ── Procesar escalación si el modelo la detectó ───────
@@ -886,9 +886,9 @@ def _load_sessions_from_firebase():
         docs = db.collection("auth_sessions").stream()
         for doc in docs:
             active_sessions[doc.id] = doc.to_dict()
-        print(f"✅ Se restauraron {len(active_sessions)} sesiones de usuario desde Firebase.")
+        print(f"[OK] Se restauraron {len(active_sessions)} sesiones de usuario desde Firebase.")
     except Exception as e:
-        print(f"❌ Error cargando sesiones de usuario: {e}")
+        print(f"[ERROR] Error cargando sesiones de usuario: {e}")
 
 _load_sessions_from_firebase()
 
@@ -903,7 +903,7 @@ def save_sessions():
         for token, user_data in active_sessions.items():
             col.document(token).set(user_data)
     except Exception as e:
-        print(f"❌ Error guardando sesiones de usuario: {e}")
+        print(f"[ERROR] Error guardando sesiones de usuario: {e}")
 
 def delete_session_from_firebase(token: str):
     """Elimina una sesión específica de Firestore al hacer logout."""
@@ -2562,7 +2562,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         pinned_messages = []
         starred_messages = []
         if len(all_msgs) > MAX_MENSAJES and not load_all:
-            burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo (⚠️ Más lento)</button></div>'
+            burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo ([WARN] Más lento)</button></div>'
         last_date_str = ""
         for m in msgs:
             # Insertar separador de fecha si cambia el día
@@ -2768,7 +2768,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 Atención manual en curso
                 <form method="post" action="/admin/reactivar/{wa_id}" style="margin:0">
                   <input type="hidden" name="redirect" value="/inbox/{wa_id}?tab={tab}">
-                  <button type="submit" style="background:white;color:var(--danger-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">✅ Reactivar Bot</button>
+                  <button type="submit" style="background:white;color:var(--danger-color);border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:700;cursor:pointer;transition:transform 0.2s;">[OK] Reactivar Bot</button>
                 </form>
             </div>"""
         else:
@@ -3172,7 +3172,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
                 if(progressBarFill) {{
                     progressBarFill.style.width = "100%";
-                    progressText.innerText = `✅ Secuencia enviada (${{msgs.length}} mensaje${{msgs.length>1?'s':''}})`;
+                    progressText.innerText = `[OK] Secuencia enviada (${{msgs.length}} mensaje${{msgs.length>1?'s':''}})`;
                     setTimeout(() => {{
                         progressBarContainer.style.display = 'none';
                     }}, 2500);
@@ -3304,7 +3304,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const accept = type === 'image' ? 'image/*' : type === 'video' ? 'video/*' : 'audio/*';
                     inner += `
                     <input type="hidden" class="qr-media-id" value="${{hasMedia ? mediaId : ''}}">
-                    <div class="qr-media-preview" style="font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0; min-height:24px;">${{hasMedia ? '✅ ' + displayName : '(sin archivo)'}}</div>
+                    <div class="qr-media-preview" style="font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0; min-height:24px;">${{hasMedia ? '[OK] ' + displayName : '(sin archivo)'}}</div>
                     <div style="display:flex; gap:0.4rem; margin-top:0.4rem; align-items:center;">
                         <label style="background:rgba(255,255,255,0.07); border:1px solid var(--accent-border); border-radius:5px; padding:0.3rem 0.6rem; cursor:pointer; font-size:0.78rem; color:var(--text-main);">
                             📂 Subir archivo
@@ -3334,12 +3334,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const d = await res.json();
                     if(d.ok) {{
                         hiddenId.value = d.media_id;
-                        preview.innerHTML = `✅ ${{file.name}} <small style="color:#10b981;">(ID: ${{d.media_id.substring(0,12)}}...)</small>`;
+                        preview.innerHTML = `[OK] ${{file.name}} <small style="color:#10b981;">(ID: ${{d.media_id.substring(0,12)}}...)</small>`;
                     }} else {{
-                        preview.innerHTML = `❌ Error: ${{d.error}}`;
+                        preview.innerHTML = `[ERROR] Error: ${{d.error}}`;
                     }}
                 }} catch(e) {{
-                    preview.innerHTML = '❌ Error de red';
+                    preview.innerHTML = '[ERROR] Error de red';
                 }}
             }}
             
@@ -3967,7 +3967,7 @@ async def pagina_simulador(request: Request):
                 }
             } catch(error) {
                 removeTyping(typingId);
-                addMessage("<span style='color:red'>⚠️ Error de conexión</span>", 'msg-bot');
+                addMessage("<span style='color:red'>[WARN] Error de conexión</span>", 'msg-bot');
             }
             sendBtn.disabled = false;
             inputMsg.focus();
@@ -4386,7 +4386,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
             db.collection("chats_atc").document(wa_id).delete()
             print(f"🗑️ [BD] Chat {wa_id} eliminado exitosamente de Firebase.")
         except Exception as e: 
-            print(f"❌ [BD] Error eliminando {wa_id} de Firebase: {e}")
+            print(f"[ERROR] [BD] Error eliminando {wa_id} de Firebase: {e}")
             pass
         return {"ok": True}
         
