@@ -134,7 +134,7 @@ def iniciar_observador_pedidos():
         
     _observador_activado = True
     db = inicializar_firebase()
-    print("👀 Conectando observador proactivo de pedidos para provincias...")
+    print("[INFO] Conectando observador proactivo de pedidos para provincias...")
     
     # Solo escuchamos pedidos que no estén Terminados ni Cancelados para ahorrar RAM
     # Si su base de datos no tiene índices, Firestore permite != o in, pero es más

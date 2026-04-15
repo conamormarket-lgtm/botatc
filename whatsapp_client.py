@@ -40,10 +40,10 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) 
         data = response.json()
         return data.get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
-        print(f"❌ Error Meta API ({e.response.status_code}): {e.response.text}")
+        print(f"[ERROR] Error Meta API ({e.response.status_code}): {e.response.text}")
         return None
     except Exception as e:
-        print(f"❌ Error enviando mensaje: {e}")
+        print(f"[ERROR] Error enviando mensaje: {e}")
         return None
 
 def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None) -> bool:
@@ -80,10 +80,10 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
         return data.get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
         err_msg = e.response.text
-        print(f"❌ Error Meta API ({e.response.status_code}): {err_msg}")
+        print(f"[ERROR] Error Meta API ({e.response.status_code}): {err_msg}")
         return f"ERROR_META: {err_msg}"
     except Exception as e:
-        print(f"❌ Error enviando media ({tipo_media}): {e}")
+        print(f"[ERROR] Error enviando media ({tipo_media}): {e}")
         return None
 
 
@@ -107,13 +107,13 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str) -> bool:
         async with httpx.AsyncClient() as client:
             response = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
             response.raise_for_status()
-            print(f"✅ Mensaje manual enviado a {numero_destino}")
+            print(f"[OK] Mensaje manual enviado a {numero_destino}")
             return response.json().get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
-        print(f"❌ Error Meta API al enviar manual ({e.response.status_code}): {e.response.text}")
+        print(f"[ERROR] Error Meta API al enviar manual ({e.response.status_code}): {e.response.text}")
         return None
     except Exception as e:
-        print(f"❌ Error enviando mensaje manual: {e}")
+        print(f"[ERROR] Error enviando mensaje manual: {e}")
         return None
 
 
@@ -127,7 +127,7 @@ async def obtener_media_url(media_id: str) -> str | None:
             res.raise_for_status()
             return res.json().get("url")
     except Exception as e:
-        print(f"❌ Error al obtener URL de media {media_id}: {e}")
+        print(f"[ERROR] Error al obtener URL de media {media_id}: {e}")
         return None
 
 
@@ -141,7 +141,7 @@ async def descargar_media(media_url: str) -> tuple[bytes | None, str | None]:
             mime_type = res.headers.get("content-type")
             return res.content, mime_type
     except Exception as e:
-        print(f"❌ Error descargando media: {e}")
+        print(f"[ERROR] Error descargando media: {e}")
         return None, None
 
 async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload.png") -> str | None:
@@ -157,10 +157,10 @@ async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload
             res.raise_for_status()
             return res.json().get("id")
     except httpx.HTTPStatusError as e:
-        print(f"❌ Error HTTP subiendo media ({e.response.status_code}): {e.response.text}")
+        print(f"[ERROR] Error HTTP subiendo media ({e.response.status_code}): {e.response.text}")
         return f"ERROR_META:{e.response.text}"
     except Exception as e:
-        print(f"❌ Error subiendo media a Meta: {e}")
+        print(f"[ERROR] Error subiendo media a Meta: {e}")
         return f"ERROR_META:{str(e)}"
 
 async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str) -> bool:
@@ -185,10 +185,10 @@ async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str
             res.raise_for_status()
             return True
     except httpx.HTTPStatusError as e:
-        print(f"❌ Error Meta Reaccion ({e.response.status_code}): {e.response.text}")
+        print(f"[ERROR] Error Meta Reaccion ({e.response.status_code}): {e.response.text}")
         return False
     except Exception as e:
-        print(f"❌ Error enviando reacción: {e}")
+        print(f"[ERROR] Error enviando reacción: {e}")
         return False
 
 
@@ -232,8 +232,8 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
             data = res.json()
             return data.get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
-        print(f"❌ Error Meta Plantilla ({e.response.status_code}): {e.response.text}")
+        print(f"[ERROR] Error Meta Plantilla ({e.response.status_code}): {e.response.text}")
         return None
     except Exception as e:
-        print(f"❌ Error enviando plantilla: {e}")
+        print(f"[ERROR] Error enviando plantilla: {e}")
         return None
