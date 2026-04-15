@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3527 notes | Score threshold: >40
+> 3576 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,36 +18,41 @@
 
 **Stack:** Python · FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3510 notes | Score threshold: >40
-+ > 3513 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3501 notes | Score threshold: >40
-+ > 3510 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Reemplazos
-+ - problem-fix in agent-rules.md
--
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3464 notes | Score threshold: >40
-+ > 3468 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3461 notes | Score threshold: >40
-+ > 3464 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3457 notes | Score threshold: >40
-+ > 3461 notes | Score threshold
+- **⚠️ GOTCHA: Fixed null crash in Search** — - import sys
++ import re, urllib.parse
+- with open('server.py', 'r', e
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Trigger — reduces excessive function call freq
+- **⚠️ GOTCHA: Fixed null crash in None — parallelizes async operations for speed** — -             def reemplazar_archivos_inline(match):
++             de
+- **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -             if match_sticker: 
++             try:
+-               
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "468d585d65ee3ee0",
++
+- **⚠️ GOTCHA: Optimized Patched** — - - problem-fix in agent-rules.md
++ - Patched security issue None — pa
 
 ## Project Standards
 
+- what-changed in inbox.html — confirmed 5x
+- Added JWT tokens authentication — confirmed 6x
+- what-changed in shared-context.json — confirmed 12x
+- Optimized Patched — confirmed 3x
+- problem-fix in shared-context.json — confirmed 3x
+- Patched security issue None — parallelizes async operations for speed — confirmed 7x
+- problem-fix in server.py — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
-- what-changed in shared-context.json — confirmed 4x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- convention in requirements.txt
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Reemplazos
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue None — parallelizes async operations for speed
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
@@ -55,10 +60,10 @@
 
 ## Recent Decisions
 
-- decision in shared-context.json
+- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized Project — evolves the database schema to support new requirements
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

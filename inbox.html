@@ -443,6 +443,53 @@
         }
         
 
+        .media-queue-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-main);
+            border-bottom: 1px solid var(--accent-border);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .media-queue-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border: 1px solid var(--accent-border);
+        }
+        .media-queue-loading {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            border-radius: 8px;
+        }
+        .media-queue-remove {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            border: none;
+        }
+
         </style>
     <style id="custom-theme-css">
 {custom_theme_css}
@@ -1341,8 +1388,9 @@
             const btnRightQR = document.getElementById('btnRightQR');
             const btnRightPhoto = document.getElementById('btnRightPhoto');
             
+            
             if (input) {
-                const hasText = input.value.trim().length > 0;
+                const hasText = input.value.trim().length > 0 || (window.pendingUploads && window.pendingUploads.length > 0);
                 
                 if (submitMenu && micMenu) {
                     submitMenu.style.display = hasText ? 'flex' : 'none';
@@ -1382,61 +1430,176 @@
             }
         }, 1000); // Darle tiempo a la creacion del SPA
         
+        window.pendingUploads = [];
+        
+        window.renderPendingMediaUI = function() {
+            let qContainer = document.getElementById('pendingMediaQueue');
+            if (!qContainer) {
+                qContainer = document.createElement('div');
+                qContainer.id = 'pendingMediaQueue';
+                qContainer.className = 'media-queue-container';
+                const chatInputWrap = document.querySelector('.chat-input-wrapper');
+                chatInputWrap.parentNode.insertBefore(qContainer, chatInputWrap);
+            }
+            
+            if (window.pendingUploads.length === 0) {
+                qContainer.style.display = 'none';
+                if(window.toggleSendMicButton) window.toggleSendMicButton();
+                return;
+            }
+            
+            qContainer.style.display = 'flex';
+            qContainer.innerHTML = '';
+            window.pendingUploads.forEach((up, idx) => {
+                const el = document.createElement('div');
+                el.className = 'media-queue-item';
+                
+                if (up.file && up.file.type.startsWith('image/')) {
+                    el.style.backgroundImage = `url(${URL.createObjectURL(up.file)})`;
+                } else {
+                    el.style.background = '#333';
+                    el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;font-size:24px;">📄</div>';
+                }
+                
+                if (idx === 0) {
+                    const badge = document.createElement('div');
+                    badge.innerText = 'Texto';
+                    badge.style.position = 'absolute';
+                    badge.style.bottom = '2px';
+                    badge.style.left = '2px';
+                    badge.style.fontSize = '10px';
+                    badge.style.background = 'var(--primary-color)';
+                    badge.style.color = 'white';
+                    badge.style.padding = '0px 4px';
+                    badge.style.borderRadius = '3px';
+                    el.appendChild(badge);
+                }
+
+                if (up.error) {
+                    el.style.border = '2px solid red';
+                } else if (!up.media_id) {
+                    const ld = document.createElement('div');
+                    ld.className = 'media-queue-loading';
+                    ld.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-anim"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>';
+                    el.appendChild(ld);
+                }
+
+                const rm = document.createElement('button');
+                rm.className = 'media-queue-remove';
+                rm.innerHTML = '×';
+                rm.onclick = () => {
+                    window.pendingUploads.splice(idx, 1);
+                    window.renderPendingMediaUI();
+                };
+                el.appendChild(rm);
+                
+                qContainer.appendChild(el);
+            });
+            if(window.toggleSendMicButton) window.toggleSendMicButton();
+        };
+
         window.enviarMensajeManual = async function (e, wa_id) {
             e.preventDefault();
             const input = document.getElementById('manualMsgInput');
             if (!input) return;
             const msj = input.value.trim();
-            if (!msj) return;
-
-            // Vaciar y enfocar
-            input.value = '';
-            input.focus();
-
-            // Dibujado optimista instantáneo
-            const scroll = document.getElementById('chatScroll');
-            if (scroll) {
-                const bubble = document.createElement('div');
-                bubble.className = "bubble bubble-bot lado-der";
-                bubble.style.border = "1px solid var(--primary-color)";
-                bubble.innerText = msj;
-                scroll.appendChild(bubble);
-                scroll.scrollTop = scroll.scrollHeight;
-            }
+            const hasPendingUploads = window.pendingUploads && window.pendingUploads.length > 0;
+            
+            if (!msj && !hasPendingUploads) return;
 
             const replyWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
+
+            if (hasPendingUploads) {
+                // Wait for all uploads to complete (have media_id) or error
+                const inProgress = window.pendingUploads.filter(u => !u.media_id && !u.error);
+                if (inProgress.length > 0) {
+                    alert("Aún hay archivos subiéndose, por favor espera un instante y vuelve a presionar enviar.");
+                    return;
+                }
+                
+                const validUploads = window.pendingUploads.filter(u => u.media_id);
+                if (validUploads.length === 0) {
+                    alert("No se pudo subir ningún archivo válido.");
+                    window.pendingUploads = [];
+                    window.renderPendingMediaUI();
+                    return;
+                }
+
+                // Process first upload with caption
+                const firstUp = validUploads[0];
+                let encCaption = msj ? "|caption:" + encodeURIComponent(msj) : "";
+                let firstMsgText = `[${firstUp.mode}:${firstUp.media_id}${encCaption}]`;
+                
+                // Process subsequent uploads without caption
+                let remainingMessages = [];
+                for (let i = 1; i < validUploads.length; i++) {
+                    remainingMessages.push(`[${validUploads[i].mode}:${validUploads[i].media_id}]`);
+                }
+
+                // Clean the UI HTML first
+                input.value = '';
+                input.focus();
+                window.pendingUploads = [];
+                window.renderPendingMediaUI();
+                if (document.getElementById('replyPreviewContainer')) {
+                    document.getElementById('replyPreviewContainer').style.display = 'none';
+                    if (document.getElementById('replyToWamid')) document.getElementById('replyToWamid').value = '';
+                }
+
+                // Send first message
+                await window._sendRawTextManual(firstMsgText, wa_id, msj || "[Archivos enviados]", replyWamid);
+
+                // Send remaining messages sequentially
+                for (let rMsg of remainingMessages) {
+                    await window._sendRawTextManual(rMsg, wa_id, "", null);
+                }
+                setTimeout(() => window.location.reload(), 500);
+                return;
+            }
+
+            // Normal text
+            input.value = '';
+            input.focus();
             if (document.getElementById('replyPreviewContainer')) {
                 document.getElementById('replyPreviewContainer').style.display = 'none';
                 if (document.getElementById('replyToWamid')) document.getElementById('replyToWamid').value = '';
             }
+            await window._sendRawTextManual(msj, wa_id, msj, replyWamid);
+        };
 
+        window._sendRawTextManual = async function(rawPayload, wa_id, optimisticText, replyWamid) {
+            const scroll = document.getElementById('chatScroll');
+            let bubble = null;
+            if (scroll && optimisticText) {
+                bubble = document.createElement('div');
+                bubble.className = "bubble bubble-bot lado-der";
+                bubble.style.border = "1px solid var(--primary-color)";
+                bubble.innerText = optimisticText;
+                scroll.appendChild(bubble);
+                scroll.scrollTop = scroll.scrollHeight;
+            }
             try {
                 const qrTitleToPass = window._nextQuickReplyTitle || null;
-                window._nextQuickReplyTitle = null; // resetear
+                window._nextQuickReplyTitle = null;
                 
                 const res = await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ wa_id: wa_id, texto: msj, reply_to_wamid: replyWamid, quick_reply_title: qrTitleToPass })
+                    body: JSON.stringify({ wa_id: wa_id, texto: rawPayload, reply_to_wamid: replyWamid, quick_reply_title: qrTitleToPass })
                 });
 
                 const data = await res.json();
                 if (!data.ok) {
-                    // Si falló (ej: ventana de 24h de Meta API)
-                    if (scroll && scroll.lastChild === bubble) {
-                        scroll.removeChild(bubble);
-                    }
+                    if (scroll && bubble) scroll.removeChild(bubble);
                     if (data.error === "META_API_REJECTED") {
-                        alert("❌ Error de WhatsApp (Meta): No puedes enviar mensajes libres a este número porque no te ha escrito en las últimas 24 horas. ¡El cliente debe escribirte primero!");
+                        alert("❌ Error de WhatsApp (Meta): No puedes enviar mensajes libres a este número porque no te ha escrito en las últimas 24 horas.");
                     } else {
                         alert("❌ Error no controlado al enviar: " + data.error);
                     }
                 }
             } catch (e) {
                 console.error("Fallo al enviar:", e);
-                if (scroll && scroll.lastChild === bubble) {
-                    scroll.removeChild(bubble);
-                }
+                if (scroll && bubble) scroll.removeChild(bubble);
                 alert("Error de red conectando con el panel Web o timeout.");
             }
         };
@@ -1501,6 +1664,10 @@
                 return;
             }
 
+            const upObj = { file, mode, media_id: null, error: null };
+            window.pendingUploads.push(upObj);
+            window.renderPendingMediaUI();
+
             // Comprimir imagen pesada desde el navegador ANTES de subir para no saturar a Nginx/Meta
             const compressImage = async (inputFile) => {
                 if (!inputFile.type.startsWith('image/') || inputFile.type === 'image/gif' || inputFile.size < 2.5 * 1024 * 1024) return inputFile;
@@ -1509,7 +1676,7 @@
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         let w = img.width, h = img.height;
-                        const maxDim = 1920; // Full HD es más que suficiente para Meta
+                        const maxDim = 1920; 
                         if (w > h && w > maxDim) { h *= maxDim / w; w = maxDim; }
                         else if (h > maxDim) { w *= maxDim / h; h = maxDim; }
                         canvas.width = w; canvas.height = h;
@@ -1526,74 +1693,31 @@
                 file = await compressImage(file);
             }
 
-            let modeIcon = mode === 'video' ? '🎬' : mode === 'audio' ? '🎵' : '🖼️';
-
-            // Dibujado de burbuja temporal "cargando" para liberar el UI general
-            const scroll = document.getElementById('chatScroll');
-            let loadingBubble = null;
-            if (scroll) {
-                loadingBubble = document.createElement('div');
-                loadingBubble.className = "bubble bubble-bot lado-der";
-                loadingBubble.setAttribute("data-temp", "true");
-                loadingBubble.style.border = "1px dashed var(--accent-border)";
-                loadingBubble.style.opacity = "0.7";
-                loadingBubble.style.background = "rgba(0,0,0,0.2)";
-                
-                loadingBubble.innerHTML = `<div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-main);">
-                                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-anim"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
-                                              Subiendo ${modeIcon} (${(file.size/1024/1024).toFixed(1)}MB) en segundo plano...
-                                           </div>`;
-                scroll.appendChild(loadingBubble);
-                scroll.scrollTop = scroll.scrollHeight;
-            }
-
             const formData = new FormData();
             formData.append("file", file);
             formData.append("mode", mode);
 
             try {
                 // Sube el archivo de forma completamente asíncrona a nuestro servidor
-                const res = await fetch('/api/admin/upload_media', {
+                const uploadRes = await fetch('/api/admin/upload_media', {
                     method: 'POST',
                     body: formData
                 });
-                const data = await res.json();
 
-                if (data.ok && data.media_id) {
-                    // Una vez subido con existo, SE MANDA EL MENSAJE AUTOMÁTICAMENTE a Meta
-                    const textToSend = `[${mode}:${data.media_id}]`;
-                    fetch('/api/admin/enviar_manual', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ wa_id: wa_id, texto: textToSend, reply_to_wamid: null, quick_reply_title: null })
-                    });
-                    
-                    if (loadingBubble && document.body.contains(loadingBubble)) {
-                        loadingBubble.innerHTML = `✅ ${modeIcon} ¡Procesado y enviado a Meta!`;
-                        loadingBubble.style.border = "1px solid var(--primary-color)";
-                        loadingBubble.style.opacity = "1";
-                        setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 3000); 
-                    } else {
-                        showGlobalToast(`✅ ${modeIcon} ¡Video subido y enviado a +${wa_id} correctamente!`);
-                    }
-                } else {
-                    if (loadingBubble && document.body.contains(loadingBubble)) {
-                        loadingBubble.innerHTML = `❌ Error subiendo: ${data.error || "Desconocido"}`;
-                        loadingBubble.style.border = "1px solid red";
-                        setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
-                    } else {
-                        showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
-                    }
+                const uploadData = await uploadRes.json();
+                if (!uploadData.ok) {
+                    upObj.error = uploadData.error || 'Error subiendo';
+                    window.renderPendingMediaUI();
+                    return;
                 }
+
+                upObj.media_id = uploadData.media_id;
+                window.renderPendingMediaUI();
+
             } catch (e) {
-                console.error(e);
-                if (loadingBubble && document.body.contains(loadingBubble)) {
-                    loadingBubble.innerHTML = `❌ Falla de fondo: ${e.message}`;
-                    loadingBubble.style.border = "1px solid red";
-                    setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
-                } else {
-                    showGlobalToast(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red: ${e.message}`);
-                }
+                console.error("Fallo de red al enviar media:", e);
+                upObj.error = "Error red";
+                window.renderPendingMediaUI();
             }
         };
 
@@ -1635,12 +1759,51 @@
         });
 
         // Trigger de los inputs ocultos
+        document.addEventListener('dragover', function(e) {
+            if (e.target && e.target.id === 'manualMsgInput') {
+                e.preventDefault();
+                e.stopPropagation();
+                e.target.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            }
+        });
+        document.addEventListener('dragleave', function(e) {
+            if (e.target && e.target.id === 'manualMsgInput') {
+                e.preventDefault();
+                e.stopPropagation();
+                e.target.style.backgroundColor = 'transparent';
+            }
+        });
+        document.addEventListener('drop', function(e) {
+            if (e.target && e.target.id === 'manualMsgInput') {
+                e.preventDefault();
+                e.stopPropagation();
+                e.target.style.backgroundColor = 'transparent';
+                if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    Array.from(e.dataTransfer.files).forEach(file => {
+                        let mode = 'documento';
+                        if (file.type.startsWith('image/')) mode = 'imagen';
+                        else if (file.type.startsWith('video/')) mode = 'video';
+                        else if (file.type.startsWith('audio/')) mode = 'audio';
+                        uploadMedia(file, mode);
+                    });
+                }
+            }
+        });
+
         document.addEventListener('change', async function (e) {
-            // Caso 1: Subida general (solo un archivo por click)
+            // Caso 1: Subida general (ahora soporta multiples)
             if (e.target && e.target.id === 'hiddenFileInput') {
-                const mode = e.target.getAttribute('data-mode') || 'imagen';
-                if (e.target.files && e.target.files[0]) {
-                    uploadMedia(e.target.files[0], mode);
+                const reqMode = e.target.getAttribute('data-mode') || 'imagen';
+                if (e.target.files && e.target.files.length > 0) {
+                    Array.from(e.target.files).forEach(file => {
+                        let dynamicMode = reqMode;
+                        if (reqMode === 'documento') {
+                            if (file.type.startsWith('image/')) dynamicMode = 'imagen';
+                            else if (file.type.startsWith('video/')) dynamicMode = 'video';
+                            else if (file.type.startsWith('audio/')) dynamicMode = 'audio';
+                        }
+                        uploadMedia(file, dynamicMode);
+                    });
                 }
                 e.target.value = ''; // Reset
             }

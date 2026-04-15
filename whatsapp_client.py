@@ -46,7 +46,7 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) 
         print(f"[ERROR] Error enviando mensaje: {e}")
         return None
 
-def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None) -> bool:
+def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None, caption: str = None) -> bool:
     """
     Envía media (sticker, imagen, video, documento) a un número.
     tipo_media: 'sticker', 'image', 'video', 'audio', 'document'
@@ -61,6 +61,9 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
     
     if tipo_media == "audio":
         media_obj["voice"] = True
+    
+    if caption and tipo_media in ['image', 'video', 'document']:
+        media_obj["caption"] = caption
     
     payload = {
         "messaging_product": "whatsapp",
