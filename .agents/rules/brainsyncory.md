@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3499 notes | Score threshold: >40
+> 3513 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,11 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3501 notes | Score threshold: >40
++ > 3510 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Reemplazos
++ - problem-fix in agent-rules.md
+-
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3464 notes | Score threshold: >40
 + > 3468 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3461 notes | Score threshold: >40
@@ -28,25 +33,21 @@
 + > 3461 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3450 notes | Score threshold: >40
 + > 3457 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3439 notes | Score threshold: >40
-+ > 3450 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3434 notes | Score threshold: >40
-+ > 3439 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - convention in requirements.txt
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Reemplazos
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md

@@ -1116,7 +1116,7 @@
                     // Reinyectar elementos asíncronos fantasma
                     tempNodes.forEach(node => oldScroll.appendChild(node));
                     
-                    if (didAppend && isAtBottom) {
+                    if (didAppend && isAtBottom && !window._isSearching) {
                         oldScroll.scrollTop = oldScroll.scrollHeight;
                     }
                 }

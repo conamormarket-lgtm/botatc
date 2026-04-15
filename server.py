@@ -3640,6 +3640,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 if (msgId) {{
                     const targetEl = document.getElementById('msg-' + msgId);
                     if (targetEl) {{
+                        window._isSearching = true;
                         setTimeout(() => {{
                             const topPos = targetEl.offsetTop - c.offsetTop - (c.clientHeight / 2) + (targetEl.clientHeight / 2);
                             c.scrollTo({{ top: topPos, behavior: 'smooth' }});
@@ -3648,9 +3649,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             targetEl.style.boxShadow = '0 0 0 4px var(--primary-color)';
                             targetEl.style.transform = 'scale(1.02)';
                             
+                            // Limpiar la URL param despues de ejecutar (evita repetirlo en reload/ajax)
+                            const url = new URL(window.location);
+                            url.searchParams.delete('msg_id');
+                            window.history.replaceState({{}}, '', url);
+                            
                             setTimeout(() => {{
                                 targetEl.style.boxShadow = oldShadow;
                                 targetEl.style.transform = 'scale(1)';
+                                setTimeout(() => window._isSearching = false, 1000);
                             }}, 2500);
                         }}, 300);
                     }} else {{
