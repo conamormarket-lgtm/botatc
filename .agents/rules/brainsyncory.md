@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3046 notes | Score threshold: >40
+> 3073 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,25 +18,28 @@
 
 **Stack:** Python · FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin — hardens HTTP security headers
++ - F
+- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for ba
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in prompts.py
-- - pr
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in prompts.py
-+ - problem-fix in agent-rules.md
-- - Fi
-- **⚠️ GOTCHA: Fixed null crash in Descargar — reduces excessive function call frequency** — -         <div class="ctx-item" id="ctxDownloadAudio" style="padding:0
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in server.py
-+ - problem-fix in agent-rules.md
-- - Fix
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 2987 notes | Score threshold: >40
-+ > 3009 notes | Score threshold
++ - Fixed null crash in DOCTYPE — pr
+- **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Replaced auth GOTCHA 
 - **⚠️ GOTCHA: Replaced auth GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - gotcha in shared-cont
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "d43791988b580f79",
++
 
 ## Project Standards
 
+- Replaced auth Score — introduces API versioning for backward compatibility — confirmed 3x
 - Replaced auth GOTCHA — introduces API versioning for backward compatibility — confirmed 6x
 - what-changed in shared-context.json — confirmed 9x
 - problem-fix in agent-rules.md — confirmed 3x
@@ -44,7 +47,6 @@
 - Optimized Kevin — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - Fixed null crash in Descargar — reduces excessive function call frequency — confirmed 5x
-- what-changed in shared-context.json — confirmed 10x
 
 ## Known Fixes
 
