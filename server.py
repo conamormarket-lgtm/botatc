@@ -3588,6 +3588,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             btn.appendChild(labelsRow);
                         }}
                         btn.onclick = () => aplicarQuickReply(qr.id);
+                        container.appendChild(btn);
                         if (window.ES_ADMIN) {{
                             const delBtn = document.createElement("button");
                             delBtn.innerHTML = "×";
