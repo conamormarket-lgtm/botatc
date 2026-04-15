@@ -1705,6 +1705,14 @@ async def buscar_mensajes(q: str, request: Request):
         return {"ok": True, "resultados": []}
     
     resultados = []
+    
+    # Mapa inverso: wa_id_miembro -> info del grupo al que pertenece
+    # Para que busquedas de miembros de grupo redirijan al grupo reflejo
+    miembro_a_grupo = {}
+    for vg in global_groups:
+        for m in vg.get("members", []):
+            miembro_a_grupo[m] = {"grupo_id": vg.get("id"), "grupo_nombre": vg.get("name", "Grupo")}
+
     # Usar dict para evitar iteraciones conflictivas
     for wa_id, session in list(sesiones.items()):
         historial = session.get("historial", [])
@@ -1732,11 +1740,22 @@ async def buscar_mensajes(q: str, request: Request):
                     break
         
         if matches_en_chat:
-            resultados.append({
-                "wa_id": wa_id,
-                "nombre": nombre,
-                "matches": matches_en_chat
-            })
+            # Si el wa_id es miembro de un grupo virtual, redirigir al grupo
+            grupo_info = miembro_a_grupo.get(wa_id)
+            if grupo_info:
+                resultados.append({
+                    "wa_id": grupo_info["grupo_id"],
+                    "nombre": f"\U0001f465 {grupo_info['grupo_nombre']}",
+                    "nombre_real": nombre,
+                    "wa_id_origen": wa_id,
+                    "matches": matches_en_chat
+                })
+            else:
+                resultados.append({
+                    "wa_id": wa_id,
+                    "nombre": nombre,
+                    "matches": matches_en_chat
+                })
             
     return {"ok": True, "resultados": resultados}
 
