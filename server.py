@@ -1726,6 +1726,60 @@ async def get_frequent_chats(request: Request):
     chats.sort(key=lambda x: x["msg_count"], reverse=True)
     return {"chats": chats[:6]}
 
+@app.post("/api/message/star")
+async def toggle_star_message(request: Request):
+    if not verificar_sesion(request): raise HTTPException(status_code=403, detail="No autorizado")
+    data = await request.json()
+    wa_id = data.get("wa_id")
+    msg_id = data.get("msg_id")
+    if not wa_id or not msg_id: return {"ok": False, "error": "Datos incompletos"}
+    
+    s = sesiones.get(wa_id)
+    if not s: return {"ok": False, "error": "Chat no encontrado"}
+    
+    found = False
+    for m in s.get("historial", []):
+        if m.get("msg_id") == msg_id:
+            m["is_starred"] = not m.get("is_starred", False)
+            found = True
+            break
+            
+    if found:
+        try:
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(wa_id, s)
+        except Exception:
+            pass
+        return {"ok": True}
+    return {"ok": False, "error": "Mensaje no encontrado"}
+
+@app.post("/api/message/pin")
+async def toggle_pin_message(request: Request):
+    if not verificar_sesion(request): raise HTTPException(status_code=403, detail="No autorizado")
+    data = await request.json()
+    wa_id = data.get("wa_id")
+    msg_id = data.get("msg_id")
+    if not wa_id or not msg_id: return {"ok": False, "error": "Datos incompletos"}
+    
+    s = sesiones.get(wa_id)
+    if not s: return {"ok": False, "error": "Chat no encontrado"}
+    
+    found = False
+    for m in s.get("historial", []):
+        if m.get("msg_id") == msg_id:
+            m["is_pinned"] = not m.get("is_pinned", False)
+            found = True
+            break
+            
+    if found:
+        try:
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(wa_id, s)
+        except Exception:
+            pass
+        return {"ok": True}
+    return {"ok": False, "error": "Mensaje no encontrado"}
+
 @app.post("/api/forward_messages")
 async def forward_messages(request: Request):
     """Reenvía mensajes de un chat origen a múltiples destinos."""
@@ -2634,6 +2688,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 qr_title_val = m.get("quick_reply_title", "")
                 extra_data = f' data-sent-by="{sent_by_val}" data-ts="{ts_unix}" data-delivered-ts="{delivered_ts}" data-read-ts="{read_ts}" data-status="{msg_status}" data-quick-reply="{qr_title_val}"'
             
+            is_starred = m.get("is_starred", False)
+            is_pinned = m.get("is_pinned", False)
+            extra_data += f' data-starred="{str(is_starred).lower()}" data-pinned="{str(is_pinned).lower()}"'
+            
+            if is_starred:
+                meta_html += '<span style="color:#fbbf24; margin-left:4px; font-size:12px;">★</span>'
+            if is_pinned:
+                pinned_messages.append(m)
+            
             burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{meta_html}</div>'
 
             
@@ -2787,11 +2850,25 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 nm = lbl.get("name", "Etiqueta")
                 tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
 
+        pinned_html = ""
+        if pinned_messages:
+            last_pinned = pinned_messages[-1]
+            p_content = last_pinned.get("content", "Mensaje multimedia").replace('\n', ' ')
+            if len(p_content) > 60: p_content = p_content[:60] + "..."
+            p_wamid = last_pinned.get("msg_id", "")
+            pinned_html = f'''
+            <div style="background:var(--accent-bg); color:var(--text-main); padding:8px 12px; border-bottom:1px solid var(--accent-border); display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.85rem;" onclick="document.getElementById('msg-{p_wamid}')?.scrollIntoView({{behavior: 'smooth', block: 'center'}})">
+                <span style="color:#fbbf24; font-size:16px;">??</span>
+                <div style="flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">{p_content}</div>
+            </div>
+            '''
+
         chat_viewer_html = f"""
         <div style="display:flex; flex-direction:row; height:100%; width:100%;">
             <!-- START CHAT MAIN COLUMN -->
             <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent;">
                 {status_bar}
+                {pinned_html}
                 <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
                     <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
