@@ -3642,7 +3642,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     if (targetEl) {{
                         window._isSearching = true;
                         setTimeout(() => {{
+                            // Primer salto (centrado inicial)
                             targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                            
+                            // Múltiples correcciones para combatir el salto de "imágenes cargando" que empujan la vista
+                            setTimeout(() => targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 600);
+                            setTimeout(() => targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 1200);
+                            setTimeout(() => targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 2000);
+                            
                             targetEl.style.transition = 'all 0.5s ease';
                             const oldShadow = targetEl.style.boxShadow || '';
                             targetEl.style.boxShadow = '0 0 0 4px var(--primary-color)';
