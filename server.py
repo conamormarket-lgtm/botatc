@@ -3634,32 +3634,32 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             </script>
                         <script>
             var c = document.getElementById('chatScroll');
-            if(c) {
+            if(c) {{
                 const params = new URLSearchParams(window.location.search);
                 const msgId = params.get('msg_id');
-                if (msgId) {
+                if (msgId) {{
                     const targetEl = document.getElementById('msg-' + msgId);
-                    if (targetEl) {
-                        setTimeout(() => {
+                    if (targetEl) {{
+                        setTimeout(() => {{
                             const topPos = targetEl.offsetTop - c.offsetTop - (c.clientHeight / 2) + (targetEl.clientHeight / 2);
-                            c.scrollTo({ top: topPos, behavior: 'smooth' });
+                            c.scrollTo({{ top: topPos, behavior: 'smooth' }});
                             targetEl.style.transition = 'all 0.5s ease';
                             const oldShadow = targetEl.style.boxShadow || '';
                             targetEl.style.boxShadow = '0 0 0 4px var(--primary-color)';
                             targetEl.style.transform = 'scale(1.02)';
                             
-                            setTimeout(() => {
+                            setTimeout(() => {{
                                 targetEl.style.boxShadow = oldShadow;
                                 targetEl.style.transform = 'scale(1)';
-                            }, 2500);
-                        }, 300);
-                    } else {
+                            }}, 2500);
+                        }}, 300);
+                    }} else {{
                          c.scrollTop = c.scrollHeight;
-                    }
-                } else {
+                    }}
+                }} else {{
                     c.scrollTop = c.scrollHeight;
-                }
-            }
+                }}
+            }}
         </script>
         """
         
