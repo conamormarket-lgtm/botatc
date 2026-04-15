@@ -1476,6 +1476,28 @@ async def toggle_proactive(request: Request):
     
     return RedirectResponse(url="/settings", status_code=303)
 
+@app.get("/api/admin/backups/chats/download")
+async def download_chats_backup(request: Request):
+    if not es_admin(request):
+        return HTMLResponse("Acceso denegado. Se requieren permisos de administrador.", status_code=403)
+    
+    import os
+    from fastapi.responses import FileResponse
+    zip_path = "ultimo_backup_chats.zip"
+    
+    if not os.path.exists(zip_path):
+        return HTMLResponse("""
+            <h3>Aún no hay ningún backup disponible.</h3>
+            <p>El sistema genera el primer backup durante la madrugada.</p>
+            <p>Si deseas forzar el backup ahora mismo, ejecuta <code>py backup_chats.py</code> en tu VPS.</p>
+        """, status_code=404)
+        
+    return FileResponse(
+        path=zip_path,
+        filename="chats_backup_LOCAL.zip",
+        media_type="application/zip"
+    )
+
 @app.get("/admin", response_class=HTMLResponse)
 async def panel_admin(request: Request):
     """Panel web de administración mejorado."""
