@@ -1947,16 +1947,31 @@
                             const nameSpan = document.createElement("span");
                             nameSpan.innerText = lbl.name;
                             nameSpan.style.cssText = "flex:1; color:var(--text-main); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
-
-                            const delBtn = document.createElement("button");
-                            delBtn.type = "button";
-                            delBtn.innerText = "×";
-                            delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.1rem; padding:0 0.2rem;";
-                            delBtn.onclick = (e) => eliminarGlobalLabel(lbl.id, lbl.name, e);
-
+                            
                             btn.appendChild(colorDot);
                             btn.appendChild(nameSpan);
-                            btn.appendChild(delBtn);
+
+                            if (window.ES_ADMIN) {
+                                const actionsDiv = document.createElement("div");
+                                actionsDiv.style.cssText = "display:flex; align-items:center; gap:0.2rem;";
+                                
+                                const editBtn = document.createElement("button");
+                                editBtn.type = "button";
+                                editBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>`;
+                                editBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.1rem; padding:0 0.2rem;";
+                                editBtn.onclick = (e) => editarGlobalLabel(lbl.id, lbl.name, lbl.color, e);
+
+                                const delBtn = document.createElement("button");
+                                delBtn.type = "button";
+                                delBtn.innerText = "×";
+                                delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.1rem; padding:0 0.2rem;";
+                                delBtn.onclick = (e) => eliminarGlobalLabel(lbl.id, lbl.name, e);
+                                
+                                actionsDiv.appendChild(editBtn);
+                                actionsDiv.appendChild(delBtn);
+                                btn.appendChild(actionsDiv);
+                            }
+                            
                             list.appendChild(btn);
                         });
                     }
@@ -1988,6 +2003,17 @@
             }
         }
 
+        function editarGlobalLabel(id, name, color, event) {
+            event.stopPropagation();
+            const modal = document.getElementById("createLabelModal");
+            if (modal) {
+                document.getElementById("newLabelName").value = name;
+                document.getElementById("editingLabelId").value = id;
+                document.getElementById("modalTitle").innerText = "Editar etiqueta";
+                seleccionarColorEtiqueta(color, document.querySelector(`[onclick*="${color}"]`));
+                modal.style.display = "flex";
+            }
+        }
 
     </script>
 
@@ -1998,7 +2024,8 @@
             style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; width:350px; flex-direction:column; box-shadow:0 10px 25px rgba(0,0,0,0.5); overflow:hidden;">
             <div
                 style="padding:1rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-family:var(--font-heading); font-size:1.1rem;">Añadir etiqueta</h3>
+                <h3 id="modalTitle" style="margin:0; font-family:var(--font-heading); font-size:1.1rem;">Añadir etiqueta</h3>
+                <input type="hidden" id="editingLabelId" value="">
                 <button onclick="document.getElementById('createLabelModal').style.display='none'"
                     style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.5rem;">&times;</button>
             </div>

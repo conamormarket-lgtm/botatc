@@ -2283,6 +2283,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         html = re.sub(r'<a href="/admin".*?</a>', '', html, flags=re.DOTALL)
         html = re.sub(r'<a href="/usuarios".*?</a>', '', html, flags=re.DOTALL)
 
+    es_admin_str = "true" if es_admin(request) else "false"
+    html = html.replace("<style id=\"custom-theme-css\">", f"<script>window.ES_ADMIN = {es_admin_str};</script><style id=\"custom-theme-css\">")
+
 
     ahora = datetime.utcnow()
     
@@ -2965,7 +2968,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
                             <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                                 Etiquetas 
-                                <button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>
+                                {f'<button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>' if es_admin(request) else ''}
                             </div>
                             <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:220px; overflow-y:auto;">
                             </div>
@@ -4077,6 +4080,8 @@ class LabelPayload(BaseModel):
 async def api_save_label(payload: LabelPayload, request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
     from firebase_client import guardar_etiqueta_bd
     guardar_etiqueta_bd(payload.id, payload.name, payload.color)
     global global_labels
@@ -4132,6 +4137,8 @@ async def api_list_groups(request: Request):
 async def api_delete_label(payload: LabelPayload, request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
     from firebase_client import eliminar_etiqueta_bd
     eliminar_etiqueta_bd(payload.id)
     global global_labels

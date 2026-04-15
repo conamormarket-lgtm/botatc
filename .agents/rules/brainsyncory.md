@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3325 notes | Score threshold: >40
+> 3331 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Added JWT tokens authentication — introduces API versio
+- **⚠️ GOTCHA: Updated firebase_client database schema** — -     from firebase_client import guardar_etiqueta_bd
++     if not es
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - > 3310 notes | Score threshold: >40
 + > 3311 notes | Score threshold
 - **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
@@ -28,15 +31,6 @@ Content summary (8
 - **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - gotcha in shared-context.json
 + - ⚠️ GOTCHA: Optimized GOTCHA — in
 - **⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "779a3279393b3b54",
-+
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3234 notes | Score threshold: >40
-+ > 3278 notes | Score threshold
 
 ## Project Standards
 
