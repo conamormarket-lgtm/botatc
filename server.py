@@ -3638,33 +3638,42 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const params = new URLSearchParams(window.location.search);
                 const msgId = params.get('msg_id');
                 if (msgId) {{
-                    const targetEl = document.getElementById('msg-' + msgId);
-                    if (targetEl) {{
+                    const initialTarget = document.getElementById('msg-' + msgId);
+                    if (initialTarget) {{
                         window._isSearching = true;
+                        
+                        function pulseScroll(addStyle) {{
+                            const el = document.getElementById('msg-' + msgId);
+                            if (el) {{
+                                el.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                                if (addStyle) {{
+                                    el.style.transition = 'all 0.5s ease';
+                                    el.style.boxShadow = '0 0 0 4px var(--primary-color)';
+                                    el.style.transform = 'scale(1.02)';
+                                }}
+                            }}
+                        }}
+                        
                         setTimeout(() => {{
-                            // Primer salto (centrado inicial)
-                            targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                            pulseScroll(true);
                             
-                            // Múltiples correcciones para combatir el salto de "imágenes cargando" que empujan la vista
-                            setTimeout(() => targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 600);
-                            setTimeout(() => targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 1200);
-                            setTimeout(() => targetEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 2000);
-                            
-                            targetEl.style.transition = 'all 0.5s ease';
-                            const oldShadow = targetEl.style.boxShadow || '';
-                            targetEl.style.boxShadow = '0 0 0 4px var(--primary-color)';
-                            targetEl.style.transform = 'scale(1.02)';
-                            
-                            // Limpiar la URL param despues de ejecutar (evita repetirlo en reload/ajax)
+                            // Limpiar la URL param despues de ejecutar
                             const url = new URL(window.location);
                             url.searchParams.delete('msg_id');
                             window.history.replaceState({{}}, '', url);
                             
+                            setTimeout(() => pulseScroll(true), 600);
+                            setTimeout(() => pulseScroll(true), 1200);
+                            setTimeout(() => pulseScroll(false), 2000); // Last pulse just centers it
+                            
                             setTimeout(() => {{
-                                targetEl.style.boxShadow = oldShadow;
-                                targetEl.style.transform = 'scale(1)';
-                                setTimeout(() => window._isSearching = false, 3000);
-                            }}, 2500);
+                                const el = document.getElementById('msg-' + msgId);
+                                if(el){{
+                                    el.style.boxShadow = '';
+                                    el.style.transform = 'scale(1)';
+                                }}
+                                setTimeout(() => window._isSearching = false, 1500);
+                            }}, 2800);
                         }}, 300);
                     }} else {{
                          c.scrollTop = c.scrollHeight;
