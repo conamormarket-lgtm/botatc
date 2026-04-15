@@ -1725,7 +1725,7 @@ async def buscar_mensajes(q: str, request: Request):
                 matches_en_chat.append({
                     "role": msg.get("role"),
                     "snippet": snippet,
-                    "wamid": msg.get("wamid", "")
+                    "msg_id": msg.get("msg_id", "")
                 })
                 # Max 3 matches por chat para no saturar
                 if len(matches_en_chat) >= 3:
@@ -3634,7 +3634,32 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             </script>
                         <script>
             var c = document.getElementById('chatScroll');
-            if(c) c.scrollTop = c.scrollHeight;
+            if(c) {
+                const params = new URLSearchParams(window.location.search);
+                const msgId = params.get('msg_id');
+                if (msgId) {
+                    const targetEl = document.getElementById('msg-' + msgId);
+                    if (targetEl) {
+                        setTimeout(() => {
+                            const topPos = targetEl.offsetTop - c.offsetTop - (c.clientHeight / 2) + (targetEl.clientHeight / 2);
+                            c.scrollTo({ top: topPos, behavior: 'smooth' });
+                            targetEl.style.transition = 'all 0.5s ease';
+                            const oldShadow = targetEl.style.boxShadow || '';
+                            targetEl.style.boxShadow = '0 0 0 4px var(--primary-color)';
+                            targetEl.style.transform = 'scale(1.02)';
+                            
+                            setTimeout(() => {
+                                targetEl.style.boxShadow = oldShadow;
+                                targetEl.style.transform = 'scale(1)';
+                            }, 2500);
+                        }, 300);
+                    } else {
+                         c.scrollTop = c.scrollHeight;
+                    }
+                } else {
+                    c.scrollTop = c.scrollHeight;
+                }
+            }
         </script>
         """
         

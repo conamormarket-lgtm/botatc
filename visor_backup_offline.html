@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Visor de Respaldo - Chats IA Offline</title>
+    <style>
+        :root {
+            --bg-master: #0f172a;
+            --bg-panel: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #8b5cf6;
+            --msg-user: #475569;
+            --msg-bot: #0284c7;
+            --msg-human: #10b981;
+        }
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-master);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        /* HEADER - Carga de archivo */
+        .upload-header {
+            padding: 1.5rem; background: var(--bg-panel); border-bottom: 1px solid var(--border-color);
+            display: flex; gap: 1rem; align-items: center; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            z-index: 10;
+        }
+        .upload-btn {
+            background: var(--accent); color: white; padding: 0.6rem 1.2rem;
+            border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+        }
+        .upload-btn:hover { background: #7c3aed; }
+        
+        /* CONTENEDOR PRINCIPAL DOS COLUMNAS */
+        .workspace { display: flex; flex: 1; overflow: hidden; }
+        
+        /* LISTA DE CHATS (Lateral) */
+        .chat-list {
+            width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border-color);
+            overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .chat-item {
+            padding: 1rem; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s;
+        }
+        .chat-item:hover { background: #334155; }
+        .chat-item.active { background: #334155; border-left: 4px solid var(--accent); }
+        .chat-phone { font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem; }
+        .chat-date { font-size: 0.75rem; color: var(--text-secondary); }
+        .chat-preview { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* VISTA DEL CHAT (Derecha) */
+        .chat-view {
+            flex: 1; display: flex; flex-direction: column; background: var(--bg-master);
+        }
+        .chat-header {
+            padding: 1rem 1.5rem; background: var(--bg-panel); border-bottom: 1px solid var(--border-color);
+            font-weight: bold; font-size: 1.1rem;
+        }
+        .messages {
+            flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+        }
+        
+        /* BURBUJAS DE MENSAJE */
+        .msg-bubble {
+            max-width: 75%; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.4;
+            white-space: pre-wrap;
+        }
+        .msg-info { font-size: 0.7rem; opacity: 0.7; margin-bottom: 0.25rem; }
+        
+        /* COLORES Y ALINEACION POR ROL */
+        .role-user { align-self: flex-start; background: #334155; color: #f8fafc; border-bottom-left-radius: 2px; }
+        .role-assistant, .role-bot { align-self: flex-end; background: var(--msg-bot); color: #ffffff; border-bottom-right-radius: 2px; }
+        .role-agente_humano { align-self: flex-end; background: var(--msg-human); color: #ffffff; border-bottom-right-radius: 2px; }
+        .role-system { align-self: center; background: transparent; color: var(--text-secondary); font-style: italic; border: 1px dashed var(--border-color); max-width: 90%; text-align: center; font-size: 0.8rem; }
+        
+        /* MODAL DE BIENVENIDA */
+        #emptyState {
+            flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-secondary);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA -->
+    <div class="upload-header">
+        <h2 style="margin:0; font-size:1.2rem; display:flex; align-items:center; gap:0.5rem;">
+            📦 Visor de Seguridad Offline
+        </h2>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:1rem;">
+            <span id="fileStats" style="font-size:0.85rem; color:var(--text-secondary);">Esperando archivo JSON...</span>
+            <input type="file" id="jsonInput" accept=".json" style="display:none;" onchange="loadJSON(event)">
+            <button class="upload-btn" onclick="document.getElementById('jsonInput').click()">Abrir archivo json extraído</button>
+        </div>
+    </div>
+
+    <!-- AREA DE TRABAJO -->
+    <div class="workspace">
+        <!-- Lista Izd -->
+        <div class="chat-list" id="chatList">
+            <div style="padding: 2rem 1rem; text-align:center; color: var(--text-secondary); font-size:0.9rem;">
+                Las conversaciones aparecerán aquí
+            </div>
+        </div>
+        
+        <!-- Chat Der -->
+        <div class="chat-view">
+            <div class="chat-header" id="chatHeader" style="display:none;">Selecciona un chat</div>
+            <div class="messages" id="messagesArea">
+                <div id="emptyState">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3; margin-bottom:1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p style="margin:0;">Descomprime el ZIP y abre el archivo <b>.json</b> usando el botón superior.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dbData = {};
+
+        function loadJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    // Verificamos si tiene la estructura de nuestro backup master
+                    if (parsed.chats) {
+                        dbData = parsed.chats;
+                    } else {
+                        // En caso extremo de que el JSON sea un dict directo
+                        dbData = parsed;
+                    }
+                    
+                    renderChatList();
+                    document.getElementById('fileStats').innerText = `✅ Cargados ${Object.keys(dbData).length} historiales`;
+                } catch (err) {
+                    alert('Error: El archivo no es un JSON válido o está corrupto.\n' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function renderChatList() {
+            const chatListDiv = document.getElementById('chatList');
+            chatListDiv.innerHTML = ''; // Limpiar
+
+            // Ordenar de ms reciente a ms antiguo (si tienen ultima_actividad)
+            const chatsArray = Object.keys(dbData).map(num => ({
+                number: num,
+                data: dbData[num]
+            })).sort((a, b) => {
+                const dA = new Date(a.data.ultima_actividad || 0);
+                const dB = new Date(b.data.ultima_actividad || 0);
+                return dB - dA;
+            });
+
+            if(chatsArray.length === 0){
+                chatListDiv.innerHTML = '<div style="padding:2rem;text-align:center;">No hay chats en este backup</div>';
+                return;
+            }
+
+            chatsArray.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'chat-item';
+                
+                // Extraer preview del ltimo mensaje si es posible
+                let previewText = "Sin mensajes";
+                if(item.data.historial && item.data.historial.length > 0) {
+                    const lMsg = item.data.historial[item.data.historial.length-1];
+                    previewText = (lMsg.content || "Adjunto/Media").substring(0, 40) + "...";
+                }
+
+                // Formatear Fecha
+                let fDate = "Fecha desconocida";
+                if(item.data.ultima_actividad) {
+                    fDate = new Date(item.data.ultima_actividad).toLocaleString('es-ES', { dateStyle:'medium', timeStyle:'short'});
+                }
+
+                el.innerHTML = `
+                    <div class="chat-phone">${item.number} ${item.data.bot_activo === false ? '⏸' : ''}</div>
+                    <div class="chat-date">${fDate}</div>
+                    <div class="chat-preview">${previewText}</div>
+                `;
+                
+                el.onclick = () => {
+                    // Remover clase active de todos
+                    document.querySelectorAll('.chat-item').forEach(c => c.classList.remove('active'));
+                    el.classList.add('active');
+                    renderMessages(item.number, item.data.historial || []);
+                };
+                
+                chatListDiv.appendChild(el);
+            });
+        }
+
+        function renderMessages(phone, arrHistorial) {
+            document.getElementById('chatHeader').style.display = 'block';
+            document.getElementById('chatHeader').innerText = `Historial Offline: ${phone}`;
+            
+            const area = document.getElementById('messagesArea');
+            area.innerHTML = ''; // Limpiar
+
+            if(arrHistorial.length === 0) {
+                area.innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-secondary)">No existen mensajes guardados para este chat en el momento del backup.</div>';
+                return;
+            }
+
+            arrHistorial.forEach(msg => {
+                let roleClass = 'role-user';
+                let senderName = 'Cliente';
+                
+                if (msg.role === 'assistant' || msg.role === 'bot') {
+                    roleClass = 'role-assistant'; senderName = '🤖 Bot IA';
+                } else if (msg.role === 'agente_humano') {
+                    roleClass = 'role-agente_humano'; senderName = '👨‍💻 Agente Humano';
+                } else if (msg.role === 'system') {
+                    roleClass = 'role-system'; senderName = '⚙️ Sistema';
+                }
+
+                // Armar la burbuja
+                const el = document.createElement('div');
+                el.className = `msg-bubble ${roleClass}`;
+
+                // Solo agregar "cabecera" a la burbuja si no es sistema
+                if (msg.role !== 'system') {
+                    const info = document.createElement('div');
+                    info.className = 'msg-info';
+                    // Trataremos de ver si hay algn timestamp individual
+                    const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleString('es-ES', {timeStyle:'short'}) : '';
+                    info.innerText = `${senderName} ${timeStr ? '• ' + timeStr : ''}`;
+                    el.appendChild(info);
+                }
+
+                // Contenido multimedia/Media IDs (Como no tenemos las imagenes reales off-line, lo indicamos)
+                let textContent = msg.content || "";
+                if(msg.type === "image" || msg.type === "video" || msg.type === "audio" || msg.type === "document") {
+                    textContent = `[Archivo adjunto tipo: ${msg.type.toUpperCase()}]\n${textContent}`;
+                }
+
+                const txt = document.createElement('div');
+                txt.innerText = textContent;
+                el.appendChild(txt);
+
+                area.appendChild(el);
+            });
+
+            // Auto-scroll al final
+            setTimeout(() => { area.scrollTop = area.scrollHeight; }, 10);
+        }
+    </script>
+</body>
+</html>
