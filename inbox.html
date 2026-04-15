@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -158,6 +158,152 @@
             btn.style.opacity = "1";
             closeForwardModal();
         }
+    // FORWARD LOGIC
+        let isForwardMode = false;
+        let forwardSelectedWamids = [];
+        let sourceWaId = "";
+
+        document.getElementById("ctxForward").addEventListener("click", function () {
+            document.getElementById("bubbleContextMenu").style.display = "none";
+            let q = window.location.search;
+            let currentParams = new URLSearchParams(q);
+            sourceWaId = currentParams.get('wa_id');
+            if(!sourceWaId) return alert("Debes estar en un chat activo para reenviar.");
+            
+            isForwardMode = true;
+            forwardSelectedWamids = [];
+            
+            if(ctxTargetWamid) {
+                forwardSelectedWamids.push(ctxTargetWamid);
+                if(ctxTargetBubble) ctxTargetBubble.classList.add('forward-selected');
+            }
+            
+            updateForwardUI();
+            document.getElementById('forwardTopBar').style.display = 'flex';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (isForwardMode) {
+                let bubble = e.target.closest('.bubble');
+                if (bubble) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let wamid = bubble.getAttribute('data-wamid');
+                    if (wamid) {
+                        if (forwardSelectedWamids.includes(wamid)) {
+                            forwardSelectedWamids = forwardSelectedWamids.filter(x => x !== wamid);
+                            bubble.classList.remove('forward-selected');
+                        } else {
+                            forwardSelectedWamids.push(wamid);
+                            bubble.classList.add('forward-selected');
+                        }
+                        updateForwardUI();
+                    }
+                    return;
+                }
+            }
+        }, true);
+
+        function updateForwardUI() {
+            document.getElementById('forwardCount').innerText = forwardSelectedWamids.length;
+            let btn = document.getElementById('forwardExecuteBtn');
+            if(forwardSelectedWamids.length > 0) {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        function cancelForwardMode() {
+            isForwardMode = false;
+            forwardSelectedWamids = [];
+            document.getElementById('forwardTopBar').style.display = 'none';
+            document.querySelectorAll('.bubble.forward-selected').forEach(el => el.classList.remove('forward-selected'));
+            document.getElementById('forwardManualNumbers').value = '';
+            closeForwardModal();
+        }
+
+        async function openForwardModal() {
+            if(forwardSelectedWamids.length === 0) return;
+            document.getElementById('forwardTargetModal').style.display = 'flex';
+            
+            try {
+                const res = await fetch('/api/frequent_chats');
+                if(res.ok) {
+                    const data = await res.json();
+                    const container = document.getElementById('frequentChatsContainer');
+                    if(data.chats && data.chats.length > 0) {
+                        container.innerHTML = data.chats.map(chat => 
+                            <label style="display:flex; align-items:center; gap:0.8rem; padding:0.6rem; border-radius:8px; background:var(--bg-main); border:1px solid var(--accent-border); cursor:pointer;">
+                                <input type="checkbox" class="frequent-chat-checkbox" value="+chat.wa_id+">
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="color:var(--text-main); font-weight:600;">+chat.nombre+</span>
+                                    <span style="color:var(--text-muted); font-size:0.8rem;">+chat.wa_id+</span>
+                                </div>
+                            </label>
+                        ).join('');
+                    } else {
+                        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:1rem;">No hay chats frecuentes.</div>';
+                    }
+                }
+            } catch(e) { }
+        }
+
+        function closeForwardModal() {
+            document.getElementById('forwardTargetModal').style.display = 'none';
+        }
+
+        async function executeForwarding() {
+            let manualInput = document.getElementById('forwardManualNumbers').value.trim();
+            let targets = [];
+            
+            if(manualInput) {
+                targets = manualInput.split(' ').map(s => s.trim()).filter(s => s);
+            }
+            
+            document.querySelectorAll('.frequent-chat-checkbox:checked').forEach(chk => {
+                if(!targets.includes(chk.value)) targets.push(chk.value);
+            });
+            
+            if(targets.length === 0) {
+                return alert("Selecciona al menos un chat o ingresa un número.");
+            }
+            
+            let btn = document.getElementById('btnConfirmForward');
+            let prevText = btn.innerText;
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            
+            try {
+                const res = await fetch('/api/forward_messages', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        source_wa_id: sourceWaId,
+                        wamids: forwardSelectedWamids,
+                        targets: targets
+                    })
+                });
+                
+                const data = await res.json();
+                if(res.ok && data.ok) {
+                    alert('¡Enviado! Mensajes enviados a ' + data.count + ' destino(s).');
+                    cancelForwardMode();
+                } else {
+                    alert('Error: ' + (data.error || 'Algo salió mal'));
+                }
+            } catch(e) {
+                alert("Error de red enviando petición.");
+            }
+            
+            btn.innerText = prevText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            closeForwardModal();
+        }
     </script>
     <style>
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -170,7 +316,7 @@
             /* 1. Nivel de Color Principal */
             --primary-color: #717f7f;       
             --primary-hover: #2563eb;       
-            /* 2. Nivel de Color de Acento (translúcidos adaptables) */
+            /* 2. Nivel de Color de Acento (translÃºcidos adaptables) */
             --accent-bg: rgba(255, 255, 255, 0.05);           
             --accent-border: rgba(255, 255, 255, 0.1);       
             --accent-hover-soft: rgba(255, 255, 255, 0.08);   
@@ -178,7 +324,7 @@
             --bg-main: #213668;             
             --bg-sidebar: var(--bg-main);
             --bg-list: var(--bg-main);
-            /* 4. Tipografías */
+            /* 4. TipografÃ­as */
             --font-main: 'Inter', sans-serif;
             --font-heading: 'Outfit', sans-serif;
             /* 5. Texto y Estados */
@@ -467,7 +613,7 @@
             {chat_view_css}
 
         /* ==================================================
-           RESPONSIVE DESIGN (MÓVIL / TABLET)
+           RESPONSIVE DESIGN (MÃ“VIL / TABLET)
            ================================================== */
         @media (max-width: 768px) {
             body {
@@ -501,7 +647,7 @@
                 order: 1;
             }
 
-            /* LOGICA DE VISIBILIDAD SPA MÓVIL */
+            /* LOGICA DE VISIBILIDAD SPA MÃ“VIL */
             /* Si class="view-list", muestra lista y oculta chat */
             body.view-list .chat-viewer-panel {
                 display: none !important;
@@ -516,9 +662,9 @@
                 display: none !important;
         }
 
-            /* Ocultar tab bar inferior en el chat si se desea más espacio */
+            /* Ocultar tab bar inferior en el chat si se desea mÃ¡s espacio */
 
-            /* Mostrar el botón de regresar en el Header del Chat */
+            /* Mostrar el botÃ³n de regresar en el Header del Chat */
             .btn-responsive-back {
                 display: flex;
                 align-items: center;
@@ -553,7 +699,7 @@
             background: var(--text-muted);
         }
     
-        /* ─── Panel de Info de Mensaje ─── */
+        /* â”€â”€â”€ Panel de Info de Mensaje â”€â”€â”€ */
         #msg-info-panel {
             position: fixed; top: 0; right: -360px; width: 340px; height: 100%;
             background: var(--bg-card, #1e293b); border-left: 1px solid var(--accent-border, rgba(255,255,255,0.1));
@@ -598,9 +744,21 @@
             opacity: 0.8;
             transform: scale(0.98);
         }
+            .bubble.forward-selected {
+            background-color: var(--accent-bg) !important;
+            border: 2px solid var(--primary-color) !important;
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
     </style>
     <style id="custom-theme-css">
 {custom_theme_css}
+            .bubble.forward-selected {
+            background-color: var(--accent-bg) !important;
+            border: 2px solid var(--primary-color) !important;
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
             .bubble.forward-selected {
             background-color: var(--accent-bg) !important;
             border: 2px solid var(--primary-color) !important;
@@ -613,11 +771,11 @@
     <div id="chatListMenu" style="display:none; position:fixed; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); z-index:9999; flex-direction:column; overflow:hidden; min-width:180px;">
         <div id="btnArchivar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('archive'); return false;">Archivar chat</div>
         <div id="btnFijar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('pin'); return false;">Fijar chat</div>
-        <div id="btnMarcarNoLeido" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('unread'); return false;">Marcar como no leído</div>
+        <div id="btnMarcarNoLeido" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('unread'); return false;">Marcar como no leÃ­do</div>
         <div id="btnBorrarChat" style="padding:0.8rem 1rem; color:#ef4444; font-size:0.85rem; cursor:pointer; font-weight:bold;" onclick="window.chatAction('delete'); return false;">Borrar chat</div>
     </div>
 
-    <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
+    <!-- 1. BARRA LATERAL IZQUIERDA (NavegaciÃ³n Desktop / Bottom Mobile) -->
     <nav class="sidebar-nav">
         <!-- Inbox Icon -->
         <a href="/inbox" class="nav-item active" title="Bandeja de Entrada (Inbox)">
@@ -632,17 +790,17 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         </a>
         <!-- System Settings Icon -->
-        <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
+        <a href="/admin" class="nav-item" title="Panel ClÃ¡sico Anterior">
             <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
         </a>
         
         <div style="flex:1;"></div>
         
-        <!-- Configuración de Perfil Usuario -->
+        <!-- ConfiguraciÃ³n de Perfil Usuario -->
         <a href="/perfil" class="nav-item" title="Mi Perfil" style="margin-bottom: 5px; color: var(--text-muted); display: flex; justify-content: center; text-decoration: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </a>
-        <a href="/logout" class="nav-item" title="Cerrar Sesión" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
+        <a href="/logout" class="nav-item" title="Cerrar SesiÃ³n" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; opacity: 0.8; transition: opacity 0.2s;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         </a>
     </nav>
@@ -663,7 +821,7 @@
 
             <!-- BUSCADOR / NUEVO CHAT -->
             <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
-                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar número en 51..."
+                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar nÃºmero en 51..."
                     style="width:100%; padding: 0.6rem 2.5rem; border-radius: 8px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.9rem; outline:none;"
                     autocomplete="off">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"
@@ -674,7 +832,7 @@
 
                 <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()"
                     style="display:none; position:absolute; right:0.4rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:6px; color:white; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight:bold; cursor:pointer;"
-                    title="Empezar un chat con este número">NUEVO</button>
+                    title="Empezar un chat con este nÃºmero">NUEVO</button>
             </div>
         </div>
 
@@ -685,26 +843,30 @@
         </div>
     </div>
 
-    <!-- 3. PANEL DERECHO (Visor de Chat o Estado Vacío) -->
+    <!-- 3. PANEL DERECHO (Visor de Chat o Estado VacÃ­o) -->
     <div class="chat-viewer-panel">
         {chat_viewer_html}
     </div>
     </div>
 
-    <!-- MENÚ CONTEXTUAL PERSONALIZADO (Click derecho PC o Mantener en Móvil) -->
+    <!-- MENÃš CONTEXTUAL PERSONALIZADO (Click derecho PC o Mantener en MÃ³vil) -->
     <div id="bubbleContextMenu"
         style="display:none; position:fixed; z-index:9999; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.15); min-width:220px; font-family:var(--font-main); overflow:hidden;">
         <!-- BARRA DE REACCIONES -->
         <div
             style="display:flex; justify-content:space-around; padding:0.6rem; border-bottom:1px solid var(--accent-border); background:var(--accent-bg);">
-            <div class="ctx-emoji" onclick="enviarReaccion('👍')">👍</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('❤️')">❤️</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('😂')">😂</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('😮')">😮</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('😢')">😢</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('🙏')">🙏</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ‘')">ðŸ‘</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('â¤ï¸')">â¤ï¸</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ˜‚')">ðŸ˜‚</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ˜®')">ðŸ˜®</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ˜¢')">ðŸ˜¢</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ™')">ðŸ™</div>
         </div>
 
+                <div class="ctx-item" id="ctxForward" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12H3"/><path d="M21 12l-8-8"/><path d="M21 12l-8 8"/></svg>
+            Reenviar
+        </div>
                 <div class="ctx-item" id="ctxForward" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12H3"/><path d="M21 12l-8-8"/><path d="M21 12l-8 8"/></svg>
             Reenviar
@@ -774,7 +936,7 @@
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
-            <strong>Información</strong>
+            <strong>InformaciÃ³n</strong>
         </div>
     </div>
     <style>
@@ -821,6 +983,12 @@
             opacity: 0.8;
             transform: scale(0.98);
         }
+            .bubble.forward-selected {
+            background-color: var(--accent-bg) !important;
+            border: 2px solid var(--primary-color) !important;
+            opacity: 0.8;
+            transform: scale(0.98);
+        }
     </style>
 
     <script>
@@ -849,8 +1017,8 @@
                 const modalHtml = `
                     <div id="deleteConfirmModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; display:flex; align-items:center; justify-content:center;">
                         <div style="background:var(--bg-main); padding:2rem; border-radius:12px; max-width:400px; text-align:center; border:1px solid var(--accent-border);">
-                            <h3 style="margin-top:0; color:#ef4444;">¿Borrar este chat?</h3>
-                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Esta acción eliminará el chat permanentemente y no se puede deshacer.</p>
+                            <h3 style="margin-top:0; color:#ef4444;">Â¿Borrar este chat?</h3>
+                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Esta acciÃ³n eliminarÃ¡ el chat permanentemente y no se puede deshacer.</p>
                             <div style="display:flex; justify-content:center; gap:1rem;">
                                 <button onclick="document.body.removeChild(document.getElementById('deleteConfirmModal'))" style="padding:0.6rem 1.5rem; border-radius:8px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); cursor:pointer;">Cancelar</button>
                                 <button onclick="window.confirmDeleteChat()" style="padding:0.6rem 1.5rem; border-radius:8px; border:none; background:#ef4444; color:white; cursor:pointer;">Borrar Permanente</button>
@@ -899,7 +1067,7 @@
             if(menu1 && !menu1.contains(e.target)) menu1.style.display = 'none';
         });
 
-        // LOGICA DE MENÚs CONTEXTUAL
+        // LOGICA DE MENÃšs CONTEXTUAL
         let ctxTargetWamid = "";
         let ctxTargetText = "";
         let ctxTargetMediaId = "";
@@ -910,12 +1078,12 @@
         document.addEventListener("contextmenu", function (e) {
             const bubble = e.target.closest('.bubble');
             if (bubble) {
-                e.preventDefault(); // Evitamos menú del navegador
+                e.preventDefault(); // Evitamos menÃº del navegador
 
                 ctxTargetWamid = bubble.getAttribute('data-wamid');
                 ctxTargetBubble = bubble;
                 
-                // Show Información only for bot messages with data-sent-by
+                // Show InformaciÃ³n only for bot messages with data-sent-by
                 const infoItem = document.getElementById('ctxMsgInfo');
                 if (infoItem) {
                     infoItem.style.display = bubble.classList.contains('bubble-bot') && bubble.dataset.sentBy !== undefined ? 'flex' : 'none';
@@ -1053,7 +1221,7 @@
                         ]);
                     } catch(err) {
                         console.error("Clipboard API error", err);
-                        alert("El navegador bloqueó la copia de la imagen.");
+                        alert("El navegador bloqueÃ³ la copia de la imagen.");
                     }
                 }, 'image/png');
             } catch(e) {
@@ -1087,13 +1255,13 @@
                 document.body.removeChild(a);
             } catch(e) {
                 console.error("Error downloading image", e);
-                alert("Ocurrió un error al descargar la imagen.");
+                alert("OcurriÃ³ un error al descargar la imagen.");
             }
         });
 
         async function enviarReaccion(emojiStr) {
             document.getElementById("bubbleContextMenu").style.display = "none";
-            if (!ctxTargetWamid) return alert("❌ Este mensaje no se puede reaccionar");
+            if (!ctxTargetWamid) return alert("âŒ Este mensaje no se puede reaccionar");
 
             const wa_id = window.location.pathname.split('/').pop(); // /inbox/519...
             try {
@@ -1104,10 +1272,10 @@
                 });
                 const data = await res.json();
                 if (!data.ok) {
-                    alert("❌ Error: " + data.error);
+                    alert("âŒ Error: " + data.error);
                 }
             } catch (e) {
-                alert("❌ Falla de conectividad");
+                alert("âŒ Falla de conectividad");
             }
         }
 
@@ -1126,19 +1294,19 @@
                 });
                 const data = await res.json();
                 if (data.ok) {
-                    alert("⭐ Sticker guardado en tus favoritos extra (Firebase) con éxito!");
+                    alert("â­ Sticker guardado en tus favoritos extra (Firebase) con Ã©xito!");
                     toggleStickersMenu(); toggleStickersMenu(); // refresh silently
                 } else {
-                    alert("❌ Error guardando sticker: " + data.error);
+                    alert("âŒ Error guardando sticker: " + data.error);
                 }
             } catch (e) {
-                alert("❌ Falla de conectividad");
+                alert("âŒ Falla de conectividad");
             }
         });
-        // DOM AJAX REFRESHER PARA LIVE CHAT (Mantiene posición del scroll y reemplaza listas suavemente)
+        // DOM AJAX REFRESHER PARA LIVE CHAT (Mantiene posiciÃ³n del scroll y reemplaza listas suavemente)
         setInterval(async () => {
             try {
-                // Prevenir caché del navegador
+                // Prevenir cachÃ© del navegador
                 const url = window.location.href;
                 const fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
 
@@ -1167,7 +1335,7 @@
                     const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
                     let didAppend = false;
                     
-                    // Aislar temporalmente elementos de subida asíncrona (fantasmas)
+                    // Aislar temporalmente elementos de subida asÃ­ncrona (fantasmas)
                     const tempNodes = Array.from(oldScroll.querySelectorAll('[data-temp="true"]'));
                     tempNodes.forEach(node => oldScroll.removeChild(node));
                     
@@ -1197,7 +1365,7 @@
                         oldScroll.removeChild(oldScroll.lastChild);
                     }
                     
-                    // Reinyectar elementos asíncronos fantasma
+                    // Reinyectar elementos asÃ­ncronos fantasma
                     tempNodes.forEach(node => oldScroll.appendChild(node));
                     
                     if (didAppend && isAtBottom) {
@@ -1244,7 +1412,7 @@
                             // Visual feedback
                             const manualInput = document.getElementById("manualMsgInput");
                             if(manualInput) {
-                                manualInput.value = "📤 Subiendo audio...";
+                                manualInput.value = "ðŸ“¤ Subiendo audio...";
                                 manualInput.disabled = true;
                             }
 
@@ -1266,12 +1434,12 @@
                                         if(c) {
                                             const div = document.createElement('div');
                                             div.className = 'bubble bubble-bot lado-der';
-                                            div.innerHTML = `<div class="bubble-content" style="background:var(--primary-color);color:white;padding:0.8rem;border-radius:12px;"><span style="font-size:1.5rem;">🎤</span> <span style="font-size:0.9rem;">Audio enviado</span></div>`;
+                                            div.innerHTML = `<div class="bubble-content" style="background:var(--primary-color);color:white;padding:0.8rem;border-radius:12px;"><span style="font-size:1.5rem;">ðŸŽ¤</span> <span style="font-size:0.9rem;">Audio enviado</span></div>`;
                                             c.appendChild(div);
                                             c.scrollTop = c.scrollHeight;
                                         }
                                     } else {
-                                        alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.\n\nDetalle técnico: " + (enviaRes?.error || "Desconocido"));
+                                        alert("El servidor de WhatsApp (Meta) rechazÃ³ o no pudo procesar el formato del audio.\n\nDetalle tÃ©cnico: " + (enviaRes?.error || "Desconocido"));
                                     }
                                 } else {
                                     alert("Error procesando o subiendo el audio:\n\n" + (data.error || "Rechazo desconocido en el servidor."));
@@ -1290,19 +1458,19 @@
                         btnRecord.style.color = "white";
                         btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>`;
                         
-                        // Opcional: Mostrar que está grabando en el input
+                        // Opcional: Mostrar que estÃ¡ grabando en el input
                         const manualInput = document.getElementById("manualMsgInput");
                         if(manualInput) {
                             manualInput.dataset.originalPlaceholder = manualInput.placeholder;
-                            manualInput.placeholder = "🔴 Grabando audio... (Presiona el cuadro rojo para detener/enviar)";
+                            manualInput.placeholder = "ðŸ”´ Grabando audio... (Presiona el cuadro rojo para detener/enviar)";
                         }
 
                     } catch(err) {
                         console.error('Audio Recorder Error:', err);
                         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                            alert("❌ ¡Conexión Insegura! Tu navegador ha bloqueado el micrófono por seguridad. Las web de grabación de audio OBLIGAN a que uses 'https://' o entres desde 'http://localhost' en lugar de usar una IP directa de la red.");
+                            alert("âŒ Â¡ConexiÃ³n Insegura! Tu navegador ha bloqueado el micrÃ³fono por seguridad. Las web de grabaciÃ³n de audio OBLIGAN a que uses 'https://' o entres desde 'http://localhost' en lugar de usar una IP directa de la red.");
                         } else {
-                            alert("Permiso Denegado o Error: " + err.message + ". Verifica el candadito arriba a la izquierda y dale permisos al micrófono.");
+                            alert("Permiso Denegado o Error: " + err.message + ". Verifica el candadito arriba a la izquierda y dale permisos al micrÃ³fono.");
                         }
                     }
                 } else {
@@ -1440,7 +1608,7 @@
             }
         });
         
-        // Interceptar asignaciones programáticas a value
+        // Interceptar asignaciones programÃ¡ticas a value
         const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
         setTimeout(() => {
             const msgInput = document.getElementById('manualMsgInput');
@@ -1472,7 +1640,7 @@
             input.value = '';
             input.focus();
 
-            // Dibujado optimista instantáneo
+            // Dibujado optimista instantÃ¡neo
             const scroll = document.getElementById('chatScroll');
             if (scroll) {
                 const bubble = document.createElement('div');
@@ -1501,14 +1669,14 @@
 
                 const data = await res.json();
                 if (!data.ok) {
-                    // Si falló (ej: ventana de 24h de Meta API)
+                    // Si fallÃ³ (ej: ventana de 24h de Meta API)
                     if (scroll && scroll.lastChild === bubble) {
                         scroll.removeChild(bubble);
                     }
                     if (data.error === "META_API_REJECTED") {
-                        alert("❌ Error de WhatsApp (Meta): No puedes enviar mensajes libres a este número porque no te ha escrito en las últimas 24 horas. ¡El cliente debe escribirte primero!");
+                        alert("âŒ Error de WhatsApp (Meta): No puedes enviar mensajes libres a este nÃºmero porque no te ha escrito en las Ãºltimas 24 horas. Â¡El cliente debe escribirte primero!");
                     } else {
-                        alert("❌ Error no controlado al enviar: " + data.error);
+                        alert("âŒ Error no controlado al enviar: " + data.error);
                     }
                 }
             } catch (e) {
@@ -1520,7 +1688,7 @@
             }
         };
 
-        // LIBRERÍA LOCAL DE STICKERS
+        // LIBRERÃA LOCAL DE STICKERS
         window.cargarStickers = async function () {
             const grid = document.getElementById('stickersGrid');
             if (!grid) return;
@@ -1533,7 +1701,7 @@
                         `<img src="/api/media/sticker/${s}" style="width:70px; height:70px; object-fit:contain; cursor:pointer; padding:5px; border-radius:8px; border:2px solid transparent; transition:border 0.2s;" onmouseover="this.style.border='2px solid var(--primary-color)'" onmouseout="this.style.border='2px solid transparent'" onclick="insertStickerLocal('${s}')" title="${s}">`
                     ).join('');
                 } else {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5; font-size:0.85rem; color:var(--text-muted);">Aún no tienes stickers guardados.</div>';
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5; font-size:0.85rem; color:var(--text-muted);">AÃºn no tienes stickers guardados.</div>';
                 }
             } catch (e) { grid.innerHTML = '<div style="grid-column: 1/-1; padding:2rem; color:var(--danger-color);">Error cargando.</div>'; }
         };
@@ -1544,7 +1712,7 @@
             const file = input.files[0];
             if (!file) return;
             const grid = document.getElementById('stickersGrid');
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; opacity:0.5;">⏳ Subiendo...</div>';
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; opacity:0.5;">â³ Subiendo...</div>';
             const fd = new FormData();
             fd.append('files', file);
             try {
@@ -1572,7 +1740,7 @@
             }
         };
 
-        // LÓGICA DE SUBIDA MULTIMEDIA ASÍNCRONA EN SEGUNDO PLANO
+        // LÃ“GICA DE SUBIDA MULTIMEDIA ASÃNCRONA EN SEGUNDO PLANO
         const uploadMedia = async (file, mode = 'imagen') => {
             const wa_id = window.location.pathname.split('/').pop();
             if (!wa_id || isNaN(wa_id) || wa_id === 'inbox') {
@@ -1588,7 +1756,7 @@
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         let w = img.width, h = img.height;
-                        const maxDim = 1920; // Full HD es más que suficiente para Meta
+                        const maxDim = 1920; // Full HD es mÃ¡s que suficiente para Meta
                         if (w > h && w > maxDim) { h *= maxDim / w; w = maxDim; }
                         else if (h > maxDim) { w *= maxDim / h; h = maxDim; }
                         canvas.width = w; canvas.height = h;
@@ -1605,7 +1773,7 @@
                 file = await compressImage(file);
             }
 
-            let modeIcon = mode === 'video' ? '🎬' : mode === 'audio' ? '🎵' : '🖼️';
+            let modeIcon = mode === 'video' ? 'ðŸŽ¬' : mode === 'audio' ? 'ðŸŽµ' : 'ðŸ–¼ï¸';
 
             // Dibujado de burbuja temporal "cargando" para liberar el UI general
             const scroll = document.getElementById('chatScroll');
@@ -1631,7 +1799,7 @@
             formData.append("mode", mode);
 
             try {
-                // Sube el archivo de forma completamente asíncrona a nuestro servidor
+                // Sube el archivo de forma completamente asÃ­ncrona a nuestro servidor
                 const res = await fetch('/api/admin/upload_media', {
                     method: 'POST',
                     body: formData
@@ -1639,7 +1807,7 @@
                 const data = await res.json();
 
                 if (data.ok && data.media_id) {
-                    // Una vez subido con existo, SE MANDA EL MENSAJE AUTOMÁTICAMENTE a Meta
+                    // Una vez subido con existo, SE MANDA EL MENSAJE AUTOMÃTICAMENTE a Meta
                     const textToSend = `[${mode}:${data.media_id}]`;
                     fetch('/api/admin/enviar_manual', {
                         method: 'POST',
@@ -1648,30 +1816,30 @@
                     });
                     
                     if (loadingBubble && document.body.contains(loadingBubble)) {
-                        loadingBubble.innerHTML = `✅ ${modeIcon} ¡Procesado y enviado a Meta!`;
+                        loadingBubble.innerHTML = `âœ… ${modeIcon} Â¡Procesado y enviado a Meta!`;
                         loadingBubble.style.border = "1px solid var(--primary-color)";
                         loadingBubble.style.opacity = "1";
                         setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 3000); 
                     } else {
-                        showGlobalToast(`✅ ${modeIcon} ¡Video subido y enviado a +${wa_id} correctamente!`);
+                        showGlobalToast(`âœ… ${modeIcon} Â¡Video subido y enviado a +${wa_id} correctamente!`);
                     }
                 } else {
                     if (loadingBubble && document.body.contains(loadingBubble)) {
-                        loadingBubble.innerHTML = `❌ Error subiendo: ${data.error || "Desconocido"}`;
+                        loadingBubble.innerHTML = `âŒ Error subiendo: ${data.error || "Desconocido"}`;
                         loadingBubble.style.border = "1px solid red";
                         setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
                     } else {
-                        showGlobalToast(`❌ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
+                        showGlobalToast(`âŒ Falla al enviar ${modeIcon} a +${wa_id}: ${data.error || "Desconocido"}`);
                     }
                 }
             } catch (e) {
                 console.error(e);
                 if (loadingBubble && document.body.contains(loadingBubble)) {
-                    loadingBubble.innerHTML = `❌ Falla de fondo: ${e.message}`;
+                    loadingBubble.innerHTML = `âŒ Falla de fondo: ${e.message}`;
                     loadingBubble.style.border = "1px solid red";
                     setTimeout(() => { if (loadingBubble && loadingBubble.parentNode) loadingBubble.parentNode.removeChild(loadingBubble); }, 6000);
                 } else {
-                    showGlobalToast(`❌ Falló la subida de ${modeIcon} a +${wa_id} por error de red: ${e.message}`);
+                    showGlobalToast(`âŒ FallÃ³ la subida de ${modeIcon} a +${wa_id} por error de red: ${e.message}`);
                 }
             }
         };
@@ -1768,7 +1936,7 @@
                                 let html = `<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem; padding-left:0.5rem; text-transform:uppercase; letter-spacing:1px;">Mensajes (${data.resultados.length})</div>`;
                                 data.resultados.forEach(r => {
                                     r.matches.forEach(m => {
-                                        let icon = m.role === 'assistant' ? '🤖' : '👤';
+                                        let icon = m.role === 'assistant' ? 'ðŸ¤–' : 'ðŸ‘¤';
                                         html += `
                                         <a href="/inbox/${r.wa_id}" class="chat-row search-msg-row" style="display:block; text-decoration:none; background:var(--accent-bg); border-radius:8px; margin-bottom:0.5rem; padding:0.8rem; border:1px solid transparent; transition:border 0.2s;">
                                             <div style="font-weight:600; color:var(--text-main); font-size:0.9rem; margin-bottom:0.3rem; display:flex; justify-content:space-between;">
@@ -1841,8 +2009,8 @@
 
         function iniciarNuevoChat() {
             let val = document.getElementById('chatSearchInput').value.trim();
-            val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
-            if (val.length < 9) return alert("Número muy corto");
+            val = val.replace(/\D/g, ''); // purgar caracteres no numÃ©ricos
+            if (val.length < 9) return alert("NÃºmero muy corto");
             if (!val.startsWith("51")) val = "51" + val;
             window.location.href = `/inbox/${val}`;
         }
@@ -1856,7 +2024,7 @@
             }
         });
 
-        // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
+        // CERRAR MENÃšS FLOTANTES AL HACER CLICK AFUERA
         document.addEventListener("click", function (e) {
             const combinedEmojiMenu = document.getElementById("combinedEmojiMenu");
             if (combinedEmojiMenu && !e.target.closest('#combinedEmojiMenu') && !e.target.closest('button[title="Emojis y Stickers"]')) {
@@ -1899,7 +2067,7 @@
                 if (data.ok) {
                     list.innerHTML = "";
                     if (data.plantillas.length === 0) {
-                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
+                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para aÃ±adir.</div>`;
                     } else {
                         data.plantillas.forEach(p => {
                             const btn = document.createElement("div");
@@ -1913,7 +2081,7 @@
 
                             const delBtn = document.createElement("button");
                             delBtn.type = "button";
-                            delBtn.innerText = "×";
+                            delBtn.innerText = "Ã—";
                             delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:#ef4444; font-size:1.1rem; padding:0 0.2rem;";
                             delBtn.onclick = () => eliminarPlantilla(p.name);
 
@@ -1931,7 +2099,7 @@
         async function crearPlantilla() {
             const name = prompt("Escribe el NOMBRE EXACTO de la plantilla en Meta (ej: hola_cliente)");
             if (!name) return;
-            const lang = prompt("Esribe el código de idioma (ej: es, es_PE). Si no sabes, pon 'es'") || "es";
+            const lang = prompt("Esribe el cÃ³digo de idioma (ej: es, es_PE). Si no sabes, pon 'es'") || "es";
             try {
                 const res = await fetch("/api/admin/templates/save", {
                     method: "POST",
@@ -1945,7 +2113,7 @@
         }
 
         async function eliminarPlantilla(name) {
-            if (!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
+            if (!confirm(`Â¿Borrar la plantilla '${name}' de tu lista local?`)) return;
             try {
                 const res = await fetch("/api/admin/templates/delete", {
                     method: "POST",
@@ -1959,10 +2127,10 @@
         }
 
         async function enviarPlantillaLoc(name, lang) {
-            const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
-            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+            const wa_id = location.pathname.split("/").pop(); // Obtiene el NÂ° de la URL
+            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat vÃ¡lido seleccionado.");
 
-            if (!confirm(`Se le enviará la plantilla '${name}' al número +${wa_id}. ¿Deseas continuar?`)) return;
+            if (!confirm(`Se le enviarÃ¡ la plantilla '${name}' al nÃºmero +${wa_id}. Â¿Deseas continuar?`)) return;
             const tMenu = document.getElementById("templateMenu");
             if(tMenu) tMenu.style.display = "none";
 
@@ -1977,7 +2145,7 @@
                     // Cargar el chat inmediatamente para ver la burbuja
                     window.location.reload();
                 } else {
-                    alert("❌ Error: " + data.error);
+                    alert("âŒ Error: " + data.error);
                 }
             } catch (e) {
                 alert("Falla de conectividad");
@@ -2025,7 +2193,7 @@
 
         async function eliminarGlobalLabel(id, name, event) {
             event.stopPropagation();
-            if (!confirm(`¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminará de todos los chats asignados).`)) return;
+            if (!confirm(`Â¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminarÃ¡ de todos los chats asignados).`)) return;
             try {
                 const res = await fetch("/api/admin/labels/delete", {
                     method: "POST",
@@ -2050,7 +2218,7 @@
                 if (data.ok) {
                     list.innerHTML = "";
                     if (data.labels.length === 0) {
-                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin etiquetas. Apreta (+) para añadir.</div>`;
+                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin etiquetas. Apreta (+) para aÃ±adir.</div>`;
                     } else {
                         data.labels.forEach(lbl => {
                             const btn = document.createElement("div");
@@ -2066,7 +2234,7 @@
 
                             const delBtn = document.createElement("button");
                             delBtn.type = "button";
-                            delBtn.innerText = "×";
+                            delBtn.innerText = "Ã—";
                             delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.1rem; padding:0 0.2rem;";
                             delBtn.onclick = (e) => eliminarGlobalLabel(lbl.id, lbl.name, e);
 
@@ -2083,8 +2251,8 @@
         }
 
         async function alternarChatLabel(lbl_id) {
-            const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
-            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+            const wa_id = location.pathname.split("/").pop(); // Obtiene el NÂ° de la URL
+            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat vÃ¡lido seleccionado.");
 
             try {
                 const res = await fetch(`/api/admin/chats/labels/toggle`, {
@@ -2100,7 +2268,7 @@
                     alert("Error: " + data.error);
                 }
             } catch (e) {
-                alert("Error de conexión al alternar etiqueta.");
+                alert("Error de conexiÃ³n al alternar etiqueta.");
             }
         }
 
@@ -2254,16 +2422,162 @@
             btn.style.opacity = "1";
             closeForwardModal();
         }
+    // FORWARD LOGIC
+        let isForwardMode = false;
+        let forwardSelectedWamids = [];
+        let sourceWaId = "";
+
+        document.getElementById("ctxForward").addEventListener("click", function () {
+            document.getElementById("bubbleContextMenu").style.display = "none";
+            let q = window.location.search;
+            let currentParams = new URLSearchParams(q);
+            sourceWaId = currentParams.get('wa_id');
+            if(!sourceWaId) return alert("Debes estar en un chat activo para reenviar.");
+            
+            isForwardMode = true;
+            forwardSelectedWamids = [];
+            
+            if(ctxTargetWamid) {
+                forwardSelectedWamids.push(ctxTargetWamid);
+                if(ctxTargetBubble) ctxTargetBubble.classList.add('forward-selected');
+            }
+            
+            updateForwardUI();
+            document.getElementById('forwardTopBar').style.display = 'flex';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (isForwardMode) {
+                let bubble = e.target.closest('.bubble');
+                if (bubble) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let wamid = bubble.getAttribute('data-wamid');
+                    if (wamid) {
+                        if (forwardSelectedWamids.includes(wamid)) {
+                            forwardSelectedWamids = forwardSelectedWamids.filter(x => x !== wamid);
+                            bubble.classList.remove('forward-selected');
+                        } else {
+                            forwardSelectedWamids.push(wamid);
+                            bubble.classList.add('forward-selected');
+                        }
+                        updateForwardUI();
+                    }
+                    return;
+                }
+            }
+        }, true);
+
+        function updateForwardUI() {
+            document.getElementById('forwardCount').innerText = forwardSelectedWamids.length;
+            let btn = document.getElementById('forwardExecuteBtn');
+            if(forwardSelectedWamids.length > 0) {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        function cancelForwardMode() {
+            isForwardMode = false;
+            forwardSelectedWamids = [];
+            document.getElementById('forwardTopBar').style.display = 'none';
+            document.querySelectorAll('.bubble.forward-selected').forEach(el => el.classList.remove('forward-selected'));
+            document.getElementById('forwardManualNumbers').value = '';
+            closeForwardModal();
+        }
+
+        async function openForwardModal() {
+            if(forwardSelectedWamids.length === 0) return;
+            document.getElementById('forwardTargetModal').style.display = 'flex';
+            
+            try {
+                const res = await fetch('/api/frequent_chats');
+                if(res.ok) {
+                    const data = await res.json();
+                    const container = document.getElementById('frequentChatsContainer');
+                    if(data.chats && data.chats.length > 0) {
+                        container.innerHTML = data.chats.map(chat => 
+                            <label style="display:flex; align-items:center; gap:0.8rem; padding:0.6rem; border-radius:8px; background:var(--bg-main); border:1px solid var(--accent-border); cursor:pointer;">
+                                <input type="checkbox" class="frequent-chat-checkbox" value="+chat.wa_id+">
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="color:var(--text-main); font-weight:600;">+chat.nombre+</span>
+                                    <span style="color:var(--text-muted); font-size:0.8rem;">+chat.wa_id+</span>
+                                </div>
+                            </label>
+                        ).join('');
+                    } else {
+                        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:1rem;">No hay chats frecuentes.</div>';
+                    }
+                }
+            } catch(e) { }
+        }
+
+        function closeForwardModal() {
+            document.getElementById('forwardTargetModal').style.display = 'none';
+        }
+
+        async function executeForwarding() {
+            let manualInput = document.getElementById('forwardManualNumbers').value.trim();
+            let targets = [];
+            
+            if(manualInput) {
+                targets = manualInput.split(' ').map(s => s.trim()).filter(s => s);
+            }
+            
+            document.querySelectorAll('.frequent-chat-checkbox:checked').forEach(chk => {
+                if(!targets.includes(chk.value)) targets.push(chk.value);
+            });
+            
+            if(targets.length === 0) {
+                return alert("Selecciona al menos un chat o ingresa un número.");
+            }
+            
+            let btn = document.getElementById('btnConfirmForward');
+            let prevText = btn.innerText;
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            
+            try {
+                const res = await fetch('/api/forward_messages', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        source_wa_id: sourceWaId,
+                        wamids: forwardSelectedWamids,
+                        targets: targets
+                    })
+                });
+                
+                const data = await res.json();
+                if(res.ok && data.ok) {
+                    alert('¡Enviado! Mensajes enviados a ' + data.count + ' destino(s).');
+                    cancelForwardMode();
+                } else {
+                    alert('Error: ' + (data.error || 'Algo salió mal'));
+                }
+            } catch(e) {
+                alert("Error de red enviando petición.");
+            }
+            
+            btn.innerText = prevText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            closeForwardModal();
+        }
     </script>
 
-    <!-- Modal de Creación de Etiqueta (Tipo WhatsApp Business) -->
+    <!-- Modal de CreaciÃ³n de Etiqueta (Tipo WhatsApp Business) -->
     <div id="createLabelModal"
         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
         <div
             style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; width:350px; flex-direction:column; box-shadow:0 10px 25px rgba(0,0,0,0.5); overflow:hidden;">
             <div
                 style="padding:1rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-family:var(--font-heading); font-size:1.1rem;">Añadir etiqueta</h3>
+                <h3 style="margin:0; font-family:var(--font-heading); font-size:1.1rem;">AÃ±adir etiqueta</h3>
                 <button onclick="document.getElementById('createLabelModal').style.display='none'"
                     style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.5rem;">&times;</button>
             </div>
@@ -2349,7 +2663,7 @@
                         viewer.innerHTML = `
                         <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
                             <h3>Bandeja de Entrada</h3>
-                            <p style="font-size:0.9rem; max-width:400px; text-align:center;">Selecciona una conversación para empezar o continuar chateando.</p>
+                            <p style="font-size:0.9rem; max-width:400px; text-align:center;">Selecciona una conversaciÃ³n para empezar o continuar chateando.</p>
                         </div>`;
                     }
                 }
@@ -2505,6 +2819,152 @@
             btn.style.opacity = "1";
             closeForwardModal();
         }
+    // FORWARD LOGIC
+        let isForwardMode = false;
+        let forwardSelectedWamids = [];
+        let sourceWaId = "";
+
+        document.getElementById("ctxForward").addEventListener("click", function () {
+            document.getElementById("bubbleContextMenu").style.display = "none";
+            let q = window.location.search;
+            let currentParams = new URLSearchParams(q);
+            sourceWaId = currentParams.get('wa_id');
+            if(!sourceWaId) return alert("Debes estar en un chat activo para reenviar.");
+            
+            isForwardMode = true;
+            forwardSelectedWamids = [];
+            
+            if(ctxTargetWamid) {
+                forwardSelectedWamids.push(ctxTargetWamid);
+                if(ctxTargetBubble) ctxTargetBubble.classList.add('forward-selected');
+            }
+            
+            updateForwardUI();
+            document.getElementById('forwardTopBar').style.display = 'flex';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (isForwardMode) {
+                let bubble = e.target.closest('.bubble');
+                if (bubble) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let wamid = bubble.getAttribute('data-wamid');
+                    if (wamid) {
+                        if (forwardSelectedWamids.includes(wamid)) {
+                            forwardSelectedWamids = forwardSelectedWamids.filter(x => x !== wamid);
+                            bubble.classList.remove('forward-selected');
+                        } else {
+                            forwardSelectedWamids.push(wamid);
+                            bubble.classList.add('forward-selected');
+                        }
+                        updateForwardUI();
+                    }
+                    return;
+                }
+            }
+        }, true);
+
+        function updateForwardUI() {
+            document.getElementById('forwardCount').innerText = forwardSelectedWamids.length;
+            let btn = document.getElementById('forwardExecuteBtn');
+            if(forwardSelectedWamids.length > 0) {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        function cancelForwardMode() {
+            isForwardMode = false;
+            forwardSelectedWamids = [];
+            document.getElementById('forwardTopBar').style.display = 'none';
+            document.querySelectorAll('.bubble.forward-selected').forEach(el => el.classList.remove('forward-selected'));
+            document.getElementById('forwardManualNumbers').value = '';
+            closeForwardModal();
+        }
+
+        async function openForwardModal() {
+            if(forwardSelectedWamids.length === 0) return;
+            document.getElementById('forwardTargetModal').style.display = 'flex';
+            
+            try {
+                const res = await fetch('/api/frequent_chats');
+                if(res.ok) {
+                    const data = await res.json();
+                    const container = document.getElementById('frequentChatsContainer');
+                    if(data.chats && data.chats.length > 0) {
+                        container.innerHTML = data.chats.map(chat => 
+                            <label style="display:flex; align-items:center; gap:0.8rem; padding:0.6rem; border-radius:8px; background:var(--bg-main); border:1px solid var(--accent-border); cursor:pointer;">
+                                <input type="checkbox" class="frequent-chat-checkbox" value="+chat.wa_id+">
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="color:var(--text-main); font-weight:600;">+chat.nombre+</span>
+                                    <span style="color:var(--text-muted); font-size:0.8rem;">+chat.wa_id+</span>
+                                </div>
+                            </label>
+                        ).join('');
+                    } else {
+                        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:1rem;">No hay chats frecuentes.</div>';
+                    }
+                }
+            } catch(e) { }
+        }
+
+        function closeForwardModal() {
+            document.getElementById('forwardTargetModal').style.display = 'none';
+        }
+
+        async function executeForwarding() {
+            let manualInput = document.getElementById('forwardManualNumbers').value.trim();
+            let targets = [];
+            
+            if(manualInput) {
+                targets = manualInput.split(' ').map(s => s.trim()).filter(s => s);
+            }
+            
+            document.querySelectorAll('.frequent-chat-checkbox:checked').forEach(chk => {
+                if(!targets.includes(chk.value)) targets.push(chk.value);
+            });
+            
+            if(targets.length === 0) {
+                return alert("Selecciona al menos un chat o ingresa un número.");
+            }
+            
+            let btn = document.getElementById('btnConfirmForward');
+            let prevText = btn.innerText;
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            
+            try {
+                const res = await fetch('/api/forward_messages', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        source_wa_id: sourceWaId,
+                        wamids: forwardSelectedWamids,
+                        targets: targets
+                    })
+                });
+                
+                const data = await res.json();
+                if(res.ok && data.ok) {
+                    alert('¡Enviado! Mensajes enviados a ' + data.count + ' destino(s).');
+                    cancelForwardMode();
+                } else {
+                    alert('Error: ' + (data.error || 'Algo salió mal'));
+                }
+            } catch(e) {
+                alert("Error de red enviando petición.");
+            }
+            
+            btn.innerText = prevText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            closeForwardModal();
+        }
     </script>
                 </div>
 
@@ -2521,7 +2981,7 @@
     <!-- Elementos ocultos para selectores del sistema -->
     <input type="file" id="hiddenFileInput" style="display:none;" accept="image/*">
 
-    <!-- Lightbox para imágenes -->
+    <!-- Lightbox para imÃ¡genes -->
     <div id="imageLightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; cursor:pointer;" onclick="if(event.target === this) this.style.display='none'">
         <button onclick="document.getElementById('imageLightbox').style.display='none'" style="position:absolute; top:20px; right:30px; background:none; border:none; color:white; font-size:2.5rem; cursor:pointer; text-shadow:0 2px 4px rgba(0,0,0,0.5);">&times;</button>
         <img id="lightboxImg" src="" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.7); cursor:default;" oncontextmenu="event.stopPropagation();">
@@ -2691,20 +3151,166 @@
             btn.style.opacity = "1";
             closeForwardModal();
         }
+    // FORWARD LOGIC
+        let isForwardMode = false;
+        let forwardSelectedWamids = [];
+        let sourceWaId = "";
+
+        document.getElementById("ctxForward").addEventListener("click", function () {
+            document.getElementById("bubbleContextMenu").style.display = "none";
+            let q = window.location.search;
+            let currentParams = new URLSearchParams(q);
+            sourceWaId = currentParams.get('wa_id');
+            if(!sourceWaId) return alert("Debes estar en un chat activo para reenviar.");
+            
+            isForwardMode = true;
+            forwardSelectedWamids = [];
+            
+            if(ctxTargetWamid) {
+                forwardSelectedWamids.push(ctxTargetWamid);
+                if(ctxTargetBubble) ctxTargetBubble.classList.add('forward-selected');
+            }
+            
+            updateForwardUI();
+            document.getElementById('forwardTopBar').style.display = 'flex';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (isForwardMode) {
+                let bubble = e.target.closest('.bubble');
+                if (bubble) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let wamid = bubble.getAttribute('data-wamid');
+                    if (wamid) {
+                        if (forwardSelectedWamids.includes(wamid)) {
+                            forwardSelectedWamids = forwardSelectedWamids.filter(x => x !== wamid);
+                            bubble.classList.remove('forward-selected');
+                        } else {
+                            forwardSelectedWamids.push(wamid);
+                            bubble.classList.add('forward-selected');
+                        }
+                        updateForwardUI();
+                    }
+                    return;
+                }
+            }
+        }, true);
+
+        function updateForwardUI() {
+            document.getElementById('forwardCount').innerText = forwardSelectedWamids.length;
+            let btn = document.getElementById('forwardExecuteBtn');
+            if(forwardSelectedWamids.length > 0) {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        function cancelForwardMode() {
+            isForwardMode = false;
+            forwardSelectedWamids = [];
+            document.getElementById('forwardTopBar').style.display = 'none';
+            document.querySelectorAll('.bubble.forward-selected').forEach(el => el.classList.remove('forward-selected'));
+            document.getElementById('forwardManualNumbers').value = '';
+            closeForwardModal();
+        }
+
+        async function openForwardModal() {
+            if(forwardSelectedWamids.length === 0) return;
+            document.getElementById('forwardTargetModal').style.display = 'flex';
+            
+            try {
+                const res = await fetch('/api/frequent_chats');
+                if(res.ok) {
+                    const data = await res.json();
+                    const container = document.getElementById('frequentChatsContainer');
+                    if(data.chats && data.chats.length > 0) {
+                        container.innerHTML = data.chats.map(chat => 
+                            <label style="display:flex; align-items:center; gap:0.8rem; padding:0.6rem; border-radius:8px; background:var(--bg-main); border:1px solid var(--accent-border); cursor:pointer;">
+                                <input type="checkbox" class="frequent-chat-checkbox" value="+chat.wa_id+">
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="color:var(--text-main); font-weight:600;">+chat.nombre+</span>
+                                    <span style="color:var(--text-muted); font-size:0.8rem;">+chat.wa_id+</span>
+                                </div>
+                            </label>
+                        ).join('');
+                    } else {
+                        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:1rem;">No hay chats frecuentes.</div>';
+                    }
+                }
+            } catch(e) { }
+        }
+
+        function closeForwardModal() {
+            document.getElementById('forwardTargetModal').style.display = 'none';
+        }
+
+        async function executeForwarding() {
+            let manualInput = document.getElementById('forwardManualNumbers').value.trim();
+            let targets = [];
+            
+            if(manualInput) {
+                targets = manualInput.split(' ').map(s => s.trim()).filter(s => s);
+            }
+            
+            document.querySelectorAll('.frequent-chat-checkbox:checked').forEach(chk => {
+                if(!targets.includes(chk.value)) targets.push(chk.value);
+            });
+            
+            if(targets.length === 0) {
+                return alert("Selecciona al menos un chat o ingresa un número.");
+            }
+            
+            let btn = document.getElementById('btnConfirmForward');
+            let prevText = btn.innerText;
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            
+            try {
+                const res = await fetch('/api/forward_messages', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        source_wa_id: sourceWaId,
+                        wamids: forwardSelectedWamids,
+                        targets: targets
+                    })
+                });
+                
+                const data = await res.json();
+                if(res.ok && data.ok) {
+                    alert('¡Enviado! Mensajes enviados a ' + data.count + ' destino(s).');
+                    cancelForwardMode();
+                } else {
+                    alert('Error: ' + (data.error || 'Algo salió mal'));
+                }
+            } catch(e) {
+                alert("Error de red enviando petición.");
+            }
+            
+            btn.innerText = prevText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            closeForwardModal();
+        }
     </script>
 
     <!-- Phone Context Menu -->
     <div id="phoneContextMenu" style="display:none; position:fixed; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:8px; padding:0.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.5); z-index:10000; min-width:180px;">
-        <div id="ctxPhoneTitle" style="font-size:0.75rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); margin-bottom:0.3rem;">Teléfono</div>
+        <div id="ctxPhoneTitle" style="font-size:0.75rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); margin-bottom:0.3rem;">TelÃ©fono</div>
         <button id="ctxPhoneChat" style="background:none; border:none; text-align:left; color:var(--text-main); font-size:0.85rem; padding:0.5rem; border-radius:4px; cursor:pointer; width:100%; display:flex; align-items:center; gap:0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Iniciar Chat
         </button>
         <button id="ctxPhoneCopy" style="background:none; border:none; text-align:left; color:var(--text-main); font-size:0.85rem; padding:0.5rem; border-radius:4px; cursor:pointer; width:100%; display:flex; align-items:center; gap:0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar Número
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar NÃºmero
         </button>
     </div>
 
-    <!-- Script para manejadores de teléfono -->
+    <!-- Script para manejadores de telÃ©fono -->
     <script>
         let targetPhoneCtx = "";
         function abrirCtxTelefono(e, phone) {
@@ -2774,9 +3380,9 @@
         
 
         
-        // ─── Panel de Info de Mensaje ───────────────────────────────
+        // â”€â”€â”€ Panel de Info de Mensaje â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function formatTsUnix(ts) {
-            if (!ts) return '—';
+            if (!ts) return 'â€”';
             const d = new Date(parseInt(ts) * 1000);
             return d.toLocaleString('es-PE', {
                 hour: '2-digit', minute: '2-digit',
@@ -2785,7 +3391,7 @@
         }
 
         function openMsgInfoPanel(bubble) {
-            const sentBy = bubble.dataset.sentBy || '—';
+            const sentBy = bubble.dataset.sentBy || 'â€”';
             const ts = bubble.dataset.ts || '';
             const deliveredTs = bubble.dataset.deliveredTs || '';
             const readTs = bubble.dataset.readTs || '';
@@ -2796,7 +3402,7 @@
             if (metaEl) metaEl.remove();
             const preview = clone.innerText.trim().slice(0, 200);
 
-            document.getElementById('info-preview-text').textContent = preview || '—';
+            document.getElementById('info-preview-text').textContent = preview || 'â€”';
             document.getElementById('info-sent-by').textContent = sentBy;
             
             // Handle QR title display
@@ -2808,8 +3414,8 @@
                 qrRow.style.display = 'none';
             }
             document.getElementById('info-sent-ts').textContent = formatTsUnix(ts);
-            document.getElementById('info-delivered-ts').textContent = deliveredTs ? formatTsUnix(deliveredTs) : '—';
-            document.getElementById('info-read-ts').textContent = readTs ? formatTsUnix(readTs) : '—';
+            document.getElementById('info-delivered-ts').textContent = deliveredTs ? formatTsUnix(deliveredTs) : 'â€”';
+            document.getElementById('info-read-ts').textContent = readTs ? formatTsUnix(readTs) : 'â€”';
 
             document.getElementById('msg-info-panel').classList.add('open');
         }
@@ -2979,6 +3585,152 @@
             btn.style.opacity = "1";
             closeForwardModal();
         }
+    // FORWARD LOGIC
+        let isForwardMode = false;
+        let forwardSelectedWamids = [];
+        let sourceWaId = "";
+
+        document.getElementById("ctxForward").addEventListener("click", function () {
+            document.getElementById("bubbleContextMenu").style.display = "none";
+            let q = window.location.search;
+            let currentParams = new URLSearchParams(q);
+            sourceWaId = currentParams.get('wa_id');
+            if(!sourceWaId) return alert("Debes estar en un chat activo para reenviar.");
+            
+            isForwardMode = true;
+            forwardSelectedWamids = [];
+            
+            if(ctxTargetWamid) {
+                forwardSelectedWamids.push(ctxTargetWamid);
+                if(ctxTargetBubble) ctxTargetBubble.classList.add('forward-selected');
+            }
+            
+            updateForwardUI();
+            document.getElementById('forwardTopBar').style.display = 'flex';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (isForwardMode) {
+                let bubble = e.target.closest('.bubble');
+                if (bubble) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    let wamid = bubble.getAttribute('data-wamid');
+                    if (wamid) {
+                        if (forwardSelectedWamids.includes(wamid)) {
+                            forwardSelectedWamids = forwardSelectedWamids.filter(x => x !== wamid);
+                            bubble.classList.remove('forward-selected');
+                        } else {
+                            forwardSelectedWamids.push(wamid);
+                            bubble.classList.add('forward-selected');
+                        }
+                        updateForwardUI();
+                    }
+                    return;
+                }
+            }
+        }, true);
+
+        function updateForwardUI() {
+            document.getElementById('forwardCount').innerText = forwardSelectedWamids.length;
+            let btn = document.getElementById('forwardExecuteBtn');
+            if(forwardSelectedWamids.length > 0) {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        function cancelForwardMode() {
+            isForwardMode = false;
+            forwardSelectedWamids = [];
+            document.getElementById('forwardTopBar').style.display = 'none';
+            document.querySelectorAll('.bubble.forward-selected').forEach(el => el.classList.remove('forward-selected'));
+            document.getElementById('forwardManualNumbers').value = '';
+            closeForwardModal();
+        }
+
+        async function openForwardModal() {
+            if(forwardSelectedWamids.length === 0) return;
+            document.getElementById('forwardTargetModal').style.display = 'flex';
+            
+            try {
+                const res = await fetch('/api/frequent_chats');
+                if(res.ok) {
+                    const data = await res.json();
+                    const container = document.getElementById('frequentChatsContainer');
+                    if(data.chats && data.chats.length > 0) {
+                        container.innerHTML = data.chats.map(chat => 
+                            <label style="display:flex; align-items:center; gap:0.8rem; padding:0.6rem; border-radius:8px; background:var(--bg-main); border:1px solid var(--accent-border); cursor:pointer;">
+                                <input type="checkbox" class="frequent-chat-checkbox" value="+chat.wa_id+">
+                                <div style="display:flex; flex-direction:column;">
+                                    <span style="color:var(--text-main); font-weight:600;">+chat.nombre+</span>
+                                    <span style="color:var(--text-muted); font-size:0.8rem;">+chat.wa_id+</span>
+                                </div>
+                            </label>
+                        ).join('');
+                    } else {
+                        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:1rem;">No hay chats frecuentes.</div>';
+                    }
+                }
+            } catch(e) { }
+        }
+
+        function closeForwardModal() {
+            document.getElementById('forwardTargetModal').style.display = 'none';
+        }
+
+        async function executeForwarding() {
+            let manualInput = document.getElementById('forwardManualNumbers').value.trim();
+            let targets = [];
+            
+            if(manualInput) {
+                targets = manualInput.split(' ').map(s => s.trim()).filter(s => s);
+            }
+            
+            document.querySelectorAll('.frequent-chat-checkbox:checked').forEach(chk => {
+                if(!targets.includes(chk.value)) targets.push(chk.value);
+            });
+            
+            if(targets.length === 0) {
+                return alert("Selecciona al menos un chat o ingresa un número.");
+            }
+            
+            let btn = document.getElementById('btnConfirmForward');
+            let prevText = btn.innerText;
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            
+            try {
+                const res = await fetch('/api/forward_messages', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        source_wa_id: sourceWaId,
+                        wamids: forwardSelectedWamids,
+                        targets: targets
+                    })
+                });
+                
+                const data = await res.json();
+                if(res.ok && data.ok) {
+                    alert('¡Enviado! Mensajes enviados a ' + data.count + ' destino(s).');
+                    cancelForwardMode();
+                } else {
+                    alert('Error: ' + (data.error || 'Algo salió mal'));
+                }
+            } catch(e) {
+                alert("Error de red enviando petición.");
+            }
+            
+            btn.innerText = prevText;
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            closeForwardModal();
+        }
     </script>
 
     
@@ -2988,30 +3740,30 @@
     <!-- Panel de info de mensaje -->
     <div id="msg-info-panel">
         <div class="info-header">
-            <h3>ℹ️ Info del Mensaje</h3>
-            <button class="info-close-btn" onclick="closeMsgInfoPanel()">✕</button>
+            <h3>â„¹ï¸ Info del Mensaje</h3>
+            <button class="info-close-btn" onclick="closeMsgInfoPanel()">âœ•</button>
         </div>
         <div class="info-body">
-            <div class="info-preview" id="info-preview-text">—</div>
+            <div class="info-preview" id="info-preview-text">â€”</div>
             <div class="info-row">
                 <span class="info-label">Enviado por</span>
-                <span class="info-value"><span class="icon">👤</span><span id="info-sent-by">—</span></span>
+                <span class="info-value"><span class="icon">ðŸ‘¤</span><span id="info-sent-by">â€”</span></span>
             </div>
             <div class="info-row" id="info-row-qr" style="display: none;">
-                <span class="info-label">Respuesta Rápida</span>
-                <span class="info-value"><span class="icon">⚡</span><span id="info-qr-title">—</span></span>
+                <span class="info-label">Respuesta RÃ¡pida</span>
+                <span class="info-value"><span class="icon">âš¡</span><span id="info-qr-title">â€”</span></span>
             </div>
             <div class="info-row">
-                <span class="info-label">Hora de envío</span>
-                <span class="info-value"><span class="icon">📤</span><span id="info-sent-ts">—</span></span>
+                <span class="info-label">Hora de envÃ­o</span>
+                <span class="info-value"><span class="icon">ðŸ“¤</span><span id="info-sent-ts">â€”</span></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Entregado</span>
-                <span class="info-value"><span class="icon">✓✓</span><span id="info-delivered-ts">—</span></span>
+                <span class="info-value"><span class="icon">âœ“âœ“</span><span id="info-delivered-ts">â€”</span></span>
             </div>
             <div class="info-row">
-                <span class="info-label">Leído</span>
-                <span class="info-value"><span class="icon" style="color:#34b7f1">✓✓</span><span id="info-read-ts">—</span></span>
+                <span class="info-label">LeÃ­do</span>
+                <span class="info-value"><span class="icon" style="color:#34b7f1">âœ“âœ“</span><span id="info-read-ts">â€”</span></span>
             </div>
         </div>
     </div>
@@ -3040,7 +3792,7 @@
             </div>
             
             <div>
-                <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:0.3rem; display:block;">M�ltiples n�meros (separados por espacio)</label>
+                <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:0.3rem; display:block;">Múltiples números (separados por espacio)</label>
                 <input type="text" id="forwardManualNumbers" placeholder="Ej: 51987654321 51999888777" style="width:100%; box-sizing:border-box; padding:0.8rem; border-radius:8px; border:1px solid var(--accent-border); background:var(--bg-main); color:var(--text-main); font-family:var(--font-main);">
             </div>
             
@@ -3055,9 +3807,37 @@
             <button id="btnConfirmForward" onclick="executeForwarding()" style="width:100%; background:var(--primary-color); color:#fff; border:none; padding:1rem; border-radius:8px; font-weight:600; cursor:pointer; font-size:1rem; margin-top:0.5rem;">Enviar Mensajes</button>
         </div>
     </div>
+    <!-- FORWARD MODAL AND UI -->
+    <div id="forwardTopBar" style="display:none; position:fixed; top:0; left:0; width:100%; height:60px; background:var(--bg-main); border-bottom:1px solid var(--accent-border); z-index:9000; align-items:center; justify-content:space-between; padding:0 2rem; box-sizing:border-box; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+        <div style="display:flex; align-items:center; gap:1rem;">
+            <button onclick="cancelForwardMode()" style="background:transparent; border:none; color:var(--text-main); cursor:pointer; font-size:1.5rem; padding:0; display:flex;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            <span style="color:var(--text-main); font-weight:600; font-family:var(--font-heading);"><span id="forwardCount">0</span> seleccionados</span>
+        </div>
+        <button id="forwardExecuteBtn" onclick="openForwardModal()" style="background:var(--primary-color); color:#fff; border:none; padding:0.5rem 1.5rem; border-radius:30px; font-weight:600; cursor:pointer; opacity:0.5; pointer-events:none; display:flex; align-items:center; gap:0.5rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12H3"/><path d="M21 12l-8-8"/><path d="M21 12l-8 8"/></svg>Reenviar</button>
+    </div>
+    <div id="forwardTargetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; align-items:center; justify-content:center;">
+        <div style="background:var(--bg-main); border-radius:12px; border:1px solid var(--accent-border); width:400px; max-width:90vw; padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; color:var(--text-main); font-family:var(--font-heading);">Reenviar mensajes a...</h3>
+                <button onclick="closeForwardModal()" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:2rem; line-height:1;">&times;</button>
+            </div>
+            <div>
+                <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:0.3rem; display:block;">M&uacute;ltiples n&uacute;meros (separados por espacio)</label>
+                <input type="text" id="forwardManualNumbers" placeholder="Ej: 51987654321 51999888777" style="width:100%; box-sizing:border-box; padding:0.8rem; border-radius:8px; border:1px solid var(--accent-border); background:var(--bg-main); color:var(--text-main); font-family:var(--font-main);">
+            </div>
+            <div>
+                <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:0.3rem; display:block;">Chats Frecuentes</label>
+                <div id="frequentChatsContainer" style="display:flex; flex-direction:column; gap:0.5rem; max-height:200px; overflow-y:auto; background:var(--accent-bg); padding:0.5rem; border-radius:8px;">
+                    <div style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:1rem;">Cargando...</div>
+                </div>
+            </div>
+            <button id="btnConfirmForward" onclick="executeForwarding()" style="width:100%; background:var(--primary-color); color:#fff; border:none; padding:1rem; border-radius:8px; font-weight:600; cursor:pointer; font-size:1rem; margin-top:0.5rem;">Enviar Mensajes</button>
+        </div>
+    </div>
 </body>
 
 </html>
+
 
 
 
