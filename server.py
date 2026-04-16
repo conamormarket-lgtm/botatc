@@ -2366,7 +2366,14 @@ async def ver_chat(request: Request, numero_wa: str):
 # INBOX MODERNO (Tipo Respond.io / SPA)
 # ==========================================
 
-def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None):
+def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all"):
+    import json
+    aliases = {}
+    try:
+        with open("line_aliases.json", "r", encoding="utf-8") as f:
+            aliases = json.load(f)
+    except: pass
+    
     import os
     # Si estamos en Vercel (servidor sin estado fraccionado), forzamos lectura de BD para el chat activo actual
     if wa_id and os.environ.get("VERCEL"):
@@ -2486,8 +2493,28 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     unread_btn_bg = "var(--primary-color)" if is_unread else "var(--accent-bg)"
     unread_btn_text = "white" if is_unread else "var(--text-main)"
 
+    
+    active_line_name = "Todas las Líneas" if line_filter == "all" else aliases.get(line_filter, "Línea QR" if line_filter != "principal" else "Línea Principal")
+
     labels_filter_html = f"""
     <div style="position:relative; margin-top:1rem; text-align:left; display:flex; gap:0.5rem; align-items:center;">
+        
+        <button type="button" onclick="const m = document.getElementById('inboxLineMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            {active_line_name}
+        </button>
+
+        <div id="inboxLineMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
+            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=all" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'all' else 'transparent'};">Todas las Líneas</a>
+            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=principal" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'principal' else 'transparent'};">Línea Principal</a>
+"""
+    for q_id, q_name in aliases.items():
+        labels_filter_html += f'<a href="{{base_url}}?tab={{tab}}&label={{label_filter or ""}}&unread={{unread or ""}}&line={{q_id}}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
+        
+    labels_filter_html += "</div>"
+
+    labels_filter_html += f"""
+        <button type="button" onclick="const m = document.getElementById(\'inboxFilterMenu\'); m.style.display = m.style.display===\'none\'?\'flex\':\'none\';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
         <button type="button" onclick="const m = document.getElementById('inboxFilterMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             {active_label_name}
@@ -2540,6 +2567,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             hist_sin_sys = [m for m in s.get("historial", []) if m["role"] != "system"]
             if not hist_sin_sys or hist_sin_sys[-1]["role"] != "user":
                 continue
+                
+        # FILTRO DE LINEA MULTIPLE
+        ch_line = s.get("lineId", "principal")
+        if line_filter != "all" and ch_line != line_filter:
+            continue
+            
+        line_alias = aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
+        badge_line = f'<span style="font-size:0.65rem; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:0.5rem; border:1px solid rgba(255,255,255,0.1); color:var(--text-muted);">{line_alias}</span>' if ch_line != "principal" else ""
+
 
         nombre   = s.get("nombre_cliente", num)
         if not nombre: nombre = num
@@ -2586,7 +2622,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <div style="display:flex; align-items:center; gap:0.5rem; justify-content:space-between;">
                 <div style="flex:1; min-width:0; margin-right: 0.5rem;">
                     <div class="chat-row-header">
-                        <span class="chat-name">{pin_html}{nombre}</span>
+                        <span class="chat-name">{pin_html}{nombre}{badge_line}</span>
                         <span class="chat-time">{time_str}</span>
                     </div>
                     <div class="chat-preview">{preview}</div>
