@@ -4273,6 +4273,24 @@ async def api_save_line(payload: LineAliasPayload, request: Request):
         json.dump(aliases, f, ensure_ascii=False, indent=2)
     return {"ok": True}
 
+@app.delete("/api/admin/lines/{line_id}")
+async def api_delete_line(line_id: str, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    import json, os
+    aliases = {}
+    try:
+        if os.path.exists("line_aliases.json"):
+            with open("line_aliases.json", "r") as f:
+                aliases = json.load(f)
+    except: pass
+    if line_id in aliases:
+        del aliases[line_id]
+        with open("line_aliases.json", "w") as f:
+            json.dump(aliases, f, ensure_ascii=False, indent=2)
+        return {"ok": True}
+    return {"ok": False, "error": "Línea no encontrada"}
+
 class EnviarPlantillaPayload(BaseModel):
     wa_id: str
     template_name: str

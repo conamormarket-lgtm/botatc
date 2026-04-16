@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4301 notes | Score threshold: >40
+> 4314 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,13 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -     
++ 
+-     # ── Detectar si este chat pertenece a la línea QR y
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - Fixed null crash in DisconnectRea
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4291 notes | Score threshold: >40
++ > 4301 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LIDs
 + - Patched security issue Kevin
 - - prob
@@ -27,20 +34,10 @@
 + > 4291 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4262 notes | Score threshold: >40
 + > 4288 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LIDs
-+ - problem-fix in agent-rules.md
-- - pro
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "c43fe59772639d05",
-+
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
 - Updated schema GOTCHA — confirmed 3x
 - what-changed in shared-context.json — confirmed 9x
 - problem-fix in agent-rules.md — confirmed 9x
@@ -48,7 +45,6 @@
 - what-changed in shared-context.json — confirmed 3x
 - Fixed null crash in Guardar — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
