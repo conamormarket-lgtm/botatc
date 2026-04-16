@@ -2420,8 +2420,11 @@
 
         document.getElementById("ctxPhoneChat").addEventListener('click', async () => {
             document.getElementById('phoneContextMenu').style.display = 'none';
-            const wa_id = targetPhoneCtx.replace(/\D/g, '');
+            let wa_id = targetPhoneCtx.replace(/\D/g, '');
             if(wa_id.length > 6) {
+                // Normalizar: si tiene 9 dígitos (formato peruano sin código de país), agregar "51"
+                if (wa_id.length === 9) wa_id = '51' + wa_id;
+                // Si empieza con "+" quitar solo el +, ya tiene código de país
                 let final_wa_id = wa_id;
                 try {
                     const res = await fetch('/api/admin/chat/init', { method: 'POST', body: JSON.stringify({wa_id}), headers:{'Content-Type':'application/json'} });
