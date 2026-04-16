@@ -476,7 +476,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             oldest = next(iter(mensajes_procesados_ids))
             del mensajes_procesados_ids[oldest]
             
-        numero_wa     = mensaje_data["from"]           # ej: "51945257117"
+        numero_wa     = mensaje_data["from"]           # ej: "51945257117" — Meta siempre envía con código de país
         tipo_mensaje  = mensaje_data.get("type", "")
 
         # Ignorar si el webhook trata de entregar un mensaje que YA fue guardado históricamente (ej. al reiniciar server)
@@ -4301,9 +4301,14 @@ class InitChatPayload(BaseModel):
 @app.post("/api/admin/chat/init")
 async def api_init_chat(payload: InitChatPayload, request: Request):
     if not verificar_sesion(request): raise HTTPException(status_code=403)
-    num_norm = normalizar_numero(payload.wa_id)
-    obtener_o_crear_sesion(num_norm)
-    return {"ok": True, "wa_id": num_norm}
+    # Meta siempre entrega mensajes con código de país completo (ej: "51997778512").
+    # Usamos ese mismo formato como clave de sesión para que coincida.
+    digitos = payload.wa_id.replace("+", "").replace(" ", "").strip()
+    # Si son 9 dígitos peruanos sin código de país, agregar 51
+    if len(digitos) == 9 and not digitos.startswith("51"):
+        digitos = "51" + digitos
+    obtener_o_crear_sesion(digitos)
+    return {"ok": True, "wa_id": digitos}
 
 class LabelPayload(BaseModel):
     id: str
