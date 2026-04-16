@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 #  server.py — Servidor FastAPI: webhook de WhatsApp + panel admin
 #
 #  FLUJO POR MENSAJE:
@@ -701,19 +701,47 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
 
     return {"status": "ok"}
 
-@app.get("/api/settings/qr_status")
+@app.get('/api/settings/qr_status')
 def get_qr_status():
-    """Proxy local para consultar el estado del microservicio Baileys Node.js"""
     try:
-        import urllib.request
-        import json
-        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
+        import urllib.request, json, os
+        req = urllib.request.Request('http://127.0.0.1:3000/api/qr/link', headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=3.0) as response:
-            return json.loads(response.read().decode())
+            data = json.loads(response.read().decode())
+        if data.get('status') == 'connected':
+            try:
+                req_st = urllib.request.Request('http://127.0.0.1:3000/api/qr/status', headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req_st, timeout=1.0) as res2:
+                    st = json.loads(res2.read().decode())
+                    data['line_id'] = st.get('lineId', 'qr_ventas_1')
+            except: data['line_id'] = 'qr_ventas_1'
+            data['alias'] = 'Linea Secundaria'
+            if os.path.exists('line_aliases.json'):
+                try:
+                    with open('line_aliases.json', 'r') as f:
+                        aliases = json.load(f)
+                        data['alias'] = aliases.get(data['line_id'], 'Linea Secundaria')
+                except: pass
+        return data
     except Exception as e:
-        err_msg = f"Exception: {type(e).__name__} - {str(e)}"
-        print("ERROR IN GET_QR_STATUS:", err_msg)
-        return {"status": "error", "message": f"Falla urllib: {err_msg}"}
+        return {'status': 'error', 'message': f'Falla interna: {e}'}
+
+@app.post('/api/settings/line_name')
+async def save_line_name(request: Request):
+    data = await request.json()
+    line_id = data.get('line_id', 'qr_ventas_1')
+    alias = data.get('alias', '')
+    import json, os
+    aliases = {}
+    if os.path.exists('line_aliases.json'):
+        try:
+            with open('line_aliases.json', 'r') as f:
+                aliases = json.load(f)
+        except: pass
+    aliases[line_id] = alias
+    with open('line_aliases.json', 'w') as f:
+        json.dump(aliases, f)
+    return {'status': 'ok'}
 
 async def procesador_agregado(numero_wa: str, nombre: str):
     """
@@ -4720,6 +4748,9 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
+
+
 
 
 

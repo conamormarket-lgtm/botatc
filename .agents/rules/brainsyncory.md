@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3865 notes | Score threshold: >40
+> 3885 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,11 @@
 
 ## Important Warnings
 
+- **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
++ gemini_clien
+- **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in DisconnectReason — reduces initial bundle size
+- **⚠️ GOTCHA: Replaced JWT tokens with API key auth — introduces API versioning for backwar...** — - > 3856 notes | Score threshold: >40
++ > 3865 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3832 notes | Score threshold: >40
 + > 3843 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
@@ -31,21 +36,17 @@
 +
 - **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 + gemini_clien
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue Kevin
-+ - Patched security issue Client — p
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Patched security issue Client — protects against XSS an
-- **⚠️ GOTCHA: Patched security issue Patched** — - - Fixed null crash in Iniciando — parallelizes async operations for 
 
 ## Project Standards
 
+- Replaced auth Patched — confirmed 4x
+- Updated schema Kevin — hardens HTTP security headers — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - Patched security issue Kevin — confirmed 3x
 - Optimized Score — confirmed 5x
 - Replaced auth Patched — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
-- Patched security issue Restaurar — protects against XSS and CSRF token theft — confirmed 4x
-- what-changed in whatsapp_client.py — confirmed 3x
 
 ## Known Fixes
 
@@ -57,10 +58,10 @@
 
 ## Recent Decisions
 
+- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Client — prevents null/undefined runtime crashes
 - Optimized Score — introduces API versioning for backward compatibility
-- Optimized Project — evolves the database schema to support new requirements
 
 ## Learned Patterns
 
