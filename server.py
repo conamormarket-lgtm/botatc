@@ -623,7 +623,11 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
 
     if not numero_wa or not mensaje_id:
         return {"status": "ok"}
-        
+
+    # Descartar mensajes sin texto (eventos internos de sistema de WhatsApp)
+    if not texto_cliente or not texto_cliente.strip():
+        return {"status": "ok"}
+
     # Anti-duplicados y memory leak
     if mensaje_id in mensajes_procesados_ids:
         return {"status": "ok"}
@@ -640,12 +644,17 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
     print(f"📦 [QR: {line_id}] 📨 (+{numero_wa}): {texto_cliente}")
 
     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
-    if numero_wa not in mensajes_pendientes:
+    already_queued = numero_wa in mensajes_pendientes
+    if not already_queued:
         mensajes_pendientes[numero_wa] = [dict_msg]
-        # Por defecto "Cliente QR", el procesador luego refrescará de Firebase si existe
-        background_tasks.add_task(procesador_agregado, numero_wa, "Cliente") 
     else:
         mensajes_pendientes[numero_wa].append(dict_msg)
+
+    # SIEMPRE disparar una tarea nueva:
+    # - Si no había cola: es el primer mensaje, tarea nueva normal.
+    # - Si ya había cola: la tarea anterior puede haber terminado ya su ventana de 3s
+    #   y no tomó este mensaje. Disparar una nueva garantiza que nunca quede huérfano.
+    background_tasks.add_task(procesador_agregado, numero_wa, "Cliente")
 
     return {"status": "ok"}
 

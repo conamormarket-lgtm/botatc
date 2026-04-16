@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4218 notes | Score threshold: >40
+> 4236 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in shared-context.js
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4206 notes | Score threshold: >40
++ > 4218 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Ignorar
 + - Fixed null crash in DEBUG
 - - Fixe
@@ -35,22 +39,17 @@
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Ignorar
 + - problem-fix in agent-rules.md
 - - 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DUMP
-+ - problem-fix in agent-rules.md
-- - pro
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4163 notes | Score threshold: >40
-+ > 4168 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- Fixed null crash in DEBUG — confirmed 3x
 - Added JWT tokens authentication — confirmed 5x
 - what-changed in shared-context.json — confirmed 14x
 - problem-fix in agent-rules.md — confirmed 6x
 - decision in index.js — confirmed 5x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- problem-fix in agent-rules.md — confirmed 6x
 
 ## Known Fixes
 
