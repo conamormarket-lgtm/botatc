@@ -1363,6 +1363,25 @@
             container.querySelector('.cap-time').textContent = window.formatAudioTime(audio.currentTime);
         };
 
+        window.toggleAudioSpeed = function(e, container) {
+            // Ignorar clics si fueron en el boton play/pause o la barra de progreso
+            if (e.target.closest('.cap-play-btn') || e.target.closest('.cap-timeline')) return;
+            
+            const audio = container.querySelector('audio');
+            const speedIndicator = container.querySelector('.cap-speed');
+            if(!audio || !speedIndicator) return;
+            
+            let currentSpeed = audio.playbackRate;
+            let newSpeed = 1.0;
+            
+            if (currentSpeed === 1.0) newSpeed = 1.5;
+            else if (currentSpeed === 1.5) newSpeed = 2.0;
+            else newSpeed = 1.0;
+            
+            audio.playbackRate = newSpeed;
+            speedIndicator.textContent = newSpeed + 'x';
+        };
+
         window.autoResizeInput = function() {
             const el = document.getElementById('manualMsgInput');
             if(!el) return;

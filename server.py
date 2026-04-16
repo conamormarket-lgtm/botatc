@@ -2753,7 +2753,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     res = f"""<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; {'border-bottom-left-radius:0; border-bottom-right-radius:0;' if caption else ''} background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>"""
                     return res + caption_html
                 elif tipo == "audio":
-                    return f"""<div class="custom-audio-player" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; max-width:300px; margin: 5px 0; cursor:context-menu;">
+                    return f"""<div class="custom-audio-player" onclick="window.toggleAudioSpeed(event, this)" style="display:flex; align-items:center; gap:0.6rem; width:100%; min-width:200px; max-width:300px; margin: 5px 0; cursor:pointer;" title="Haz clic para cambiar la velocidad">
                         <audio src="{src_url}" preload="metadata" style="display:none;" 
                             onloadedmetadata="this.parentElement.querySelector('.cap-time').textContent = window.formatAudioTime(this.duration);" 
                             ontimeupdate="this.parentElement.querySelector('.cap-progress').style.width = (this.currentTime / this.duration * 100) + '%'; this.parentElement.querySelector('.cap-time').textContent = window.formatAudioTime(this.currentTime);" 
@@ -2766,6 +2766,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         <div class="cap-timeline" onclick="window.seekAudio(event, this)" style="flex:1; height:6px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:4px; cursor:pointer; position:relative; overflow:hidden;">
                             <div class="cap-progress" style="width:0%; height:100%; background:var(--primary-color); position:absolute; left:0; top:0; pointer-events:none; transition: width 0.1s linear;"></div>
                         </div>
+                        <span class="cap-speed" style="font-size:0.75rem; color:var(--primary-color); font-weight:700; background:rgba(255,255,255,0.7); border-radius:10px; padding:2px 6px; min-width:32px; text-align:center; transition:background 0.2s;">1x</span>
                         <span class="cap-time" style="font-size:0.75rem; color:inherit; opacity:0.8; font-weight:500; min-width:35px; text-align:right; font-family:var(--font-main);">0:00</span>
                     </div>"""
                 elif tipo == "documento":
