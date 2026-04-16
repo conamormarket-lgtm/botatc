@@ -1,78 +1,176 @@
-ï»¿import sys, re
+import re, urllib.parse
 
-with open('server.py', 'r', encoding='utf-8') as f:
-    text = f.read()
+def patch_server():
+    with open('server.py', 'r', encoding='utf-8') as f:
+        text = f.read()
 
-# 1. Load aliases at top of renderizar_inbox
-load_aliases = '''    import json
-    aliases = {}
-    try:
-        with open('line_aliases.json', 'r', encoding='utf-8') as fa:
-            aliases = json.load(fa)
-    except: pass
-'''
-text = re.sub(r'(def renderizar_inbox[^\:]+\:\n)', r'\1' + load_aliases, text, count=1)
+    # 1. Search scroll target and load_all
+    text = text.replace(
+        'if "msg_id" in request.query_params:\n            msgId_target = request.query_params["msg_id"]',
+        'if "msg_id" in request.query_params:\n            load_all = True\n            msgId_target = request.query_params["msg_id"]'
+    )
 
-# 2. Add line filter variable handling
-line_html = r'''
-    # Filtro de Linea
-    active_line_name = "Todas las LÃ­neas" if line_filter == "all" else aliases.get(line_filter, "LÃ­nea QR" if line_filter != "principal" else "LÃ­nea Principal")
-
-    labels_filter_html = f"""
-    <div style="position:relative; margin-top:1rem; text-align:left; display:flex; gap:0.5rem; align-items:center;">
-        
-        <button type="button" onclick="const m = document.getElementById('inboxLineMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            {active_line_name}
-        </button>
-
-        <div id="inboxLineMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
-            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=all" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'all' else 'transparent'};">Todas las LÃ­neas</a>
-            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=principal" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'principal' else 'transparent'};">LÃ­nea Principal</a>
-"""
-    for q_id, q_name in aliases.items():
-        labels_filter_html += f'<a href="{{base_url}}?tab={{tab}}&label={{label_filter or ""}}&unread={{unread or ""}}&line={{q_id}}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
-        
-    labels_filter_html += "</div>"
-'''
-text = re.sub(r'labels_filter_html = f"""\s*<div style="position:relative; margin-top:1rem; text-align:left; display:flex; gap:0.5rem; align-items:center;">', line_html + r'\n    labels_filter_html += f"""\n        <button type="button" onclick="const m = document.getElementById(\'inboxFilterMenu\'); m.style.display = m.style.display===\'none\'?\'flex\':\'none\';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">', text)
-
-# 3. Apply line_filter during row generation
-loop_content_matcher = r'        if is_unread:\n            hist_sin_sys = \[m for m in s.get\("historial", \[\]\) if m\["role"\] != "system"\]\n            if not hist_sin_sys or hist_sin_sys\[-1\]\["role"\] != "user":\n                continue'
-
-filter_logic = r'''        if is_unread:
-            hist_sin_sys = [m for m in s.get("historial", []) if m["role"] != "system"]
-            if not hist_sin_sys or hist_sin_sys[-1]["role"] != "user":
-                continue
+    t_re = re.sub(
+        r"// Deslizarse automáticamente al mensaje.*?\}\n",
+        r'''// Deslizarse automáticamente al mensaje buscado con múltiples reintentos
+            if (msgId_target) {
+                window._isSearching = true; // Desactivar auto-scroll hacia abajo temporalmente
                 
-        # FILTRO DE LINEA MULTIPLE
-        ch_line = s.get("lineId", "principal")
-        if line_filter != "all" and ch_line != line_filter:
-            continue
+                const scrollToMsg = () => {
+                    const el = document.getElementById('msg-' + msgId_target);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.style.transition = 'box-shadow 0.5s ease';
+                        el.style.boxShadow = '0 0 15px var(--primary-color)';
+                        setTimeout(() => el.style.boxShadow = 'none', 3000);
+                        return true;
+                    }
+                    return false;
+                };
+
+                // Intentar deslizar inmediatamente
+                if (!scrollToMsg()) {
+                    // Reintentar en 600ms (después de cargar DOM)
+                    setTimeout(() => {
+                        if (!scrollToMsg()) {
+                            // Reintentar en 1500ms (después de cargar imágenes)
+                            setTimeout(scrollToMsg, 1500);
+                        }
+                    }, 600);
+                }
+                
+                // Restablecer el polling regular de scroll después de 3 segundos
+                setTimeout(() => { window._isSearching = false; }, 3000);
+            }
+''', text, flags=re.DOTALL
+    )
+    if t_re != text: text = t_re
+
+    # 2. Add Caption support regex inside renderizar_inbox
+    t_re2 = re.sub(
+        r'''            def reemplazar_archivos_inline\(match\):.*?elif tipo == "audio":''',
+        r'''            def reemplazar_archivos_inline(match):
+                tipo = match.group(1)
+                media_id_raw = match.group(2)
+                
+                caption = None
+                import urllib.parse
+                if "|caption:" in media_id_raw:
+                    parts = media_id_raw.split("|caption:", 1)
+                    media_id = parts[0]
+                    caption = urllib.parse.unquote(parts[1])
+                else:
+                    media_id = media_id_raw
+                
+                caption_html = f'<div style="font-size:0.85rem; padding:6px; max-width:350px; margin:0 auto; background:rgba(0,0,0,0.3); border-bottom-left-radius:8px; border-bottom-right-radius:8px; color:var(--text-main); word-break:break-word; border:1px solid rgba(255,255,255,0.05); border-top:none; margin-top:-5px; box-sizing:border-box;">{caption.replace("<", "&lt;").replace(">", "&gt;")}</div>' if caption else ""
+                
+                if tipo == "sticker-local":
+                    src_url = f"/api/media/sticker/{media_id}"
+                    return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: contain; border-radius: 8px; background: transparent; margin-bottom: 5px; display:inline-block;" alt="Sticker Local {media_id}"></div>'
+                    
+                src_url = media_id if media_id.startswith("http") else f"/api/media/{media_id}"
+                
+                if tipo == "sticker":
+                    return f'<div style="text-align:center;"><img src="{src_url}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: rgba(255,255,255,0.2); margin-bottom: 5px; display:inline-block;" alt="Sticker {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/150x150?text=Sticker\';"></div>'
+                elif tipo == "imagen":
+                    res = f'<div style="text-align:center; max-width: 350px; margin: 0 auto;"><img src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; {"border-bottom-left-radius:0; border-bottom-right-radius:0;" if caption else ""} background: rgba(255,255,255,0.2); margin-bottom: 5px; display: block; margin: 0 auto; cursor: zoom-in;" alt="Imagen {media_id}" onerror="this.onerror=null; this.src=\'https://placehold.co/250x150?text=Imagen\';"></div>'
+                    return res + caption_html
+                elif tipo == "video":
+                    res = f'<div style="text-align:center; max-width: 350px; margin: 0 auto;"><video controls src="{src_url}" style="max-width: 100%; max-height: 350px; width: auto; object-fit: contain; border-radius: 8px; {"border-bottom-left-radius:0; border-bottom-right-radius:0;" if caption else ""} background: rgba(0,0,0,0.6); margin-bottom: 5px; display: block; margin: 0 auto;"></video></div>'
+                    return res + caption_html
+                elif tipo == "audio":''',
+        text, flags=re.DOTALL
+    )
+    if t_re2 != text: text = t_re2
+
+    # 3. Add Caption parsing to enviar_manual using regex substitution
+    t_re3 = re.sub(
+        r'''partes = re.split.*?match_sticker_local = re.match.*?w_id_current = None.*?if match_sticker:.*?elif match_audio:''',
+        r'''partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
             
-        line_alias = aliases.get(ch_line, "LÃ­nea Secundaria" if ch_line != "principal" else "")
-        badge_line = f'<span style="font-size:0.65rem; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:0.5rem; border:1px solid rgba(255,255,255,0.1); color:var(--text-muted);">{line_alias}</span>' if ch_line != "principal" else ""
-'''
-text = re.sub(loop_content_matcher, filter_logic, text)
+            for p in partes:
+                p = p.strip()
+                if not p: continue
+                
+                match_sticker = re.match(r"^\[sticker:([^\|\]]+)\]$", p)
+                match_img = re.match(r"^\[imagen:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+                match_video = re.match(r"^\[video:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+                match_audio = re.match(r"^\[audio:([^\|\]]+)\]$", p)
+                match_doc = re.match(r"^\[documento:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+                match_sticker_local = re.match(r"^\[sticker-local:([^\|\]]+)\]$", p)
+                
+                w_id_current = None
+                try:
+                    import urllib.parse
+                    if match_sticker: 
+                        w_id_current = enviar_media(target, "sticker", match_sticker.group(1))
+                    elif match_img:
+                        cap = urllib.parse.unquote(match_img.group(2)) if match_img.group(2) else None
+                        w_id_current = enviar_media(target, "image", match_img.group(1), caption=cap)
+                    elif match_video:
+                        cap = urllib.parse.unquote(match_video.group(2)) if match_video.group(2) else None
+                        w_id_current = enviar_media(target, "video", match_video.group(1), caption=cap)
+                    elif match_doc:
+                        cap = urllib.parse.unquote(match_doc.group(2)) if match_doc.group(2) else None
+                        w_id_current = enviar_media(target, "document", match_doc.group(1), caption=cap)
+                    elif match_audio:''',
+        text, flags=re.DOTALL, count=1
+    )
+    if t_re3 != text: text = t_re3
 
-# 4. Inject badge_line
-inject_badge = r'<span class="chat-name">{pin_html}{nombre}{badge_line}</span>'
-text = re.sub(r'<span class="chat-name">\{pin_html\}\{nombre\}</span>', inject_badge, text)
+    t_re4 = re.sub(
+        r'''partes = re.split.*?for p in partes:.*?match_sticker = re.match.*?w_id_current = None.*?if match_sticker:.*?elif match_audio:''',
+        r'''partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
+        last_wamid = None
+        exito_alguna_parte = False
+        
+        for p in partes:
+            p = p.strip()
+            if not p: continue
+            
+            match_sticker = re.match(r"^\[sticker:([^\|\]]+)\]$", p)
+            match_img = re.match(r"^\[imagen:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+            match_video = re.match(r"^\[video:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+            match_audio = re.match(r"^\[audio:([^\|\]]+)\]$", p)
+            match_doc = re.match(r"^\[documento:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+            match_sticker_local = re.match(r"^\[sticker-local:([^\|\]]+)\]$", p)
+            
+            w_id_current = None
+            try:
+                import urllib.parse
+                if match_sticker: 
+                    w_id_current = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid)
+                elif match_img:
+                    cap = urllib.parse.unquote(match_img.group(2)) if match_img.group(2) else None
+                    w_id_current = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid, caption=cap)
+                elif match_video:
+                    cap = urllib.parse.unquote(match_video.group(2)) if match_video.group(2) else None
+                    w_id_current = enviar_media(wa_id, "video", match_video.group(1), reply_to_wamid, caption=cap)
+                elif match_doc:
+                    cap = urllib.parse.unquote(match_doc.group(2)) if match_doc.group(2) else None
+                    w_id_current = enviar_media(wa_id, "document", match_doc.group(1), reply_to_wamid, caption=cap)
+                elif match_audio:''',
+        text, flags=re.DOTALL, count=1
+    )
+    if t_re4 != text: text = t_re4
 
-# 5. Fix duplicated inbox_chat signatures by deleting old ones, and inserting clean ones.
-text = re.sub(r'@app\.get\("/inbox"\).+?return renderizar_inbox[^\n]+', '', text, flags=re.DOTALL)
-text = re.sub(r'@app\.get\("/inbox/\{wa_id\}"\).+?return renderizar_inbox[^\n]+', '', text, flags=re.DOTALL)
+    with open('server.py', 'w', encoding='utf-8') as f:
+        f.write(text)
 
-routes = '''
-@app.get("/inbox")
-async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
-    return renderizar_inbox(request, None, tab, label, unread, line)
+def patch_whatsapp():
+    with open('whatsapp_client.py', 'r', encoding='utf-8') as f:
+        c = f.read()
+    c = c.replace(
+        'def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None) -> bool:\n',
+        'def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None, caption: str = None) -> bool:\n'
+    )
+    c = c.replace(
+        'if tipo_media == "audio":\n        media_obj["voice"] = True\n',
+        'if tipo_media == "audio":\n        media_obj["voice"] = True\n    if caption and tipo_media in ["image", "video", "document"]:\n        media_obj["caption"] = caption\n'
+    )
+    with open('whatsapp_client.py', 'w', encoding='utf-8') as f:
+        f.write(c)
 
-@app.get("/inbox/{wa_id}")
-async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
-    return renderizar_inbox(request, wa_id, tab, label, unread, line)
-'''
-text = text.replace('def renderizar_inbox(', routes + '\ndef renderizar_inbox(')
-
-with open('server.py', 'w', encoding='utf-8') as f:
-    f.write(text)
+if __name__ == '__main__':
+    patch_server()
+    patch_whatsapp()

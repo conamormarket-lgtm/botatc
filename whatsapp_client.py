@@ -32,7 +32,7 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, 
         import json
         proxy_handler = urllib.request.ProxyHandler({})
         opener = urllib.request.build_opener(proxy_handler)
-        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/send", 
+        req = urllib.request.Request("http://localhost:3000/api/qr/send", 
                                   data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
                                   headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
         try:
@@ -137,7 +137,7 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "
         import json
         proxy_handler = urllib.request.ProxyHandler({})
         opener = urllib.request.build_opener(proxy_handler)
-        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/send", 
+        req = urllib.request.Request("http://localhost:3000/api/qr/send", 
                                   data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
                                   headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
         try:
@@ -306,4 +306,3 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
     except Exception as e:
         print(f"[ERROR] Error enviando plantilla: {e}")
         return None
-

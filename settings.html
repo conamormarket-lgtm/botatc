@@ -521,24 +521,6 @@
                     </button>
                     <span id="qrTimestamp" style="color:var(--text-muted); font-size:0.8rem; align-self:center;"></span>
                 </div>
-                
-                <!-- Panel de Líneas Conectadas (Oculto por defecto) -->
-                <div id="connectedLinesPanel" style="display:none; margin-top:2rem; border-top:1px solid var(--accent-border); padding-top:1.5rem;">
-                    <h4 style="color:var(--text-main); font-family:var(--font-heading); margin-bottom:1rem;">Líneas Conectadas Actualmente</h4>
-                    <table style="width:100%; border-collapse:collapse; background:rgba(0,0,0,0.2); border-radius:8px; overflow:hidden;">
-                        <thead>
-                            <tr style="border-bottom:1px solid var(--accent-border); text-align:left;">
-                                <th style="padding:1rem; color:var(--text-muted); font-size:0.85rem;">Nombre (Alias)</th>
-                                <th style="padding:1rem; color:var(--text-muted); font-size:0.85rem;">ID Interno</th>
-                                <th style="padding:1rem; color:var(--text-muted); font-size:0.85rem;">Estado</th>
-                                <th style="padding:1rem; color:var(--text-muted); font-size:0.85rem;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="linesTableBody">
-                            <!-- Se llena por JS -->
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
             <form method="post" action="/api/settings/save" id="settingsForm"
@@ -618,30 +600,11 @@
             reader.readAsText(file);
         }
 
-        async function editarAliasLínea(lineId, nombreActual) {
-            const nuevoNombre = prompt("Escribe un nombre o alias para esta línea:", nombreActual);
-            if (nuevoNombre === null || nuevoNombre.trim() === "") return;
-            try {
-                const res = await fetch("/api/settings/line_name", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ line_id: lineId, alias: nuevoNombre.trim() })
-                });
-                if(res.ok) {
-                    loadQR();
-                }
-            } catch(e) {
-                alert("No se pudo guardar el nombre.");
-            }
-        }
-
         // Lógica Baileys / QR 
         async function loadQR() {
             const statusBox = document.getElementById('qrStatusText');
             const qrImg = document.getElementById('qrImage');
             const timestamp = document.getElementById('qrTimestamp');
-            const panel = document.getElementById('connectedLinesPanel');
-            const tbody = document.getElementById('linesTableBody');
             
             statusBox.style.color = "var(--text-main)";
             statusBox.innerText = "Consultando servicio de fondo...";
@@ -654,40 +617,19 @@
                     statusBox.style.color = "#ef4444";
                     statusBox.innerText = "⚠️ " + data.message;
                     qrImg.style.display = "none";
-                    panel.style.display = "none";
                 } else if (data.status === 'connected') {
                     statusBox.style.color = "#10b981";
-                    statusBox.innerText = "✅ Escaneo exitoso. Enlanzando dispositivo al CRM...";
+                    statusBox.innerText = "✅ Un dispositivo ya está conectado de forma estable a este canal secundario.";
                     qrImg.style.display = "none";
-                    
-                    // Mostrar en el Panel
-                    panel.style.display = "block";
-                    tbody.innerHTML = `
-                        <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <td style="padding:1rem; color:white; font-weight:bold;">${data.alias || 'Línea Secundaria'}</td>
-                            <td style="padding:1rem; color:var(--text-muted); font-family:var(--font-mono); font-size:0.8rem;">${data.line_id || 'qr_ventas_1'}</td>
-                            <td style="padding:1rem;">
-                                <span style="background:rgba(16, 185, 129, 0.2); color:#10b981; padding:4px 8px; border-radius:12px; font-size:0.75rem;">Conectado</span>
-                            </td>
-                            <td style="padding:1rem;">
-                                <button onclick="editarAliasLínea('${data.line_id || 'qr_ventas_1'}', '${data.alias || ''}')" style="background:rgba(255,255,255,0.1); border:1px solid var(--accent-border); color:white; padding:5px 10px; border-radius:4px; font-size:0.8rem; cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-                                    Editar Nombre
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    
                 } else if (data.status === 'loading') {
                     statusBox.style.color = "#eab308";
                     statusBox.innerText = "⏳ " + data.message + " (Suele tomar unos segundos tras iniciar el servicio)";
                     qrImg.style.display = "none";
-                    panel.style.display = "none";
                 } else if (data.status === 'qr_ready') {
                     statusBox.style.color = "#3b82f6";
                     statusBox.innerText = "📲 ¡QR Listo! Abre WhatsApp en tu celular (o de la empresa), ve a 'Dispositivos Vinculados' y escanea esta imagen.";
                     qrImg.src = data.base64;
                     qrImg.style.display = "block";
-                    panel.style.display = "none";
                     const now = new Date();
                     timestamp.innerText = `Última actualización: ${now.toLocaleTimeString()}`;
                 }
@@ -695,7 +637,6 @@
                 statusBox.style.color = "#ef4444";
                 statusBox.innerText = "Error crítico de conexión con el backend de Python.";
                 qrImg.style.display = "none";
-                panel.style.display = "none";
             }
         }
         

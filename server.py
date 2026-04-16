@@ -1,4 +1,4 @@
-﻿# ============================================================
+# ============================================================
 #  server.py — Servidor FastAPI: webhook de WhatsApp + panel admin
 #
 #  FLUJO POR MENSAJE:
@@ -144,58 +144,6 @@ if os.path.exists("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-
-import threading
-import subprocess
-import os
-node_qr_process = None
-
-def _run_node_magic():
-    global node_qr_process
-    qr_dir = os.path.join(os.path.dirname(__file__), 'qr_service')
-    if os.path.exists(qr_dir):
-        try:
-            node_exe = 'node'
-            import platform
-            if platform.system() == 'Linux':
-                node_bin_dir = os.path.join(os.path.dirname(__file__), 'node_portable')
-                node_portable_exe = os.path.join(node_bin_dir, 'node-v20.12.2-linux-x64', 'bin', 'node')
-                if not os.path.exists(node_portable_exe):
-                    try:
-                        subprocess.run(['node', '-v'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    except (FileNotFoundError, Exception):
-                        import urllib.request, tarfile
-                        tar_path = os.path.join(os.path.dirname(__file__), 'node.tar.gz')
-                        if not os.path.exists(tar_path):
-                            urllib.request.urlretrieve('https://nodejs.org/dist/v20.12.2/node-v20.12.2-linux-x64.tar.gz', tar_path)
-                        with tarfile.open(tar_path) as tar:
-                            tar.extractall(path=node_bin_dir)
-                if os.path.exists(node_portable_exe):
-                    node_exe = node_portable_exe
-                    os.chmod(node_exe, 0o755)
-            try:
-                npm_cli = os.path.join(os.path.dirname(node_exe), '..', 'lib', 'node_modules', 'npm', 'bin', 'npm-cli.js')
-                if not os.path.exists(npm_cli): npm_cli = 'npm'
-                custom_env = os.environ.copy()
-                custom_env['PATH'] = os.path.dirname(node_exe) + os.pathsep + custom_env.get('PATH', '')
-                subprocess.run([node_exe, npm_cli, 'install', 'express', '@whiskeysockets/baileys', 'pino', 'qrcode', 'axios', '--no-audit', '--no-fund', '--cache', '/tmp/npm-cache'], cwd=qr_dir, check=False, stdout=open('static/npm_log.txt', 'w'), stderr=open('static/npm_err.txt', 'w'), env=custom_env)
-            except: pass
-            node_qr_process = subprocess.Popen([node_exe, 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'), env=custom_env)
-        except Exception as e:
-            with open('static/node_status.txt', 'w') as f:
-                f.write(f'PYTHON EXCEPTION:\\n{e}')
-
-@app.on_event('startup')
-def start_node_service():
-    t = threading.Thread(target=_run_node_magic, daemon=True)
-    t.start()
-
-@app.on_event('shutdown')
-def stop_node_service():
-    global node_qr_process
-    if node_qr_process:
-        try: node_qr_process.terminate()
-        except: pass
 
 @app.on_event("startup")
 def startup_event():
@@ -701,47 +649,19 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
 
     return {"status": "ok"}
 
-@app.get('/api/settings/qr_status')
+@app.get("/api/settings/qr_status")
 def get_qr_status():
+    """Proxy local para consultar el estado del microservicio Baileys Node.js"""
     try:
-        import urllib.request, json, os
-        req = urllib.request.Request('http://127.0.0.1:3000/api/qr/link', headers={'User-Agent': 'Mozilla/5.0'})
+        import urllib.request
+        import json
+        req = urllib.request.Request("http://localhost:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=3.0) as response:
-            data = json.loads(response.read().decode())
-        if data.get('status') == 'connected':
-            try:
-                req_st = urllib.request.Request('http://127.0.0.1:3000/api/qr/status', headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req_st, timeout=1.0) as res2:
-                    st = json.loads(res2.read().decode())
-                    data['line_id'] = st.get('lineId', 'qr_ventas_1')
-            except: data['line_id'] = 'qr_ventas_1'
-            data['alias'] = 'Linea Secundaria'
-            if os.path.exists('line_aliases.json'):
-                try:
-                    with open('line_aliases.json', 'r') as f:
-                        aliases = json.load(f)
-                        data['alias'] = aliases.get(data['line_id'], 'Linea Secundaria')
-                except: pass
-        return data
+            return json.loads(response.read().decode())
     except Exception as e:
-        return {'status': 'error', 'message': f'Falla interna: {e}'}
-
-@app.post('/api/settings/line_name')
-async def save_line_name(request: Request):
-    data = await request.json()
-    line_id = data.get('line_id', 'qr_ventas_1')
-    alias = data.get('alias', '')
-    import json, os
-    aliases = {}
-    if os.path.exists('line_aliases.json'):
-        try:
-            with open('line_aliases.json', 'r') as f:
-                aliases = json.load(f)
-        except: pass
-    aliases[line_id] = alias
-    with open('line_aliases.json', 'w') as f:
-        json.dump(aliases, f)
-    return {'status': 'ok'}
+        err_msg = f"Exception: {type(e).__name__} - {str(e)}"
+        print("ERROR IN GET_QR_STATUS:", err_msg)
+        return {"status": "error", "message": f"Falla urllib: {err_msg}"}
 
 async def procesador_agregado(numero_wa: str, nombre: str):
     """
@@ -2446,16 +2366,7 @@ async def ver_chat(request: Request, numero_wa: str):
 # INBOX MODERNO (Tipo Respond.io / SPA)
 # ==========================================
 
-
-@app.get("/inbox")
-async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
-    return renderizar_inbox(request, None, tab, label, unread, line)
-
-@app.get("/inbox/{wa_id}")
-async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
-    return renderizar_inbox(request, wa_id, tab, label, unread, line)
-
-def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all"):
+def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None):
     import os
     # Si estamos en Vercel (servidor sin estado fraccionado), forzamos lectura de BD para el chat activo actual
     if wa_id and os.environ.get("VERCEL"):
@@ -2575,28 +2486,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     unread_btn_bg = "var(--primary-color)" if is_unread else "var(--accent-bg)"
     unread_btn_text = "white" if is_unread else "var(--text-main)"
 
-    
-    active_line_name = "Todas las Líneas" if line_filter == "all" else aliases.get(line_filter, "Línea QR" if line_filter != "principal" else "Línea Principal")
-
     labels_filter_html = f"""
     <div style="position:relative; margin-top:1rem; text-align:left; display:flex; gap:0.5rem; align-items:center;">
-        
-        <button type="button" onclick="const m = document.getElementById('inboxLineMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            {active_line_name}
-        </button>
-
-        <div id="inboxLineMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
-            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=all" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'all' else 'transparent'};">Todas las Líneas</a>
-            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=principal" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'principal' else 'transparent'};">Línea Principal</a>
-"""
-    for q_id, q_name in aliases.items():
-        labels_filter_html += f'<a href="{{base_url}}?tab={{tab}}&label={{label_filter or ""}}&unread={{unread or ""}}&line={{q_id}}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
-        
-    labels_filter_html += "</div>"
-
-    labels_filter_html += f"""
-        <button type="button" onclick="const m = document.getElementById(\'inboxFilterMenu\'); m.style.display = m.style.display===\'none\'?\'flex\':\'none\';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
         <button type="button" onclick="const m = document.getElementById('inboxFilterMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             {active_label_name}
@@ -2649,15 +2540,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             hist_sin_sys = [m for m in s.get("historial", []) if m["role"] != "system"]
             if not hist_sin_sys or hist_sin_sys[-1]["role"] != "user":
                 continue
-                
-        # FILTRO DE LINEA MULTIPLE
-        ch_line = s.get("lineId", "principal")
-        if line_filter != "all" and ch_line != line_filter:
-            continue
-            
-        line_alias = aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
-        badge_line = f'<span style="font-size:0.65rem; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:0.5rem; border:1px solid rgba(255,255,255,0.1); color:var(--text-muted);">{line_alias}</span>' if ch_line != "principal" else ""
-
 
         nombre   = s.get("nombre_cliente", num)
         if not nombre: nombre = num
@@ -2704,7 +2586,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <div style="display:flex; align-items:center; gap:0.5rem; justify-content:space-between;">
                 <div style="flex:1; min-width:0; margin-right: 0.5rem;">
                     <div class="chat-row-header">
-                        <span class="chat-name">{pin_html}{nombre}{badge_line}</span>
+                        <span class="chat-name">{pin_html}{nombre}</span>
                         <span class="chat-time">{time_str}</span>
                     </div>
                     <div class="chat-preview">{preview}</div>
@@ -3859,41 +3741,46 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const params = new URLSearchParams(window.location.search);
                 const msgId = params.get('msg_id');
                 if (msgId) {{
-                    // Limpiar param de URL de inmediato
-                    const url = new URL(window.location);
-                    url.searchParams.delete('msg_id');
-                    window.history.replaceState({{}}, '', url);
-
-                    function highlightAndScroll(el) {{
+                    const initialTarget = document.getElementById('msg-' + msgId);
+                    if (initialTarget) {{
                         window._isSearching = true;
-                        el.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-                        el.style.transition = 'all 0.5s ease';
-                        el.style.boxShadow = '0 0 0 4px var(--primary-color)';
-                        el.style.transform = 'scale(1.02)';
-                        setTimeout(() => el.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 600);
-                        setTimeout(() => el.scrollIntoView({{ behavior: 'smooth', block: 'center' }}), 1200);
-                        setTimeout(() => {{
-                            el.style.boxShadow = '';
-                            el.style.transform = 'scale(1)';
-                            setTimeout(() => window._isSearching = false, 1500);
-                        }}, 2800);
-                    }}
-
-                    // Polling: hasta 40 intentos cada 150ms (= 6s maximo)
-                    // Necesario porque con historico completo el DOM puede tardar en renderizarse
-                    let attempts = 0;
-                    function tryScroll() {{
-                        const el = document.getElementById('msg-' + msgId);
-                        if (el) {{
-                            requestAnimationFrame(() => requestAnimationFrame(() => highlightAndScroll(el)));
-                        }} else if (attempts < 40) {{
-                            attempts++;
-                            setTimeout(tryScroll, 150);
-                        }} else {{
-                            c.scrollTop = c.scrollHeight;
+                        
+                        function pulseScroll(addStyle) {{
+                            const el = document.getElementById('msg-' + msgId);
+                            if (el) {{
+                                el.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                                if (addStyle) {{
+                                    el.style.transition = 'all 0.5s ease';
+                                    el.style.boxShadow = '0 0 0 4px var(--primary-color)';
+                                    el.style.transform = 'scale(1.02)';
+                                }}
+                            }}
                         }}
+                        
+                        setTimeout(() => {{
+                            pulseScroll(true);
+                            
+                            // Limpiar la URL param despues de ejecutar
+                            const url = new URL(window.location);
+                            url.searchParams.delete('msg_id');
+                            window.history.replaceState({{}}, '', url);
+                            
+                            setTimeout(() => pulseScroll(true), 600);
+                            setTimeout(() => pulseScroll(true), 1200);
+                            setTimeout(() => pulseScroll(false), 2000); // Last pulse just centers it
+                            
+                            setTimeout(() => {{
+                                const el = document.getElementById('msg-' + msgId);
+                                if(el){{
+                                    el.style.boxShadow = '';
+                                    el.style.transform = 'scale(1)';
+                                }}
+                                setTimeout(() => window._isSearching = false, 1500);
+                            }}, 2800);
+                        }}, 300);
+                    }} else {{
+                         c.scrollTop = c.scrollHeight;
                     }}
-                    tryScroll();
                 }} else {{
                     c.scrollTop = c.scrollHeight;
                 }}
@@ -4781,20 +4668,6 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

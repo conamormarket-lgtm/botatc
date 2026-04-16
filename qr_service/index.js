@@ -1,5 +1,5 @@
 const express = require('express');
-
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
 const axios = require('axios');
@@ -17,12 +17,6 @@ let currentQR = "";
 let isConnected = false;
 
 async function connectToWhatsApp() {
-    const baileys = await import('@whiskeysockets/baileys');
-    const makeWASocket = baileys.default?.makeWASocket || baileys.makeWASocket;
-    const useMultiFileAuthState = baileys.default?.useMultiFileAuthState || baileys.useMultiFileAuthState;
-    const DisconnectReason = baileys.default?.DisconnectReason || baileys.DisconnectReason;
-    const fetchLatestBaileysVersion = baileys.default?.fetchLatestBaileysVersion || baileys.fetchLatestBaileysVersion;
-
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     const { version, isLatest } = await fetchLatestBaileysVersion();
     console.log(`🌐 Usando la versión de WhatsApp Web v${version.join('.')} (Última: ${isLatest})`);
@@ -138,4 +132,3 @@ app.listen(PORT, '127.0.0.1', () => {
     console.log(`Servicio QR de Baileys escuchando en puerto ${PORT} (Loopback 127.0.0.1)`);
     connectToWhatsApp();
 });
-
