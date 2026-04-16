@@ -159,6 +159,8 @@ def start_node_service():
             node_qr_process = subprocess.Popen(['node', 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'))
         except Exception as e:
             print('? Error al iniciar Node:', e)
+            with open('static/node_status.txt', 'w') as f:
+                f.write(f'PYTHON EXCEPTION:\\n{e}')
 
 @app.on_event('shutdown')
 def stop_node_service():
@@ -4690,6 +4692,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 
