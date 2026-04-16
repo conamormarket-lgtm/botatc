@@ -69,12 +69,20 @@ async function connectToWhatsApp() {
                 continue;
             }
 
-            const senderNumber = msg.key.remoteJid.replace('@s.whatsapp.net', '');
-
             // Extraer texto
             let texto = "";
             if (msg.message.conversation) texto = msg.message.conversation;
             else if (msg.message.extendedTextMessage) texto = msg.message.extendedTextMessage.text;
+
+            // Bloque anti-mensajes-vacíos: descartamos audios/fotos temporales que no extrayeron texto
+            if (!texto || texto.trim().length === 0) {
+                console.log("[SKIP] Mensaje vacío.");
+                continue;
+            }
+
+            // El truco anti-@"lid": WhatsApp usa @lid pero el número original se puede recuperar de senderPn
+            let rawSender = msg.key.senderPn || msg.key.remoteJid;
+            const senderNumber = rawSender.replace(/@(s\.whatsapp\.net|lid|g\.us)/, '');
 
             console.log(`[DEBUG] Texto extraído: "${texto}"`);
 

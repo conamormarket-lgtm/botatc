@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4206 notes | Score threshold: >40
+> 4218 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,11 @@
 
 ## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Ignorar
++ - Fixed null crash in DEBUG
+- - Fixe
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4173 notes | Score threshold: >40
++ > 4206 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -35,21 +40,17 @@
 - - pro
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4163 notes | Score threshold: >40
 + > 4168 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Optimize
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4157 notes | Score threshold: >40
-+ > 4163 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 5x
+- what-changed in shared-context.json — confirmed 14x
+- problem-fix in agent-rules.md — confirmed 6x
+- decision in index.js — confirmed 5x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - problem-fix in agent-rules.md — confirmed 6x
-- Replaced auth Score — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- problem-fix in agent-rules.md — confirmed 6x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
