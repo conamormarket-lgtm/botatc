@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3576 notes | Score threshold: >40
+> 3660 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,35 +20,28 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in Search** — - import sys
-+ import re, urllib.parse
-- with open('server.py', 'r', e
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Trigger — reduces excessive function call freq
-- **⚠️ GOTCHA: Fixed null crash in None — parallelizes async operations for speed** — -             def reemplazar_archivos_inline(match):
-+             de
-- **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -             if match_sticker: 
-+             try:
--               
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "468d585d65ee3ee0",
-+
-- **⚠️ GOTCHA: Optimized Patched** — - - problem-fix in agent-rules.md
-+ - Patched security issue None — pa
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3624 notes | Score threshold: >40
++ > 3629 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 3622 notes | Score threshold: >40
++ > 3624 notes | Score threshold
+- **⚠️ GOTCHA: Patched security issue Mapa — parallelizes async operations for speed** — -     # Usar dict para evitar iteraciones conflictivas
++     
+-     
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3603 notes | Score threshold: >40
++ > 3611 notes | Score threshold
+- **⚠️ GOTCHA: Updated schema GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Updated schema GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backwa
 
 ## Project Standards
 
-- what-changed in inbox.html — confirmed 5x
-- Added JWT tokens authentication — confirmed 6x
-- what-changed in shared-context.json — confirmed 12x
-- Optimized Patched — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
-- Patched security issue None — parallelizes async operations for speed — confirmed 7x
-- problem-fix in server.py — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 9x
+- problem-fix in agent-rules.md — confirmed 7x
+- what-changed in shared-context.json — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -60,10 +53,10 @@
 
 ## Recent Decisions
 
+- Optimized Score — introduces API versioning for backward compatibility
+- Optimized Score — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized Project — evolves the database schema to support new requirements
-- Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized Score — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 
