@@ -2705,7 +2705,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             es_bot = m["role"] == "assistant"
             clase  = "bubble-bot" if es_bot else "bubble-user"
             lado   = "lado-der" if es_bot else "lado-izq"
-            texto  = m["content"].replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
+            # Limpiar residuo de transcripciones antiguas inyectadas en content
+            raw_content = m["content"]
+            # Eliminar cualquier texto de transcripción viejo (plain text y HTML) del content
+            import re as _re
+            raw_content = _re.sub(r'\n+📝 Transcripción:.*', '', raw_content, flags=_re.DOTALL)
+            raw_content = _re.sub(r'<br><br><b>📝 Transcripción:</b>.*', '', raw_content, flags=_re.DOTALL)
+            texto  = raw_content.replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
             
             # Virtual group: Include visual author tag for user messages
             if not es_bot and "sender_name_override" in m:
