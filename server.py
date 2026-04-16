@@ -149,6 +149,26 @@ if os.path.exists("static"):
 
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
+node_qr_process = None
+
+@app.on_event('startup')
+def start_node_service():
+    global node_qr_process
+    qr_dir = os.path.join(os.path.dirname(__file__), 'qr_service')
+    if os.path.exists(qr_dir):
+        try:
+            print('?? [FastAPI] Iniciando microservicio QR Baileys (Node.js)...')
+            node_qr_process = subprocess.Popen(['node', 'index.js'], cwd=qr_dir, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except Exception as e:
+            print('? Error al iniciar Node:', e)
+
+@app.on_event('shutdown')
+def stop_node_service():
+    global node_qr_process
+    if node_qr_process:
+        try: node_qr_process.terminate()
+        except: pass
+
 @app.on_event("startup")
 def startup_event():
     # ── Restaurar toda la memoria y stickers desde Firebase ──
@@ -4708,6 +4728,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 

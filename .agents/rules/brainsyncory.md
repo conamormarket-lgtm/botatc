@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3757 notes | Score threshold: >40
+> 3769 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Updated firebase_client database schema
 + - ⚠️ GOTCHA: 
@@ -33,11 +33,6 @@
 + - ⚠️ GOTCHA: Added JWT tokens auth
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3727 notes | Score threshold: >40
 + > 3731 notes | Score threshold
-
-## Active: `.git`
-
-- **gotcha in .gitignore**
-- **what-changed in .gitignore — confirmed 3x**
 
 ## Project Standards
 
