@@ -30,11 +30,13 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, 
         import urllib.request
         import urllib.error
         import json
+        proxy_handler = urllib.request.ProxyHandler({})
+        opener = urllib.request.build_opener(proxy_handler)
         req = urllib.request.Request("http://127.0.0.1:3000/api/qr/send", 
                                   data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
                                   headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
         try:
-            with urllib.request.urlopen(req, timeout=5.0) as res:
+            with opener.open(req, timeout=5.0) as res:
                 if res.status == 200:
                     print(f"[OK] Mensaje (vía QR) enrutado localmente a {numero_destino}")
                     return True
@@ -133,11 +135,13 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "
         import urllib.request
         import urllib.error
         import json
+        proxy_handler = urllib.request.ProxyHandler({})
+        opener = urllib.request.build_opener(proxy_handler)
         req = urllib.request.Request("http://127.0.0.1:3000/api/qr/send", 
                                   data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
                                   headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
         try:
-            with urllib.request.urlopen(req, timeout=5.0) as res:
+            with opener.open(req, timeout=5.0) as res:
                 if res.status == 200:
                     print(f"[OK] Mensaje (vía QR async) enrutado localmente a {numero_destino}")
                     return True
