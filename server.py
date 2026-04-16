@@ -156,7 +156,28 @@ def start_node_service():
     if os.path.exists(qr_dir):
         try:
             print('?? [FastAPI] Iniciando microservicio QR Baileys (Node.js)...')
-            node_qr_process = subprocess.Popen(['node', 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'))
+            node_exe = 'node'
+            # --- Auto-descubridor/Instalador de Node.js portable ---
+            import platform
+            if platform.system() == 'Linux':
+                node_bin_dir = os.path.join(os.path.dirname(__file__), 'node_portable')
+                node_portable_exe = os.path.join(node_bin_dir, 'node-v20.12.2-linux-x64', 'bin', 'node')
+                if not os.path.exists(node_portable_exe):
+                    try:
+                        subprocess.run(['node', '-v'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    except (FileNotFoundError, Exception):
+                        import urllib.request, tarfile
+                        print('No hay Node.js nativo. Descargando Node.js portable para Linux...')
+                        tar_path = os.path.join(os.path.dirname(__file__), 'node.tar.gz')
+                        if not os.path.exists(tar_path):
+                            urllib.request.urlretrieve('https://nodejs.org/dist/v20.12.2/node-v20.12.2-linux-x64.tar.gz', tar_path)
+                        with tarfile.open(tar_path) as tar:
+                            tar.extractall(path=node_bin_dir)
+                if os.path.exists(node_portable_exe):
+                    node_exe = node_portable_exe
+                    os.chmod(node_exe, 0o755)
+            # --------------------------------------------------------
+            node_qr_process = subprocess.Popen([node_exe, 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'))
         except Exception as e:
             print('? Error al iniciar Node:', e)
             with open('static/node_status.txt', 'w') as f:
@@ -4692,6 +4713,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 
