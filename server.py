@@ -178,7 +178,7 @@ def _run_node_magic():
                 if not os.path.exists(npm_cli): npm_cli = 'npm'
                 custom_env = os.environ.copy()
                 custom_env['PATH'] = os.path.dirname(node_exe) + os.pathsep + custom_env.get('PATH', '')
-                subprocess.run([node_exe, npm_cli, 'install', 'express', '@whiskeysockets/baileys@6.6.0', 'pino', 'qrcode', 'axios', '--no-audit', '--no-fund', '--cache', '/tmp/npm-cache'], cwd=qr_dir, check=False, stdout=open('static/npm_log.txt', 'w'), stderr=open('static/npm_err.txt', 'w'), env=custom_env)
+                subprocess.run([node_exe, npm_cli, 'install', 'express', '@whiskeysockets/baileys', 'pino', 'qrcode', 'axios', '--no-audit', '--no-fund', '--cache', '/tmp/npm-cache'], cwd=qr_dir, check=False, stdout=open('static/npm_log.txt', 'w'), stderr=open('static/npm_err.txt', 'w'), env=custom_env)
             except: pass
             node_qr_process = subprocess.Popen([node_exe, 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'), env=custom_env)
         except Exception as e:
@@ -4720,6 +4720,9 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
+
+
 
 
 
