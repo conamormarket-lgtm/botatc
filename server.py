@@ -2859,8 +2859,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if ts_html or status_html:
                 transcribe_btn_html = ""
                 import re
-                if "[audio:" in texto_renderizado:
-                    m_audio = re.search(r"\[audio:([^\]]+)\]", m["content"])
+                if "[audio:" in texto:
+                    m_audio = re.search(r"\[audio:([^\]]+)\]", m.get("content", ""))
                     if m_audio:
                         media_id = m_audio.group(1)
                         transcribe_btn_html = f'<button type="button" class="btn-transcribe" onclick="window.transcribeAudio(event, this, \'{media_id}\', \'{wa_id}\', \'{wamid}\')" style="background:transparent; border:none; color:var(--text-main); font-size:0.65rem; cursor:pointer; font-weight:600; padding:0; margin-right:auto; text-decoration:underline;">Transcribir</button>'
