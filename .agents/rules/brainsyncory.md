@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4173 notes | Score threshold: >40
+> 4206 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,32 +18,30 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "95c36df10ed595a0",
++
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Ignorar
++ - problem-fix in agent-rules.md
+- - 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in DUMP
++ - problem-fix in agent-rules.md
+- - pro
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4163 notes | Score threshold: >40
 + > 4168 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
 + - ⚠️ GOTCHA: Optimize
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4157 notes | Score threshold: >40
 + > 4163 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Added JWT tokens authen
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Added JWT tokens authen
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4143 notes | Score threshold: >40
-+ > 4157 notes | Score threshold
-
-## Active: `qr_service`
-
-- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x**
-- **decision in index.js**
-- **decision in index.js**
-- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes**
-- **Fixed null crash in DisconnectReason — reduces initial bundle size with code ...**
 
 ## Project Standards
 
-- Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
@@ -51,6 +49,7 @@
 - Replaced auth Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - problem-fix in agent-rules.md — confirmed 6x
+- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
@@ -64,7 +63,7 @@
 
 - decision in index.js
 - decision in index.js
-- Optimized Score — evolves the database schema to support new requirements
+- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
