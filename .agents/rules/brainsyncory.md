@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4252 notes | Score threshold: >40
+> 4262 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,11 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4236 notes | Score threshold: >40
++ > 4252 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4218 notes | Score threshold: >40
 + > 4236 notes | Score threshold
@@ -27,22 +30,17 @@
 + - problem-fix in shared-context.js
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4206 notes | Score threshold: >40
 + > 4218 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Ignorar
-+ - Fixed null crash in DEBUG
-- - Fixe
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4173 notes | Score threshold: >40
-+ > 4206 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- Patched security issue Kevin — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 6x
 - problem-fix in shared-context.json — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Fixed null crash in DEBUG — confirmed 3x
-- Added JWT tokens authentication — confirmed 5x
-- what-changed in shared-context.json — confirmed 14x
 
 ## Known Fixes
 

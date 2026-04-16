@@ -2046,6 +2046,41 @@ async def enviar_manual_endpoint(request: Request):
     s = sesiones[wa_id]
     # No guardamos en historial todavía, hasta confirmar envío
     
+    # ── Detectar si este chat pertenece a la línea QR y redirigir ──────────────
+    line_id = s.get("lineId", "principal")
+    if line_id and line_id != "principal":
+        # Enviar por el microservicio Baileys Node.js
+        import urllib.request, json as _json
+        try:
+            qr_payload = _json.dumps({"to": wa_id, "text": texto}).encode()
+            qr_req = urllib.request.Request(
+                "http://localhost:3000/api/qr/send",
+                data=qr_payload,
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+            with urllib.request.urlopen(qr_req, timeout=5.0) as resp:
+                qr_resp = _json.loads(resp.read().decode())
+                qr_ok = qr_resp.get("success", False)
+        except Exception as e:
+            print(f"  [ERROR QR SEND] {e}")
+            qr_ok = False
+        
+        if qr_ok:
+            import time
+            ts = int(time.time())
+            usuario_sesion = obtener_usuario_sesion(request)
+            sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
+            s["historial"].append({"role": "assistant", "content": texto, "msg_id": f"qr_{ts}", "status": "sent", "timestamp": ts, "sent_by": sent_by_name})
+            s["ultima_actividad"] = datetime.utcnow()
+            print(f"  [👤 QR Humano -> {wa_id}]: {texto}")
+            try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
+            except: pass
+            return {"ok": True}
+        else:
+            return {"ok": False, "error": "QR_SEND_FAILED"}
+    # ────────────────────────────────────────────────────────────────────────────
+
     from whatsapp_client import enviar_mensaje, enviar_media
     import re
     
