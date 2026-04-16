@@ -140,10 +140,15 @@ app.post('/api/qr/send', async (req, res) => {
 
     const { to, text } = req.body;
     try {
-        const jid = `${to}@s.whatsapp.net`;
+        // Los LIDs son números muy largos (>15 dígitos). Los teléfonos reales tienen <15 dígitos.
+        // Baileys requiere el sufijo correcto para cada tipo.
+        const isLid = to && to.length > 15;
+        const jid = isLid ? `${to}@lid` : `${to}@s.whatsapp.net`;
+        console.log(`[QR SEND] Enviando a ${jid}: "${text}"`);
         await sock.sendMessage(jid, { text });
         res.json({ success: true });
     } catch (e) {
+        console.error(`[QR SEND ERROR] ${e.message}`);
         res.status(500).json({ error: e.message });
     }
 });
