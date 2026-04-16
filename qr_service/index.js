@@ -67,34 +67,26 @@ async function connectToWhatsApp() {
         if (type !== 'notify') return;
 
         for (const msg of messages) {
-            // Guardar en store para que getMessage pueda responder re-entregas
+            // Guardar en store para que getMessage pueda responder re-entregas cifradas (@lid)
             if (msg.message) messageStore[msg.key.id] = msg.message;
-            console.log(`[DEBUG] Analizando mensaje de: ${msg.key.remoteJid} - fromMe: ${msg.key.fromMe} - Tiene Body: ${!!msg.message}`);
 
-            // Temporalmente dejando pasar los fromMe para confirmar que el webhook sirve a pesar de los bloqueos locales
-            if (!msg.message || msg.key.remoteJid === 'status@broadcast') {
-                if (!msg.message && !msg.key.fromMe) {
-                    console.log("[SILENCED DUMP]", JSON.stringify(msg, null, 2));
-                }
-                continue;
-            }
+            // Ignorar: mensajes propios (respuestas del bot), broadcasts de estado, o eventos sin cuerpo
+            if (msg.key.fromMe || msg.key.remoteJid === 'status@broadcast' || !msg.message) continue;
 
             // Extraer texto
             let texto = "";
             if (msg.message.conversation) texto = msg.message.conversation;
             else if (msg.message.extendedTextMessage) texto = msg.message.extendedTextMessage.text;
 
-            // Bloque anti-mensajes-vacíos: descartamos audios/fotos temporales que no extrayeron texto
-            if (!texto || texto.trim().length === 0) {
-                console.log("[SKIP] Mensaje vacío.");
-                continue;
-            }
+            // Ignorar eventos internos sin texto real (stubs, protocolMessages, etc.)
+            if (!texto || texto.trim().length === 0) continue;
 
-            // El truco anti-@"lid": WhatsApp usa @lid pero el número original se puede recuperar de senderPn
+            // Resolver número real: WhatsApp oculta el teléfono en @lid, pero lo expone en senderPn
             let rawSender = msg.key.senderPn || msg.key.remoteJid;
             const senderNumber = rawSender.replace(/@(s\.whatsapp\.net|lid|g\.us)/, '');
 
-            console.log(`[DEBUG] Texto extraído: "${texto}"`);
+            console.log(`[QR IN] ${senderNumber}: "${texto}"`);
+
 
             // Preparamos payload sencillo para nuestro Python server
             const payload = {
