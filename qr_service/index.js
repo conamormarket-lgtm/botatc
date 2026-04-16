@@ -16,6 +16,9 @@ let sock;
 let currentQR = "";
 let isConnected = false;
 
+// Store en memoria: necesario para que WA pueda re-entregar mensajes @lid cifrados
+const messageStore = {};
+
 async function connectToWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     const { version, isLatest } = await fetchLatestBaileysVersion();
@@ -24,8 +27,13 @@ async function connectToWhatsApp() {
     sock = makeWASocket({
         version,
         auth: state,
-        logger: pino({ level: "silent" }), // Evitar spam de logs
-        browser: ["Ubuntu", "Chrome", "20.0.04"]
+        logger: pino({ level: "silent" }),
+        browser: ["Ubuntu", "Chrome", "20.0.04"],
+        // CRÍTICO: sin getMessage, WA reporta "Message absent from node" para cuentas @lid / Business
+        getMessage: async (key) => {
+            if (messageStore[key.id]) return messageStore[key.id];
+            return undefined;
+        }
     });
 
     sock.ev.on('creds.update', saveCreds);
@@ -59,6 +67,8 @@ async function connectToWhatsApp() {
         if (type !== 'notify') return;
 
         for (const msg of messages) {
+            // Guardar en store para que getMessage pueda responder re-entregas
+            if (msg.message) messageStore[msg.key.id] = msg.message;
             console.log(`[DEBUG] Analizando mensaje de: ${msg.key.remoteJid} - fromMe: ${msg.key.fromMe} - Tiene Body: ${!!msg.message}`);
 
             // Temporalmente dejando pasar los fromMe para confirmar que el webhook sirve a pesar de los bloqueos locales
