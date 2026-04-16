@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4372 notes | Score threshold: >40
+> 4397 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,33 +20,33 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Transcribir — parallelizes async operations fo
+- **⚠️ GOTCHA: Fixed null crash in Part** — -         audio_part = {
++         from google.genai import types
+- 
+- **⚠️ GOTCHA: Optimized Score** — - > 4364 notes | Score threshold: >40
++ > 4372 notes | Score threshold
 - **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
 + - ⚠️ GOTCHA: Optimized Score — evolv
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4355 notes | Score threshold: >40
 + > 4358 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4353 notes | Score threshold: >40
 + > 4355 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4349 notes | Score threshold: >40
-+ > 4353 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4343 notes | Score threshold: >40
-+ > 4349 notes | Score threshold
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - ⚠️ GOTCHA: Optimized Score — evolv
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- Optimized Fixed — confirmed 3x
+- Fixed null crash in Transcribir — parallelizes async operations for speed — confirmed 3x
+- Updated schema Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - trade-off in shared-context.json — confirmed 3x
 - Optimized GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 10x
-- Patched security issue Kevin — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 4x
-- what-changed in shared-context.json — confirmed 5x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Transcribir — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md
