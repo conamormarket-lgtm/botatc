@@ -2767,7 +2767,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             <div class="cap-progress" style="width:0%; height:100%; background:var(--primary-color); position:absolute; left:0; top:0; pointer-events:none; transition: width 0.1s linear;"></div>
                         </div>
                         <span class="cap-speed" style="font-size:0.75rem; color:var(--primary-color); font-weight:700; background:rgba(255,255,255,0.7); border-radius:10px; padding:2px 6px; min-width:32px; text-align:center; transition:background 0.2s;">1x</span>
-                        <button type="button" class="btn-transcribe" onclick="window.transcribeAudio(event, this, '{media_id}', '{wa_id}', '{m.get('id', '')}')" title="Transcribir" style="background:var(--accent-bg); border:1px solid var(--accent-border); color:var(--text-main); font-size:0.75rem; padding: 2px 6px; border-radius:10px; cursor:pointer; font-weight:600; margin-left:-2px; flex-shrink:0;" onmouseover="this.style.background='var(--accent-border)'" onmouseout="this.style.background='var(--accent-bg)'">Aa</button>
                         <span class="cap-time" style="font-size:0.75rem; color:inherit; opacity:0.8; font-weight:500; min-width:35px; text-align:right; font-family:var(--font-main);">0:00</span>
                     </div>"""
                 elif tipo == "documento":
@@ -2858,7 +2857,15 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 status_html = f'<span class="msg-status" style="color:{color}; font-size:0.75rem; margin-left:4px; font-weight: bold;">{tick}</span>'
 
             if ts_html or status_html:
-                meta_html = f'<div class="msg-meta" style="text-align:right; margin-top:4px; font-size:0.65rem; color:inherit; opacity:0.8; display:flex; justify-content:flex-end; align-items:center; gap:2px;">{ts_html}{status_html}</div>'
+                transcribe_btn_html = ""
+                import re
+                if "[audio:" in texto_renderizado:
+                    m_audio = re.search(r"\[audio:([^\]]+)\]", m["content"])
+                    if m_audio:
+                        media_id = m_audio.group(1)
+                        transcribe_btn_html = f'<button type="button" class="btn-transcribe" onclick="window.transcribeAudio(event, this, \'{media_id}\', \'{wa_id}\', \'{wamid}\')" style="background:transparent; border:none; color:var(--text-main); font-size:0.65rem; cursor:pointer; font-weight:600; padding:0; margin-right:auto; text-decoration:underline;">Transcribir</button>'
+                
+                meta_html = f'<div class="msg-meta" style="text-align:right; margin-top:4px; font-size:0.65rem; color:inherit; opacity:0.8; display:flex; justify-content:flex-end; align-items:center; gap:4px; width: 100%;">{transcribe_btn_html}{ts_html}{status_html}</div>'
 
             # Extraer datos para el panel de info
             sent_by_val = m.get("sent_by", "")
@@ -3977,13 +3984,11 @@ async def api_transcribe(media_id: str, payload: TranscribePayload, request: Req
     contenido, mime = media_cache[media_id]
     
     try:
-        audio_part = {
-            "mime_type": "audio/ogg",
-            "data": contenido
-        }
+        from google.genai import types
+        part = types.Part.from_bytes(data=contenido, mime_type="audio/ogg")
         res = gemini_client.models.generate_content(
             model=GEMINI_MODEL,
-            contents=[audio_part, "Transcribe exactamente lo que se dice en este audio. Sin comentarios tuyos, solo la transcripción limpia. Si está ininteligible, escribe '[Audio ininteligible]'. Manten el idioma original del audio."]
+            contents=[part, "Transcribe exactamente lo que se dice en este audio. Sin comentarios tuyos, solo la transcripción limpia. Si está ininteligible, escribe '[Audio ininteligible]'. Manten el idioma original del audio."]
         )
         transcripcion = res.text.strip()
     except Exception as e:
