@@ -3825,6 +3825,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     c.scrollTop = c.scrollHeight;
                 }}
             }}
+        </script>
+        """
+
+        chat_view_css = """
         .bubble { max-width:85%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; word-wrap:break-word; overflow-wrap:anywhere; box-sizing:border-box; }
         .lado-izq { align-self:flex-start; }
         .lado-der { align-self:flex-end; }
