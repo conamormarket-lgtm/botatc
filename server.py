@@ -611,56 +611,7 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
 # ─────────────────────────────────────────────
 @app.post("/webhook_qr")
 async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks):
-    try:
-        data = await request.json()
-    except Exception:
-        raise HTTPException(status_code=400, detail="JSON inválido")
-
-    numero_wa = data.get("from", "")
-    texto_cliente = data.get("body", "")
-    mensaje_id = data.get("wamid", "")
-    line_id = data.get("lineId", "principal")
-    # real_phone es el número de teléfono real cuando el wa_id puede ser un @lid
-    real_phone = data.get("real_phone", numero_wa)
-
-    if not numero_wa or not mensaje_id:
-        return {"status": "ok"}
-
-    # Descartar mensajes sin texto (eventos internos de sistema de WhatsApp)
-    if not texto_cliente or not texto_cliente.strip():
-        return {"status": "ok"}
-
-    # Anti-duplicados y memory leak
-    if mensaje_id in mensajes_procesados_ids:
-        return {"status": "ok"}
-    mensajes_procesados_ids[mensaje_id] = True
-    if len(mensajes_procesados_ids) > 1000:
-        oldest = next(iter(mensajes_procesados_ids))
-        del mensajes_procesados_ids[oldest]
-
-    # Atadura forzosa TEMPRANA: asignamos la personalidad de esta línea al chat
-    sesion = obtener_o_crear_sesion(numero_wa)
-    sesion["lineId"] = line_id
-    # Guardar el número real para poder responder (es diferente al wa_id cuando es @lid)
-    if real_phone and real_phone != numero_wa:
-        sesion["real_phone"] = real_phone
-
-    print(f"\n{'─'*50}")
-    print(f"📦 [QR: {line_id}] 📨 (+{numero_wa}): {texto_cliente}")
-
-    dict_msg = {"texto": texto_cliente, "id": mensaje_id}
-    already_queued = numero_wa in mensajes_pendientes
-    if not already_queued:
-        mensajes_pendientes[numero_wa] = [dict_msg]
-    else:
-        mensajes_pendientes[numero_wa].append(dict_msg)
-
-    # SIEMPRE disparar una tarea nueva:
-    # - Si no había cola: es el primer mensaje, tarea nueva normal.
-    # - Si ya había cola: la tarea anterior puede haber terminado ya su ventana de 3s
-    #   y no tomó este mensaje. Disparar una nueva garantiza que nunca quede huérfano.
-    background_tasks.add_task(procesador_agregado, numero_wa, "Cliente")
-
+    """Endpoint desactivado — procesamiento de mensajes QR pausado hasta migración a nueva librería."""
     return {"status": "ok"}
 
 @app.get("/api/settings/qr_status")
@@ -2050,42 +2001,6 @@ async def enviar_manual_endpoint(request: Request):
         
     s = sesiones[wa_id]
     # No guardamos en historial todavía, hasta confirmar envío
-    
-    # ── Detectar si este chat pertenece a la línea QR y redirigir ──────────────
-    line_id = s.get("lineId", "principal")
-    if line_id and line_id != "principal":
-        # Usar el número real si está disponible (para evitar problemas con @lid en envíos)
-        real_phone = s.get("real_phone", wa_id)
-        import urllib.request, json as _json
-        try:
-            qr_payload = _json.dumps({"to": real_phone, "text": texto}).encode()
-            qr_req = urllib.request.Request(
-                "http://localhost:3000/api/qr/send",
-                data=qr_payload,
-                headers={"Content-Type": "application/json"},
-                method="POST"
-            )
-            with urllib.request.urlopen(qr_req, timeout=5.0) as resp:
-                qr_resp = _json.loads(resp.read().decode())
-                qr_ok = qr_resp.get("success", False)
-        except Exception as e:
-            print(f"  [ERROR QR SEND] {e}")
-            qr_ok = False
-        
-        if qr_ok:
-            import time
-            ts = int(time.time())
-            usuario_sesion = obtener_usuario_sesion(request)
-            sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
-            s["historial"].append({"role": "assistant", "content": texto, "msg_id": f"qr_{ts}", "status": "sent", "timestamp": ts, "sent_by": sent_by_name})
-            s["ultima_actividad"] = datetime.utcnow()
-            print(f"  [👤 QR Humano -> {wa_id}]: {texto}")
-            try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
-            except: pass
-            return {"ok": True}
-        else:
-            return {"ok": False, "error": "QR_SEND_FAILED"}
-    # ────────────────────────────────────────────────────────────────────────────
 
     from whatsapp_client import enviar_mensaje, enviar_media
     import re
