@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3731 notes | Score threshold: >40
+> 3748 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,15 @@
 
 ## Important Warnings
 
+- **⚠️ GOTCHA: Updated firebase_client database schema** — -     num_norm = normalizar_numero(payload.wa_id)
++     # Meta siempr
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in server.py
+- - prob
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Added JWT tokens auth
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3727 notes | Score threshold: >40
++ > 3731 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3717 notes | Score threshold: >40
 + > 3727 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
@@ -29,16 +38,10 @@
 - }
 +       "id": "475bede4ebab97c1",
 +
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Vincular — wraps unsafe operation in error bou
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3667 notes | Score threshold: >40
-+ > 3699 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Vincular — wraps unsafe operation in error bou
 
 ## Project Standards
 
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 12x
@@ -46,7 +49,6 @@ Content summary (8
 - problem-fix in agent-rules.md — confirmed 9x
 - what-changed in settings.html — confirmed 4x
 - trade-off in shared-context.json — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
 
 ## Known Fixes
 
