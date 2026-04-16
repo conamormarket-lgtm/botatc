@@ -3777,30 +3777,41 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const params = new URLSearchParams(window.location.search);
                 const msgId = params.get('msg_id');
                 if (msgId) {{
-                    // Marcar que este chat tiene historico completo cargado.
-                    // El polling lo usara para seguir pidiendo history=all indefinidamente,
-                    // evitando que el chat vuelva a los 70 mensajes recientes.
+                    // Historial completo cargado: el polling seguira pidiendo history=all
                     window._viewingAllHistory = true;
 
-                    // Limpiar param de URL (sin recargar)
+                    // Limpiar param de URL sin recargar
                     const url = new URL(window.location);
                     url.searchParams.delete('msg_id');
                     window.history.replaceState({{}}, '', url);
 
-                    // Scroll con retry hasta encontrar el elemento
                     let attempts = 0;
                     function tryScroll() {{
                         const el = document.getElementById('msg-' + msgId);
                         if (el) {{
                             requestAnimationFrame(() => requestAnimationFrame(() => {{
-                                el.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                                // Scroll inicial (instant para evitar que smooth quede a medias)
+                                el.scrollIntoView({{ behavior: 'instant', block: 'center' }});
+
+                                // Highlight visual
                                 el.style.transition = 'all 0.5s ease';
                                 el.style.boxShadow = '0 0 0 4px var(--primary-color)';
                                 el.style.transform = 'scale(1.02)';
+
+                                // Re-scroll progresivo: las imagenes cargan y desplazan el layout
+                                // Corregir en 4 momentos hasta que el layout se estabilice
+                                [400, 900, 1600, 2600].forEach(delay => {{
+                                    setTimeout(() => {{
+                                        const target = document.getElementById('msg-' + msgId);
+                                        if (target) target.scrollIntoView({{ behavior: 'instant', block: 'center' }});
+                                    }}, delay);
+                                }});
+
+                                // Quitar highlight despues de 3.5s
                                 setTimeout(() => {{
                                     el.style.boxShadow = '';
                                     el.style.transform = 'scale(1)';
-                                }}, 2800);
+                                }}, 3500);
                             }}));
                         }} else if (attempts < 40) {{
                             attempts++;
@@ -3814,10 +3825,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     c.scrollTop = c.scrollHeight;
                 }}
             }}
-        </script>
-        """
-        
-        chat_view_css = """
         .bubble { max-width:85%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; word-wrap:break-word; overflow-wrap:anywhere; box-sizing:border-box; }
         .lado-izq { align-self:flex-start; }
         .lado-der { align-self:flex-end; }
