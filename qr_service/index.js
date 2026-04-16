@@ -61,8 +61,8 @@ async function connectToWhatsApp() {
         for (const msg of messages) {
             console.log(`[DEBUG] Analizando mensaje de: ${msg.key.remoteJid} - fromMe: ${msg.key.fromMe} - Tiene Body: ${!!msg.message}`);
 
-            // Ignorar mensajes enviados por nosotros mismos en otro cel
-            if (!msg.message || msg.key.fromMe || msg.key.remoteJid === 'status@broadcast') {
+            // Temporalmente dejando pasar los fromMe para confirmar que el webhook sirve a pesar de los bloqueos locales
+            if (!msg.message || msg.key.remoteJid === 'status@broadcast') {
                 if (!msg.message && !msg.key.fromMe) {
                     console.log("[SILENCED DUMP]", JSON.stringify(msg, null, 2));
                 }
