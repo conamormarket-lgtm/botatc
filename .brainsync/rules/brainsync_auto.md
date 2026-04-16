@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3797 notes | Score threshold: >40
+> 3810 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,27 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
++ gemini_clien
+- **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue Kevin
++ - Patched security issue Client — p
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Patched security issue Client — protects against XSS an
 - **⚠️ GOTCHA: Patched security issue Patched** — - - Fixed null crash in Iniciando — parallelizes async operations for 
 - **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 + gemini_clien
 - **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Updated firebase_client database schema
 + - ⚠️ GOTCHA: 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3731 notes | Score threshold: >40
-+ > 3748 notes | Score threshold
-- **⚠️ GOTCHA: Updated firebase_client database schema** — -     num_norm = normalizar_numero(payload.wa_id)
-+     # Meta siempr
 
 ## Project Standards
 
+- trade-off in shared-context.json — confirmed 3x
+- Optimized Client — prevents null/undefined runtime crashes — confirmed 4x
+- what-changed in shared-context.json — confirmed 6x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 6x
 - what-changed in shared-context.json — confirmed 5x
 - problem-fix in server.py — confirmed 4x
 - Patched security issue Kevin — confirmed 3x
 - Optimized Fixed — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 
 ## Known Fixes
 
@@ -52,7 +52,7 @@
 
 ## Recent Decisions
 
-- Optimized Client — prevents null/undefined runtime crashes
+- Optimized Project — evolves the database schema to support new requirements
 - Optimized Client — prevents null/undefined runtime crashes
 - Optimized Client — prevents null/undefined runtime crashes
 - decision in index.js

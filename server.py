@@ -177,6 +177,13 @@ def start_node_service():
                     node_exe = node_portable_exe
                     os.chmod(node_exe, 0o755)
             # --------------------------------------------------------
+            print('?? [FastAPI] Ejecutando npm install...')
+            try:
+                npm_cli = os.path.join(os.path.dirname(node_exe), '..', 'lib', 'node_modules', 'npm', 'bin', 'npm-cli.js')
+                if not os.path.exists(npm_cli): npm_cli = 'npm'
+                subprocess.run([node_exe, npm_cli, 'install'], cwd=qr_dir, check=False)
+            except Exception as e:
+                print('Error en npm install:', e)
             node_qr_process = subprocess.Popen([node_exe, 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'))
         except Exception as e:
             print('? Error al iniciar Node:', e)
@@ -4713,6 +4720,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 
