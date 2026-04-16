@@ -4250,8 +4250,7 @@ async def api_list_lines(request: Request):
             with open("line_aliases.json", "r") as f:
                 aliases = json.load(f)
     except: pass
-    if "qr_ventas_1" not in aliases:
-        aliases["qr_ventas_1"] = "Línea QR (Ejemplo)"
+    # Solo inyectar la línea principal si no existe aún
     if "principal" not in aliases:
         aliases["principal"] = "Línea Principal Meta"
     return {"ok": True, "lines": aliases}
