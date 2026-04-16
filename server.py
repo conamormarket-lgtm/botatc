@@ -2865,7 +2865,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         media_id = m_audio.group(1)
                         transcribe_btn_html = f'<button type="button" class="btn-transcribe" onclick="window.transcribeAudio(event, this, \'{media_id}\', \'{wa_id}\', \'{wamid}\')" style="background:transparent; border:none; color:var(--text-main); font-size:0.65rem; cursor:pointer; font-weight:600; padding:0; margin-right:auto; text-decoration:underline;">Transcribir</button>'
                 
-                meta_html = f'<div class="msg-meta" style="text-align:right; margin-top:4px; font-size:0.65rem; color:inherit; opacity:0.8; display:flex; justify-content:flex-end; align-items:center; gap:4px; width: 100%;">{transcribe_btn_html}{ts_html}{status_html}</div>'
+                meta_html = f'<div class="msg-meta" style="text-align:right; margin-top:4px; font-size:0.65rem; color:inherit; opacity:0.8; display:flex; justify-content:flex-end; align-items:center; gap:6px;">{transcribe_btn_html}{ts_html}{status_html}</div>'
 
             # Extraer datos para el panel de info
             sent_by_val = m.get("sent_by", "")
@@ -2889,7 +2889,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if is_pinned:
                 pinned_messages.append(m)
             
-            burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{meta_html}</div>'
+            transcrip_html = ""
+            if m.get("transcripcion"):
+                transcrip_html = f'<div style="margin-top:0.5rem; padding-top:0.4rem; border-top:1px dashed rgba(255,255,255,0.15); font-size:0.8rem; font-style:italic; line-height:1.3; color:inherit; opacity:0.9;">📝 {m.get("transcripcion")}</div>'
+            
+            burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{transcrip_html}{meta_html}</div>'
 
             
         if not burbujas:
@@ -3998,7 +4002,7 @@ async def api_transcribe(media_id: str, payload: TranscribePayload, request: Req
     encontrado = False
     for msg in sesiones[wa_id].get("historial", []):
         if msg.get("msg_id") == msg_id or msg.get("id") == msg_id:
-            msg["content"] += f"<br><br><b>📝 Transcripción:</b> <i>{transcripcion}</i>"
+            msg["transcripcion"] = transcripcion
             encontrado = True
             break
             
