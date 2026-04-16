@@ -25,7 +25,7 @@ async function connectToWhatsApp() {
         version,
         auth: state,
         logger: pino({ level: "silent" }), // Evitar spam de logs
-        browser: ["IA-ATC CRM", "Chrome", "1.0"]
+        browser: ["Ubuntu", "Chrome", "20.0.04"]
     });
 
     sock.ev.on('creds.update', saveCreds);
