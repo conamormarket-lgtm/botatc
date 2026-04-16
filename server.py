@@ -156,7 +156,7 @@ def start_node_service():
     if os.path.exists(qr_dir):
         try:
             print('?? [FastAPI] Iniciando microservicio QR Baileys (Node.js)...')
-            node_qr_process = subprocess.Popen(['node', 'index.js'], cwd=qr_dir)
+            node_qr_process = subprocess.Popen(['node', 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'))
         except Exception as e:
             print('? Error al iniciar Node:', e)
 
@@ -677,7 +677,7 @@ def get_qr_status():
     try:
         import urllib.request
         import json
-        req = urllib.request.Request("http://localhost:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
+        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=3.0) as response:
             return json.loads(response.read().decode())
     except Exception as e:
@@ -4690,6 +4690,9 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
+
+
 
 
 
