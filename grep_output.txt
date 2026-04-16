@@ -1,0 +1,34 @@
+32: from whatsapp_client import enviar_mensaje, enviar_media
+507: from whatsapp_client import enviar_mensaje_texto
+508: background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar archivos enviados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo y atenderte.")
+519: from whatsapp_client import enviar_mensaje_texto
+520: background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos escuchar audios marcados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo de forma normal* para que podamos escucharlo.")
+529: from whatsapp_client import enviar_mensaje_texto
+530: background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar videos enviados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo.")
+767: enviar_mensaje(numero_wa, msg)
+777: enviar_mensaje(numero_wa, msg)
+862: enviar_mensaje(numero_wa, msg)
+902: if match_sticker: wamid_out = enviar_media(numero_wa, "sticker", match_sticker.group(1)) or wamid_out
+903: elif match_img: wamid_out = enviar_media(numero_wa, "image", match_img.group(1)) or wamid_out
+904: else: wamid_out = enviar_mensaje(numero_wa, p) or wamid_out
+1816: @app.post("/api/admin/enviar_media_manual")
+1817: async def enviar_media_manual_endpoint(request: Request, wa_id: str = Form(...), file: UploadFile = File(...)):
+1825: from whatsapp_client import subir_media, enviar_media
+1837: exito = await anyio.to_thread.run_sync(enviar_media, wa_id, tipo_msg, media_id)
+1940: from whatsapp_client import enviar_media, enviar_mensaje, subir_media
+1978: w_id_current = enviar_media(target, "sticker", match_sticker.group(1))
+1981: w_id_current = enviar_media(target, "image", match_img.group(1), caption=cap)
+1984: w_id_current = enviar_media(target, "video", match_video.group(1), caption=cap)
+1987: w_id_current = enviar_media(target, "document", match_doc.group(1), caption=cap)
+1989: w_id_current = enviar_media(target, "audio", match_audio.group(1))
+1999: w_id_current = enviar_media(target, tipo, w_id_meta)
+2001: w_id_current = enviar_mensaje(target, p)
+2037: from whatsapp_client import enviar_mensaje, enviar_media
+2041: from whatsapp_client import enviar_media, enviar_mensaje, subir_media
+2060: w_id_current = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid)
+2063: w_id_current = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid, caption=cap)
+2066: w_id_current = enviar_media(wa_id, "video", match_video.group(1), reply_to_wamid, caption=cap)
+2069: w_id_current = enviar_media(wa_id, "document", match_doc.group(1), reply_to_wamid, caption=cap)
+2071: w_id_current = enviar_media(wa_id, "audio", match_audio.group(1), reply_to_wamid)
+2081: w_id_current = enviar_media(wa_id, tipo, w_id_meta, reply_to_wamid)
+2083: w_id_current = enviar_mensaje(wa_id, p, reply_to_wamid)

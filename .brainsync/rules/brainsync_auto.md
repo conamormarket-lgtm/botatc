@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3667 notes | Score threshold: >40
+> 3709 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -16,34 +16,34 @@
 - **ALWAYS** ask the user before running commands that modify system state, install packages, or make network requests.
 - When in doubt, **show the command first** and wait for approval.
 
-**Stack:** Python · FastAPI
+**Stack:** JavaScript/Python · Express + FastAPI
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3667 notes | Score threshold: >40
++ > 3699 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Vincular — wraps unsafe operation in error bou
+- **⚠️ GOTCHA: Patched security issue Proxy — protects against XSS and CSRF token theft** — - 
++ @app.get("/api/settings/qr_status")
+- async def procesador_agre
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3660 notes | Score threshold: >40
 + > 3665 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 3646 notes | Score threshold: >40
 + > 3660 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3624 notes | Score threshold: >40
-+ > 3629 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 3622 notes | Score threshold: >40
-+ > 3624 notes | Score threshold
-- **⚠️ GOTCHA: Patched security issue Mapa — parallelizes async operations for speed** — -     # Usar dict para evitar iteraciones conflictivas
-+     
--     
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3603 notes | Score threshold: >40
-+ > 3611 notes | Score threshold
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 7x
-- problem-fix in agent-rules.md — confirmed 6x
-- Optimized Score — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 9x
-- problem-fix in agent-rules.md — confirmed 7x
+- what-changed in shared-context.json — confirmed 12x
+- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
+- problem-fix in agent-rules.md — confirmed 9x
+- what-changed in settings.html — confirmed 4x
+- trade-off in shared-context.json — confirmed 3x
+- Patched security issue Kevin — confirmed 3x
+- convention in shared-context.json
 - what-changed in shared-context.json — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 
 ## Known Fixes
 
@@ -56,9 +56,9 @@
 ## Recent Decisions
 
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized Score — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized Score — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 
@@ -108,6 +108,212 @@ Guidance for using the `tinybird-sdk` package to define Tinybird resources in Py
 - Preview in CI: `tinybird preview`
 - Migrate: `tinybird migrate` (convert .datasource/.pipe files to Python)
 - Server-side only; never expose tokens in browsers
+
+
+### 📚 Core Framework Rules: [czlonkowski/n8n-expression-syntax]
+# n8n Expression Syntax
+
+Expert guide for writing correct n8n expressions in workflows.
+
+---
+
+## Expression Format
+
+All dynamic content in n8n uses **double curly braces**:
+
+
+
+**Examples**:
+
+
+---
+
+## Core Variables
+
+### $json - Current Node Output
+
+Access data from the current node:
+
+
+
+### $node - Reference Other Nodes
+
+Access data from any previous node:
+
+
+
+**Important**:
+- Node names **must** be in quotes
+- Node names are **case-sensitive**
+- Must match exact node name from workflow
+
+### $now - Current Timestamp
+
+Access current date/time:
+
+
+
+### $env - Environment Variables
+
+Access environment variables:
+
+
+
+---
+
+## 🚨 CRITICAL: Webhook Data Structure
+
+**Most Common Mistake**: Webhook data is **NOT** at the root!
+
+### Webhook Node Output Structure
+
+
+
+### Correct Webhook Data Access
+
+
+
+**Why**: Webhook node wraps incoming data under `.body` property to preserve headers, params, and query parameters.
+
+---
+
+## Common Patterns
+
+### Access Nested Fields
+
+
+
+### Reference Other Nodes
+
+
+
+### Combine Variables
+
+
+
+---
+
+## When NOT to Use Expressions
+
+### ❌ Code Nodes
+
+Code nodes use **direct JavaScript access**, NOT expressions!
+
+
+
+### ❌ Webhook Paths
+
+
+
+### ❌ Credential Fields
+
+
+
+---
+
+## Validation Rules
+
+### 1. Always Use {{}}
+
+Expressions **must** be wrapped in double curly braces.
+
+
+
+### 2. Use Quotes for Spaces
+
+Field or node names with spaces require **bracket notation**:
+
+
+
+### 3. Match Exact Node Names
+
+Node references are **case-sensitive**:
+
+
+
+### 4. No Nested {{}}
+
+Don't double-wrap expressions:
+
+
+
+---
+
+## Common Mistakes
+
+For complete error catalog with fixes, see [COMMON_MISTAKES.md](COMMON_MISTAKES.md)
+
+### Quick Fixes
+
+| Mistake | Fix |
+|---------|-----|
+| `$json.field` | `{{$json.field}}` |
+| `{{$json.field name}}` | `{{$json['field name']}}` |
+| `{{$node.HTTP Request}}` | `{{$node["HTTP Request"]}}` |
+| `{{{$json.field}}}` | `{{$json.field}}` |
+| `{{$json.name}}` (webhook) | `{{$json.body.name}}` |
+| `'={{$json.email}}'` (Code node) | `$json.email` |
+
+---
+
+## Working Examples
+
+For real workflow examples, see [EXAMPLES.md](EXAMPLES.md)
+
+### Example 1: Webhook to Slack
+
+**Webhook receives**:
+
+
+**In Slack node text field**:
+
+
+### Example 2: HTTP Request to Email
+
+**HTTP Request returns**:
+
+
+**In Email node** (reference HTTP Request):
+
+
+### Example 3: Format Timestamp
+
+
+
+---
+
+## Data Type Handling
+
+### Arrays
+
+
+
+### Objects
+
+
+
+### Strings
+
+
+
+### Numbers
+
+
+
+---
+
+## Advanced Patterns
+
+### Conditional Content
+
+
+
+### Date Manipulation
+
+
+
+### String Manipul...
+(truncated)
 
 
 ### 📚 Core Framework Rules: [czlonkowski/n8n-code-python]
@@ -198,8 +404,104 @@ n8n offers two Python execution modes:
 **Recommendation**: Use **Python (Beta)** for better n8...
 (truncated)
 
-- [Python] Use type hints for function arguments and return types
-- [Python] Don't use mutable default arguments (def f(items=[]) is a bug)
+
+### 📚 Core Framework Rules: [czlonkowski/n8n-code-javascript]
+# JavaScript Code Node
+
+Expert guidance for writing JavaScript code in n8n Code nodes.
+
+---
+
+## Quick Start
+
+
+
+### Essential Rules
+
+1. **Choose "Run Once for All Items" mode** (recommended for most use cases)
+2. **Access data**: `$input.all()`, `$input.first()`, or `$input.item`
+3. **CRITICAL**: Must return `[{json: {...}}]` format
+4. **CRITICAL**: Webhook data is under `$json.body` (not `$json` directly)
+5. **Built-ins available**: $helpers.httpRequest(), DateTime (Luxon), $jmespath()
+
+---
+
+## Mode Selection Guide
+
+The Code node offers two execution modes. Choose based on your use case:
+
+### Run Once for All Items (Recommended - Default)
+
+**Use this mode for:** 95% of use cases
+
+- **How it works**: Code executes **once** regardless of input count
+- **Data access**: `$input.all()` or `items` array
+- **Best for**: Aggregation, filtering, batch processing, transformations, API calls with all data
+- **Performance**: Faster for multiple items (single execution)
+
+
+
+**When to use:**
+- ✅ Comparing items across the dataset
+- ✅ Calculating totals, averages, or statistics
+- ✅ Sorting or ranking items
+- ✅ Deduplication
+- ✅ Building aggregated reports
+- ✅ Combining data from multiple items
+
+### Run Once for Each Item
+
+**Use this mode for:** Specialized cases only
+
+- **How it works**: Code executes **separately** for each input item
+- **Data access**: `$input.item` or `$item`
+- **Best for**: Item-specific logic, independent operations, per-item validation
+- **Performance**: Slower for large datasets (multiple executions)
+
+
+
+**When to use:**
+- ✅ Each item needs independent API call
+- ✅ Per-item validation with different error handling
+- ✅ Item-specific transformations based on item properties
+- ✅ When items must be processed separately for business logic
+
+**Decision Shortcut:**
+- **Need to look at multiple items?** → Use "All Items" mode
+- **Each item completely independent?** → Use "Each Item" mode
+- **Not sure?** → Use "All Items" mode (you can always loop inside)
+
+---
+
+## Data Access Patterns
+
+### Pattern 1: $input.all() - Most Common
+
+**Use when**: Processing arrays, batch operations, aggregations
+
+
+
+### Pattern 2: $input.first() - Very Common
+
+**Use when**: Working with single objects, API responses, first-in-first-out
+
+
+
+### Pattern 3: $input.item - Each Item Mode Only
+
+**Use when**: In "Run Once for Each Item" mode
+
+
+
+### Pattern 4: $node - Reference Other Nodes
+
+**Use when**: Need data from specific nodes in workflow
+
+
+
+**See**: [DATA_ACCESS.md](DATA_ACCESS.md) ...
+(truncated)
+
 
 ## Available Tools (ON-DEMAND only)
 - `sys_core_01(q)` — Deep search when stuck

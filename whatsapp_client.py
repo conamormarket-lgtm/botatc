@@ -4,20 +4,39 @@
 import httpx
 from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
 
+def _get_line_id(numero: str, override_line_id: str) -> str:
+    """Extrae dinámicamente el lineId del contexto en memoria del servidor."""
+    if override_line_id != "principal":
+        return override_line_id
+    import sys
+    svr = sys.modules.get('server') or sys.modules.get('__main__')
+    if svr and hasattr(svr, 'sesiones'):
+        ses = svr.sesiones.get(numero)
+        if ses:
+            return ses.get('lineId', 'principal')
+    return "principal"
+
 META_API_URL = f"https://graph.facebook.com/{META_API_VERSION}/{META_PHONE_NUMBER_ID}/messages"
 
 
-def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) -> bool:
+def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, line_id: str = "principal") -> bool:
     """
-    Envía un mensaje de texto al número de WhatsApp indicado.
-
-    Args:
-        numero_destino: Número completo con código de país (ej: '51945257117')
-        texto:          Texto del mensaje a enviar
-
-    Returns:
-        wamid string si el envío fue exitoso, None si hubo error.
+    Envía un mensaje de texto al número de WhatsApp indicado, ruteando
+    por el servicio correspondiente según la línea (Meta Oficial o QR Node.js).
     """
+    line_id = _get_line_id(numero_destino, line_id)
+    if line_id.startswith("qr_"):
+        # Ruteo al microservicio Node.js (Fase 2)
+        try:
+            payload = {"to": numero_destino, "text": texto}
+            response = httpx.post("http://127.0.0.1:3000/api/qr/send", json=payload, timeout=10)
+            response.raise_for_status()
+            import time
+            return f"qr_wamid_{int(time.time()*1000)}"
+        except Exception as e:
+            print(f"[ERROR] Node.js QR API al enviar a {numero_destino}: {e}")
+            return None
+
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
         "Content-Type": "application/json",
@@ -46,11 +65,18 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None) 
         print(f"[ERROR] Error enviando mensaje: {e}")
         return None
 
-def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None, caption: str = None) -> bool:
+def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None, caption: str = None, line_id: str = "principal") -> bool:
     """
     Envía media (sticker, imagen, video, documento) a un número.
     tipo_media: 'sticker', 'image', 'video', 'audio', 'document'
     """
+    line_id = _get_line_id(numero_destino, line_id)
+    if line_id.startswith("qr_"):
+        # TODO: Implementar envío de Media en Node.js, por ahora fallback silencioso o texto
+        print(f"[WARN] Envío de media ({tipo_media}) por línea QR aún no implementado en microservicio.")
+        # Fallback a texto temporal
+        return enviar_mensaje(numero_destino, f"[Archivo adjunto no soportado aún por esta línea: {tipo_media}]", None, line_id)
+
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
         "Content-Type": "application/json",
@@ -90,11 +116,25 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
         return None
 
 
-async def enviar_mensaje_texto(numero_destino: str, texto: str) -> bool:
+async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "principal") -> bool:
     """
     Versión async de enviar_mensaje para usar desde endpoints FastAPI.
     Usa httpx.AsyncClient para no bloquear el event loop.
     """
+    line_id = _get_line_id(numero_destino, line_id)
+    if line_id.startswith("qr_"):
+        # Ruteo asíncrono al microservicio Node.js
+        try:
+            payload = {"to": numero_destino, "text": texto}
+            async with httpx.AsyncClient() as client:
+                response = await client.post("http://127.0.0.1:3000/api/qr/send", json=payload, timeout=10)
+                response.raise_for_status()
+                import time
+                return f"qr_wamid_{int(time.time()*1000)}"
+        except Exception as e:
+            print(f"[ERROR] Node.js QR API (Async) al enviar a {numero_destino}: {e}")
+            return None
+
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
         "Content-Type": "application/json",
@@ -166,8 +206,12 @@ async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload
         print(f"[ERROR] Error subiendo media a Meta: {e}")
         return f"ERROR_META:{str(e)}"
 
-async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str) -> bool:
+async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str, line_id: str = "principal") -> bool:
     """Envía una reacción a un mensaje específico."""
+    line_id = _get_line_id(numero_destino, line_id)
+    if line_id.startswith("qr_"):
+        # TODO: Implementar en Node.js, por ahora silent ignore para no romper UX
+        return True
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
         "Content-Type": "application/json",
@@ -195,8 +239,15 @@ async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str
         return False
 
 
-async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es", components: list = None) -> str | None:
+async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es", components: list = None, line_id: str = "principal") -> str | None:
     """Envía un Message Template preaprobado por Meta, soportando variables dinámicas."""
+    line_id = _get_line_id(numero_destino, line_id)
+    if line_id.startswith("qr_"):
+        # QR Web Scraping no soporta plantillas oficiales de Meta. 
+        # Fallback de texto plano para evitar caidas.
+        res_txt = f"[Plantilla '{template_name}' solicitada, pero este canal utiliza número temporal no oficial Meta.]"
+        return await enviar_mensaje_texto(numero_destino, res_txt, line_id)
+
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
         "Content-Type": "application/json",
