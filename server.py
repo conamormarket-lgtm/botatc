@@ -4310,6 +4310,91 @@ async def api_init_chat(payload: InitChatPayload, request: Request):
     obtener_o_crear_sesion(digitos)
     return {"ok": True, "wa_id": digitos}
 
+
+@app.post("/api/admin/merge_sessions")
+async def api_merge_sessions(request: Request):
+    """Fusiona sesiones duplicadas: 997778512 + 51997778512 → 51997778512.
+    Se ejecuta una sola vez para limpiar datos históricos.
+    """
+    if not verificar_sesion(request): raise HTTPException(status_code=403)
+    if not es_admin(request): raise HTTPException(status_code=403, detail="Solo administradores")
+
+    from firebase_client import guardar_sesion_chat, cargar_sesion_chat, inicializar_firebase
+
+    merged = []
+    renamed = []
+
+    # Detectar todas las sesiones de 9 dígitos que tienen un gemelo de 11 dígitos con 51
+    keys_9 = [k for k in list(sesiones.keys()) if len(k) == 9 and k.isdigit()]
+
+    for short_key in keys_9:
+        long_key = "51" + short_key
+        s_short = sesiones.get(short_key, {})
+
+        if long_key in sesiones:
+            # CASO A: ambos existen en RAM → fusionar historial
+            s_long  = sesiones[long_key]
+            hist_combined = s_short.get("historial", []) + s_long.get("historial", [])
+            # Deduplicar por msg_id y ordenar por timestamp
+            seen = set()
+            hist_dedup = []
+            for m in hist_combined:
+                mid = m.get("msg_id") or id(m)
+                if mid not in seen:
+                    seen.add(mid)
+                    hist_dedup.append(m)
+            hist_dedup.sort(key=lambda x: x.get("timestamp", 0))
+
+            # Merge: prevalece la sesión larga, absorbe datos de la corta
+            s_long["historial"] = hist_dedup
+            if not s_long.get("nombre_cliente") or s_long["nombre_cliente"] == long_key:
+                s_long["nombre_cliente"] = s_short.get("nombre_cliente", long_key)
+
+            # Borrar sesión corta de RAM
+            del sesiones[short_key]
+
+            # Guardar sesión larga en Firebase
+            try:
+                guardar_sesion_chat(long_key, s_long)
+            except Exception as e:
+                print(f"[MERGE] Error guardando {long_key}: {e}")
+
+            # Borrar sesión corta de Firebase
+            try:
+                db = inicializar_firebase()
+                db.collection("chats_atc").document(short_key).delete()
+            except Exception as e:
+                print(f"[MERGE] Error borrando {short_key} de Firebase: {e}")
+
+            merged.append({"fusionado": f"{short_key} + {long_key}", "mensajes": len(hist_dedup)})
+            print(f"[MERGE] ✅ Fusionados {short_key} + {long_key} ({len(hist_dedup)} msgs)")
+
+        else:
+            # CASO B: solo existe la corta → renombrar a la larga
+            sesiones[long_key] = s_short
+            del sesiones[short_key]
+
+            try:
+                guardar_sesion_chat(long_key, s_short)
+            except Exception as e:
+                print(f"[MERGE] Error guardando {long_key}: {e}")
+
+            try:
+                db = inicializar_firebase()
+                db.collection("chats_atc").document(short_key).delete()
+            except Exception as e:
+                print(f"[MERGE] Error borrando {short_key}: {e}")
+
+            renamed.append({"renombrado": f"{short_key} → {long_key}"})
+            print(f"[MERGE] 🔄 Renombrado {short_key} → {long_key}")
+
+    return {
+        "ok": True,
+        "fusionados": merged,
+        "renombrados": renamed,
+        "total": len(merged) + len(renamed)
+    }
+
 class LabelPayload(BaseModel):
     id: str
     name: Optional[str] = None
