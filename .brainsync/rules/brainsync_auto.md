@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4262 notes | Score threshold: >40
+> 4291 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,33 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4262 notes | Score threshold: >40
++ > 4288 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LIDs
++ - problem-fix in agent-rules.md
+- - pro
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "c43fe59772639d05",
++
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4236 notes | Score threshold: >40
 + > 4252 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4218 notes | Score threshold: >40
-+ > 4236 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.js
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4206 notes | Score threshold: >40
-+ > 4218 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 9x
+- problem-fix in agent-rules.md — confirmed 9x
+- Updated schema GOTCHA — confirmed 4x
+- what-changed in shared-context.json — confirmed 3x
+- Fixed null crash in Guardar — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - problem-fix in agent-rules.md — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 6x
-- problem-fix in shared-context.json — confirmed 4x
 
 ## Known Fixes
 

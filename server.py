@@ -620,6 +620,8 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
     texto_cliente = data.get("body", "")
     mensaje_id = data.get("wamid", "")
     line_id = data.get("lineId", "principal")
+    # real_phone es el número de teléfono real cuando el wa_id puede ser un @lid
+    real_phone = data.get("real_phone", numero_wa)
 
     if not numero_wa or not mensaje_id:
         return {"status": "ok"}
@@ -639,6 +641,9 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
     # Atadura forzosa TEMPRANA: asignamos la personalidad de esta línea al chat
     sesion = obtener_o_crear_sesion(numero_wa)
     sesion["lineId"] = line_id
+    # Guardar el número real para poder responder (es diferente al wa_id cuando es @lid)
+    if real_phone and real_phone != numero_wa:
+        sesion["real_phone"] = real_phone
 
     print(f"\n{'─'*50}")
     print(f"📦 [QR: {line_id}] 📨 (+{numero_wa}): {texto_cliente}")
@@ -2049,10 +2054,11 @@ async def enviar_manual_endpoint(request: Request):
     # ── Detectar si este chat pertenece a la línea QR y redirigir ──────────────
     line_id = s.get("lineId", "principal")
     if line_id and line_id != "principal":
-        # Enviar por el microservicio Baileys Node.js
+        # Usar el número real si está disponible (para evitar problemas con @lid en envíos)
+        real_phone = s.get("real_phone", wa_id)
         import urllib.request, json as _json
         try:
-            qr_payload = _json.dumps({"to": wa_id, "text": texto}).encode()
+            qr_payload = _json.dumps({"to": real_phone, "text": texto}).encode()
             qr_req = urllib.request.Request(
                 "http://localhost:3000/api/qr/send",
                 data=qr_payload,

@@ -82,21 +82,27 @@ async function connectToWhatsApp() {
             if (!texto || texto.trim().length === 0) continue;
 
             // Resolver número real: WhatsApp oculta el teléfono en @lid, pero lo expone en senderPn
+            // rawSender es senderPn (número real) cuando el remoteJid es un @lid
             let rawSender = msg.key.senderPn || msg.key.remoteJid;
-            const senderNumber = rawSender.replace(/@(s\.whatsapp\.net|lid|g\.us)/, '');
+            const realPhone = rawSender.replace(/@(s\.whatsapp\.net|lid|g\.us)/, '');
+            // senderNumber es el @lid limpio (se usa como clave de sesión)
+            const senderNumber = msg.key.remoteJid.replace(/@(s\.whatsapp\.net|lid|g\.us)/, '');
 
-            console.log(`[QR IN] ${senderNumber}: "${texto}"`);
+            console.log(`[QR IN] ${realPhone} (lid: ${senderNumber}): "${texto}"`);
 
-
-            // Preparamos payload sencillo para nuestro Python server
+            // Preparamos payload para nuestro Python server
+            // - from: ID de sesión (puede ser @lid o número real)
+            // - real_phone: número telefónico real para poder responder
             const payload = {
                 lineId: LINE_ID,
                 wamid: msg.key.id,
                 from: senderNumber,
+                real_phone: realPhone,
                 timestamp: msg.messageTimestamp,
                 type: texto ? "text" : "media",
                 body: texto
             };
+
 
             // Enviar webhook al servidor Python
             try {
