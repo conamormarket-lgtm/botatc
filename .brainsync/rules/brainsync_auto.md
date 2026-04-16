@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4011 notes | Score threshold: >40
+> 4024 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,16 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "ea168ce38c4470ee",
++
+- **⚠️ GOTCHA: Fixed null crash in Limpiar — fixes memory leak from uncleared timers** — -                     const initialTarget = document.getElementById('m
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - Patched security issue Kevi
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
 + - problem-fix in agent-rules.
 - **⚠️ GOTCHA: Fixed null crash in Todas — parallelizes async operations for speed** — -     labels_filter_html = f"""
@@ -29,21 +39,17 @@
 + @app.on_event("startup")
 - import subprocess
 +
-- **⚠️ GOTCHA: Optimized True — ensures atomic multi-step database operations** — -             "lineId": sesion_dict.get("lineId", "principal"),
-+    
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 9x
+- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
+- problem-fix in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 5x
+- Fixed null crash in DOCTYPE — wraps unsafe operation in error boundary — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - Fixed null crash in Limpiar — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
-- what-changed in shared-context.json — confirmed 7x
-- problem-fix in server.py — confirmed 7x
-- Patched security issue Request — parallelizes async operations for speed — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
-- what-changed in server.py — confirmed 3x
 
 ## Known Fixes
 
@@ -57,8 +63,8 @@
 
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - decision in index.js
-- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 
