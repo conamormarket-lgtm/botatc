@@ -128,7 +128,7 @@ app.post('/api/qr/send', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Servicio QR de Baileys escuchando en puerto ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servicio QR de Baileys escuchando en puerto ${PORT} (IPv4)`);
     connectToWhatsApp();
 });
