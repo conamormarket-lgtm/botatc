@@ -55,9 +55,11 @@ async function connectToWhatsApp() {
 
     // Interceptor de mensajes entrantes
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
+        console.log(`[DEBUG] Recibido event: type=${type}, cantidad=${messages.length}`);
         if (type !== 'notify') return;
         
         for (const msg of messages) {
+            console.log(`[DEBUG] Analizando mensaje de: ${msg.key.remoteJid} - fromMe: ${msg.key.fromMe}`);
             // Ignorar mensajes vacíos, de estado, o enviados por nosotros mismos en otro cel
             if (!msg.message || msg.key.fromMe || msg.key.remoteJid === 'status@broadcast') continue;
 
