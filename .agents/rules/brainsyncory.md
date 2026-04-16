@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4064 notes | Score threshold: >40
+> 4096 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,38 +20,36 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Optimized 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Optimized 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Fixed null crash in Historial
++ - ⚠️ GOTCHA: problem-fi
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in server.py
+- - Fix
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
 - -
-- **⚠️ GOTCHA: Fixed null crash in Historial** — -                     // Marcar que este chat tiene historico completo
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: problem-fix in agent-
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - problem-fix in agent-rules.md
 - -
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "ea168ce38c4470ee",
-+
-- **⚠️ GOTCHA: Fixed null crash in Limpiar — fixes memory leak from uncleared timers** — -                     const initialTarget = document.getElementById('m
 
 ## Project Standards
 
-- Added JWT tokens authentication — confirmed 4x
-- Optimized GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- problem-fix in agent-rules.md — confirmed 5x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 9x
-- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
-- problem-fix in shared-context.json — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- what-changed in shared-context.json — confirmed 7x
+- what-changed in shared-context.json — confirmed 4x
+- Replaced dependency Buscar — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Marcar
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Todas — parallelizes async operations for speed
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md

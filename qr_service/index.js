@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 const PORT = 3000;
-const PYTHON_WEBHOOK = "http://127.0.0.1:5000/webhook_qr";
+const PYTHON_WEBHOOK = `http://127.0.0.1:${process.env.PORT || 8080}/webhook_qr`;
 const LINE_ID = "qr_ventas_1"; // ID temporal, luego será dinámico 
 
 let sock;
