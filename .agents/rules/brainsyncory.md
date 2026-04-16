@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4098 notes | Score threshold: >40
+> 4129 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - ⚠️ GOTCHA: Optimized 
@@ -38,14 +38,14 @@
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Fixed null crash in Conectadas — wraps unsafe operation in error boundary — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
-- what-changed in shared-context.json — confirmed 7x
-- what-changed in shared-context.json — confirmed 4x
-- Replaced dependency Buscar — confirmed 3x
 
 ## Known Fixes
 

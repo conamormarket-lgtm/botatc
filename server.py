@@ -4269,6 +4269,44 @@ async def api_list_templates(request: Request):
     plantillas = cargar_plantillas_bd()
     return {"ok": True, "plantillas": plantillas}
 
+class LineAliasPayload(BaseModel):
+    id: str
+    name: str
+
+@app.get("/api/admin/lines")
+async def api_list_lines(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    import json
+    import os
+    aliases = {}
+    try:
+        if os.path.exists("line_aliases.json"):
+            with open("line_aliases.json", "r") as f:
+                aliases = json.load(f)
+    except: pass
+    if "qr_ventas_1" not in aliases:
+        aliases["qr_ventas_1"] = "Línea QR (Ejemplo)"
+    if "principal" not in aliases:
+        aliases["principal"] = "Línea Principal Meta"
+    return {"ok": True, "lines": aliases}
+
+@app.post("/api/admin/lines")
+async def api_save_line(payload: LineAliasPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    import json
+    import os
+    aliases = {}
+    try:
+        if os.path.exists("line_aliases.json"):
+            with open("line_aliases.json", "r") as f:
+                aliases = json.load(f)
+    except: pass
+    aliases[payload.id] = payload.name
+    with open("line_aliases.json", "w") as f:
+        json.dump(aliases, f, ensure_ascii=False, indent=2)
+    return {"ok": True}
 
 class EnviarPlantillaPayload(BaseModel):
     wa_id: str

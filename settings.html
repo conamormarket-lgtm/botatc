@@ -523,6 +523,57 @@
                 </div>
             </div>
 
+            <div class="qr-card"
+                style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
+                <h3 style="margin-bottom:0.5rem;color:var(--text-main);font-family:var(--font-heading)">Líneas Conectadas (Alias)</h3>
+                <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Asigna nombres legibles a tus canales (ej. "Ventas", "Soporte") para filtrarlos fácilmente en el Inbox.</p>
+                <div id="linesContainer" style="display:flex; flex-direction:column; gap:0.5rem;">
+                    <p style="color:var(--text-muted);font-size:0.9rem;">Cargando líneas...</p>
+                </div>
+            </div>
+
+            <script>
+                async function loadLines() {
+                    try {
+                        const res = await fetch('/api/admin/lines');
+                        const data = await res.json();
+                        if(data.ok) {
+                            const container = document.getElementById('linesContainer');
+                            container.innerHTML = '';
+                            for(const [id, name] of Object.entries(data.lines)) {
+                                container.innerHTML += `
+                                    <div style="display:flex; gap:1rem; align-items:center; background:rgba(0,0,0,0.2); padding:0.8rem; border-radius:8px; border:1px solid var(--accent-border);">
+                                        <div style="flex:1;">
+                                            <div style="font-family:var(--font-mono); color:var(--text-muted); font-size:0.75rem; margin-bottom:0.2rem;">ID: ${id}</div>
+                                            <input type="text" id="line_input_${id}" value="${name}" class="prompt-input" style="width:100%; max-width:300px; padding:0.4rem; font-size:0.9rem; background:var(--bg-main); color:var(--text-main); border:1px solid var(--accent-border); border-radius:4px;">
+                                        </div>
+                                        <button type="button" onclick="saveLine('${id}')" class="btn-save" style="padding:0.4rem 1rem; font-size:0.85rem;">Guardar</button>
+                                    </div>
+                                `;
+                            }
+                        }
+                    } catch(e) { console.error(e); }
+                }
+                async function saveLine(id) {
+                    const name = document.getElementById(`line_input_${id}`).value;
+                    try {
+                        const res = await fetch('/api/admin/lines', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({id, name})
+                        });
+                        if(res.ok) {
+                            alert("✅ Alias guardado correctamente. Los cambios se verán reflejados en el filtro del Inbox.");
+                        } else {
+                            alert("Error al guardar.");
+                        }
+                    } catch(e) {
+                        alert("Error al guardar: " + e);
+                    }
+                }
+                document.addEventListener("DOMContentLoaded", loadLines);
+            </script>
+
             <form method="post" action="/api/settings/save" id="settingsForm"
                 style="display:flex; flex-direction:column; flex:1; margin-top:1.5rem;">
                 <div class="editor-card">
