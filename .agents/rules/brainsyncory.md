@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3709 notes | Score threshold: >40
+> 3712 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -36,6 +36,7 @@ Content summary (8
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 12x
 - Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
 - problem-fix in agent-rules.md — confirmed 9x
@@ -43,7 +44,6 @@ Content summary (8
 - trade-off in shared-context.json — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
 - convention in shared-context.json
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -55,7 +55,7 @@ Content summary (8
 
 ## Recent Decisions
 
-- Optimized GOTCHA — introduces API versioning for backward compatibility
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility

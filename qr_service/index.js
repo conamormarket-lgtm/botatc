@@ -1,5 +1,5 @@
 const express = require('express');
-const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
 const axios = require('axios');
@@ -18,12 +18,14 @@ let isConnected = false;
 
 async function connectToWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
+    const { version, isLatest } = await fetchLatestBaileysVersion();
+    console.log(`🌐 Usando la versión de WhatsApp Web v${version.join('.')} (Última: ${isLatest})`);
     
     sock = makeWASocket({
+        version,
         auth: state,
-        printQRInTerminal: true,
         logger: pino({ level: "silent" }), // Evitar spam de logs
-        browser: ["CRM Bot", "Chrome", "1.0"]
+        browser: ["IA-ATC CRM", "Chrome", "1.0"]
     });
 
     sock.ev.on('creds.update', saveCreds);
@@ -37,9 +39,13 @@ async function connectToWhatsApp() {
 
         if (connection === 'close') {
             isConnected = false;
-            const shouldReconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
-            console.log('Se cerró la conexión a WhatsApp. Reconectando:', shouldReconnect);
-            if (shouldReconnect) connectToWhatsApp();
+            const statusCode = lastDisconnect?.error?.output?.statusCode;
+            const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
+            console.log('❌ Se cerró la conexión a WhatsApp. Código:', statusCode, '- Error:', lastDisconnect?.error?.message);
+            console.log('Reconectando automáticamente:', shouldReconnect);
+            if (shouldReconnect) {
+                setTimeout(connectToWhatsApp, 3000); // Pequeña pausa de seguridad antes de reconectar
+            }
         } else if (connection === 'open') {
             isConnected = true;
             currentQR = "";
