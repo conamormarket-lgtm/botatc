@@ -3,7 +3,8 @@
 with open('server.py', 'r', encoding='utf-8') as f:
     text = f.read()
 
-# 1. Load aliases at top of renderizar_inbox
+text = text.replace('L.nea Secundaria', 'Linea Secundaria')
+
 load_aliases = '''    import json
     aliases = {}
     try:
@@ -13,9 +14,7 @@ load_aliases = '''    import json
 '''
 text = re.sub(r'(def renderizar_inbox[^\:]+\:\n)', r'\1' + load_aliases, text, count=1)
 
-# 2. Add line filter variable handling
 line_html = r'''
-    # Filtro de Linea
     active_line_name = "Todas las Líneas" if line_filter == "all" else aliases.get(line_filter, "Línea QR" if line_filter != "principal" else "Línea Principal")
 
     labels_filter_html = f"""
@@ -37,7 +36,6 @@ line_html = r'''
 '''
 text = re.sub(r'labels_filter_html = f"""\s*<div style="position:relative; margin-top:1rem; text-align:left; display:flex; gap:0.5rem; align-items:center;">', line_html + r'\n    labels_filter_html += f"""\n        <button type="button" onclick="const m = document.getElementById(\'inboxFilterMenu\'); m.style.display = m.style.display===\'none\'?\'flex\':\'none\';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">', text)
 
-# 3. Apply line_filter during row generation
 loop_content_matcher = r'        if is_unread:\n            hist_sin_sys = \[m for m in s.get\("historial", \[\]\) if m\["role"\] != "system"\]\n            if not hist_sin_sys or hist_sin_sys\[-1\]\["role"\] != "user":\n                continue'
 
 filter_logic = r'''        if is_unread:
@@ -55,11 +53,11 @@ filter_logic = r'''        if is_unread:
 '''
 text = re.sub(loop_content_matcher, filter_logic, text)
 
-# 4. Inject badge_line
+# Inject badge_line
 inject_badge = r'<span class="chat-name">{pin_html}{nombre}{badge_line}</span>'
 text = re.sub(r'<span class="chat-name">\{pin_html\}\{nombre\}</span>', inject_badge, text)
 
-# 5. Fix duplicated inbox_chat signatures by deleting old ones, and inserting clean ones.
+# Fix duplicated inbox_chat signatures by deleting old ones, and inserting clean ones.
 text = re.sub(r'@app\.get\("/inbox"\).+?return renderizar_inbox[^\n]+', '', text, flags=re.DOTALL)
 text = re.sub(r'@app\.get\("/inbox/\{wa_id\}"\).+?return renderizar_inbox[^\n]+', '', text, flags=re.DOTALL)
 
@@ -72,7 +70,9 @@ async def inbox_main(request: Request, tab: str = "all", label: str = None, unre
 async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
     return renderizar_inbox(request, wa_id, tab, label, unread, line)
 '''
-text = text.replace('def renderizar_inbox(', routes + '\ndef renderizar_inbox(')
+text = text.replace('def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, \nunread: str = None):', routes + '\ndef renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all"):')
+text = text.replace('def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None):', routes + '\ndef renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all"):')
+
 
 with open('server.py', 'w', encoding='utf-8') as f:
     f.write(text)

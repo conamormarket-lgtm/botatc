@@ -126,6 +126,7 @@ def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
         
         # Preparamos el dict para guardar
         data_to_save = {
+            "lineId": sesion_dict.get("lineId", "principal"),
             "bot_activo": sesion_dict.get("bot_activo", True),
             "ultima_actividad": sesion_dict.get("ultima_actividad"), # datetime object
             "escalado_en": sesion_dict.get("escalado_en"),           # datetime object o None
@@ -139,7 +140,7 @@ def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
             "is_pinned": sesion_dict.get("is_pinned", False),
             "is_archived": sesion_dict.get("is_archived", False),
             "unread_count": sesion_dict.get("unread_count", 0),
-            "lineId": sesion_dict.get("lineId", "principal")
+            "resumen": sesion_dict.get("resumen", ""),
         }
         
         # Firestore maneja datetimes nativamente
@@ -458,3 +459,4 @@ def actualizar_preferencias_tema(username: str, preferencias_ui: dict) -> bool:
         doc_ref.update({"preferencias_ui": preferencias_ui})
         return True
     return False
+

@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3885 notes | Score threshold: >40
+> 3974 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,39 +18,39 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-+ gemini_clien
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in DisconnectReason — reduces initial bundle size
-- **⚠️ GOTCHA: Replaced JWT tokens with API key auth — introduces API versioning for backwar...** — - > 3856 notes | Score threshold: >40
-+ > 3865 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3832 notes | Score threshold: >40
-+ > 3843 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Added JWT tokens auth
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Added JWT tokens auth
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Patched security issue Fixed
++ - gotcha in shared-conte
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "0abb521513f105ca",
++       "id": "e24579233272fd25",
 +
-- **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-+ gemini_clien
+- **⚠️ GOTCHA: Replaced auth Fixed** — - - Fixed null crash in Servidor — protects against XSS and CSRF token
+- **⚠️ GOTCHA: Patched security issue Fixed** — - - problem-fix in server.py
++ - Fixed null crash in Servidor — protec
 
 ## Project Standards
 
-- Replaced auth Patched — confirmed 4x
-- Updated schema Kevin — hardens HTTP security headers — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
-- Patched security issue Kevin — confirmed 3x
-- Optimized Score — confirmed 5x
-- Replaced auth Patched — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
+- problem-fix in server.py — confirmed 7x
+- Patched security issue Request — parallelizes async operations for speed — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
+- what-changed in server.py — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 4x
+- what-changed in shared-context.json — confirmed 3x
+- Patched security issue Kevin — confirmed 4x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Limpiar
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md
@@ -58,10 +58,10 @@
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
 - decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Client — prevents null/undefined runtime crashes
-- Optimized Score — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 
