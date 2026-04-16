@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3856 notes | Score threshold: >40
+> 3865 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -38,14 +38,14 @@
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 7x
+- Patched security issue Kevin — confirmed 3x
+- Optimized Score — confirmed 5x
 - Replaced auth Patched — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
 - Patched security issue Restaurar — protects against XSS and CSRF token theft — confirmed 4x
 - what-changed in whatsapp_client.py — confirmed 3x
-- Added JWT tokens authentication — evolves the database schema to support new ... — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Patched security issue Client — protects against XSS and CSRF token theft — confirmed 3x
 
 ## Known Fixes
 
@@ -57,10 +57,10 @@
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized Client — prevents null/undefined runtime crashes
 - Optimized Score — introduces API versioning for backward compatibility
 - Optimized Project — evolves the database schema to support new requirements
-- Optimized Client — prevents null/undefined runtime crashes
 
 ## Learned Patterns
 
