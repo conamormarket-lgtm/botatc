@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3727 notes | Score threshold: >40
+> 3731 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3717 notes | Score threshold: >40
++ > 3727 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -34,12 +36,10 @@ Content summary (8
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3667 notes | Score threshold: >40
 + > 3699 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Vincular — wraps unsafe operation in error bou
-- **⚠️ GOTCHA: Patched security issue Proxy — protects against XSS and CSRF token theft** — - 
-+ @app.get("/api/settings/qr_status")
-- async def procesador_agre
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 12x
 - Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
@@ -47,7 +47,6 @@ Content summary (8
 - what-changed in settings.html — confirmed 4x
 - trade-off in shared-context.json — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
-- convention in shared-context.json
 
 ## Known Fixes
 
