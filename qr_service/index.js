@@ -59,11 +59,8 @@ async function connectToWhatsApp() {
         if (type !== 'notify') return;
 
         for (const msg of messages) {
-            console.log(`[DEBUG] Analizando mensaje de: ${msg.key.remoteJid} - fromMe: ${msg.key.fromMe}`);
-            console.log(`[DUMP]`, JSON.stringify(msg, null, 2));
-
-            // Ignorar mensajes enviados por nosotros mismos en otro cel (pero no vacíos temporalmente)
-            if (msg.key.fromMe || msg.key.remoteJid === 'status@broadcast') continue;
+            // Ignorar mensajes vacíos, de estado, o enviados por nosotros mismos en otro cel
+            if (!msg.message || msg.key.fromMe || msg.key.remoteJid === 'status@broadcast') continue;
 
             const senderNumber = msg.key.remoteJid.replace('@s.whatsapp.net', '');
 
