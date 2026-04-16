@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3714 notes | Score threshold: >40
+> 3717 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
 - **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 

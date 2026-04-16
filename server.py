@@ -650,17 +650,18 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
     return {"status": "ok"}
 
 @app.get("/api/settings/qr_status")
-async def get_qr_status():
+def get_qr_status():
     """Proxy local para consultar el estado del microservicio Baileys Node.js"""
     try:
-        import httpx
-        async with httpx.AsyncClient() as client:
-            resp = await client.get("http://127.0.0.1:3000/api/qr/link", timeout=3.0)
-            return resp.json()
+        import urllib.request
+        import json
+        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=3.0) as response:
+            return json.loads(response.read().decode())
     except Exception as e:
         err_msg = f"Exception: {type(e).__name__} - {str(e)}"
         print("ERROR IN GET_QR_STATUS:", err_msg)
-        return {"status": "error", "message": f"Falla interna: {err_msg}"}
+        return {"status": "error", "message": f"Falla urllib: {err_msg}"}
 
 async def procesador_agregado(numero_wa: str, nombre: str):
     """

@@ -27,15 +27,21 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, 
     line_id = _get_line_id(numero_destino, line_id)
     if line_id.startswith("qr_"):
         # Ruteo al microservicio Node.js (Fase 2)
+        import urllib.request
+        import urllib.error
+        import json
+        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/send", 
+                                  data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
+                                  headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
         try:
-            payload = {"to": numero_destino, "text": texto}
-            response = httpx.post("http://127.0.0.1:3000/api/qr/send", json=payload, timeout=10)
-            response.raise_for_status()
-            import time
-            return f"qr_wamid_{int(time.time()*1000)}"
+            with urllib.request.urlopen(req, timeout=5.0) as res:
+                if res.status == 200:
+                    print(f"[OK] Mensaje (vía QR) enrutado localmente a {numero_destino}")
+                    return True
+                return False
         except Exception as e:
-            print(f"[ERROR] Node.js QR API al enviar a {numero_destino}: {e}")
-            return None
+            print("ERROR enviando via QR local:", e)
+            return False
 
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
@@ -124,16 +130,21 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "
     line_id = _get_line_id(numero_destino, line_id)
     if line_id.startswith("qr_"):
         # Ruteo asíncrono al microservicio Node.js
+        import urllib.request
+        import urllib.error
+        import json
+        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/send", 
+                                  data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
+                                  headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
         try:
-            payload = {"to": numero_destino, "text": texto}
-            async with httpx.AsyncClient() as client:
-                response = await client.post("http://127.0.0.1:3000/api/qr/send", json=payload, timeout=10)
-                response.raise_for_status()
-                import time
-                return f"qr_wamid_{int(time.time()*1000)}"
+            with urllib.request.urlopen(req, timeout=5.0) as res:
+                if res.status == 200:
+                    print(f"[OK] Mensaje (vía QR async) enrutado localmente a {numero_destino}")
+                    return True
+                return False
         except Exception as e:
-            print(f"[ERROR] Node.js QR API (Async) al enviar a {numero_destino}: {e}")
-            return None
+            print("ERROR enviando via QR local asincrono:", e)
+            return False
 
     headers = {
         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
