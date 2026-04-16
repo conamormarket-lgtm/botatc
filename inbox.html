@@ -1104,7 +1104,9 @@
             try {
                 // Prevenir caché del navegador
                 const url = window.location.href;
-                const fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
+                let fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
+                // Si estamos en modo búsqueda, pedir historico completo para no perder mensajes viejos
+                if (window._isSearching) fetchUrl += '&history=all';
 
                 const res = await fetch(fetchUrl, {
                     cache: 'no-store',
@@ -1147,8 +1149,7 @@
                             oldScroll.appendChild(newNode.cloneNode(true));
                             didAppend = true;
                         } else {
-                            // No reemplazar nodos mientras buscamos: evita layout shift que salta el scroll
-                            if (!window._isSearching && cleanHTML(oldNode.innerHTML) !== cleanHTML(newNode.innerHTML)) {
+                            if (cleanHTML(oldNode.innerHTML) !== cleanHTML(newNode.innerHTML)) {
                                 const audio = oldNode.querySelector('audio');
                                 if (audio && window._currentAudio === audio && !audio.paused) {
                                     continue;
