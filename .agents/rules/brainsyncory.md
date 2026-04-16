@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3832 notes | Score threshold: >40
+> 3849 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,40 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "0abb521513f105ca",
-+
 - **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 + gemini_clien
-- **⚠️ GOTCHA: Replaced auth Patched** — - - Patched security issue Kevin
-+ - Patched security issue Client — p
-- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Patched security issue Client — protects against XSS an
-- **⚠️ GOTCHA: Patched security issue Patched** — - - Fixed null crash in Iniciando — parallelizes async operations for 
 - **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft** — - gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 + gemini_clien
+- **⚠️ GOTCHA: Updated firebase_client database schema** — -     num_norm = normalizar_numero(payload.wa_id)
++     # Meta siempr
+- **⚠️ GOTCHA: Patched security issue Proxy — protects against XSS and CSRF token theft** — - 
++ @app.get("/api/settings/qr_status")
+- async def procesador_agre
+- **⚠️ GOTCHA: Patched security issue Mapa — parallelizes async operations for speed** — -     # Usar dict para evitar iteraciones conflictivas
++     
+-     
+- **⚠️ GOTCHA: Fixed null crash in Search** — - import sys
++ import re, urllib.parse
+- with open('server.py', 'r', e
+
+## Active: `.`
+
+- **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Patched security issue Client — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Updated firebase_client database schema**
+- **⚠️ GOTCHA: Patched security issue Proxy — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Patched security issue Mapa — parallelizes async operations for speed**
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 4x
+- what-changed in admin.html — confirmed 3x
+- Patched security issue Restaurar — protects against XSS and CSRF token theft — confirmed 4x
+- what-changed in whatsapp_client.py — confirmed 3x
 - Patched security issue Client — protects against XSS and CSRF token theft — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
 - Optimized Client — prevents null/undefined runtime crashes — confirmed 4x
-- what-changed in shared-context.json — confirmed 6x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 6x
-- what-changed in shared-context.json — confirmed 5x
 - problem-fix in server.py — confirmed 4x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in settings.html — confirmed 4x
 
 ## Known Fixes
 
@@ -58,8 +66,8 @@
 ## Recent Decisions
 
 - Optimized Client — prevents null/undefined runtime crashes
-- Optimized Score — introduces API versioning for backward compatibility
-- Optimized Project — evolves the database schema to support new requirements
+- Optimized Client — prevents null/undefined runtime crashes
+- Optimized Client — prevents null/undefined runtime crashes
 - Optimized Client — prevents null/undefined runtime crashes
 
 ## Learned Patterns

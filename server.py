@@ -176,7 +176,7 @@ def _run_node_magic():
             try:
                 npm_cli = os.path.join(os.path.dirname(node_exe), '..', 'lib', 'node_modules', 'npm', 'bin', 'npm-cli.js')
                 if not os.path.exists(npm_cli): npm_cli = 'npm'
-                subprocess.run([node_exe, npm_cli, 'install', 'express', '@whiskeysockets/baileys', 'pino', 'qrcode', 'axios'], cwd=qr_dir, check=False)
+                subprocess.run([node_exe, npm_cli, 'install', 'express', '@whiskeysockets/baileys', 'pino', 'qrcode', 'axios', '--no-audit', '--no-fund', '--cache', '/tmp/npm-cache'], cwd=qr_dir, check=False, stdout=open('static/npm_log.txt', 'w'), stderr=open('static/npm_err.txt', 'w'))
             except: pass
             node_qr_process = subprocess.Popen([node_exe, 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'))
         except Exception as e:
@@ -4718,6 +4718,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 
