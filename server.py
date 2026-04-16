@@ -658,8 +658,9 @@ async def get_qr_status():
             resp = await client.get("http://127.0.0.1:3000/api/qr/link", timeout=3.0)
             return resp.json()
     except Exception as e:
-        print("ERROR IN GET_QR_STATUS:", type(e), e)
-        return {"status": "error", "message": "El servicio QR de fondo no está en ejecución o está arrancando."}
+        err_msg = f"Exception: {type(e).__name__} - {str(e)}"
+        print("ERROR IN GET_QR_STATUS:", err_msg)
+        return {"status": "error", "message": f"Falla interna: {err_msg}"}
 
 async def procesador_agregado(numero_wa: str, nombre: str):
     """
