@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3748 notes | Score threshold: >40
+> 3757 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — introduces API versioning for backward comp...** — - - ⚠️ GOTCHA: Updated firebase_client database schema
++ - ⚠️ GOTCHA: 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3731 notes | Score threshold: >40
++ > 3748 notes | Score threshold
 - **⚠️ GOTCHA: Updated firebase_client database schema** — -     num_norm = normalizar_numero(payload.wa_id)
 +     # Meta siempr
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
@@ -29,34 +33,30 @@
 + - ⚠️ GOTCHA: Added JWT tokens auth
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3727 notes | Score threshold: >40
 + > 3731 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 3717 notes | Score threshold: >40
-+ > 3727 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "475bede4ebab97c1",
-+
+
+## Active: `.git`
+
+- **gotcha in .gitignore**
+- **what-changed in .gitignore — confirmed 3x**
 
 ## Project Standards
 
+- problem-fix in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
 - Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 12x
 - Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 9x
-- what-changed in settings.html — confirmed 4x
-- trade-off in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
 - ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ - - Fixed null crash in LEFT — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 
 ## Recent Decisions
 

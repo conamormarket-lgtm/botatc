@@ -15,6 +15,9 @@ import json
 import hashlib
 from datetime import datetime, timedelta
 import asyncio
+import subprocess
+import os
+import atexit
 
 from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -2428,7 +2431,60 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if m < 1:   return "ahora"
         if m < 60:  return f"{m}m"
         if m < 1440: return f"{m//60}h"
-        return f"{m//1440}d"
+       # Se permite CORS para que funcione el frontend si lo separas
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.on_event("startup")
+async def startup_event():
+    global node_qr_process
+    qr_dir = os.path.join(os.path.dirname(__file__), "qr_service")
+    if os.path.exists(qr_dir):
+        try:
+            print("🚀 [FastAPI] Iniciando microservicio QR Baileys (Node.js)...")
+            # En Windows usamos shell=True si es necesario, pero en Ubuntu pasamos directo
+            node_qr_process = subprocess.Popen(
+                ["node", "index.js"], 
+                cwd=qr_dir,
+                stdout=subprocess.DEVNULL, # Omitiendo logs de Node para no ensuciar la terminal principal
+                stderr=subprocess.DEVNULL
+            )
+            print("✅ [FastAPI] Microservicio QR ejecutándose en segundo plano.")
+        except Exception as e:
+            print(f"❌ [FastAPI] Error al iniciar Node.js (¿Está instalado en el VPS?): {e}")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    global node_qr_process
+    if node_qr_process:
+        print("🛑 [FastAPI] Apagando microservicio QR...")
+        node_qr_process.terminate()
+        node_qr_process.wait()
+
+@app.on_event('startup')
+async def startup_event():
+    global node_qr_process
+    qr_dir = os.path.join(os.path.dirname(__file__), 'qr_service')
+    if os.path.exists(qr_dir):
+        try:
+            print('Iniciando Node.js (QR)...')
+            node_qr_process = subprocess.Popen(['node', 'index.js'], cwd=qr_dir)
+        except Exception as e:
+            print('Error iniciando Node:', e)
+
+@app.on_event('shutdown')
+async def shutdown_event():
+    global node_qr_process
+    if node_qr_process:
+        node_qr_process.terminate()
+
+# ------------------------------------------------------------
+# 3. UTILS Y FIREBASE"
 
     def ultimo_msg(sesion):
         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
@@ -4668,6 +4724,7 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
+
 
 
 
