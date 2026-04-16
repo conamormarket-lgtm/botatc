@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4143 notes | Score threshold: >40
+> 4173 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,34 +18,39 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Optimized 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Optimized 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Fixed null crash in Historial
-+ - ⚠️ GOTCHA: problem-fi
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in server.py
-- - Fix
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- -
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in agent-rules.md
-- -
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4163 notes | Score threshold: >40
++ > 4168 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: Optimize
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4157 notes | Score threshold: >40
++ > 4163 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Added JWT tokens authen
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Added JWT tokens authen
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4143 notes | Score threshold: >40
++ > 4157 notes | Score threshold
+
+## Active: `qr_service`
+
+- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x**
+- **decision in index.js**
+- **decision in index.js**
+- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes**
+- **Fixed null crash in DisconnectReason — reduces initial bundle size with code ...**
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 11x
-- problem-fix in agent-rules.md — confirmed 12x
-- what-changed in shared-context.json — confirmed 3x
-- Fixed null crash in Conectadas — wraps unsafe operation in error boundary — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in agent-rules.md — confirmed 6x
+- Replaced auth Score — confirmed 3x
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in agent-rules.md — confirmed 6x
 
 ## Known Fixes
 
@@ -57,10 +62,10 @@
 
 ## Recent Decisions
 
+- decision in index.js
+- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
-- Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized GOTCHA — introduces API versioning for backward compatibility
 
 ## Learned Patterns
 

@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 const PORT = 3000;
-const PYTHON_WEBHOOK = `http://127.0.0.1:${process.env.PORT || 8080}/webhook_qr`;
+const PYTHON_WEBHOOK = "https://aimunaycrm.com/webhook_qr";
 const LINE_ID = "qr_ventas_1"; // ID temporal, luego será dinámico 
 
 let sock;
@@ -20,7 +20,7 @@ async function connectToWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     const { version, isLatest } = await fetchLatestBaileysVersion();
     console.log(`🌐 Usando la versión de WhatsApp Web v${version.join('.')} (Última: ${isLatest})`);
-    
+
     sock = makeWASocket({
         version,
         auth: state,
@@ -32,7 +32,7 @@ async function connectToWhatsApp() {
 
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect, qr } = update;
-        
+
         if (qr) {
             currentQR = qr; // Guardamos el texto base del QR para el endpoint
         }
@@ -57,19 +57,21 @@ async function connectToWhatsApp() {
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
         console.log(`[DEBUG] Recibido event: type=${type}, cantidad=${messages.length}`);
         if (type !== 'notify') return;
-        
+
         for (const msg of messages) {
             console.log(`[DEBUG] Analizando mensaje de: ${msg.key.remoteJid} - fromMe: ${msg.key.fromMe}`);
             // Ignorar mensajes vacíos, de estado, o enviados por nosotros mismos en otro cel
             if (!msg.message || msg.key.fromMe || msg.key.remoteJid === 'status@broadcast') continue;
 
             const senderNumber = msg.key.remoteJid.replace('@s.whatsapp.net', '');
-            
+
             // Extraer texto
             let texto = "";
             if (msg.message.conversation) texto = msg.message.conversation;
             else if (msg.message.extendedTextMessage) texto = msg.message.extendedTextMessage.text;
-            
+
+            console.log(`[DEBUG] Texto extraído: "${texto}"`);
+
             // Preparamos payload sencillo para nuestro Python server
             const payload = {
                 lineId: LINE_ID,
@@ -106,7 +108,7 @@ app.get('/api/qr/link', async (req, res) => {
     if (!currentQR) {
         return res.json({ status: 'loading', message: 'Generando QR, intente en 3 segundos.' });
     }
-    
+
     // Generamos la imagen Base64 para inyectar directo en un <img> en admin.html
     try {
         const qrImage = await QRCode.toDataURL(currentQR);
@@ -119,7 +121,7 @@ app.get('/api/qr/link', async (req, res) => {
 // Endpoint por si Python quiere mandar un mensaje de vuelta por esta línea
 app.post('/api/qr/send', async (req, res) => {
     if (!isConnected) return res.status(400).json({ error: 'WhatsApp offline' });
-    
+
     const { to, text } = req.body;
     try {
         const jid = `${to}@s.whatsapp.net`;
