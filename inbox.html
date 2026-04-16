@@ -1147,7 +1147,8 @@
                             oldScroll.appendChild(newNode.cloneNode(true));
                             didAppend = true;
                         } else {
-                            if (cleanHTML(oldNode.innerHTML) !== cleanHTML(newNode.innerHTML)) {
+                            // No reemplazar nodos mientras buscamos: evita layout shift que salta el scroll
+                            if (!window._isSearching && cleanHTML(oldNode.innerHTML) !== cleanHTML(newNode.innerHTML)) {
                                 const audio = oldNode.querySelector('audio');
                                 if (audio && window._currentAudio === audio && !audio.paused) {
                                     continue;
