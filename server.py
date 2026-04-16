@@ -2767,6 +2767,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             <div class="cap-progress" style="width:0%; height:100%; background:var(--primary-color); position:absolute; left:0; top:0; pointer-events:none; transition: width 0.1s linear;"></div>
                         </div>
                         <span class="cap-speed" style="font-size:0.75rem; color:var(--primary-color); font-weight:700; background:rgba(255,255,255,0.7); border-radius:10px; padding:2px 6px; min-width:32px; text-align:center; transition:background 0.2s;">1x</span>
+                        <button type="button" class="btn-transcribe" onclick="window.transcribeAudio(event, this, '{media_id}', '{wa_id}', '{m.get('id', '')}')" title="Transcribir" style="background:var(--accent-bg); border:1px solid var(--accent-border); color:var(--text-main); font-size:0.75rem; padding: 2px 6px; border-radius:10px; cursor:pointer; font-weight:600; margin-left:-2px; flex-shrink:0;" onmouseover="this.style.background='var(--accent-border)'" onmouseout="this.style.background='var(--accent-bg)'">Aa</button>
                         <span class="cap-time" style="font-size:0.75rem; color:inherit; opacity:0.8; font-weight:500; min-width:35px; text-align:right; font-family:var(--font-main);">0:00</span>
                     </div>"""
                 elif tipo == "documento":
@@ -3952,6 +3953,56 @@ async def save_sticker_media(payload: SaveMediaPayload, request: Request):
     
     guardar_sticker_en_bd(basename, contenido)
     return {"ok": True, "filename": basename}
+
+
+class TranscribePayload(BaseModel):
+    wa_id: str
+    msg_id: str
+
+@app.post("/api/transcribe/{media_id}")
+async def api_transcribe(media_id: str, payload: TranscribePayload, request: Request):
+    if not verificar_sesion(request):
+        return {"ok": False, "error": "No autorizado"}
+    
+    wa_id = payload.wa_id
+    msg_id = payload.msg_id
+    
+    if wa_id not in sesiones:
+        return {"ok": False, "error": "Sesion no encontrada"}
+        
+    await cachear_media(media_id)
+    if media_id not in media_cache:
+        return {"ok": False, "error": "No se pudo obtener el audio"}
+        
+    contenido, mime = media_cache[media_id]
+    
+    try:
+        audio_part = {
+            "mime_type": "audio/ogg",
+            "data": contenido
+        }
+        res = gemini_client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=[audio_part, "Transcribe exactamente lo que se dice en este audio. Sin comentarios tuyos, solo la transcripción limpia. Si está ininteligible, escribe '[Audio ininteligible]'. Manten el idioma original del audio."]
+        )
+        transcripcion = res.text.strip()
+    except Exception as e:
+        return {"ok": False, "error": f"Fallo al transcribir: {str(e)}"}
+        
+    # Guardar persistencia
+    encontrado = False
+    for msg in sesiones[wa_id].get("historial", []):
+        if msg.get("id") == msg_id:
+            msg["content"] += f"<br><br><b>📝 Transcripción:</b> <i>{transcripcion}</i>"
+            encontrado = True
+            break
+            
+    if encontrado:
+        from firebase_client import guardar_sesion_chat
+        guardar_sesion_chat(wa_id, sesiones[wa_id])
+        return {"ok": True, "transcripcion": transcripcion}
+    else:
+        return {"ok": False, "error": "Mensaje no encontrado en historial"}
 
 
 @app.get("/api/stickers")

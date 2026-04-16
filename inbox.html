@@ -1365,7 +1365,7 @@
 
         window.toggleAudioSpeed = function(e, container) {
             // Ignorar clics si fueron en el boton play/pause o la barra de progreso
-            if (e.target.closest('.cap-play-btn') || e.target.closest('.cap-timeline')) return;
+            if (e.target.closest('.cap-play-btn') || e.target.closest('.cap-timeline') || e.target.closest('.btn-transcribe')) return;
             
             const audio = container.querySelector('audio');
             const speedIndicator = container.querySelector('.cap-speed');
@@ -1380,6 +1380,29 @@
             
             audio.playbackRate = newSpeed;
             speedIndicator.textContent = newSpeed + 'x';
+        };
+
+        window.transcribeAudio = async function(e, btn, mediaId, waId, msgId) {
+            e.stopPropagation(); // Prevenir interaccion de speed
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span style="display:inline-block; animation: spin 1s linear infinite;">↻</span>';
+            btn.disabled = true;
+            try {
+                const res = await fetch(`/api/transcribe/${mediaId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({wa_id: waId, msg_id: msgId})
+                });
+                const data = await res.json();
+                if(!data.ok) throw new Error(data.error || 'Error en transcripcion');
+                // El texto se guardo en BD y en unos segundos el polling AJAX lo renderizara.
+                btn.innerHTML = 'Aa'; // restaurar, igual el div se recargara
+                btn.disabled = false;
+            } catch (err) {
+                alert("Fallo la transcripción: " + err.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         };
 
         window.autoResizeInput = function() {
