@@ -655,7 +655,7 @@ def get_qr_status():
     try:
         import urllib.request
         import json
-        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
+        req = urllib.request.Request("http://localhost:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=3.0) as response:
             return json.loads(response.read().decode())
     except Exception as e:

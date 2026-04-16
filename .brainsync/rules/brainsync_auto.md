@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3717 notes | Score threshold: >40
+> 3727 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,14 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "475bede4ebab97c1",
++
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Vincular — wraps unsafe operation in error bou
 - **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 
 Content summary (8
@@ -29,10 +37,6 @@ Content summary (8
 - **⚠️ GOTCHA: Patched security issue Proxy — protects against XSS and CSRF token theft** — - 
 + @app.get("/api/settings/qr_status")
 - async def procesador_agre
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3660 notes | Score threshold: >40
-+ > 3665 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 3646 notes | Score threshold: >40
-+ > 3660 notes | Score threshold
 
 ## Project Standards
 
@@ -47,7 +51,7 @@ Content summary (8
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue None — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
