@@ -1105,8 +1105,8 @@
                 // Prevenir caché del navegador
                 const url = window.location.href;
                 let fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
-                // Si estamos en modo búsqueda, pedir historico completo para no perder mensajes viejos
-                if (window._isSearching) fetchUrl += '&history=all';
+                // Si se cargó el historial completo (búsqueda de mensaje antiguo), mantenerlo en el polling
+                if (window._viewingAllHistory) fetchUrl += '&history=all';
 
                 const res = await fetch(fetchUrl, {
                     cache: 'no-store',

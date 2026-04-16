@@ -3777,55 +3777,31 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const params = new URLSearchParams(window.location.search);
                 const msgId = params.get('msg_id');
                 if (msgId) {{
-                    // Limpiar param de URL de inmediato
+                    // Marcar que este chat tiene historico completo cargado.
+                    // El polling lo usara para seguir pidiendo history=all indefinidamente,
+                    // evitando que el chat vuelva a los 70 mensajes recientes.
+                    window._viewingAllHistory = true;
+
+                    // Limpiar param de URL (sin recargar)
                     const url = new URL(window.location);
                     url.searchParams.delete('msg_id');
                     window.history.replaceState({{}}, '', url);
 
-                    function highlightAndScroll(el) {{
-                        window._isSearching = true;
-                        // Scroll instantaneo para la posicion inicial (no smooth, para no competir luego)
-                        el.scrollIntoView({{ behavior: 'instant', block: 'center' }});
-                        el.style.transition = 'all 0.5s ease';
-                        el.style.boxShadow = '0 0 0 4px var(--primary-color)';
-                        el.style.transform = 'scale(1.02)';
-
-                        // Re-anclar cuando las imagenes terminen de cargar (causan layout shift)
-                        const imgs = c.querySelectorAll('img');
-                        imgs.forEach(img => {{
-                            if (!img.complete) {{
-                                img.addEventListener('load', () => {{
-                                    if (window._isSearching) el.scrollIntoView({{ behavior: 'instant', block: 'center' }});
-                                }}, {{ once: true }});
-                            }}
-                        }});
-
-                        // ResizeObserver: re-anclar ante cualquier cambio de altura del chat
-                        let resizeTimer;
-                        const ro = new ResizeObserver(() => {{
-                            if (!window._isSearching) {{ ro.disconnect(); return; }}
-                            clearTimeout(resizeTimer);
-                            resizeTimer = setTimeout(() => el.scrollIntoView({{ behavior: 'instant', block: 'center' }}), 80);
-                        }});
-                        ro.observe(c);
-
-                        // Apagar highlight y ResizeObserver tras 5 segundos
-                        setTimeout(() => {{
-                            el.style.boxShadow = '';
-                            el.style.transform = 'scale(1)';
-                            setTimeout(() => {{
-                                window._isSearching = false;
-                                ro.disconnect();
-                            }}, 1500);
-                        }}, 3500);
-                    }}
-
-                    // Polling: hasta 40 intentos cada 150ms (= 6s maximo)
+                    // Scroll con retry hasta encontrar el elemento
                     let attempts = 0;
                     function tryScroll() {{
                         const el = document.getElementById('msg-' + msgId);
                         if (el) {{
-                            requestAnimationFrame(() => requestAnimationFrame(() => highlightAndScroll(el)));
+                            requestAnimationFrame(() => requestAnimationFrame(() => {{
+                                el.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                                el.style.transition = 'all 0.5s ease';
+                                el.style.boxShadow = '0 0 0 4px var(--primary-color)';
+                                el.style.transform = 'scale(1.02)';
+                                setTimeout(() => {{
+                                    el.style.boxShadow = '';
+                                    el.style.transform = 'scale(1)';
+                                }}, 2800);
+                            }}));
                         }} else if (attempts < 40) {{
                             attempts++;
                             setTimeout(tryScroll, 150);
