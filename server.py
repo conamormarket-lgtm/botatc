@@ -606,6 +606,60 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     return {"status": "ok"}
 
 
+# ─────────────────────────────────────────────
+#  Webhook del microservicio QR (Baileys)
+# ─────────────────────────────────────────────
+@app.post("/webhook_qr")
+async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks):
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="JSON inválido")
+
+    numero_wa = data.get("from", "")
+    texto_cliente = data.get("body", "")
+    mensaje_id = data.get("wamid", "")
+    line_id = data.get("lineId", "principal")
+
+    if not numero_wa or not mensaje_id:
+        return {"status": "ok"}
+        
+    # Anti-duplicados y memory leak
+    if mensaje_id in mensajes_procesados_ids:
+        return {"status": "ok"}
+    mensajes_procesados_ids[mensaje_id] = True
+    if len(mensajes_procesados_ids) > 1000:
+        oldest = next(iter(mensajes_procesados_ids))
+        del mensajes_procesados_ids[oldest]
+
+    # Atadura forzosa TEMPRANA: asignamos la personalidad de esta línea al chat
+    sesion = obtener_o_crear_sesion(numero_wa)
+    sesion["lineId"] = line_id
+
+    print(f"\n{'─'*50}")
+    print(f"📦 [QR: {line_id}] 📨 (+{numero_wa}): {texto_cliente}")
+
+    dict_msg = {"texto": texto_cliente, "id": mensaje_id}
+    if numero_wa not in mensajes_pendientes:
+        mensajes_pendientes[numero_wa] = [dict_msg]
+        # Por defecto "Cliente QR", el procesador luego refrescará de Firebase si existe
+        background_tasks.add_task(procesador_agregado, numero_wa, "Cliente") 
+    else:
+        mensajes_pendientes[numero_wa].append(dict_msg)
+
+    return {"status": "ok"}
+
+@app.get("/api/settings/qr_status")
+async def get_qr_status():
+    """Proxy local para consultar el estado del microservicio Baileys Node.js"""
+    try:
+        import httpx
+        async with httpx.AsyncClient() as client:
+            resp = await client.get("http://127.0.0.1:3000/api/qr/link", timeout=3.0)
+            return resp.json()
+    except Exception as e:
+        return {"status": "error", "message": "El servicio QR de fondo no está en ejecución o está arrancando."}
+
 async def procesador_agregado(numero_wa: str, nombre: str):
     """
     Espera 3.0 segundos de 'silencio' para ver si el cliente manda otro mensaje rápido.

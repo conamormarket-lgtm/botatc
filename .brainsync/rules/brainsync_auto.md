@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 3660 notes | Score threshold: >40
+> 3667 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3660 notes | Score threshold: >40
++ > 3665 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 3646 notes | Score threshold: >40
++ > 3660 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3624 notes | Score threshold: >40
 + > 3629 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — introduces API versioning for backward compatibility** — - > 3622 notes | Score threshold: >40
@@ -29,19 +33,17 @@
 -     
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 3603 notes | Score threshold: >40
 + > 3611 notes | Score threshold
-- **⚠️ GOTCHA: Updated schema GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
-- **⚠️ GOTCHA: Updated schema GOTCHA — introduces API versioning for backward compatibility** — - - ⚠️ GOTCHA: Optimized GOTCHA — introduces API versioning for backwa
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 6x
+- Optimized Score — introduces API versioning for backward compatibility — confirmed 3x
 - what-changed in shared-context.json — confirmed 9x
 - problem-fix in agent-rules.md — confirmed 7x
 - what-changed in shared-context.json — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
-- Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
@@ -53,7 +55,7 @@
 
 ## Recent Decisions
 
-- Optimized Score — introduces API versioning for backward compatibility
+- Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized Score — introduces API versioning for backward compatibility
