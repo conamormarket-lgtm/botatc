@@ -2514,7 +2514,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     labels_filter_html += "</div>"
 
     labels_filter_html += f"""
-        <button type="button" onclick="const m = document.getElementById(\'inboxFilterMenu\'); m.style.display = m.style.display===\'none\'?\'flex\':\'none\';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
         <button type="button" onclick="const m = document.getElementById('inboxFilterMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             {active_label_name}
@@ -3938,8 +3937,8 @@ async def update_user_theme(
     return {"ok": True}
 
 @app.get("/inbox", response_class=HTMLResponse)
-async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None):
-    return renderizar_inbox(request, None, tab, label, unread)
+async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
+    return renderizar_inbox(request, None, tab, label, unread, line)
 
 from typing import List
 
@@ -4025,8 +4024,8 @@ def get_wallpaper_image(filename: str):
 
 
 @app.get("/inbox/{wa_id}", response_class=HTMLResponse)
-async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None):
-    return renderizar_inbox(request, wa_id, tab, label, unread)
+async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
+    return renderizar_inbox(request, wa_id, tab, label, unread, line)
 
 @app.get("/debug")
 async def debug_sesiones():

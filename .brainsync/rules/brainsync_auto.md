@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4024 notes | Score threshold: >40
+> 4064 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,15 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- -
+- **⚠️ GOTCHA: Fixed null crash in Historial** — -                     // Marcar que este chat tiene historico completo
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: problem-fix in agent-
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
++ - problem-fix in agent-rules.md
+- -
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -28,32 +37,21 @@
 +       "id": "ea168ce38c4470ee",
 +
 - **⚠️ GOTCHA: Fixed null crash in Limpiar — fixes memory leak from uncleared timers** — -                     const initialTarget = document.getElementById('m
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - Patched security issue Kevi
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.
-- **⚠️ GOTCHA: Fixed null crash in Todas — parallelizes async operations for speed** — -     labels_filter_html = f"""
-+     
--     <div style="position:re
-- **⚠️ GOTCHA: Patched security issue Restaurar — protects against XSS and CSRF token theft** — - import threading
-+ @app.on_event("startup")
-- import subprocess
-+
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 4x
+- Optimized GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- problem-fix in agent-rules.md — confirmed 5x
+- what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 9x
 - Optimized GOTCHA — introduces API versioning for backward compatibility — confirmed 4x
 - problem-fix in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — introduces API versioning for backward comp... — confirmed 5x
-- Fixed null crash in DOCTYPE — wraps unsafe operation in error boundary — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- Fixed null crash in Limpiar — confirmed 3x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Limpiar
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Marcar
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md
@@ -61,10 +59,10 @@
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized GOTCHA — introduces API versioning for backward compatibility
 - Optimized GOTCHA — introduces API versioning for backward compatibility
-- Optimized GOTCHA — introduces API versioning for backward compatibility
-- decision in index.js
 
 ## Learned Patterns
 
