@@ -21,6 +21,7 @@ import atexit
 
 from fastapi import FastAPI, Request, HTTPException, Form, UploadFile, File, BackgroundTasks
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
@@ -2466,25 +2467,8 @@ async def shutdown_event():
         node_qr_process.terminate()
         node_qr_process.wait()
 
-@app.on_event('startup')
-async def startup_event():
-    global node_qr_process
-    qr_dir = os.path.join(os.path.dirname(__file__), 'qr_service')
-    if os.path.exists(qr_dir):
-        try:
-            print('Iniciando Node.js (QR)...')
-            node_qr_process = subprocess.Popen(['node', 'index.js'], cwd=qr_dir)
-        except Exception as e:
-            print('Error iniciando Node:', e)
-
-@app.on_event('shutdown')
-async def shutdown_event():
-    global node_qr_process
-    if node_qr_process:
-        node_qr_process.terminate()
-
 # ------------------------------------------------------------
-# 3. UTILS Y FIREBASE"
+# 3. UTILS Y FIREBASE
 
     def ultimo_msg(sesion):
         hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
