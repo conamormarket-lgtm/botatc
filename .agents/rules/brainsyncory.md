@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4314 notes | Score threshold: >40
+> 4364 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,33 +18,31 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -     
-+ 
--     # ── Detectar si este chat pertenece a la línea QR y
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - Fixed null crash in DisconnectRea
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4291 notes | Score threshold: >40
-+ > 4301 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in LIDs
-+ - Patched security issue Kevin
-- - prob
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4288 notes | Score threshold: >40
-+ > 4291 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4262 notes | Score threshold: >40
-+ > 4288 notes | Score threshold
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Optimized Score — evolv
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4355 notes | Score threshold: >40
++ > 4358 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4353 notes | Score threshold: >40
++ > 4355 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4349 notes | Score threshold: >40
++ > 4353 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 4343 notes | Score threshold: >40
++ > 4349 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Optimized Score — evolv
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 4x
-- Updated schema GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 9x
-- problem-fix in agent-rules.md — confirmed 9x
-- Updated schema GOTCHA — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
-- Fixed null crash in Guardar — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
+- trade-off in shared-context.json — confirmed 3x
+- Optimized GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 10x
+- Patched security issue Kevin — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 4x
+- what-changed in shared-context.json — confirmed 5x
 
 ## Known Fixes
 
