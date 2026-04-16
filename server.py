@@ -3998,7 +3998,7 @@ async def api_transcribe(media_id: str, payload: TranscribePayload, request: Req
     encontrado = False
     for msg in sesiones[wa_id].get("historial", []):
         if msg.get("msg_id") == msg_id or msg.get("id") == msg_id:
-            msg["content"] += f"\n\n📝 Transcripción: {transcripcion}"
+            msg["content"] += f"<br><br><b>📝 Transcripción:</b> <i>{transcripcion}</i>"
             encontrado = True
             break
             
