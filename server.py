@@ -2509,7 +2509,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=principal" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'principal' else 'transparent'};">Línea Principal</a>
 """
     for q_id, q_name in aliases.items():
-        labels_filter_html += f'<a href="{{base_url}}?tab={{tab}}&label={{label_filter or ""}}&unread={{unread or ""}}&line={{q_id}}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
+        labels_filter_html += f'<a href="{base_url}?tab={tab}&label={label_filter or ""}&unread={unread or ""}&line={q_id}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
         
     labels_filter_html += "</div>"
 
