@@ -145,58 +145,6 @@ if os.path.exists("static"):
 
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
-import subprocess
-import os
-node_qr_process = None
-
-@app.on_event('startup')
-def start_node_service():
-    global node_qr_process
-    qr_dir = os.path.join(os.path.dirname(__file__), 'qr_service')
-    if os.path.exists(qr_dir):
-        try:
-            print('?? [FastAPI] Iniciando microservicio QR Baileys (Node.js)...')
-            node_exe = 'node'
-            # --- Auto-descubridor/Instalador de Node.js portable ---
-            import platform
-            if platform.system() == 'Linux':
-                node_bin_dir = os.path.join(os.path.dirname(__file__), 'node_portable')
-                node_portable_exe = os.path.join(node_bin_dir, 'node-v20.12.2-linux-x64', 'bin', 'node')
-                if not os.path.exists(node_portable_exe):
-                    try:
-                        subprocess.run(['node', '-v'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    except (FileNotFoundError, Exception):
-                        import urllib.request, tarfile
-                        print('No hay Node.js nativo. Descargando Node.js portable para Linux...')
-                        tar_path = os.path.join(os.path.dirname(__file__), 'node.tar.gz')
-                        if not os.path.exists(tar_path):
-                            urllib.request.urlretrieve('https://nodejs.org/dist/v20.12.2/node-v20.12.2-linux-x64.tar.gz', tar_path)
-                        with tarfile.open(tar_path) as tar:
-                            tar.extractall(path=node_bin_dir)
-                if os.path.exists(node_portable_exe):
-                    node_exe = node_portable_exe
-                    os.chmod(node_exe, 0o755)
-            # --------------------------------------------------------
-            print('?? [FastAPI] Ejecutando npm install...')
-            try:
-                npm_cli = os.path.join(os.path.dirname(node_exe), '..', 'lib', 'node_modules', 'npm', 'bin', 'npm-cli.js')
-                if not os.path.exists(npm_cli): npm_cli = 'npm'
-                subprocess.run([node_exe, npm_cli, 'install', 'express', '@whiskeysockets/baileys', 'pino', 'qrcode', 'axios'], cwd=qr_dir, check=False)
-            except Exception as e:
-                print('Error en npm install:', e)
-            node_qr_process = subprocess.Popen([node_exe, 'index.js'], cwd=qr_dir, stdout=open('static/node_log.txt', 'w'), stderr=open('static/node_err.txt', 'w'))
-        except Exception as e:
-            print('? Error al iniciar Node:', e)
-            with open('static/node_status.txt', 'w') as f:
-                f.write(f'PYTHON EXCEPTION:\\n{e}')
-
-@app.on_event('shutdown')
-def stop_node_service():
-    global node_qr_process
-    if node_qr_process:
-        try: node_qr_process.terminate()
-        except: pass
-
 @app.on_event("startup")
 def startup_event():
     # ── Restaurar toda la memoria y stickers desde Firebase ──
@@ -707,7 +655,7 @@ def get_qr_status():
     try:
         import urllib.request
         import json
-        req = urllib.request.Request("http://127.0.0.1:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
+        req = urllib.request.Request("http://localhost:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=3.0) as response:
             return json.loads(response.read().decode())
     except Exception as e:
@@ -4720,14 +4668,6 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Acción inválida"}
-
-
-
-
-
-
-
-
 
 
 

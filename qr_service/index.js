@@ -132,4 +132,3 @@ app.listen(PORT, '127.0.0.1', () => {
     console.log(`Servicio QR de Baileys escuchando en puerto ${PORT} (Loopback 127.0.0.1)`);
     connectToWhatsApp();
 });
-
