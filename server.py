@@ -47,6 +47,7 @@ def inyectar_tema_global(request, html: str) -> str:
     wp = prefs.get('wallpaper', '')
     wp_opacity = float(prefs.get('wallpaper_opacity', '0.15'))
     wp_offset_y = prefs.get('wallpaper_offset_y', '50')
+    wp_offset_x = prefs.get('wallpaper_offset_x', '50')
     t_main = prefs.get('text_main', '#f8fafc')
     t_muted = prefs.get('text_muted', '#94a3b8')
 
@@ -103,7 +104,7 @@ def inyectar_tema_global(request, html: str) -> str:
             }}
             '''
             video_tag = f'''
-            <video autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position: center {wp_offset_y}%; z-index:-2; pointer-events:none;"><source src="{wp}"></video>
+            <video autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position: {wp_offset_x}% {wp_offset_y}%; z-index:-2; pointer-events:none;"><source src="{wp}"></video>
             <div style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; background-color:{overlay_rgba};"></div>
             '''
             # Inyectamos el video dentro del panel visor de chat para no superponer listas u otros paneles
@@ -117,7 +118,7 @@ def inyectar_tema_global(request, html: str) -> str:
             .chat-viewer-panel {{
                 background: linear-gradient({overlay_rgba}, {overlay_rgba}), url('{wp}') !important;
                 background-size: cover !important;
-                background-position: center {wp_offset_y}% !important;
+                background-position: {wp_offset_x}% {wp_offset_y}% !important;
             }}
             '''
             
@@ -142,6 +143,7 @@ def inyectar_tema_global(request, html: str) -> str:
     html = html.replace("{wallpaper}", wp)
     html = html.replace("{wallpaper_opacity}", str(wp_opacity))
     html = html.replace("{wallpaper_offset_y}", str(wp_offset_y))
+    html = html.replace("{wallpaper_offset_x}", str(wp_offset_x))
     html = html.replace("{text_main}", t_main)
     html = html.replace("{text_muted}", t_muted)
     return html
@@ -3941,6 +3943,7 @@ async def update_user_theme(
     wallpaper: str = Form(None), 
     wallpaper_opacity: str = Form("0.15"),
     wallpaper_offset_y: str = Form("50"),
+    wallpaper_offset_x: str = Form("50"),
     wallpaper_file: UploadFile = File(None)
 ):
     if not verificar_sesion(request):
@@ -3978,7 +3981,8 @@ async def update_user_theme(
         "text_muted": text_muted or "#94a3b8",
         "wallpaper": wallpaper or "",
         "wallpaper_opacity": wallpaper_opacity or "0.15",
-        "wallpaper_offset_y": wallpaper_offset_y or "50"
+        "wallpaper_offset_y": wallpaper_offset_y or "50",
+        "wallpaper_offset_x": wallpaper_offset_x or "50"
     }
     
     username = usuario_sesion.get("username")
