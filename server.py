@@ -739,9 +739,12 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             except Exception as e:
                 pass
 
-    global BOT_GLOBAL_ACTIVO
-    if not BOT_GLOBAL_ACTIVO:
-        print(f"  [⏹ Bot APAGADO globalmente → silencio (guardado en BD)]")
+    from bot_manager import get_bot_for_line, is_bot_active
+    line_id = sesion.get("lineId", "principal")
+    bot_id = get_bot_for_line(line_id)
+
+    if not bot_id or not is_bot_active(bot_id):
+        print(f"  [⏹ Bot no asignado o inactivo para la línea '{line_id}' → silencio (humano atiende)]")
         return None
 
     # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
@@ -784,7 +787,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     sesion["esperando_pedido_tester"] = False
                     sesion["datos_pedido"] = datos
                     sesion["nombre_cliente"] = f"{datos.get('clienteNombre','')} {datos.get('clienteApellidos','')}".strip() or nombre
-                    sesion["historial"][0] = {"role": "system", "content": get_system_prompt(datos)}
+                    sesion["historial"][0] = {"role": "system", "content": get_system_prompt(datos, bot_id)}
                     print(f"  [🧪 TESTER: Pedido '{id_pedido}' cargado]")
                 else:
                     msg = f"[ERROR] No encontré ningún pedido con el ID '{texto_cliente.strip()}'. Inténtalo de nuevo (escribe solo el ID exacto)."
@@ -827,7 +830,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 
                 sesion["historial"][0] = {
                     "role": "system",
-                    "content": get_system_prompt(pedidos_no_diseno)
+                    "content": get_system_prompt(pedidos_no_diseno, bot_id)
                 }
             else:
                 print(f"  [❓ Sin pedido registrado → silencio]")
@@ -848,7 +851,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     sesion["datos_pedido"] = pedidos_no_diseno[0]
                     sesion["pedidos_multiples"] = pedidos_no_diseno
                     if sesion["historial"] and sesion["historial"][0]["role"] == "system":
-                        sesion["historial"][0]["content"] = get_system_prompt(pedidos_no_diseno)
+                        sesion["historial"][0]["content"] = get_system_prompt(pedidos_no_diseno, bot_id)
         else:
             # Re-fetch the specific manual ID for the tester
             id_tester = sesion["datos_pedido"].get("id")
@@ -862,7 +865,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                         sesion["datos_pedido"] = datos_tester
                         if sesion["historial"] and sesion["historial"][0]["role"] == "system":
                             # Mantener formato de lista si usa el nuevo modelo multipedido
-                            sesion["historial"][0]["content"] = get_system_prompt([datos_tester] if "pedidos_multiples" in sesion else datos_tester)
+                            sesion["historial"][0]["content"] = get_system_prompt([datos_tester] if "pedidos_multiples" in sesion else datos_tester, bot_id)
                 except:
                     pass
 
@@ -4458,7 +4461,32 @@ async def api_save_line(payload: LineAliasPayload, request: Request):
     aliases[payload.id] = payload.name
     with open("line_aliases.json", "w") as f:
         json.dump(aliases, f, ensure_ascii=False, indent=2)
+        
+    from bot_manager import set_bot_for_line
+    set_bot_for_line(payload.id, payload.bot_id)
+        
     return {"ok": True}
+
+@app.get("/api/bots/config")
+async def api_get_bots_config(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from bot_manager import _load_config
+    return {"ok": True, "config": _load_config()}
+
+class BotConfigPayload(BaseModel):
+    config: dict
+
+@app.post("/api/bots/config")
+async def api_save_bots_config(payload: BotConfigPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    from bot_manager import _save_config
+    try:
+        _save_config(payload.config)
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 @app.delete("/api/admin/lines/{line_id}")
 async def api_delete_line(line_id: str, request: Request):
