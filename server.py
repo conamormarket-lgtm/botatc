@@ -1527,6 +1527,19 @@ async def download_chats_backup(request: Request):
         media_type="application/zip"
     )
 
+@app.get("/api/admin/pedidos_por_telefono")
+async def api_pedidos_por_telefono(request: Request, num: str):
+    if not verificar_sesion(request):
+        return JSONResponse({"ok": False, "error": "No autenticado"}, status_code=401)
+    
+    from firebase_client import buscar_pedido_por_telefono
+    try:
+        # buscar_pedido_por_telefono hace limpieza del número y busca variantes, retornando hasta 5 pedidos
+        pedidos = buscar_pedido_por_telefono(num)
+        return {"ok": True, "pedidos": pedidos}
+    except Exception as e:
+        return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+
 @app.get("/admin", response_class=HTMLResponse)
 async def panel_admin(request: Request):
     """Panel web de administración mejorado."""
@@ -3132,6 +3145,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         </h3>
                         <small style="color:var(--text-muted)">+{wa_id}</small>
                     </div>
+
+                    <!-- Botón Ver Pedido ERP -->
+                    <button type="button" onclick="abrirModalPedido('{wa_id}')" style="background:linear-gradient(135deg, var(--primary-color), #059669); color:white; border:none; padding:0.4rem 0.8rem; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:0.4rem; margin-right:0.5rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        Ver Pedido
+                    </button>
+
                     <!-- Botón de gestionar etiquetas -->
                     <div style="position:relative;">
                         <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">

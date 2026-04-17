@@ -3042,12 +3042,392 @@
             window.renderPendingMediaUI();
         }
     </script>
+    <style>
+    /* CSS para el modal de Ver Pedido */
+    .erp-modal-overlay {
+        display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(15, 23, 42, 0.7); z-index: 100000;
+        align-items: center; justify-content: center; backdrop-filter: blur(4px);
+        font-family: var(--font-main);
+    }
+    .erp-modal-content {
+        background: #f8fafc; width: 95%; max-width: 850px; max-height: 90vh;
+        border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+    .erp-modal-header {
+        padding: 1rem 1.5rem; background: white; border-bottom: 1px solid #e2e8f0;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .erp-modal-header h2 {
+        margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;
+    }
+    .erp-modal-close {
+        background: none; border: none; font-size: 1.5rem; color: #94a3b8;
+        cursor: pointer; transition: color 0.2s;
+    }
+    .erp-modal-close:hover { color: #0f172a; }
+    
+    .erp-modal-body {
+        padding: 1.5rem; overflow-y: auto; flex: 1; display:flex; flex-direction:column; gap:1.5rem;
+    }
+    
+    .erp-card {
+        background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    }
+    .erp-card-header {
+        padding: 1rem 1.5rem; background: #3b82f6; display: flex; justify-content: space-between;
+        align-items: center; color: white; cursor: pointer; user-select: none; transition: background 0.2s;
+    }
+    .erp-card-header:hover { background: #2563eb; }
+    .erp-card-title { margin: 0; font-size: 1.1rem; font-weight: 700; }
+    
+    .erp-badge {
+        font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.75rem; border-radius: 9999px;
+        background: #64748b; color: white; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .erp-card-body { padding: 1.5rem; }
+    
+    .erp-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+    }
+    .erp-field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .erp-label { font-size: 0.85rem; font-weight: 800; color: #0f172a; }
+    .erp-value { font-size: 0.95rem; color: #334155; font-weight: 500; }
+    .erp-muted { font-size: 0.85rem; color: #64748b; font-weight: 400; }
+    
+    .erp-alert {
+        padding: 1rem; border-radius: 12px; font-weight: 700; font-size: 0.95rem;
+    }
+    .erp-saldo-ok { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
+    .erp-saldo-pending { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
+    .erp-saldo-pending-amount { font-size: 1.15rem; font-weight: 800; color: #ea580c; display:block;}
+    
+    .erp-tags-box {
+        margin: 1.5rem 0; background: #fef2f2; border: 2px solid #fca5a5;
+        padding: 1rem; border-radius: 12px;
+    }
+    .erp-title-section {
+        font-size: 0.75rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.05em; text-transform: uppercase;
+        margin: 1.5rem 0 1rem 0; border-top: 1px solid #f1f5f9; padding-top: 1.25rem;
+    }
+    
+    .erp-stage-bar {
+        display: flex; justify-content: space-between; position: relative; margin-top: 1rem; margin-bottom: 1rem; width: 100%;
+    }
+    .erp-stage-bg-line {
+        position: absolute; top: 14px; left: calc(100%/14); right: calc(100%/14); height: 4px;
+        background: #e2e8f0; border-radius: 4px; z-index: 0;
+    }
+    .erp-stage-fg-line {
+        position: absolute; top: 14px; left: calc(100%/14); height: 4px; z-index: 0;
+        transition: all 0.7s; border-radius: 4px;
+    }
+    .erp-stage-step {
+        display: flex; flex-direction: column; justify-content: flex-start; z-index: 10; width: 14.28%; align-items:center;
+    }
+    .erp-stage-circle {
+        width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        border: 2px solid; background: white; transition: all 0.3s;
+    }
+    .erp-stage-label { font-size: 0.65rem; margin-top: 0.4rem; font-weight: 600; text-align: center; }
+    
+    @media (max-width: 768px) {
+        .erp-grid { grid-template-columns: 1fr; }
+        .erp-stage-label { font-size: 0.55rem; }
+        .erp-stage-circle { width: 24px; height: 24px; }
+        .erp-stage-bg-line, .erp-stage-fg-line { top: 10px; }
+    }
+    
+    /* Spinner Loader */
+    .erp-loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3b82f6;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 2rem auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    
+    <div class="erp-modal-overlay" id="erpModal">
+        <div class="erp-modal-content">
+            <div class="erp-modal-header">
+                <h2>Pedidos del CRM (ERP)</h2>
+                <button class="erp-modal-close" onclick="cerrarModalPedido()">&times;</button>
+            </div>
+            <div class="erp-modal-body" id="erpModalBody">
+                <div class="erp-loader"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    const ERP_ETAPAS = [
+        { key: "diseño", label: "Diseño", color: "#A855F7" },
+        { key: "impresion", label: "Impresión", color: "#EAB308" },
+        { key: "preparacion", label: "Preparación", color: "#3B82F6" },
+        { key: "estampado", label: "Estampado", color: "#F97316" },
+        { key: "empaquetado", label: "Empaquetado", color: "#10B981" },
+        { key: "reparto", label: "Reparto", color: "#14B8A6" },
+        { key: "entregado", label: "Entregado", color: "#22C55E" }
+    ];
+    
+    function getStageIndex(estadoGeneral) {
+        const s = (estadoGeneral || "").toLowerCase();
+        if (s.includes("entregado")) return 6;
+        if (s.includes("reparto")) return 5;
+        if (s.includes("empaquetado")) return 4;
+        if (s.includes("estampado")) return 3;
+        if (s.includes("preparac") || s.includes("listo para")) return 2;
+        if (s.includes("impres")) return 1;
+        if (s.includes("diseño")) return 0;
+        return -1;
+    }
+    
+    function getStatusColor(status) {
+        const s = (status || "").toLowerCase();
+        if (s.includes("estampado")) return "#f97316";
+        if (s.includes("preparado") || s.includes("listo para") || s.includes("empaquetado")) return "#22c55e";
+        if (s.includes("diseño")) return "#a855f7";
+        if (s.includes("cobranza")) return "#eab308";
+        if (s.includes("reparto") || s.includes("entregado")) return "#14b8a6";
+        return "#64748b";
+    }
+    
+    function formatMoneyStrict(amount) {
+        return Number(amount || 0).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    
+    function formatNumeroPedido(pedido) {
+        const n = pedido.numeroPedido || pedido.id || "S/N";
+        return String(n).padStart(6, '0');
+    }
+    
+    function formatDescPrendas(pedido) {
+        if (Array.isArray(pedido.prendas) && pedido.prendas.length > 0) {
+            return pedido.prendas.map(p => `${p.tipoPrenda} ${p.color} (${p.talla})`).join(' - ');
+        }
+        if (pedido.productos && Array.isArray(pedido.productos) && pedido.productos.length > 0) {
+            let prendasProd = [];
+            pedido.productos.forEach(p => {
+                if (Array.isArray(p.detallesPrenda) && p.detallesPrenda.length > 0) {
+                    p.detallesPrenda.forEach(d => prendasProd.push(`${d.tipoPrenda} ${d.color} (${d.talla})`));
+                }
+            });
+            if (prendasProd.length > 0) return prendasProd.join(' - ');
+            return pedido.productos.map(p => p.nombre || p.tipoProducto || "Producto").join(' - ');
+        }
+        if (pedido.talla) return pedido.talla;
+        return "No especificado";
+    }
+    
+    function renderStageBar(pedido) {
+        const currIdx = getStageIndex(pedido.estadoGeneral);
+        
+        let html = `<div class="erp-stage-bar">`;
+        html += `<div class="erp-stage-bg-line"></div>`;
+        
+        if (currIdx >= 0) {
+            const width = currIdx === 0 ? `calc(100% / 14)` : `calc(${currIdx} / ${ERP_ETAPAS.length - 1} * (100% - 100% / 7) + 100% / 14)`;
+            const bg = ERP_ETAPAS[currIdx]?.color || "#6B7280";
+            html += `<div class="erp-stage-fg-line" style="width: ${width}; background: ${bg}; max-width: calc(100% - 100% / 7);"></div>`;
+        }
+        
+        ERP_ETAPAS.forEach((etapa, idx) => {
+            const isPast = idx < currIdx;
+            const isCurrent = idx === currIdx;
+            const isFuture = idx > currIdx;
+            
+            let circleStyle = `border-color: ${isFuture ? '#cbd5e1' : etapa.color}; background-color: ${isFuture ? '#f1f5f9' : etapa.color};`;
+            if (isCurrent) circleStyle += ` box-shadow: 0 0 0 4px ${etapa.color}33, 0 2px 8px ${etapa.color}55; transform: scale(1.18);`;
+            
+            let innerHTML = isPast ? `<span style="color:white; font-size:12px; font-weight:bold;">✓</span>` :
+                            (isCurrent ? `<div style="width:10px; height:10px; background:white; border-radius:50%;"></div>` :
+                                         `<div style="width:10px; height:10px; background:#cbd5e1; border-radius:50%;"></div>`);
+    
+            html += `
+            <div class="erp-stage-step">
+                <div class="erp-stage-circle" style="${circleStyle}">
+                    ${innerHTML}
+                </div>
+                <span class="erp-stage-label" style="color: ${isFuture ? '#94A3B8' : (isCurrent ? etapa.color : '#475569')}; font-weight: ${isCurrent ? 800 : (isPast ? 600 : 400)};">
+                    ${etapa.label}
+                </span>
+            </div>`;
+        });
+        
+        html += `</div>`;
+        return html;
+    }
+    
+    function formatFechaCorta(raw) {
+        if(!raw) return "No disponible";
+        try {
+            let d;
+            if(raw._seconds) { d = new Date(raw._seconds * 1000); }
+            else if(typeof raw === 'string') { d = new Date(raw); }
+            else return "No disponible";
+            
+            if (isNaN(d.getTime())) return "No disponible";
+            return d.toLocaleDateString("es-PE", { day: "2-digit", month: "short", year: "numeric" });
+        } catch { return "No disponible"; }
+    }
+    
+    function generarTarjetaPedido(pedido, index) {
+        const totalA = Number(pedido.cobranza?.montoTotalAnadidos || pedido.diseño?.montoTotalAnadidos) || 0;
+        const totalC = Number(pedido.cobranza?.montoTotalComplementos || pedido.diseño?.montoTotalComplementos) || 0;
+        const totalCalc = (pedido.montoTotal || 0) + (pedido.montoEnvio || 0) + (pedido.costoDiseñoTotal || 0) + totalA + totalC;
+        
+        let deuda = Number(pedido.deudaTotal);
+        if (isNaN(deuda)) deuda = pedido.montoPendiente !== undefined ? pedido.montoPendiente : Math.max(0, totalCalc - (pedido.montoAdelanto || 0));
+        
+        const saldoPendiente = Math.max(0, deuda);
+        const isPaid = saldoPendiente === 0;
+        const statusColor = getStatusColor(pedido.estadoGeneral);
+        
+        return `
+        <div class="erp-card">
+            <div class="erp-card-header" onclick="let b = document.getElementById('body-pedido-${pedido.id}'); b.style.display = b.style.display === 'none' ? 'block' : 'none';">
+                <div style="display:flex; align-items:center; gap:0.5rem;"><h3 class="erp-card-title">Pedido: #${formatNumeroPedido(pedido)}</h3></div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <span class="erp-badge" style="background: ${statusColor}; border:1px solid rgba(255,255,255,0.4); box-shadow: 0 1px 3px rgba(0,0,0,0.1);">${pedido.estadoGeneral || "DESCONOCIDO"}</span>
+                    <span style="opacity:0.8;">▼</span>
+                </div>
+            </div>
+            
+            <div class="erp-card-body" id="body-pedido-${pedido.id}" style="display: ${index === 0 ? 'block' : 'none'};">
+                <div class="erp-title-section" style="margin-top:0; border-top:none; padding-top:0;">INFORMACIÓN</div>
+                
+                <div class="erp-grid">
+                    <div class="erp-field">
+                        <span class="erp-label">Cliente:</span>
+                        <span class="erp-value">${pedido.clienteNombre || "No especificado"}</span>
+                        <span class="erp-muted">(DNI: ${pedido.clienteNumeroDocumento || "N/A"} / Tel: ${pedido.clienteContacto || "N/A"})</span>
+                    </div>
+                    
+                    <div class="erp-field">
+                        <span class="erp-label">Destino:</span>
+                        <span class="erp-value">${pedido.envioDestino || "No disponible"}</span>
+                        ${(pedido.envioDepartamento || pedido.envioProvincia || pedido.envioDistrito) ? `
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px; border-radius:8px; display:flex; flex-wrap:wrap; gap:10px; margin-top:5px; font-size:0.85rem;">
+                            ${pedido.envioDepartamento ? `<div><b>Dpto:</b> ${pedido.envioDepartamento}</div>` : ''}
+                            ${pedido.envioProvincia ? `<div><b>Prov:</b> ${pedido.envioProvincia}</div>` : ''}
+                            ${pedido.envioDistrito ? `<div><b>Dist:</b> ${pedido.envioDistrito}</div>` : ''}
+                        </div>` : ''}
+                    </div>
+                    
+                    <div class="erp-field">
+                        <span class="erp-label">Vendedor:</span>
+                        <span class="erp-value">${pedido.vendedor || "No especificado"}</span>
+                    </div>
+                    
+                    <div class="erp-field">
+                        <span class="erp-label">Fecha de Venta:</span>
+                        <span class="erp-value">${formatFechaCorta(pedido.createdAt || pedido.fechaRegistro)}</span>
+                    </div>
+                    
+                    <div class="erp-field" style="grid-column: 1 / -1;">
+                        <span class="erp-label">Tallas/Desc:</span>
+                        <span class="erp-value">${formatDescPrendas(pedido)}</span>
+                    </div>
+                    
+                    <div class="erp-field">
+                        <span class="erp-label">Adelantado:</span>
+                        <span class="erp-value">S/ ${formatMoneyStrict(pedido.montoAdelanto || 0)}</span>
+                    </div>
+                    
+                    <div class="erp-field">
+                        <span class="erp-label">Total:</span>
+                        <span class="erp-value" style="font-size:1.1rem; font-weight:700;">S/ ${formatMoneyStrict(totalCalc)}</span>
+                    </div>
+                    
+                    <div class="erp-field" style="grid-column: 1 / -1;">
+                        <div class="erp-alert ${isPaid ? 'erp-saldo-ok' : 'erp-saldo-pending'}">
+                            ${isPaid ? '✅ PEDIDO PAGADO: Cancelado al 100%' : `💰 SALDO PENDIENTE: <span class="erp-saldo-pending-amount">S/ ${formatMoneyStrict(saldoPendiente)}</span>`}
+                        </div>
+                    </div>
+                </div>
+                
+                ${pedido.notasDiseño ? `
+                <div style="background:#fffbeb; border:1px solid #fde68a; padding:1rem; border-radius:12px; margin-bottom:1.5rem;">
+                    <div style="font-size:0.75rem; font-weight:800; color:#d97706; margin-bottom:0.5rem; display:flex; align-items:center; gap:5px;">⚠️ NOTAS DE DISEÑO</div>
+                    <div style="font-size:0.9rem; color:#92400e; font-weight:500; white-space:pre-wrap;">${pedido.notasDiseño}</div>
+                </div>` : ''}
+                
+                ${pedido.etiquetaEmpaquetado ? `
+                <div class="erp-tags-box">
+                    <div style="font-size:0.75rem; font-weight:800; color:#dc2626; margin-bottom:0.5rem; display:flex; align-items:center; gap:5px;">⚠️ ETIQUETA / ESTADO EMPAQUE</div>
+                    <div style="font-size:1.2rem; font-weight:900; color:#dc2626; text-transform:uppercase; letter-spacing:0.05em;">${pedido.etiquetaEmpaquetado}</div>
+                </div>` : ''}
+                
+                <div class="erp-title-section">ETAPA DEL PEDIDO</div>
+                ${renderStageBar(pedido)}
+                
+            </div>
+        </div>`;
+    }
+    
+    let erpAbortController = null;
+    
+    async function abrirModalPedido(wa_id) {
+        document.getElementById('erpModal').style.display = 'flex';
+        document.getElementById('erpModalBody').innerHTML = '<div class="erp-loader"></div>';
+        
+        if (erpAbortController) {
+            erpAbortController.abort();
+        }
+        erpAbortController = new AbortController();
+        
+        try {
+            const numToSearch = wa_id.replace(/\D/g, "");
+            const res = await fetch(`/api/admin/pedidos_por_telefono?num=${numToSearch}`, { signal: erpAbortController.signal });
+            const data = await res.json();
+            
+            let container = document.getElementById('erpModalBody');
+            container.innerHTML = ""; // Limpiar spinner
+            
+            if (!data.ok || !data.pedidos || data.pedidos.length === 0) {
+                container.innerHTML = `
+                <div style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:1rem; border-radius:12px; font-weight:600; text-align:center;">
+                    No se encontró historial de pedidos en el ERP para este número de contacto (+${numToSearch}).
+                </div>`;
+                return;
+            }
+            
+            if (data.pedidos.length > 1) {
+                let infobar = document.createElement('div');
+                infobar.style = "background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; padding:0.75rem; border-radius:10px; font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:8px;";
+                infobar.innerHTML = `🔍 Se encontraron <b>${data.pedidos.length}</b> pedidos de este contacto. Los 5 más recientes:`;
+                container.appendChild(infobar);
+            }
+            
+            data.pedidos.forEach((p, i) => {
+                let div = document.createElement('div');
+                div.innerHTML = generarTarjetaPedido(p, i);
+                container.appendChild(div);
+            });
+            
+        } catch(err) {
+            if (err.name === 'AbortError') return;
+            document.getElementById('erpModalBody').innerHTML = `<div style="color:red; font-weight:bold; text-align:center;">Error de red al consultar pedidos ERP.</div>`;
+            console.error(err);
+        }
+    }
+    
+    function cerrarModalPedido() {
+        if (erpAbortController) erpAbortController.abort();
+        document.getElementById('erpModal').style.display = 'none';
+        document.getElementById('erpModalBody').innerHTML = ""; // clean up RAM
+    }
+    
+    // Cerrar clickeando afuera
+    document.getElementById('erpModal').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalPedido();
+    });
+    </script>
 </body>
-
-</html>
-
-
-
-
-
 

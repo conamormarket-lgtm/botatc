@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4474 notes | Score threshold: >40
+> 4481 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -43,24 +43,16 @@
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4430 notes | Score threshold: >40
 + > 4446 notes | Score threshold
 
-## Active: `qr_service`
-
-- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x**
-- **Fixed null crash in Guardar — confirmed 3x**
-- **Fixed null crash in DEBUG — confirmed 3x**
-- **decision in index.js — confirmed 5x**
-- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x**
-
 ## Project Standards
 
-- Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
-- Fixed null crash in Guardar — confirmed 3x
-- Fixed null crash in DEBUG — confirmed 3x
-- decision in index.js — confirmed 5x
-- Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
+- Replaced auth Score — confirmed 3x
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - Optimized Patched — confirmed 3x
 - Fixed null crash in Click — reduces excessive function call frequency — confirmed 4x
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 8x
 
 ## Known Fixes
 
@@ -72,7 +64,7 @@
 
 ## Recent Decisions
 
-- decision in index.js
+- Optimized Score — evolves the database schema to support new requirements
 - decision in index.js
 - decision in index.js
 - decision in index.js
