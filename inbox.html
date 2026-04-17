@@ -2895,23 +2895,25 @@
             const canvas = globalCropper.getCroppedCanvas();
             if (!canvas) return;
             
+            const indexToUpload = globalCropperUpIndex;
+            
             // Conservamos formato JPG para evitar pesos masivos
             canvas.toBlob((blob) => {
                 if (!blob) return;
-                const oldObj = window.pendingUploads[globalCropperUpIndex];
+                const oldObj = window.pendingUploads[indexToUpload];
                 const newFile = new File([blob], oldObj.file.name || "recorte.jpg", { type: "image/jpeg" });
                 
                 // Actualizar el archivo en el pendingUploads
-                window.pendingUploads[globalCropperUpIndex].file = newFile;
+                window.pendingUploads[indexToUpload].file = newFile;
                 // Si la imagen ya se había subido o estaba en proceso, hay que resetearla para q se vuelva a subir
-                window.pendingUploads[globalCropperUpIndex].media_id = null;
-                window.pendingUploads[globalCropperUpIndex].error = null;
+                window.pendingUploads[indexToUpload].media_id = null;
+                window.pendingUploads[indexToUpload].error = null;
                 
                 cerrarCropper();
                 window.renderPendingMediaUI();
                 
                 // Forzar resubida llamando a un bloque de uploadMedia adaptado para resubir o subir nuevo
-                resubirMediaLocal(globalCropperUpIndex);
+                resubirMediaLocal(indexToUpload);
                 
             }, "image/jpeg", 0.85);
         }
