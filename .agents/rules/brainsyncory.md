@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4421 notes | Score threshold: >40
+> 4466 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,43 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Transcribir — parallelizes async operations fo
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Optimized Score
-+ - ⚠️ GOTCHA: Optimized Fixed
-- - ⚠️ G
-- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Transcribir — parallelizes async operations fo
-- **⚠️ GOTCHA: Optimized Score** — - > 4372 notes | Score threshold: >40
-+ > 4397 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Fixed** — - - Fixed null crash in Transcribir — parallelizes async operations fo
-- **⚠️ GOTCHA: Fixed null crash in Part** — -         audio_part = {
-+         from google.genai import types
-- 
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4446 notes | Score threshold: >40
++ > 4453 notes | Score threshold
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "d70382cb2a02f8ab",
++
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "2b15550050576db4",
++
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
++ - ⚠️ GOTCHA: Replaced auth Score
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4430 notes | Score threshold: >40
++ > 4446 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Updated schema GOTCHA
++ - ⚠️ GOTCHA: Replaced auth Patc
 
 ## Project Standards
 
+- Replaced auth GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 8x
+- Patched security issue Primera — protects against XSS and CSRF token theft — confirmed 4x
+- discovery in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Optimized Fixed — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
 - Updated schema GOTCHA — confirmed 5x
-- what-changed in shared-context.json — confirmed 8x
-- problem-fix in server.py — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Optimized Fixed — confirmed 3x
-- Fixed null crash in Transcribir — parallelizes async operations for speed — confirmed 3x
-- Updated schema Score — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Click — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue Primera — protects against XSS and CSRF token theft
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md
