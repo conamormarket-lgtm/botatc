@@ -1590,6 +1590,33 @@ async def api_pedidos_por_telefono(request: Request, num: str):
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 
+@app.post("/api/admin/editar_pedido_rapido/{pedido_id}")
+async def api_editar_pedido_rapido(request: Request, pedido_id: str):
+    if not verificar_sesion(request):
+        return JSONResponse({"ok": False, "error": "No autenticado"}, status_code=401)
+    try:
+        data = await request.json()
+        payload = {}
+        
+        if "envioDepartamento" in data: payload["envioDepartamento"] = data["envioDepartamento"]
+        if "envioProvincia" in data: payload["envioProvincia"] = data["envioProvincia"]
+        if "envioDistrito" in data: payload["envioDistrito"] = data["envioDistrito"]
+        
+        if "prendas" in data and isinstance(data["prendas"], list):
+            payload["prendas"] = data["prendas"]
+            
+        if not payload:
+            return {"ok": False, "error": "Nada que actualizar"}
+            
+        from firebase_client import db
+        from datetime import datetime, timezone
+        payload["updatedAt"] = datetime.now(timezone.utc)
+        
+        db.collection("pedidos").document(pedido_id).update(payload)
+        return {"ok": True}
+    except Exception as e:
+        return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+
 @app.get("/admin", response_class=HTMLResponse)
 async def panel_admin(request: Request):
     """Panel web de administración mejorado."""

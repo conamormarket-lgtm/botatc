@@ -3384,6 +3384,130 @@
         return html;
     }
 
+    const ERP_TALLAS = ["2", "4", "6", "8", "10", "12", "14", "16", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+    const ERP_COLORES = ["Negro", "Blanco", "Melange 3%", "Melange 10%", "Rata Oscuro", "Verde Fosforecente", "Verde Perico", "Verde Botella", "Verde Militar", "Acero Pal", "Azul Marino", "Azulino", "Azul Cielo", "Bijou Blue", "Menta bb", "Celeste", "Morado", "Lila bb", "Rosado bb", "Rosado Fuerte", "Palo Rosa", "Palo Rosa Fuerte", "Chicle", "Fucsia Brillante", "Rojo", "Guinda", "Naranja", "Amarillo Brazil", "Amarillo Oro", "Mostaza", "Camello", "Kaki", "Beigue", "Perla", "Panda", "Negro/Blanco", "Blanco/Negro", "Negro/Rosado", "Rosado/Negro", "Rosado/Celeste", "Celeste/Rosado"];
+    const ERP_TIPOS = ["Polera", "Casaca", "Polo", "Jogger", "Chaqueta", "Crop Top", "Box: C + P + R", "Conjuntos P + J", "Conjunto Completo"];
+
+    window.pedidosDelBuscador = [];
+
+    function renderSelectOptions(options, selectedVal) {
+        return options.map(opt => `<option value="${opt}" ${opt === selectedVal ? 'selected' : ''}>${opt}</option>`).join('');
+    }
+
+    function addPrendaEditRow(containerId, index, p = null) {
+        const div = document.createElement('div');
+        div.style = "display:flex; gap:10px; margin-bottom:5px; align-items:center;";
+        div.className = "prenda-edit-row";
+        
+        let tipo = p ? p.tipoPrenda : '';
+        let color = p ? p.color : '';
+        let talla = p ? p.talla : '';
+
+        div.innerHTML = `
+            <select class="erp-in-tipo" style="padding:4px; border-radius:4px; border:1px solid #ccc; flex:1;">
+                <option value="">Tipo...</option>
+                ${renderSelectOptions(ERP_TIPOS, tipo)}
+            </select>
+            <select class="erp-in-color" style="padding:4px; border-radius:4px; border:1px solid #ccc; flex:1;">
+                <option value="">Color...</option>
+                ${renderSelectOptions(ERP_COLORES, color)}
+            </select>
+            <select class="erp-in-talla" style="padding:4px; border-radius:4px; border:1px solid #ccc; width:70px;">
+                <option value="">Talla...</option>
+                ${renderSelectOptions(ERP_TALLAS, talla)}
+            </select>
+            <button onclick="this.parentElement.remove()" style="background:#fee2e2; color:#ef4444; border:none; border-radius:4px; cursor:pointer; padding:4px 8px;">✕</button>
+        `;
+        document.getElementById(containerId).appendChild(div);
+    }
+
+    function activarEdicionPedido(idPedido) {
+        const pedido = window.pedidosDelBuscador.find(p => p.id === idPedido);
+        if (!pedido) return;
+
+        document.getElementById(`btn-edit-${idPedido}`).style.display = 'none';
+        document.getElementById(`btn-save-${idPedido}`).style.display = 'flex';
+
+        // Modificar inputs de Destino
+        const destWrap = document.getElementById(`destino-wrapper-${idPedido}`);
+        destWrap.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:5px; margin-top:5px;">
+                <input class="erp-in-dpto" type="text" placeholder="Departamento" value="${pedido.envioDepartamento || ''}" style="padding:4px; border-radius:4px; border:1px solid #ccc;" />
+                <input class="erp-in-prov" type="text" placeholder="Provincia" value="${pedido.envioProvincia || ''}" style="padding:4px; border-radius:4px; border:1px solid #ccc;" />
+                <input class="erp-in-dist" type="text" placeholder="Distrito" value="${pedido.envioDistrito || ''}" style="padding:4px; border-radius:4px; border:1px solid #ccc;" />
+            </div>
+        `;
+
+        // Modificar selects de Prendas
+        const prenWrap = document.getElementById(`prendas-wrapper-${idPedido}`);
+        prenWrap.innerHTML = `
+            <div id="prendas-edit-list-${idPedido}" style="display:flex; flex-direction:column; gap:5px; margin-top:5px;"></div>
+            <button onclick="addPrendaEditRow('prendas-edit-list-${idPedido}', 0)" style="margin-top:5px; background:#e0f2fe; color:#0369a1; border:none; padding:4px 8px; border-radius:4px; font-size:0.75rem; cursor:pointer;">+ Añadir Prenda</button>
+        `;
+        
+        let arrPrendas = (Array.isArray(pedido.prendas) && pedido.prendas.length > 0) ? pedido.prendas : [];
+        if (arrPrendas.length === 0 && Array.isArray(pedido.productos)) {
+            pedido.productos.forEach(prod => {
+                if(Array.isArray(prod.detallesPrenda)) {
+                    prod.detallesPrenda.forEach(d => arrPrendas.push(d));
+                }
+            });
+        }
+        
+        arrPrendas.forEach((p, i) => addPrendaEditRow(`prendas-edit-list-${idPedido}`, i, p));
+    }
+
+    async function guardarEdicionPedido(idPedido) {
+        const destWrap = document.getElementById(`destino-wrapper-${idPedido}`);
+        const dpto = destWrap.querySelector('.erp-in-dpto').value.trim();
+        const prov = destWrap.querySelector('.erp-in-prov').value.trim();
+        const dist = destWrap.querySelector('.erp-in-dist').value.trim();
+
+        const prenWrap = document.getElementById(`prendas-wrapper-${idPedido}`);
+        const rows = prenWrap.querySelectorAll('.prenda-edit-row');
+        let nuevasPrendas = [];
+        rows.forEach(r => {
+            const t = r.querySelector('.erp-in-tipo').value;
+            const c = r.querySelector('.erp-in-color').value;
+            const ta = r.querySelector('.erp-in-talla').value;
+            if (t || c || ta) {
+                nuevasPrendas.push({ baseId: t.toLowerCase() || "", tipoPrenda: t, color: c, talla: ta });
+            }
+        });
+
+        const btnSave = document.getElementById(`btn-save-${idPedido}`);
+        const ogHtml = btnSave.innerHTML;
+        btnSave.innerHTML = "Guardando...";
+        btnSave.disabled = true;
+
+        try {
+            const res = await fetch(\`/api/admin/editar_pedido_rapido/\${idPedido}\`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    envioDepartamento: dpto,
+                    envioProvincia: prov,
+                    envioDistrito: dist,
+                    prendas: nuevasPrendas
+                })
+            });
+            const dat = await res.json();
+            if (dat.ok) {
+                alert("¡Actualizado exitosamente en ERP!");
+                abrirModalPedido(window.currentModalWaId); // Reabrir para refrescar info
+            } else {
+                alert("Error: " + dat.error);
+                btnSave.innerHTML = ogHtml;
+                btnSave.disabled = false;
+            }
+        } catch (e) {
+            alert("Error de red");
+            console.error(e);
+            btnSave.innerHTML = ogHtml;
+            btnSave.disabled = false;
+        }
+    }
+
     function generarTarjetaPedido(pedido, index) {
         const totalA = Number(pedido.cobranza?.montoTotalAnadidos || pedido.diseño?.montoTotalAnadidos) || 0;
         const totalC = Number(pedido.cobranza?.montoTotalComplementos || pedido.diseño?.montoTotalComplementos) || 0;
@@ -3407,7 +3531,17 @@
             </div>
             
             <div class="erp-card-body" id="body-pedido-${pedido.id}" style="display: ${index === 0 ? 'block' : 'none'};">
-                <div class="erp-title-section" style="margin-top:0; border-top:none; padding-top:0;">INFORMACIÓN</div>
+                <div class="erp-title-section" style="margin-top:0; border-top:none; padding-top:0; display:flex; justify-content:space-between; align-items:center;">
+                    INFORMACIÓN
+                    <div style="display:flex; gap:5px;">
+                        <button id="btn-edit-${pedido.id}" onclick="activarEdicionPedido('${pedido.id}')" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer; display:flex; align-items:center; gap:4px; font-weight:bold;">
+                            ✏️ Editar Info
+                        </button>
+                        <button id="btn-save-${pedido.id}" onclick="guardarEdicionPedido('${pedido.id}')" style="display:none; background:#10b981; border:transparent; color:white; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer; align-items:center; gap:4px; font-weight:bold;">
+                            💾 Guardar
+                        </button>
+                    </div>
+                </div>
                 
                 <div class="erp-grid">
                     <div class="erp-field">
@@ -3418,13 +3552,15 @@
                     
                     <div class="erp-field">
                         <span class="erp-label">Destino:</span>
-                        <span class="erp-value">${pedido.envioDestino || "No disponible"}</span>
-                        ${(pedido.envioDepartamento || pedido.envioProvincia || pedido.envioDistrito) ? `
-                        <div style="background:#f8fafc; border:1px solid #e2e8f0; color:#334155; padding:10px; border-radius:8px; display:flex; flex-wrap:wrap; gap:10px; margin-top:5px; font-size:0.85rem;">
-                            ${pedido.envioDepartamento ? `<div><b>Dpto:</b> ${pedido.envioDepartamento}</div>` : ''}
-                            ${pedido.envioProvincia ? `<div><b>Prov:</b> ${pedido.envioProvincia}</div>` : ''}
-                            ${pedido.envioDistrito ? `<div><b>Dist:</b> ${pedido.envioDistrito}</div>` : ''}
-                        </div>` : ''}
+                        <div id="destino-wrapper-${pedido.id}">
+                            <span class="erp-value">${pedido.envioDestino || "No disponible"}</span>
+                            ${(pedido.envioDepartamento || pedido.envioProvincia || pedido.envioDistrito) ? `
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; color:#334155; padding:10px; border-radius:8px; display:flex; flex-wrap:wrap; gap:10px; margin-top:5px; font-size:0.85rem;">
+                                ${pedido.envioDepartamento ? `<div><b>Dpto:</b> ${pedido.envioDepartamento}</div>` : ''}
+                                ${pedido.envioProvincia ? `<div><b>Prov:</b> ${pedido.envioProvincia}</div>` : ''}
+                                ${pedido.envioDistrito ? `<div><b>Dist:</b> ${pedido.envioDistrito}</div>` : ''}
+                            </div>` : ''}
+                        </div>
                     </div>
                     
                     <div class="erp-field">
@@ -3439,7 +3575,9 @@
                     
                     <div class="erp-field" style="grid-column: 1 / -1;">
                         <span class="erp-label">Tallas/Desc:</span>
-                        <span class="erp-value">${formatDescPrendas(pedido)}</span>
+                        <div id="prendas-wrapper-${pedido.id}">
+                            <span class="erp-value">${formatDescPrendas(pedido)}</span>
+                        </div>
                     </div>
                     
                     <div class="erp-field">
@@ -3497,6 +3635,9 @@
             const numToSearch = wa_id.replace(/\D/g, "");
             const res = await fetch(`/api/admin/pedidos_por_telefono?num=${numToSearch}`, { signal: erpAbortController.signal });
             const data = await res.json();
+            
+            window.currentModalWaId = wa_id;
+            window.pedidosDelBuscador = data.pedidos || [];
             
             let container = document.getElementById('erpModalBody');
             container.innerHTML = ""; // Limpiar spinner
