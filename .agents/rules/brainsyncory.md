@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4624 notes | Score threshold: >40
+> 4626 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
 - **⚠️ GOTCHA: Replaced auth GOTCHA** — - - gotcha in shared-context.json
 + - ⚠️ GOTCHA: Replaced auth GOTCHA
@@ -43,14 +43,14 @@
 
 ## Project Standards
 
-- Replaced auth Score — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Replaced auth Score — confirmed 3x
 
 ## Known Fixes
 

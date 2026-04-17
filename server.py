@@ -4429,6 +4429,9 @@ class LineAliasPayload(BaseModel):
     id: str
     name: str
     bot_id: str | None = None
+    provider: str | None = None
+    meta_phone_id: str | None = None
+    meta_token: str | None = None
 
 @app.get("/api/admin/lines")
 async def api_list_lines(request: Request):
@@ -4444,17 +4447,24 @@ async def api_list_lines(request: Request):
     except: pass
     
     if "principal" not in aliases:
-        aliases["principal"] = "Línea Principal Meta"
+        aliases["principal"] = {"name": "Línea Principal Meta"}
         
     from bot_manager import get_bot_for_line
     lines_rich = {}
-    for lid, lname in aliases.items():
-        # Protegemos frente a basura que se haya podido guardar en json
-        if isinstance(lname, dict):
-            lname = lname.get("name", "undefined")
-
+    for lid, linfo in aliases.items():
+        if isinstance(linfo, str):
+            linfo = {"name": linfo}  # Migration from old string format
+            
+        lname = linfo.get("name", "undefined")
+        provider = linfo.get("provider", "meta" if lid == "principal" else "")
+        meta_phone_id = linfo.get("meta_phone_id", "")
+        meta_token_has_value = bool(linfo.get("meta_token"))
+        
         lines_rich[lid] = {
             "name": lname,
+            "provider": provider,
+            "meta_phone_id": meta_phone_id,
+            "has_meta_token": meta_token_has_value, # Nunca devolver el token crudo a la UI por seguridad
             "bot_id": get_bot_for_line(lid)
         }
         
@@ -4472,7 +4482,20 @@ async def api_save_line(payload: LineAliasPayload, request: Request):
             with open("line_aliases.json", "r") as f:
                 aliases = json.load(f)
     except: pass
-    aliases[payload.id] = payload.name
+    
+    # Init if needed or map string
+    if payload.id not in aliases or isinstance(aliases[payload.id], str):
+        aliases[payload.id] = {}
+        
+    aliases[payload.id]["name"] = payload.name
+    
+    if payload.provider:
+        aliases[payload.id]["provider"] = payload.provider
+    if payload.meta_phone_id:
+        aliases[payload.id]["meta_phone_id"] = payload.meta_phone_id
+    if payload.meta_token: # si envían explicitamente un token, sobreescribir
+        aliases[payload.id]["meta_token"] = payload.meta_token
+
     with open("line_aliases.json", "w") as f:
         json.dump(aliases, f, ensure_ascii=False, indent=2)
         

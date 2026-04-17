@@ -16,7 +16,28 @@ def _get_line_id(numero: str, override_line_id: str) -> str:
             return ses.get('lineId', 'principal')
     return "principal"
 
-META_API_URL = f"https://graph.facebook.com/{META_API_VERSION}/{META_PHONE_NUMBER_ID}/messages"
+def _get_meta_credentials(line_id: str) -> tuple[str, str, str]:
+    """Retorna (token, phone_id, api_url) leyendo la configuración dinámica de la línea."""
+    import os
+    import json
+    token = META_ACCESS_TOKEN
+    phone_id = META_PHONE_NUMBER_ID
+    
+    try:
+        if line_id != "principal" and os.path.exists("line_aliases.json"):
+            with open("line_aliases.json", "r") as f:
+                aliases = json.load(f)
+            linfo = aliases.get(line_id, {})
+            if isinstance(linfo, dict):
+                if linfo.get("meta_token"):
+                    token = linfo["meta_token"]
+                if linfo.get("meta_phone_id"):
+                    phone_id = linfo["meta_phone_id"]
+    except Exception as e:
+        print(f"[WARN] No se pudo leer credencial de Meta para línea {line_id}: {e}")
+        
+    url = f"https://graph.facebook.com/{META_API_VERSION}/{phone_id}/messages"
+    return token, phone_id, url
 
 
 def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, line_id: str = "principal") -> bool:
@@ -45,8 +66,10 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, 
             print("ERROR enviando via QR local:", e)
             return False
 
+    meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
+
     headers = {
-        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {meta_token}",
         "Content-Type": "application/json",
     }
 
@@ -62,7 +85,7 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, 
         payload["context"] = {"message_id": reply_to_wamid}
 
     try:
-        response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
+        response = httpx.post(meta_api_url, headers=headers, json=payload, timeout=10)
         response.raise_for_status()
         data = response.json()
         return data.get("messages", [{}])[0].get("id")
@@ -85,8 +108,10 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
         # Fallback a texto temporal
         return enviar_mensaje(numero_destino, f"[Archivo adjunto no soportado aún por esta línea: {tipo_media}]", None, line_id)
 
+    meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
+
     headers = {
-        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {meta_token}",
         "Content-Type": "application/json",
     }
     
@@ -111,7 +136,7 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
         payload["context"] = {"message_id": reply_to_wamid}
 
     try:
-        response = httpx.post(META_API_URL, headers=headers, json=payload, timeout=10)
+        response = httpx.post(meta_api_url, headers=headers, json=payload, timeout=10)
         response.raise_for_status()
         data = response.json()
         return data.get("messages", [{}])[0].get("id")
@@ -150,8 +175,10 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "
             print("ERROR enviando via QR local asincrono:", e)
             return False
 
+    meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
+
     headers = {
-        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {meta_token}",
         "Content-Type": "application/json",
     }
     payload = {
@@ -163,7 +190,7 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "
     }
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
+            response = await client.post(meta_api_url, headers=headers, json=payload, timeout=10)
             response.raise_for_status()
             print(f"[OK] Mensaje manual enviado a {numero_destino}")
             return response.json().get("messages", [{}])[0].get("id")
@@ -227,8 +254,10 @@ async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str
     if line_id.startswith("qr_"):
         # TODO: Implementar en Node.js, por ahora silent ignore para no romper UX
         return True
+    meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
+
     headers = {
-        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {meta_token}",
         "Content-Type": "application/json",
     }
     payload = {
@@ -243,7 +272,7 @@ async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str
     }
     try:
         async with httpx.AsyncClient() as client:
-            res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
+            res = await client.post(meta_api_url, headers=headers, json=payload, timeout=10)
             res.raise_for_status()
             return True
     except httpx.HTTPStatusError as e:
@@ -263,8 +292,10 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
         res_txt = f"[Plantilla '{template_name}' solicitada, pero este canal utiliza número temporal no oficial Meta.]"
         return await enviar_mensaje_texto(numero_destino, res_txt, line_id)
 
+    meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
+
     headers = {
-        "Authorization": f"Bearer {META_ACCESS_TOKEN}",
+        "Authorization": f"Bearer {meta_token}",
         "Content-Type": "application/json",
     }
     
@@ -296,7 +327,7 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
 
     try:
         async with httpx.AsyncClient() as client:
-            res = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
+            res = await client.post(meta_api_url, headers=headers, json=payload, timeout=10)
             res.raise_for_status()
             data = res.json()
             return data.get("messages", [{}])[0].get("id")

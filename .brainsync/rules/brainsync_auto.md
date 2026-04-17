@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4624 notes | Score threshold: >40
+> 4626 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -43,14 +43,14 @@
 
 ## Project Standards
 
-- Replaced auth Score — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Replaced auth Score — confirmed 3x
 
 ## Known Fixes
 
