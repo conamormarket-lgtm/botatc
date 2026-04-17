@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4548 notes | Score threshold: >40
+> 4586 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,37 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in Form** — -     wallpaper_file: UploadFile = File(None)
-+     wallpaper_offset_
-- **⚠️ GOTCHA: Patched security issue Patched** — - - Fixed null crash in Array — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: Replaced auth Score** — - > 4514 notes | Score threshold: >40
-+ > 4517 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4511 notes | Score threshold: >40
-+ > 4514 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4485 notes | Score threshold: >40
-+ > 4511 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Replaced auth GOTCHA
+
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Replaced auth GOTCHA
+
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
++ - gotcha in shared-context.json
+
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "aede4fcf5b7b9fdc",
++
+- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
++ - ⚠️ GOTCHA: Replaced auth Score
+- **⚠️ GOTCHA: Replaced auth Score** — - > 4563 notes | Score threshold: >40
++ > 4565 notes | Score threshold
 
 ## Project Standards
 
+- Replaced auth Score — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- Patched security issue Kevin — confirmed 3x
+- Replaced auth GOTCHA — confirmed 3x
+- Replaced auth Score — confirmed 3x
 - what-changed in perfil.html — confirmed 3x
 - Fixed null crash in Extraer — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
-- what-changed in perfil.html — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Replaced auth Score — confirmed 3x
-- decision in shared-context.json — confirmed 3x
-- Replaced auth GOTCHA — confirmed 3x
 
 ## Known Fixes
 

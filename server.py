@@ -634,6 +634,22 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     print(f"\n{'─'*50}")
     print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
 
+    # --- AGREGAR AL HISTORIAL INMEDIATAMENTE PARA QUE EL UI LO VEA EN BURBUJAS SEPARADAS ---
+    ses = obtener_o_crear_sesion(numero_wa)
+    ses["ultima_actividad"] = datetime.utcnow()
+    ses["nombre_cliente"]   = nombre
+    if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
+        import time
+        ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
+        cur_unread = ses.get("unread_count", 0)
+        ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
+        try: 
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(numero_wa, ses)
+        except: 
+            pass
+    # -----------------------------------------------------------------------------------------
+
     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
     if numero_wa not in mensajes_pendientes:
         mensajes_pendientes[numero_wa] = [dict_msg]
@@ -710,23 +726,18 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     sesion["ultima_actividad"] = datetime.utcnow()
     sesion["nombre_cliente"]   = nombre
 
-    # 1) Guardar mensaje TEMPRANO para que SIEMPRE aparezca en el Inbox, sin duplicarse
-    if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
-        import time
-        ts = int(time.time()) # fallback
-        sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id, "timestamp": ts})
-        
-        # Incrementar contador de mensajes no leídos
-        cur_unread = sesion.get("unread_count", 0)
-        if cur_unread == -1: cur_unread = 0
-        sesion["unread_count"] = cur_unread + 1
-        
-        # ¡GUARDADO INMEDIATO PARA EVITAR PERDIDA ANTES DE LOS RETORNOS TEMPRANOS!
-        try: 
-            from firebase_client import guardar_sesion_chat
-            guardar_sesion_chat(numero_wa, sesion)
-        except Exception as e:
-            print(f"  [[WARN] Error guardando sesión temprana: {e}]")
+    # 1) Para simulaciones, guardamos el mensaje aquí. Para en vivo, recibir_mensaje ya lo guarda al instante.
+    if is_simulacion:
+        if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
+            import time
+            ts = int(time.time()) # fallback
+            sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id, "timestamp": ts})
+            
+            try: 
+                from firebase_client import guardar_sesion_chat
+                guardar_sesion_chat(numero_wa, sesion)
+            except Exception as e:
+                pass
 
     global BOT_GLOBAL_ACTIVO
     if not BOT_GLOBAL_ACTIVO:
@@ -883,11 +894,12 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     texto_modelo = preprocesar_mensaje(normalizar_texto(texto_cliente))
 
     # ── Agregar al historial y llamar al modelo ───────────
-    # Reemplazamos el texto original (raw) con el normalizado para Gemini
-    if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
-        sesion["historial"][-1]["content"] = texto_modelo
-        
+    # Creamos la copia para Gemini SIN alterar el historial persistente para que en el UI sigan las burbujas separadas.
     historial_para_gemini = recortar_historial(sesion["historial"])
+    if historial_para_gemini and historial_para_gemini[-1]["role"] == "user":
+        # Usamos texto_modelo que concatena todo con ' | ' para que la IA entienda el contexto fusionado
+        historial_para_gemini[-1]["content"] = texto_modelo
+        
     print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
     respuesta_bot = llamar_gemini(historial_para_gemini)
     
