@@ -560,7 +560,14 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
                 from whatsapp_client import enviar_mensaje_texto
                 background_tasks.add_task(enviar_mensaje_texto, numero_wa, "Lo sentimos, por motivos del sistema no podemos visualizar videos enviados como *Vista Única*. 🚫👁️\n\nPor favor, *vuelve a enviarlo desactivando el icono (1)* para que podamos verlo.")
             else:
-                texto_cliente = "[🎥 Video]"
+                media_id = vid_data.get("id", "")
+                caption = vid_data.get("caption", "")
+                texto_cliente = f"[video:{media_id}]"
+                if caption:
+                    import urllib.parse
+                    caption_encoded = urllib.parse.quote(caption)
+                    texto_cliente = f"[video:{media_id}|caption:{caption_encoded}]"
+                background_tasks.add_task(cachear_media, media_id)
         elif tipo_mensaje == "document":
             filename = mensaje_data.get("document", {}).get("filename", "archivo")
             media_id = mensaje_data.get("document", {}).get("id", "")

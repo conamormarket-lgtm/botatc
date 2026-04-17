@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4539 notes | Score threshold: >40
+> 4548 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -34,14 +34,14 @@
 
 ## Project Standards
 
+- what-changed in perfil.html — confirmed 3x
+- Fixed null crash in Extraer — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- what-changed in perfil.html — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - decision in shared-context.json — confirmed 3x
 - Replaced auth GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Replaced auth GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 11x
-- problem-fix in agent-rules.md — confirmed 6x
-- problem-fix in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
