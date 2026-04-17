@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4466 notes | Score threshold: >40
+> 4474 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4453 notes | Score threshold: >40
++ > 4466 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4446 notes | Score threshold: >40
 + > 4453 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
@@ -40,19 +42,25 @@
 + - ⚠️ GOTCHA: Replaced auth Score
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4430 notes | Score threshold: >40
 + > 4446 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Updated schema GOTCHA
-+ - ⚠️ GOTCHA: Replaced auth Patc
+
+## Active: `qr_service`
+
+- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x**
+- **Fixed null crash in Guardar — confirmed 3x**
+- **Fixed null crash in DEBUG — confirmed 3x**
+- **decision in index.js — confirmed 5x**
+- **Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x**
 
 ## Project Standards
 
-- Replaced auth GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 8x
-- Patched security issue Primera — protects against XSS and CSRF token theft — confirmed 4x
-- discovery in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Optimized Fixed — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- Updated schema GOTCHA — confirmed 5x
+- Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
+- Fixed null crash in Guardar — confirmed 3x
+- Fixed null crash in DEBUG — confirmed 3x
+- decision in index.js — confirmed 5x
+- Fixed null crash in DisconnectReason — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
+- Optimized Patched — confirmed 3x
+- Fixed null crash in Click — reduces excessive function call frequency — confirmed 4x
 
 ## Known Fixes
 
@@ -64,7 +72,7 @@
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
+- decision in index.js
 - decision in index.js
 - decision in index.js
 - decision in index.js
