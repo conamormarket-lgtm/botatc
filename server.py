@@ -1608,7 +1608,8 @@ async def api_editar_pedido_rapido(request: Request, pedido_id: str):
         if not payload:
             return {"ok": False, "error": "Nada que actualizar"}
             
-        from firebase_client import db
+        from firebase_client import inicializar_firebase
+        db = inicializar_firebase()
         from datetime import datetime, timezone
         payload["updatedAt"] = datetime.now(timezone.utc)
         
