@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4586 notes | Score threshold: >40
+> 4590 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -43,14 +43,14 @@
 
 ## Project Standards
 
+- Replaced auth Patched — confirmed 3x
+- what-changed in shared-context.json — confirmed 8x
+- Patched security issue Creamos — protects against XSS and CSRF token theft — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - Patched security issue Kevin — confirmed 3x
 - Replaced auth GOTCHA — confirmed 3x
 - Replaced auth Score — confirmed 3x
-- what-changed in perfil.html — confirmed 3x
-- Fixed null crash in Extraer — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
 
 ## Known Fixes
 
