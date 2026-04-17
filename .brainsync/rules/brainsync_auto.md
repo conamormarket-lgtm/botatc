@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4481 notes | Score threshold: >40
+> 4485 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Score** — - > 4480 notes | Score threshold: >40
++ > 4481 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4453 notes | Score threshold: >40
 + > 4466 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4446 notes | Score threshold: >40
@@ -40,8 +42,6 @@
 +
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
 + - ⚠️ GOTCHA: Replaced auth Score
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4430 notes | Score threshold: >40
-+ > 4446 notes | Score threshold
 
 ## Project Standards
 
