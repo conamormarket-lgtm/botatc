@@ -3228,14 +3228,37 @@
         return "No especificado";
     }
     
+    function transformDriveUrl(url) {
+        if (!url || typeof url !== 'string') return url;
+        if (!url.includes('drive.google.com')) return url;
+        let id = '';
+        const parts = url.split('/');
+        const dIndex = parts.indexOf('d');
+        if (dIndex !== -1 && parts.length > dIndex + 1) {
+            id = parts[dIndex + 1].split(/[?#]/)[0];
+        } else {
+            try {
+                const urlObj = new URL(url);
+                id = urlObj.searchParams.get('id') || '';
+            } catch (e) { return url; }
+        }
+        if (!id) return url;
+        return `https://drive.google.com/thumbnail?id=${id}&sz=w2560`;
+    }
+
     function getCleanImageUrls(urls) {
         if (!urls) return [];
-        if (Array.isArray(urls)) return urls;
+        if (Array.isArray(urls)) return urls.map(u => transformDriveUrl(String(u).trim()));
         if (typeof urls === 'string') {
             if (urls.startsWith('[')) {
-                try { return JSON.parse(urls); } catch(e) { return [urls]; }
+                try { 
+                    const parsed = JSON.parse(urls); 
+                    return Array.isArray(parsed) ? parsed.map(u => transformDriveUrl(String(u).trim())) : [transformDriveUrl(urls)];
+                } catch(e) { 
+                    return [transformDriveUrl(urls)]; 
+                }
             }
-            return urls.split(',').map(s => s.trim()).filter(s => s);
+            return urls.split(',').map(s => transformDriveUrl(s.trim())).filter(s => s);
         }
         return [];
     }
