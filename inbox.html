@@ -3481,7 +3481,7 @@
         btnSave.disabled = true;
 
         try {
-            const res = await fetch(\`/api/admin/editar_pedido_rapido/\${idPedido}\`, {
+            const res = await fetch(`/api/admin/editar_pedido_rapido/${idPedido}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
