@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4485 notes | Score threshold: >40
+> 4528 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,41 +18,30 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Replaced auth Score** — - > 4514 notes | Score threshold: >40
++ > 4517 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4511 notes | Score threshold: >40
++ > 4514 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4485 notes | Score threshold: >40
++ > 4511 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - problem-fix in agent-rules.
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Spinner — prevents null/undefined runtime cras
 - **⚠️ GOTCHA: Replaced auth Score** — - > 4480 notes | Score threshold: >40
 + > 4481 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4453 notes | Score threshold: >40
-+ > 4466 notes | Score threshold
-- **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4446 notes | Score threshold: >40
-+ > 4453 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "d70382cb2a02f8ab",
-+
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "2b15550050576db4",
-+
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
-+ - ⚠️ GOTCHA: Replaced auth Score
 
 ## Project Standards
 
 - Replaced auth Score — confirmed 3x
+- decision in shared-context.json — confirmed 3x
 - Replaced auth GOTCHA — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- Optimized Patched — confirmed 3x
-- Fixed null crash in Click — reduces excessive function call frequency — confirmed 4x
+- what-changed in shared-context.json — confirmed 3x
 - Replaced auth GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 8x
+- what-changed in shared-context.json — confirmed 11x
+- problem-fix in agent-rules.md — confirmed 6x
+- problem-fix in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

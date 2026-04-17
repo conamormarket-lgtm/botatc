@@ -130,7 +130,7 @@
                                 <input type="text" id="theme_wallpaper" name="wallpaper" value="{wallpaper}" placeholder="Sube una imagen o deja vacío..." style="background:rgba(0,0,0,0.2); border:1px solid var(--accent-border); color:white; padding:0.8rem 1rem; border-radius:8px; outline:none; font-family:var(--font-main); flex:1;">
                                 <label style="background:var(--accent-bg); border:1px solid var(--accent-border); padding:0.8rem 1rem; border-radius:8px; cursor:pointer; display:flex; align-items:center; transition:background 0.2s;" title="Subir archivo" onmouseover="this.style.background='var(--primary-color)'" onmouseout="this.style.background='var(--accent-bg)'">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                    <input type="file" name="wallpaper_file" accept="image/*" style="display:none;" onchange="previewLocalWallpaper(this)">
+                                    <input type="file" name="wallpaper_file" accept="image/*,video/mp4,video/webm" style="display:none;" onchange="previewLocalWallpaper(this)">
                                 </label>
                             </div>
                             <span id="localFileLabel" style="font-size:0.75rem; color:var(--success-color); display:none;">Archivo seleccionado: <b id="localFileName"></b></span>
@@ -159,19 +159,19 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
-    <!-- Cropper Modal -->
-    <div id="cropperModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; align-items:center; justify-content:center; padding:2rem;">
-        <h3 style="color:white; font-family:var(--font-heading); margin-bottom:1rem;">Recorta tu nuevo fondo (Haz Zoom con la rueda del ratón)</h3>
-        <div style="width:100%; max-width:800px; height:60vh; background:#000; border:2px solid var(--accent-border); border-radius:12px; overflow:hidden;">
-            <img id="imageToCrop" src="" style="max-width:100%; display:block;">
+    <!-- Modal para Recortar Imagen de Fondo -->
+    <div id="cropperModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <h3 style="color:white; margin-bottom:1rem; font-family:var(--font-main);">Encuadrar Fondo (Aspecto del Chat)</h3>
+        <div style="width:80%; height:70%; max-width:800px; background:#000; border-radius:8px; overflow:hidden;">
+            <img id="imageToCrop" style="max-width:100%; display:block;" src="" alt="Por recortar">
         </div>
         <div style="display:flex; gap:1rem; margin-top:1.5rem;">
-            <button type="button" onclick="cancelCrop()" style="background:transparent; color:#ef4444; border:1px solid #ef4444; padding:0.75rem 1.5rem; border-radius:8px; font-weight:600; cursor:pointer;">Cancelar</button>
-            <button type="button" onclick="confirmCrop()" style="background:var(--success-color); color:white; border:none; padding:0.75rem 1.5rem; border-radius:8px; font-weight:600; cursor:pointer;">Recortar y Seleccionar</button>
+            <button type="button" onclick="cancelCrop()" style="background:#ef4444; color:white; border:none; padding:0.8rem 2rem; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">Cancelar</button>
+            <button type="button" onclick="confirmCrop()" style="background:#10b981; color:white; border:none; padding:0.8rem 2rem; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">Aceptar</button>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <script>
         // --- Theme Personalization Logic ---
@@ -181,6 +181,12 @@
         function previewLocalWallpaper(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
+                if (file.type.startsWith('video/')) {
+                    // Si es video, no se abre el cropper
+                    document.getElementById('localFileLabel').style.display = 'block';
+                    document.getElementById('localFileName').innerText = file.name;
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = document.getElementById("imageToCrop");

@@ -88,12 +88,39 @@ def inyectar_tema_global(request, html: str) -> str:
         else:
             overlay_rgba = f"rgba(15, 23, 42, {1.0 - wp_opacity})"
             
+        wp_lower = wp.lower()
+        if wp_lower.endswith(".mp4") or wp_lower.endswith(".webm"):
+            # En inyectar video usando background-color semi-transparente
+            css += f'''
+            .chat-viewer-panel {{
+                position: relative;
+                background-color: transparent !important;
+                z-index: 1;
+            }}
+            .chat-list-panel {{
+                background-color: {overlay_rgba} !important; /* Sidebar list keeps background */
+            }}
+            '''
+            video_tag = f'''
+            <video autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; pointer-events:none;"><source src="{wp}"></video>
+            <div style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; background-color:{overlay_rgba};"></div>
+            '''
+            # Inyectamos el video dentro del panel visor de chat para no superponer listas u otros paneles
+            if '<div class="chat-viewer-panel">' in html:
+                html = html.replace('<div class="chat-viewer-panel">', f'<div class="chat-viewer-panel">\n{video_tag}')
+            elif '<body' in html:
+                import re
+                html = re.sub(r'(<body[^>]*>)', rf'\1\n{video_tag}', html, count=1)
+        else:
+            css += f'''
+            .chat-viewer-panel {{
+                background: linear-gradient({overlay_rgba}, {overlay_rgba}), url('{wp}') !important;
+                background-size: cover !important;
+                background-position: center !important;
+            }}
+            '''
+            
         css += f'''
-        .chat-viewer-panel {{
-            background: linear-gradient({overlay_rgba}, {overlay_rgba}), url('{wp}') !important;
-            background-size: cover !important;
-            background-position: center !important;
-        }}
         .appearance-card, .proactive-card, .pdf-card, .backup-card, .editor-card {{
             background: var(--accent-bg) !important;
             border: 1px solid var(--accent-border) !important;
@@ -3921,12 +3948,24 @@ async def update_user_theme(
     
     # Manejar subida de archivo si existe
     if wallpaper_file and wallpaper_file.filename:
-        from firebase_client import guardar_wallpaper_en_bd
-        ext = wallpaper_file.filename.split(".")[-1]
-        filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
-        content = await wallpaper_file.read()
-        guardar_wallpaper_en_bd(filename, content, ext)
-        wallpaper = f"/api/media/wallpaper/{filename}"
+        ext = wallpaper_file.filename.split(".")[-1].lower()
+        if ext in ["mp4", "webm"]:
+            import os
+            os.makedirs("static/wallpapers", exist_ok=True)
+            filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
+            file_path = f"static/wallpapers/{filename}"
+            content = await wallpaper_file.read()
+            if len(content) > 10 * 1024 * 1024:
+                return {"ok": False, "error": "El video supera los 10MB"}
+            with open(file_path, "wb") as f:
+                f.write(content)
+            wallpaper = f"/{file_path}"
+        else:
+            from firebase_client import guardar_wallpaper_en_bd
+            filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
+            content = await wallpaper_file.read()
+            guardar_wallpaper_en_bd(filename, content, ext)
+            wallpaper = f"/api/media/wallpaper/{filename}"
 
     prefs = {
         "bg_main": bg_main or "#0f172a",
