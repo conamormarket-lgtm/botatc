@@ -4428,6 +4428,7 @@ async def api_list_templates(request: Request):
 class LineAliasPayload(BaseModel):
     id: str
     name: str
+    bot_id: str | None = None
 
 @app.get("/api/admin/lines")
 async def api_list_lines(request: Request):
@@ -4441,10 +4442,23 @@ async def api_list_lines(request: Request):
             with open("line_aliases.json", "r") as f:
                 aliases = json.load(f)
     except: pass
-    # Solo inyectar la línea principal si no existe aún
+    
     if "principal" not in aliases:
         aliases["principal"] = "Línea Principal Meta"
-    return {"ok": True, "lines": aliases}
+        
+    from bot_manager import get_bot_for_line
+    lines_rich = {}
+    for lid, lname in aliases.items():
+        # Protegemos frente a basura que se haya podido guardar en json
+        if isinstance(lname, dict):
+            lname = lname.get("name", "undefined")
+
+        lines_rich[lid] = {
+            "name": lname,
+            "bot_id": get_bot_for_line(lid)
+        }
+        
+    return {"ok": True, "lines": lines_rich}
 
 @app.post("/api/admin/lines")
 async def api_save_line(payload: LineAliasPayload, request: Request):
