@@ -195,31 +195,42 @@
                     vid.muted = true;
                     vid.playsInline = true;
 
-                    vid.addEventListener('canplay', function onCanPlay() {
-                        vid.removeEventListener('canplay', onCanPlay);
-                        setTimeout(() => {
-                            const canvas = document.createElement("canvas");
-                            canvas.width = vid.videoWidth;
-                            canvas.height = vid.videoHeight;
-                            const ctx = canvas.getContext("2d");
-                            ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
-                            
-                            const imgUrl = canvas.toDataURL("image/jpeg");
-                            
-                            const img = document.getElementById("imageToCrop");
-                            img.src = imgUrl;    
-                            document.getElementById("cropperModal").style.display = "flex";
-                            
-                            if (cropper) cropper.destroy();
-                            
-                            cropper = new Cropper(img, {
-                                aspectRatio: chatWidth / chatHeight,
-                                viewMode: 1,
-                                background: false,
-                                dragMode: 'move', // Permite arrastrar la imagen
-                                cropBoxResizable: false // Bloquea redimensionar el recuadro
-                            });
-                        }, 100);
+                    vid.addEventListener('loadedmetadata', function() {
+                        // Extraer fotograma de la mitad del video (o de los primeros 5 segundos si falla el duration)
+                        let targetTime = vid.duration ? vid.duration / 2 : 2.5; 
+                        if (!isFinite(targetTime) || isNaN(targetTime)) targetTime = 1;
+                        vid.currentTime = targetTime;
+                    });
+
+                    vid.addEventListener('seeked', function() {
+                        const canvas = document.createElement("canvas");
+                        canvas.width = vid.videoWidth;
+                        canvas.height = vid.videoHeight;
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+                        
+                        const imgUrl = canvas.toDataURL("image/jpeg");
+                        
+                        const img = document.getElementById("imageToCrop");
+                        img.src = imgUrl;    
+                        document.getElementById("cropperModal").style.display = "flex";
+                        
+                        if (cropper) cropper.destroy();
+                        
+                        const targetRatio = chatWidth / chatHeight;
+                        const vidRatio = vid.videoWidth / vid.videoHeight;
+                        const ratioDiff = Math.abs(vidRatio - targetRatio);
+                        
+                        // Si el aspect ratio del video es prácticamente idéntico al del inbox, desactivamos el movimiento
+                        const allowMove = ratioDiff >= 0.02;
+                        
+                        cropper = new Cropper(img, {
+                            aspectRatio: targetRatio,
+                            viewMode: 1,
+                            background: false,
+                            dragMode: allowMove ? 'move' : 'none', // 'none' bloquea mover el recuadro
+                            cropBoxResizable: false // Bloquea redimensionar el recuadro
+                        });
                     });
                     vid.load();
                     return;
