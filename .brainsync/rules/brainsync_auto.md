@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4528 notes | Score threshold: >40
+> 4539 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Form** — -     wallpaper_file: UploadFile = File(None)
++     wallpaper_offset_
+- **⚠️ GOTCHA: Patched security issue Patched** — - - Fixed null crash in Array — prevents null/undefined runtime crashe
 - **⚠️ GOTCHA: Replaced auth Score** — - > 4514 notes | Score threshold: >40
 + > 4517 notes | Score threshold
 - **⚠️ GOTCHA: Replaced auth Score — evolves the database schema to support new requirements** — - > 4511 notes | Score threshold: >40
@@ -28,9 +31,6 @@
 + > 4511 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
 + - problem-fix in agent-rules.
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Spinner — prevents null/undefined runtime cras
-- **⚠️ GOTCHA: Replaced auth Score** — - > 4480 notes | Score threshold: >40
-+ > 4481 notes | Score threshold
 
 ## Project Standards
 
@@ -45,7 +45,7 @@
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue Primera — protects against XSS and CSRF token theft
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue Sidebar — protects against XSS and CSRF token theft
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md

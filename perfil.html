@@ -171,6 +171,22 @@
         </div>
     </div>
 
+    <!-- Modal para Encuadrar Video de Fondo -->
+    <div id="videoPositionModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <h3 style="color:white; margin-bottom:1rem; font-family:var(--font-main);">Encuadrar Video (Mueve el regulador)</h3>
+        <div style="width:100px; max-width:800px; background:#000; border-radius:8px; overflow:hidden; position:relative; aspect-ratio: 9/16; max-height:60vh; display:flex; margin: 0 auto; min-width:300px;">
+            <video id="videoToPosition" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; object-position: center 50%;"></video>
+        </div>
+        <div style="width:80%; max-width:300px; display:flex; flex-direction:column; margin-top:2rem; gap:0.5rem; align-items:center;">
+            <label style="color:var(--text-muted); font-size:0.9rem; font-weight:600;">Regulador Vertical <span id="videoOffsetPercent" style="color:var(--primary-color);">50%</span></label>
+            <input type="range" id="videoOffsetRange" min="0" max="100" step="1" value="50" style="width:100%; cursor:pointer;" oninput="updateVideoPreview(this.value)">
+        </div>
+        <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+            <button type="button" onclick="cancelVideoPosition()" style="background:#ef4444; color:white; border:none; padding:0.8rem 2rem; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">Cancelar</button>
+            <button type="button" onclick="confirmVideoPosition()" style="background:#10b981; color:white; border:none; padding:0.8rem 2rem; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">Aceptar</button>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <script>
@@ -178,13 +194,49 @@
         let cropper = null;
         let finalCroppedBlob = null;
 
+        function updateVideoPreview(val) {
+            document.getElementById("videoToPosition").style.objectPosition = `center ${val}%`;
+            document.getElementById("videoOffsetPercent").innerText = `${val}%`;
+        }
+
+        function cancelVideoPosition() {
+            document.getElementById("videoPositionModal").style.display = "none";
+            document.querySelector('input[name="wallpaper_file"]').value = '';
+            document.getElementById("videoToPosition").src = '';
+        }
+
+        function confirmVideoPosition() {
+            const val = document.getElementById('videoOffsetRange').value;
+            // Configurar input oculto para mandar la posición Y
+            let hiddenInput = document.querySelector('input[name="wallpaper_offset_y"]');
+            if(!hiddenInput) {
+                hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = "wallpaper_offset_y";
+                document.getElementById('themeForm').appendChild(hiddenInput);
+            }
+            hiddenInput.value = val;
+            
+            document.getElementById("videoPositionModal").style.display = "none";
+            document.getElementById('localFileLabel').style.display = 'block';
+            document.getElementById('localFileName').innerText = "Video encuadrado list -> " + document.querySelector('input[name="wallpaper_file"]').files[0].name;
+            document.getElementById("videoToPosition").src = '';
+        }
+
         function previewLocalWallpaper(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
                 if (file.type.startsWith('video/')) {
-                    // Si es video, no se abre el cropper
-                    document.getElementById('localFileLabel').style.display = 'block';
-                    document.getElementById('localFileName').innerText = file.name;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const vid = document.getElementById("videoToPosition");
+                        vid.src = e.target.result;
+                        document.getElementById("videoPositionModal").style.display = "flex";
+                        
+                        document.getElementById('videoOffsetRange').value = 50;
+                        updateVideoPreview(50);
+                    };
+                    reader.readAsDataURL(file);
                     return;
                 }
                 const reader = new FileReader();
