@@ -695,6 +695,14 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         print(f"  [⏹ Bot APAGADO globalmente → silencio (guardado en BD)]")
         return None
 
+    # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
+    if not sesion.get("bot_activo", True):
+        sesion["ultima_actividad"] = datetime.utcnow()
+        print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+        except: pass
+        return None
+
     # ── Buscar pedido en Firebase (con número del WA) ─────
     if sesion["datos_pedido"] is None:
         from config import NUMEROS_TESTER
@@ -731,6 +739,11 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     print(f"  [🧪 TESTER: Pedido '{id_pedido}' cargado]")
                 else:
                     msg = f"[ERROR] No encontré ningún pedido con el ID '{texto_cliente.strip()}'. Inténtalo de nuevo (escribe solo el ID exacto)."
+                    import time
+                    ts = int(time.time())
+                    sesion["historial"].append({"role": "assistant", "content": msg, "status": "sent", "timestamp": ts})
+                    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+                    except: pass
                     if not is_simulacion:
                         enviar_mensaje(numero_wa, msg)
                     return msg
@@ -811,13 +824,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             except: pass
             return None
 
-    # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
-    if not sesion["bot_activo"]:
-        sesion["ultima_actividad"] = datetime.utcnow()
-        print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
-        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
-        except: pass
-        return None
+
 
     # ── Escalación rápida por keywords del cliente ────────
     if REGEX_ESCALAR.search(texto_cliente):
