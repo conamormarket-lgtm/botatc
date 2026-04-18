@@ -2560,7 +2560,17 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     unread_btn_text = "white" if is_unread else "var(--text-main)"
 
     
-    active_line_name = "Todas las Líneas" if line_filter == "all" else aliases.get(line_filter, "Línea QR" if line_filter != "principal" else "Línea Principal")
+    # Parsear aliases que pueden ser strings (antiguos) u objetos (nuevos meta options)
+    parsed_aliases = {}
+    for k, v in aliases.items():
+        if isinstance(v, dict):
+            parsed_aliases[k] = v.get("name", k)
+        else:
+            parsed_aliases[k] = v
+
+    active_line_name = "Todas las Líneas"
+    if line_filter != "all":
+        active_line_name = parsed_aliases.get(line_filter, "Línea Secundaria" if line_filter != "principal" else "Línea Principal")
 
     labels_filter_html = f"""
     <div style="position:relative; margin-top:1rem; text-align:left; display:flex; gap:0.5rem; align-items:center;">
@@ -2574,7 +2584,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=all" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'all' else 'transparent'};">Todas las Líneas</a>
             <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=principal" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'principal' else 'transparent'};">Línea Principal</a>
 """
-    for q_id, q_name in aliases.items():
+    for q_id, q_name in parsed_aliases.items():
         labels_filter_html += f'<a href="{base_url}?tab={tab}&label={label_filter or ""}&unread={unread or ""}&line={q_id}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
         
     labels_filter_html += "</div>"
@@ -2638,7 +2648,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if line_filter != "all" and ch_line != line_filter:
             continue
             
-        line_alias = aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
+        line_alias = parsed_aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
         badge_line = f'<span style="font-size:0.65rem; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:0.5rem; border:1px solid rgba(255,255,255,0.1); color:var(--text-muted);">{line_alias}</span>' if ch_line != "principal" else ""
 
 

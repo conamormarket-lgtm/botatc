@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4626 notes | Score threshold: >40
+> 4671 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,37 +20,30 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Replaced auth GOTCHA
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Replaced auth GOTCHA
-
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
-+ - gotcha in shared-context.json
-
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "aede4fcf5b7b9fdc",
-+
-- **⚠️ GOTCHA: Replaced auth GOTCHA** — - - ⚠️ GOTCHA: Replaced auth GOTCHA
-+ - ⚠️ GOTCHA: Replaced auth Score
-- **⚠️ GOTCHA: Replaced auth Score** — - > 4563 notes | Score threshold: >40
-+ > 4565 notes | Score threshold
+Content summary (8
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4646 notes | Score threshold: >40
++ > 4649 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4643 notes | Score threshold: >40
++ > 4646 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4640 notes | Score threshold: >40
++ > 4643 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4637 notes | Score threshold: >40
++ > 4640 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4626 notes | Score threshold: >40
++ > 4637 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Replaced auth Score — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Replaced auth Score — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Replaced auth Score — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Added JWT tokens authentication
+- Added JWT tokens authentication — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 

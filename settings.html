@@ -501,7 +501,135 @@
                 </div>
             </div>
 
-            <div class="qr-card"
+        <style>
+            .tut-tab { background:rgba(0,0,0,0.2); border:none; color:var(--text-muted); padding:0.8rem 1rem; cursor:pointer; flex:1; font-family:var(--font-heading); text-align:center; transition:0.3s ease;}
+            .tut-tab.active { background:transparent; color:var(--text-main); border-bottom:3px solid #10b981; font-weight:bold; }
+            .tut-tab:hover:not(.active) { background:rgba(255,255,255,0.05); }
+            .tut-slide { display:none; padding:1.5rem; animation:fadeIn 0.4s ease; }
+            .tut-slide.active { display:block; }
+            @keyframes fadeIn { from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:translateY(0)} }
+            
+            .tut-img-container { 
+                display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 1rem; margin-top:1rem;
+            }
+            .tut-img {
+                height: 250px; border-radius:8px; border:2px solid var(--accent-border); box-shadow:0 4px 6px rgba(0,0,0,0.3); transition:0.3s;
+                cursor: zoom-in;
+            }
+            .tut-img:hover { border-color: #10b981; transform: scale(1.02); }
+            
+            /* Lightbox / Zoom modal for images */
+            .tut-lightbox { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; }
+            .tut-lightbox img { max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.5); }
+        </style>
+
+        <!-- Lighbox genérico -->
+        <div id="tutLightbox" class="tut-lightbox" onclick="this.style.display='none'">
+            <img id="tutLightboxImg" src="" />
+        </div>
+
+        <!-- NUEVA SECCIÓN: GUÍA DE CONFIGURACIÓN META -->
+        <div class="qr-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--accent-border); padding-bottom:1rem;">
+                <div>
+                    <h3 style="margin-bottom:0.5rem;color:#10b981;font-family:var(--font-heading)">Tutorial: Añadir Líneas Cloud API (Oficial)</h3>
+                    <p style="color:var(--text-muted);font-size:0.9rem;margin:0;">Guía definitiva interactiva paso a paso para conectar Múltiples Cuentas de WhatsApp desde cero en la plataforma de Meta for Developers.</p>
+                </div>
+            </div>
+            
+            <div style="border: 1px solid var(--accent-border); border-radius: 8px; overflow:hidden; background:rgba(0,0,0,0.1);">
+                <!-- Cabecera de Pasos -->
+                <div style="display:flex; background:var(--bg-main); border-bottom:1px solid var(--accent-border);">
+                    <button class="tut-tab active" onclick="showTutSlide(1)">1. Crear App Meta</button>
+                    <button class="tut-tab" onclick="showTutSlide(2)">2. Inbox y Números</button>
+                    <button class="tut-tab" onclick="showTutSlide(3)">3. Rol de Sistema</button>
+                    <button class="tut-tab" onclick="showTutSlide(4)">4. Webhooks y Token</button>
+                </div>
+                
+                <!-- Slide 1 -->
+                <div class="tut-slide active" id="tut-slide-1">
+                    <h4 style="margin-top:0; color:var(--text-main); font-family:var(--font-heading);">Paso 1: Crear la App y vincular WhatsApp</h4>
+                    <ol style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem; line-height:1.6;">
+                        <li>Entra a <a href="https://developers.facebook.com" target="_blank" style="color:#3b82f6;">developers.facebook.com</a>, ve a Mis Apps y dale click en <strong>Crear app</strong>.</li>
+                        <li>Ingresa los Detalles Iniciales: <strong>Nombre de la app</strong> y el <strong>Correo de contacto</strong> de la misma.</li>
+                        <li>Muy importante: Al "Agregar Casos de Uso", debes seleccionar la caja de <strong>Conectarte con los clientes a través de WhatsApp</strong> y continuar.</li>
+                        <li>Selecciona a qué cuenta del <strong>Administrador Comercial (Portfolio)</strong> pertenecerá. Finalmente, haz clic en el botón inferior "Crear app".</li>
+                    </ol>
+                    <p style="font-size:0.8rem; color:#8b5cf6; margin-bottom:0;"><em>Imágenes referenciales (guárdalas en static/tutorial/1.png, 2.png, etc...):</em></p>
+                    <div class="tut-img-container">
+                        <img class="tut-img" src="/static/tutorial/1.png" alt="Dashboard Inicial" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+1+Pendiente'"/>
+                        <img class="tut-img" src="/static/tutorial/2.png" alt="Detalles App" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+2+Pendiente'"/>
+                        <img class="tut-img" src="/static/tutorial/3.png" alt="Casos de uso" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+3+Pendiente'"/>
+                        <img class="tut-img" src="/static/tutorial/4.png" alt="Portfolio" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+4+Pendiente'"/>
+                        <img class="tut-img" src="/static/tutorial/5.png" alt="Resumen crear" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+5+Pendiente'"/>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="tut-slide" id="tut-slide-2">
+                    <h4 style="margin-top:0; color:var(--text-main); font-family:var(--font-heading);">Paso 2: Panel de Producto y Registro Numérico</h4>
+                    <ol style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem; line-height:1.6;">
+                        <li>Dentro del <strong>Panel (Dashboard)</strong> de la App recién construida, busca la tarjeta de producto de WhatsApp y haz clic. Te llevará al Inicio rápido, ahí haz clic en <strong>Empezar a usar la API</strong>.</li>
+                        <li>En el menú lateral <strong>WhatsApp > Configuración de la API</strong> verás un Token Temporal. Localiza la sección del <strong>Paso 1</strong> "Seleccionar números de teléfono".</li>
+                        <li>Despliega la lista y dale al botón <strong>+ Agregar número de teléfono</strong> para vincular la línea real de la empresa y no la de prueba temporal.</li>
+                        <li>Te aparecerá un modal: completa el <strong>Nombre visible</strong>, tu Categoría, y posteriormente verifica tu número oficial telefónico vía SMS/Llamada.</li>
+                    </ol>
+                    <div class="tut-img-container">
+                        <img class="tut-img" src="/static/tutorial/6.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+6'"/>
+                        <img class="tut-img" src="/static/tutorial/7.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+7'"/>
+                        <img class="tut-img" src="/static/tutorial/8.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+8'"/>
+                        <img class="tut-img" src="/static/tutorial/9.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+9'"/>
+                        <img class="tut-img" src="/static/tutorial/10.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+10'"/>
+                    </div>
+                </div>
+                
+                <!-- Slide 3 -->
+                <div class="tut-slide" id="tut-slide-3">
+                    <h4 style="margin-top:0; color:var(--text-main); font-family:var(--font-heading);">Paso 3: Webhooks Base</h4>
+                    <ol style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem; line-height:1.6;">
+                        <li>Aún dentro de <strong>Configuración de la API</strong> (o en <strong>Configuración > Webhooks</strong>), dirígete a las suscripciones de los Webhooks.</li>
+                        <li>Es vital darle check (suscribirse) al campo de <strong><code>messages</code></strong>. Solo así Meta sabrá a qué dirección enviar todos los mensajes que escriban tus clientes para que nuestro CRM pueda devorarlos. Y eso es todo aquí.</li>
+                    </ol>
+                    <div class="tut-img-container">
+                        <img class="tut-img" src="/static/tutorial/11.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+11'"/>
+                        <img class="tut-img" src="/static/tutorial/12.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+12'"/>
+                    </div>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="tut-slide" id="tut-slide-4">
+                    <h4 style="margin-top:0; color:var(--text-main); font-family:var(--font-heading);">Paso 4: Permisos Dorados y Token Permanente</h4>
+                    <ol style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem; line-height:1.6;">
+                        <li>Ve a la <strong>Configuración de tu Negocio</strong> (Business Settings) de Meta empresarial > <strong>Usuarios del Sistema</strong>.</li>
+                        <li>En esa pestaña dale a <strong>"Agregar" / Crear Usuario de Sistema</strong>. Nómbralo (Ej: "Bot CRM", "pruebas") y ponle rol de Empleado/Admin.</li>
+                        <li>Dale a <strong>Asignar activos</strong>. Del panel izquierdo escoge "Cuentas de WhatsApp" (o "Métricas de Activos" / "Apps") y a la derecha marca el círculo de tu número recién configurado (Walá/tu empresa). Abajo enciende el switch Azul de <strong>Control Total</strong>.</li>
+                        <li>¡Acabas de vincular el cerebro con el músculo! Regresa y dale <strong>"Generar token"</strong> a ese usuario y no olvides copiar los larguísimos valores de tu <strong>Token Permanente</strong> y tu  <strong>Phone ID</strong> (visible en los pasos del slide 2) para pegarlos finalmente aquí abajo en la sección de Líneas.</li>
+                    </ol>
+                    <div class="tut-img-container">
+                        <img class="tut-img" src="/static/tutorial/13.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+13'"/>
+                        <img class="tut-img" src="/static/tutorial/14.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+14'"/>
+                        <img class="tut-img" src="/static/tutorial/15.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+15'"/>
+                        <img class="tut-img" src="/static/tutorial/16.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+16'"/>
+                        <img class="tut-img" src="/static/tutorial/17.png" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/400x250/222/555?text=Img+17'"/>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            function showTutSlide(num) {
+                document.querySelectorAll('.tut-slide').forEach(sl => sl.classList.remove('active'));
+                document.querySelectorAll('.tut-tab').forEach(tb => tb.classList.remove('active'));
+                document.getElementById('tut-slide-'+num).classList.add('active');
+                document.querySelectorAll('.tut-tab')[num-1].classList.add('active');
+            }
+            function openLightbox(src) {
+                document.getElementById('tutLightboxImg').src = src;
+                document.getElementById('tutLightbox').style.display = 'flex';
+            }
+        </script>
+        <!-- FIN GUÍA META -->
                 style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
                 <h3 style="margin-bottom:0.5rem;color:var(--text-main);font-family:var(--font-heading)">Vincular WhatsApp Secundario (Generador QR)</h3>
                 <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Conecta una línea alternativa escaneando este código con WhatsApp. Esta línea funcionará en modo "Web Scraping" alojada en el servidor.</p>
