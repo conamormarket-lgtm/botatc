@@ -10,12 +10,13 @@ if (!targetNumber) {
 
 const telefono = targetNumber.replace(/[^0-9]/g, '');
 
+const fs = require('fs');
+if (fs.existsSync('auth_info_baileys')) {
+    console.log(`🧹 Limpiando sesión de raíz (Solo se ejecuta 1 vez)...`);
+    fs.rmSync('auth_info_baileys', { recursive: true, force: true });
+}
+
 async function startPairing() {
-    console.log(`🧹 Limpiando sesión previa por si acaso...`);
-    const fs = require('fs');
-    if (fs.existsSync('auth_info_baileys')) {
-        fs.rmSync('auth_info_baileys', { recursive: true, force: true });
-    }
 
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     const { version } = await fetchLatestBaileysVersion();
