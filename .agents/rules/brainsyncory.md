@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4981 notes | Score threshold: >40
+> 5004 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,27 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score** — - > 4981 notes | Score threshold: >40
++ > 4996 notes | Score threshold
+- **⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async operations for speed** — -     for num, s in todas:
++     # Conjunto para deduplicar por (line
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Fixed null crash in True — parallelizes async operation
+- **⚠️ GOTCHA: Patched security issue Para — protects against XSS and CSRF token theft** — -     Para la línea principal usamos solo el número (retrocompatible).
+- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed** — -         nombre_chat = s.get("nombre_cliente", wa_id)
++         nomb
 - **⚠️ GOTCHA: Fixed null crash in Para — parallelizes async operations for speed** — -         nombre   = s.get("nombre_cliente", num)
 +         # Para cl
-- **⚠️ GOTCHA: Patched security issue Webhook — protects against XSS and CSRF token theft** — -     ses = obtener_o_crear_sesion(numero_wa)
-+     session_key = get
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4964 notes | Score threshold: >40
-+ > 4970 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4950 notes | Score threshold: >40
-+ > 4964 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Escachar — prevents null/undefined runtime cra
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Optimized Score — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 5x
 - what-changed in shared-context.json — confirmed 6x
-- Fixed null crash in Guardar — prevents null/undefined runtime crashes — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 10x
-- problem-fix in agent-rules.md — confirmed 9x
-- what-changed in shared-context.json — confirmed 9x
-- problem-fix in agent-rules.md — confirmed 6x
 
 ## Known Fixes
 
@@ -52,10 +52,10 @@
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized Project — evolves the database schema to support new requirements
 - Optimized None — ensures atomic multi-step database operations
 - Optimized None — ensures atomic multi-step database operations
-- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 
