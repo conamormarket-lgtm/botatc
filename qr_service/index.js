@@ -2,6 +2,7 @@ const express = require('express');
 const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
@@ -50,7 +51,77 @@ async function connectToWhatsApp() {
         }
     });
 
-    // Mensajes ignorados — procesamiento desactivado hasta cambio de librería
+    // Escachar mensajes y re-transmitirlos al CRM Python imitando el SDK de Meta Cloud
+    sock.ev.on('messages.upsert', async ({ messages, type }) => {
+        if (type !== 'notify') return;
+        
+        for (let m of messages) {
+            if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue;
+            
+            try {
+                const wa_id = m.key.remoteJid.split('@')[0];
+                const msg_id = m.key.id;
+                const timestamp = m.messageTimestamp || Math.floor(Date.now() / 1000);
+                const pushName = m.pushName || "Usuario";
+                
+                let msgType = "unknown";
+                let textBody = "";
+                let mimeType = "";
+
+                const msgTypeKey = Object.keys(m.message || {})[0];
+                if (!msgTypeKey) continue;
+                
+                if (msgTypeKey === 'conversation' || msgTypeKey === 'extendedTextMessage') {
+                    msgType = 'text';
+                    textBody = m.message.conversation || m.message.extendedTextMessage?.text || "";
+                } else if (msgTypeKey === 'imageMessage') {
+                    msgType = 'image';
+                    textBody = m.message.imageMessage?.caption || "";
+                    mimeType = m.message.imageMessage?.mimetype || "image/jpeg";
+                } else if (msgTypeKey === 'videoMessage') {
+                    msgType = 'video';
+                    textBody = m.message.videoMessage?.caption || "";
+                    mimeType = m.message.videoMessage?.mimetype || "video/mp4";
+                } else if (msgTypeKey === 'audioMessage') {
+                    msgType = 'audio';
+                    mimeType = m.message.audioMessage?.mimetype || "audio/ogg";
+                } else if (msgTypeKey === 'documentMessage') {
+                    msgType = 'document';
+                    textBody = m.message.documentMessage?.fileName || "";
+                }
+                
+                if (msgType === "unknown") continue;
+
+                // Construimos payload fingiendo ser Meta
+                const metaPayload = {
+                    "object": "whatsapp_business_account",
+                    "entry": [{
+                        "id": "BAILEYS_MOCK",
+                        "changes": [{
+                            "value": {
+                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "contacts": [{ "profile": { "name": pushName }, "wa_id": wa_id }],
+                                "messages": [{
+                                    "from": wa_id,
+                                    "id": msg_id,
+                                    "timestamp": timestamp,
+                                    "type": msgType,
+                                    [msgType]: (msgType === 'text') ? { "body": textBody } : { "caption": textBody, "mime_type": mimeType }
+                                }]
+                            }
+                        }]
+                    }]
+                };
+
+                console.log(`➡️ Reenviando msj de ${wa_id} al CRM Python...`);
+                await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 3000 });
+                
+            } catch (err) {
+                console.log("❌ Error procesando mensaje de Baileys:", err.message);
+            }
+        }
+    });
+
 }
 
 // ----------------------------------------
