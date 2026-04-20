@@ -2655,20 +2655,29 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         activo = s.get("bot_activo", True)
         is_archived = s.get("is_archived", False)
         
-        # Determinar la línea de esta sesión:
-        # 1) Tomar lineId del campo si existe
-        # 2) Inferirlo desde la clave de sesión (ej: "qr_ventas_1_51997778512" → "qr_ventas_1")
-        # 3) Saltar sesiones con phone_number_id numérico (corruptas del bug anterior)
+        # ── Lógica de línea ──────────────────────────────────────────────────
+        # 1. Si la CLAVE tiene formato numérico_número (ej: "984944321377299_51913048384"),
+        #    es una sesión corrupta del bug breve → saltar.
+        #    Estas NO son las sesiones normales; son duplicados innecesarios.
+        _key_parts = num.split("_", 1)
+        if len(_key_parts) == 2 and _key_parts[0].isdigit() and _key_parts[1].isdigit():
+            continue  # Sesión corrupta compuesta por phone_number_id numérico — ignorar
+
+        # 2. Determinar la línea de la sesión
         ch_line_raw = s.get("lineId", "") or ""
-        if not ch_line_raw:
-            # Inferir la línea desde el formato de clave compuesta "lineId_numero"
-            # Ej: "qr_ventas_1_51997778512" → split por el último "_número" → "qr_ventas_1"
-            parts = num.rsplit("_", 1)
-            if len(parts) == 2 and parts[1].isdigit() and parts[0] and not parts[0].isdigit():
-                ch_line_raw = parts[0]
-                s["lineId"] = ch_line_raw  # guardar para optimizar futuras consultas
+
+        # 3. Si lineId es un ID numérico de Meta (principal) → normalizar a "principal"
         if ch_line_raw and ch_line_raw.isdigit():
-            continue  # Sesión corrupta con phone_number_id de Meta — ignorar
+            ch_line_raw = "principal"
+            s["lineId"] = "principal"  # corregir en RAM para futuras consultas
+
+        # 4. Si lineId no está, intentar inferirlo desde la clave compuesta "nombre_número"
+        if not ch_line_raw and "_" in num:
+            _p = num.rsplit("_", 1)
+            if len(_p) == 2 and _p[1].isdigit() and not _p[0].isdigit():
+                ch_line_raw = _p[0]
+                s["lineId"] = ch_line_raw
+        # ─────────────────────────────────────────────────────────────────────
         
         # Filtro de Tab
         if tab == "archived":
