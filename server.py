@@ -2938,6 +2938,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 
                 texto_renderizado = f'<div style="background:rgba(255,255,255,0.05); border-left:3px solid #10b981; padding:0.6rem; border-radius:6px; margin:-0.2rem;"><div style="font-size:0.7rem; color:#10b981; font-weight:600; text-transform:uppercase; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> PLANTILLA META: {tpl_title}</div>{tpl_body}</div>'
                 
+            def linkify_text(match):
+                if match.group(1): return match.group(1)
+                url = match.group(2)
+                href = url if url.startswith('http') else 'http://' + url
+                return f'<a href="{href}" target="_blank" rel="noopener noreferrer" style="text-decoration:underline; font-weight:500; color:inherit;">{url}</a>'
+                
+            texto_renderizado = re.sub(r'(<[^>]+>)|(https?://[^\s<>]+|www\.[^\s<>]+)', linkify_text, texto_renderizado)
+            
             wamid = m.get("msg_id", "")
             wamid_attr = f' id="msg-{wamid}" data-wamid="{wamid}"' if wamid else ""
             
