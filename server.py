@@ -2650,14 +2650,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         
     labels_filter_html += '</div></div>'
     
-    # Conjunto para deduplicar por (linea_normalizada, numero_real) — evita mostrar
-    # sesiones corruptas con phone_number_id numérico de Meta junto a las correctas
-    _shown_combos = set()
-
     for num, s in todas:
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
         activo = s.get("bot_activo", True)
         is_archived = s.get("is_archived", False)
+        
+        # Saltar sesiones corruptas: clave compuesta con phone_number_id numérico de Meta
+        # (se crearon brevemente por un bug ya corregido)
+        ch_line_raw = s.get("lineId", "")
+        if ch_line_raw and ch_line_raw.isdigit():
+            continue  # Sesión corrupta — ignorar silenciosamente
         
         # Filtro de Tab
         if tab == "archived":
@@ -2681,19 +2683,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 continue
                 
         # FILTRO DE LINEA MULTIPLE
-        # Normalizar IDs numéricos de Meta (phone_number_id real) → "principal"
-        ch_line = s.get("lineId", "principal")
-        if ch_line and ch_line.isdigit():
-            ch_line = "principal"
+        ch_line = ch_line_raw or "principal"
         if line_filter != "all" and ch_line != line_filter:
             continue
-
-        # DEDUPLICAR: si ya mostramos este (línea, número) saltamos la sesión corrupta
-        numero_real_key = s.get("numero_real", num)
-        _combo = (ch_line, numero_real_key)
-        if _combo in _shown_combos:
-            continue
-        _shown_combos.add(_combo)
             
         line_alias = parsed_aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
         badge_line = f'<span style="font-size:0.65rem; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:0.5rem; border:1px solid rgba(255,255,255,0.1); color:var(--text-muted);">{line_alias}</span>' if ch_line != "principal" else ""
