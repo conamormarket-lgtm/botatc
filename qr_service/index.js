@@ -133,6 +133,23 @@ app.get('/api/qr/status', (req, res) => {
     res.json({ connected: isConnected, lineId: LINE_ID });
 });
 
+app.post('/api/qr/send', async (req, res) => {
+    if (!isConnected || !sock) {
+        return res.status(500).json({ error: "No conectado a WhatsApp" });
+    }
+    try {
+        const { to, text } = req.body;
+        if (!to || !text) return res.status(400).json({ error: "Faltan datos 'to' y 'text'" });
+        
+        const jid = to.includes('@') ? to : `${to}@s.whatsapp.net`;
+        const sentMsg = await sock.sendMessage(jid, { text: text });
+        
+        return res.json({ status: "ok", message: "Sent", id: sentMsg?.key?.id });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+});
+
 // Generación / obtención del código QR para escanear desde el panel
 app.get('/api/qr/link', async (req, res) => {
     if (isConnected) {
