@@ -61,6 +61,12 @@ async function startPairing() {
         if (connection === 'close') {
             const code = lastDisconnect?.error?.output?.statusCode;
             console.log(`❌ Conexión cerrada (${code}).`);
+            
+            // Si es 515, Meta nos pide que nos reconectemos INMEDIATAMENTE para concretar el Logging In
+            if (code === DisconnectReason.restartRequired) {
+                console.log("🔄 Meta solicita reinicio (515). Reconectando velozmente para salvar sincronización...");
+                startPairing();
+            }
         }
     });
 }
