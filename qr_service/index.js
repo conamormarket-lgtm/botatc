@@ -25,7 +25,7 @@ async function connectToWhatsApp() {
         version,
         auth: state,
         logger: pino({ level: "silent" }),
-        browser: Browsers.ubuntu('Chrome'),
+        browser: Browsers.macOS('Desktop'),
         markOnlineOnConnect: true,
         generateHighQualityLinkPreview: true,
         msgRetryCounterCache, // CRÍTICO para reintentos automáticos
