@@ -1,5 +1,5 @@
 const express = require('express');
-const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers, makeInMemoryStore } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
 const axios = require('axios');
@@ -16,8 +16,8 @@ let sock;
 let currentQR = "";
 let isConnected = false;
 
-// Store simple para ayudar a Baileys a descifrar mensajes CIPHERTEXT (messageStubType=2)
-const messageStore = {};
+// CRÍTICO: Baileys requiere un store oficial para manejar el contexto de cifrado y reintentos.
+const store = makeInMemoryStore({ logger: pino({ level: 'silent' }) });
 
 async function connectToWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
@@ -32,15 +32,17 @@ async function connectToWhatsApp() {
         syncFullHistory: false, // Evita saturar la conexión descargando miles de chats viejos
         markOnlineOnConnect: true,
         msgRetryCounterCache, // CRÍTICO: Requerido por Baileys para habilitar el reintento automático de CIPHERTEXT
-        // CRÍTICO: Sin esto, mensajes cifrados (CIPHERTEXT / stub=2) no se pueden descifrar
         getMessage: async (key) => {
-            const storeKey = `${key.remoteJid}:${key.id}`;
-            // Retornar undefined (no un objeto vacío) para mensajes desconocidos.
-            // Esto es crítico: con undefined, Baileys sabe que no tiene el mensaje
-            // y puede manejar el retry del protocolo Signal correctamente.
-            return messageStore[storeKey] || undefined;
+            if (store) {
+                const msg = await store.loadMessage(key.remoteJid, key.id);
+                return msg?.message || undefined;
+            }
+            return undefined;
         }
     });
+
+    // Vincular la base de memoria para que asimile los mensajes y llaves
+    store.bind(sock.ev);
 
     sock.ev.on('creds.update', saveCreds);
 
