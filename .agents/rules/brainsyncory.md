@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5081 notes | Score threshold: >40
+> 5094 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,17 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "2e4b4774ccd8419a",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5078 notes | Score threshold: >40
++ > 5081 notes | Score threshold
 - **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 
 Content summary (8
@@ -34,13 +43,10 @@ Content summary (8
 +
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5058 notes | Score threshold: >40
 + > 5061 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5053 notes | Score threshold: >40
-+ > 5058 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5045 notes | Score threshold: >40
-+ > 5053 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
@@ -48,7 +54,6 @@ Content summary (8
 - Added JWT tokens authentication — confirmed 4x
 - trade-off in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
-- Updated schema Fixed — confirmed 3x
 
 ## Known Fixes
 

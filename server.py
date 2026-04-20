@@ -396,9 +396,10 @@ def llamar_gemini(historial: list[dict]) -> str:
                 
                 # If it's not a retriable error or we exhausted retries
                 import traceback
-                with open("error_gemini.txt", "w") as f:
+                with open("error_gemini.txt", "a") as f:
+                    f.write(f"\n--- ERROR A LAS {datetime.utcnow()} ---\n")
                     f.write(traceback.format_exc())
-                print(f"[ERROR] Error Gemini definitivo: {e}")
+                print(f"[ERROR CRÍTICO] Error Gemini definitivo: {e}")
                 return ""
         return ""
     except Exception as general_e:
@@ -872,10 +873,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     "content": get_system_prompt(pedidos_no_diseno, bot_id)
                 }
             else:
-                print(f"  [❓ Sin pedido registrado → silencio]")
+                print(f"  [❓ Sin pedido registrado → procediendo sin contexto de pedido]")
                 try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
                 except: pass
-                return None
     else:
         # Refrescar los datos para evitar estado obsoleto
         from config import NUMEROS_TESTER
@@ -4228,7 +4228,7 @@ async def api_transcribe(media_id: str, payload: TranscribePayload, request: Req
         from google.genai import types
         part = types.Part.from_bytes(data=contenido, mime_type="audio/ogg")
         res = gemini_client.models.generate_content(
-            model="gemini-2.5-flash-lite",
+            model="gemini-2.0-flash",
             contents=[part, "Transcribe exactamente lo que se dice en este audio. Sin comentarios tuyos, solo la transcripción limpia. Si está ininteligible, escribe '[Audio ininteligible]'. Manten el idioma original del audio."]
         )
         transcripcion = res.text.strip()
