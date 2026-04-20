@@ -265,24 +265,30 @@ def obtener_wallpaper_de_bd(filename: str) -> bytes | None:
 #  PERSISTENCIA DE PLANTILLAS EN FIRESTORE
 # ============================================================
 
-def guardar_plantilla_bd(nombre: str, idioma: str = "es"):
+def guardar_plantilla_bd(nombre: str, idioma: str = "es", line_id: str = "principal"):
     db = inicializar_firebase()
     db.collection("bot_templates").document(nombre).set({
         "name": nombre,
         "language": idioma,
+        "line_id": line_id,
         "createdAt": firestore.SERVER_TIMESTAMP
-    })
+    }, merge=True)
 
 def eliminar_plantilla_bd(nombre: str):
     db = inicializar_firebase()
     db.collection("bot_templates").document(nombre).delete()
 
-def cargar_plantillas_bd() -> list:
+def cargar_plantillas_bd(line_id: str = None) -> list:
     db = inicializar_firebase()
     docs = db.collection("bot_templates").stream()
     plantillas = []
     for doc in docs:
         data = doc.to_dict()
+        doc_line = data.get("line_id", "principal")
+        if not doc_line: doc_line = "principal"
+        if line_id and line_id != "all":
+            if doc_line != line_id and doc_line != "all":
+                continue
         if "name" in data:
             plantillas.append(data)
     return plantillas
@@ -331,7 +337,7 @@ def reordenar_etiquetas_bd(lista_ids: list):
 #  PERSISTENCIA DE RESPUESTAS RÁPIDAS (QUICK REPLIES)
 # ============================================================
 
-def guardar_quick_reply_bd(id_qr: str, titulo: str, contenido: str, categoria: str = "General", tipo: str = "text", mensajes: list = None, delay_ms: int = 1500, etiquetas: list = None):
+def guardar_quick_reply_bd(id_qr: str, titulo: str, contenido: str, categoria: str = "General", tipo: str = "text", mensajes: list = None, delay_ms: int = 1500, etiquetas: list = None, line_id: str = "principal"):
     db = inicializar_firebase()
     
     data = {
@@ -341,7 +347,8 @@ def guardar_quick_reply_bd(id_qr: str, titulo: str, contenido: str, categoria: s
         "category": categoria,
         "type": tipo,
         "delay_ms": delay_ms,
-        "etiquetas": etiquetas if etiquetas is not None else []
+        "etiquetas": etiquetas if etiquetas is not None else [],
+        "line_id": line_id
     }
     if mensajes is not None:
         data["mensajes"] = mensajes
@@ -355,12 +362,17 @@ def eliminar_quick_reply_bd(id_qr: str):
     db = inicializar_firebase()
     db.collection("bot_quick_replies").document(id_qr).delete()
 
-def cargar_quick_replies_bd() -> list:
+def cargar_quick_replies_bd(line_id: str = None) -> list:
     db = inicializar_firebase()
     docs = db.collection("bot_quick_replies").stream()
     qrs = []
     for doc in docs:
         data = doc.to_dict()
+        doc_line = data.get("line_id", "principal")
+        if not doc_line: doc_line = "principal"
+        if line_id and line_id != "all":
+            if doc_line != line_id and doc_line != "all":
+                continue
         if "id" in data:
             # Normalize mensajes: convert old string-only format to objects
             mensajes = data.get("mensajes", [])

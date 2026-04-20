@@ -2075,7 +2075,7 @@
             if (!list) return;
             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
             try {
-                const res = await fetch("/api/admin/templates/list");
+                const res = await fetch("/api/admin/templates/list?line=" + (new URLSearchParams(window.location.search).get("line") || "principal"));
                 const data = await res.json();
                 if (data.ok) {
                     list.innerHTML = "";
@@ -2117,7 +2117,7 @@
                 const res = await fetch("/api/admin/templates/save", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: name.trim(), language: lang.trim() })
+                    body: JSON.stringify({ name: name.trim(), language: lang.trim(), line_id: new URLSearchParams(window.location.search).get("line") || "principal" })
                 });
                 if (res.ok) cargarPlantillas();
             } catch (e) {

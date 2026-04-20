@@ -1377,11 +1377,11 @@ async def get_media_endpoint(media_id: str, request: Request):
     return Response(content=data, headers={"Accept-Ranges": "bytes"}, media_type=mime)
 
 @app.get("/api/quick-replies")
-def get_quick_replies(request: Request):
+def get_quick_replies(request: Request, line: str = None):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     from firebase_client import cargar_quick_replies_bd
-    return cargar_quick_replies_bd()
+    return cargar_quick_replies_bd(line)
 
 @app.post("/api/quick-replies")
 def create_quick_reply(request: Request, data: dict):
@@ -1407,7 +1407,8 @@ def create_quick_reply(request: Request, data: dict):
         tipo=data.get("type", "text"),
         mensajes=mensajes,
         delay_ms=int(data.get("delay_ms", 1500)),
-        etiquetas=data.get("etiquetas", [])
+        etiquetas=data.get("etiquetas", []),
+        line_id=data.get("line_id", "principal")
     )
     return {"status": "ok", "id": new_id}
 
@@ -3662,7 +3663,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const res = await fetch("/api/quick-replies", {{
                         method: "POST",
                         headers: {{ "Content-Type": "application/json" }},
-                        body: JSON.stringify({{ id, title, mensajes, delay_ms: delay, category: cat, type: "text", etiquetas }})
+                        body: JSON.stringify({{ id, title, mensajes, delay_ms: delay, category: cat, type: "text", etiquetas, line_id: new URLSearchParams(window.location.search).get("line") || "principal" }})
                     }});
                     if(res.ok) {{
                         document.getElementById('qrCreateModal').style.display = 'none';
@@ -3695,7 +3696,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 try {{
                     // Load labels first so cards can render label badges
                     const [resQr, resLbl] = await Promise.all([
-                        fetch("/api/quick-replies"),
+                        fetch("/api/quick-replies?line=" + (new URLSearchParams(window.location.search).get("line") || "principal")),
                         fetch("/api/admin/labels/list")
                     ]);
                     if (!resQr.ok) throw new Error("HTTP " + resQr.status);
@@ -4424,13 +4425,14 @@ async def api_simular_mensaje(request: Request):
 class TemplatePayload(BaseModel):
     name: str
     language: str = "es"
+    line_id: str = "principal"
 
 @app.post("/api/admin/templates/save")
 async def api_save_template(payload: TemplatePayload, request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     from firebase_client import guardar_plantilla_bd
-    guardar_plantilla_bd(payload.name, payload.language)
+    guardar_plantilla_bd(payload.name, payload.language, payload.line_id)
     return {"ok": True}
 
 @app.post("/api/admin/templates/delete")
@@ -4442,11 +4444,11 @@ async def api_delete_template(payload: TemplatePayload, request: Request):
     return {"ok": True}
 
 @app.get("/api/admin/templates/list")
-async def api_list_templates(request: Request):
+async def api_list_templates(request: Request, line_id: str = None):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     from firebase_client import cargar_plantillas_bd
-    plantillas = cargar_plantillas_bd()
+    plantillas = cargar_plantillas_bd(line_id)
     return {"ok": True, "plantillas": plantillas}
 
 class LineAliasPayload(BaseModel):
