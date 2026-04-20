@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4749 notes | Score threshold: >40
+> 4820 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,43 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4740 notes | Score threshold: >40
-+ > 4743 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4736 notes | Score threshold: >40
-+ > 4740 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4734 notes | Score threshold: >40
-+ > 4736 notes | Score threshold
+- **⚠️ GOTCHA: Replaced auth Patched** — - - Fixed null crash in Servidor — protects against XSS and CSRF token
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - # ====================[REDACTED]
++ ﻿# ====================[REDACTED
+- **⚠️ GOTCHA: Patched security issue Request — parallelizes async operations for speed** — - # ====================[REDACTED]
++ ﻿# ====================[REDACTED
+- **⚠️ GOTCHA: Added API route: /api/quick-replies** — - # ====================[REDACTED]
++ ﻿# ====================[REDACTED
+- **⚠️ GOTCHA: Patched security issue Fixed** — - - Patched security issue Kevin
++ - Fixed null crash in Servidor — pr
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4778 notes | Score threshold: >40
++ > 4789 notes | Score threshold
 
 ## Project Standards
 
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- what-changed in dump.html — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in inbox.html — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 6x
+- discovery in shared-context.json — confirmed 5x
+- what-changed in shared-context.json — confirmed 5x
+- Added JWT tokens authentication — confirmed 5x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in Servidor — protects against XSS and CSRF token theft
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+
+## Recent Decisions
+
+- Optimized Score — evolves the database schema to support new requirements
+- Optimized General — ensures atomic multi-step database operations
+- Optimized True — ensures atomic multi-step database operations
+- Optimized PERSISTENCIA — ensures atomic multi-step database operations
 
 ## Learned Patterns
 
