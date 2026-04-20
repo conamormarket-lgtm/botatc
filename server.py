@@ -4478,7 +4478,7 @@ async def api_list_lines(request: Request):
     try:
         from server import get_qr_status
         qr_status = get_qr_status()
-        if qr_status.get("connected"):
+        if qr_status.get("status") == "connected":
             qr_line_id = qr_status.get("lineId", "qr_ventas_1")
             if qr_line_id not in aliases:
                 aliases[qr_line_id] = {"name": "Bot Ventas (Baileys Web)", "provider": "baileys"}
