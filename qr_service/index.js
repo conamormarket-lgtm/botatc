@@ -29,9 +29,10 @@ async function connectToWhatsApp() {
         auth: state,
         logger: pino({ level: "silent" }),
         browser: Browsers.macOS('Desktop'),
-        syncFullHistory: false, // Evita saturar la conexión descargando miles de chats viejos
         markOnlineOnConnect: true,
-        msgRetryCounterCache, // CRÍTICO: Requerido por Baileys para habilitar el reintento automático de CIPHERTEXT
+        generateHighQualityLinkPreview: true,
+        msgRetryCounterCache, // CRÍTICO para reintentos automáticos
+        retryRequestDelayMs: 2000, // Darle tiempo al Signal channel
         getMessage: async (key) => {
             if (store) {
                 const msg = await store.loadMessage(key.remoteJid, key.id);
@@ -41,7 +42,7 @@ async function connectToWhatsApp() {
         }
     });
 
-    // Vincular la base de memoria para que asimile los mensajes y llaves
+    // Vincular la base de memoria
     store.bind(sock.ev);
 
     sock.ev.on('creds.update', saveCreds);
@@ -69,99 +70,66 @@ async function connectToWhatsApp() {
         }
     });
 
-    // DEBUG: Escuchar TODOS los eventos para ver qué llega
+    // DEBUG: Escuchar TODOS los eventos
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
         console.log(`[DEBUG] messages.upsert disparado. type='${type}', cantidad=${messages.length}`);
 
-        // Aceptar 'notify' (mensajes nuevos en vivo) Y 'append' (mensajes al reconectar)
-        if (type !== 'notify' && type !== 'append') {
-            console.log(`[DEBUG] Tipo '${type}' descartado.`);
-            return;
-        }
+        if (type !== 'notify' && type !== 'append') return;
         
         for (let m of messages) {
-            // Guardar en store para ayudar a descifrar futuros CIPHERTEXT
-            if (m.message) {
-                messageStore[`${m.key.remoteJid}:${m.key.id}`] = m.message;
-            }
-
             console.log(`[DEBUG] Mensaje: fromMe=${m.key.fromMe}, jid=${m.key.remoteJid}`);
             
-            // Ignorar mensajes propios y broadcasts
-            if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue;
+            // Ignorar broadcasts
+            if (m.key.remoteJid === 'status@broadcast') continue;
 
-            // ------------------------------------------------------------------
-            // CIPHERTEXT (messageStubType=2): mensaje cifrado que no se pudo
-            // descifrar. Tenemos el número del remitente (senderPn) pero no el
-            // contenido. Enviamos placeholder al CRM para abrir la conversación.
-            // ------------------------------------------------------------------
+            // 1. Manejo exclusivo del CIPHERTEXT (mensaje no desencriptable por llaves perdidas)
             if (m.messageStubType === 2 && m.key.senderPn) {
                 const wa_id = m.key.senderPn.split('@')[0];
                 const pushName = m.pushName || "Cliente";
-                console.log(`⚠️  CIPHERTEXT de ${wa_id} (${pushName}) — Baileys solicitará reintento automático. Enviando placeholder...`);
                 
-                // Enviar placeholder al CRM para que el agente sepa que llegó un mensaje
-                try {
-                    const metaPayload = {
-                        "object": "whatsapp_business_account",
-                        "entry": [{ "id": "BAILEYS_MOCK", "changes": [{ "value": {
-                            "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
-                            "contacts": [{ "profile": { "name": pushName }, "wa_id": wa_id }],
-                            "messages": [{
-                                "from": wa_id,
-                                "id": m.key.id,
-                                "timestamp": m.messageTimestamp || Math.floor(Date.now() / 1000),
-                                "type": "text",
-                                "text": { "body": "📱 [Mensaje recibido — ver contenido en el teléfono vinculado]" }
-                            }]
-                        }}]}]
-                    };
-                    const resp = await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 5000 });
-                    console.log(`✅ Placeholder enviado al CRM: ${resp.status}`);
-                } catch (err) {
-                    console.log("❌ Error enviando placeholder:", err.message);
+                // Solo mandar placeholder si no es nuestro
+                const isFromSystem = m.key.fromMe;
+                
+                console.log(`⚠️  CIPHERTEXT de ${wa_id} (${pushName}) — fromMe: ${isFromSystem} — Baileys gestionará reintento.`);
+                
+                if (!isFromSystem) {
+                    try {
+                        const metaPayload = {
+                            "object": "whatsapp_business_account",
+                            "entry": [{ "id": "BAILEYS_MOCK", "changes": [{ "value": {
+                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "contacts": [{ "profile": { "name": pushName }, "wa_id": wa_id }],
+                                "messages": [{
+                                    "from": wa_id,
+                                    "id": m.key.id,
+                                    "timestamp": m.messageTimestamp || Math.floor(Date.now() / 1000),
+                                    "type": "text",
+                                    "text": { "body": "📱 [⏳ Cifrado. Procesando llaves con el teléfono celular...]" }
+                                }]
+                            }}]}]
+                        };
+                        const resp = await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 4000 });
+                        console.log(`✅ Placeholder enviado al CRM: ${resp.status}`);
+                    } catch (err) { }
                 }
-                continue;
+                continue; 
             }
             
+            // 2. Procesamiento de mensajes desencriptados
             try {
-                // Para JIDs tipo @lid, el número real viene en key.senderPn
                 const real_jid = m.key.senderPn || m.key.remoteJid;
                 const wa_id = real_jid.split('@')[0];
                 const msg_id = m.key.id;
                 const timestamp = m.messageTimestamp || Math.floor(Date.now() / 1000);
                 const pushName = m.pushName || "Usuario";
+                const isFromMe = m.key.fromMe; // Detectar si se envió desde app oficial
                 
                 let msgType = "unknown";
                 let textBody = "";
                 let mimeType = "";
 
                 const msgTypeKey = Object.keys(m.message || {})[0];
-                console.log(`[DEBUG] msgTypeKey='${msgTypeKey}' de ${wa_id}`);
-
-                // Si el JID es @lid y no hay mensaje, loguear estructura completa para diagnóstico
-                if (m.key.remoteJid.endsWith('@lid') || !msgTypeKey) {
-                    console.log('[DEBUG] === ESTRUCTURA COMPLETA DEL MENSAJE ===');
-                    console.log(JSON.stringify({
-                        key: m.key,
-                        messageTimestamp: m.messageTimestamp,
-                        pushName: m.pushName,
-                        messageType: m.messageType,
-                        messageStubType: m.messageStubType,
-                        message: m.message,
-                        userReceipt: m.userReceipt,
-                        // Ver si hay contenido en algún otro campo
-                        hasMessage: !!m.message,
-                        messageKeys: Object.keys(m.message || {}),
-                        fullMessageKeys: Object.keys(m),
-                    }, null, 2));
-                    console.log('[DEBUG] === FIN ESTRUCTURA ===');
-                }
-
-                if (!msgTypeKey) {
-                    console.log('[DEBUG] Sin tipo de mensaje, saltando.');
-                    continue;
-                }
+                if (!msgTypeKey) continue;
                 
                 if (msgTypeKey === 'conversation' || msgTypeKey === 'extendedTextMessage') {
                     msgType = 'text';
