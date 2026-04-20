@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5018 notes | Score threshold: >40
+> 5041 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,35 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async opera
-- **⚠️ GOTCHA: Optimized Score** — - > 5004 notes | Score threshold: >40
-+ > 5008 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score** — - > 5002 notes | Score threshold: >40
-+ > 5004 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score** — - > 4981 notes | Score threshold: >40
-+ > 4996 notes | Score threshold
-- **⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async operations for speed** — -     for num, s in todas:
-+     # Conjunto para deduplicar por (line
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Fixed null crash in True — parallelizes async operation
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Optimized Score
++ - ⚠️ GOTCHA: Optimized GOTCHA
+- - ⚠️ 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score
++ - ⚠️ GOTCHA: Optimized GOTCHA
+- - ⚠️ 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — evolves the database schema to suppor
+- **⚠️ GOTCHA: Optimized Score** — - > 5027 notes | Score threshold: >40
++ > 5030 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5018 notes | Score threshold: >40
++ > 5027 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Optimized Score
+- - ⚠️ 
 
 ## Project Standards
 
+- Updated schema Fixed — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
 - what-changed in shared-context.json — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized Score — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 5x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Fixed null crash in False — evolves the database schema to support new requir...
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Nivel — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
