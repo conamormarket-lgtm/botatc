@@ -634,10 +634,14 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     print(f"\n{'─'*50}")
     print(f"📨 {nombre} ({numero_wa}): {texto_cliente}")
 
+    # Extraer la línea destino para segmentación multisucursal
+    phone_number_id = changes.get("metadata", {}).get("phone_number_id", "principal")
+
     # --- AGREGAR AL HISTORIAL INMEDIATAMENTE PARA QUE EL UI LO VEA EN BURBUJAS SEPARADAS ---
     ses = obtener_o_crear_sesion(numero_wa)
     ses["ultima_actividad"] = datetime.utcnow()
     ses["nombre_cliente"]   = nombre
+    ses["lineId"]           = phone_number_id
     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
         import time
         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
