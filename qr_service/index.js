@@ -1,5 +1,5 @@
 const express = require('express');
-const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
 const axios = require('axios');
@@ -28,7 +28,9 @@ async function connectToWhatsApp() {
         version,
         auth: state,
         logger: pino({ level: "silent" }),
-        browser: ["Ubuntu", "Chrome", "20.0.04"],
+        browser: Browsers.macOS('Desktop'),
+        syncFullHistory: false, // Evita saturar la conexión descargando miles de chats viejos
+        markOnlineOnConnect: true,
         msgRetryCounterCache, // CRÍTICO: Requerido por Baileys para habilitar el reintento automático de CIPHERTEXT
         // CRÍTICO: Sin esto, mensajes cifrados (CIPHERTEXT / stub=2) no se pueden descifrar
         getMessage: async (key) => {
