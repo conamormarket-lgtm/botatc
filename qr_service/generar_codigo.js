@@ -1,4 +1,4 @@
-const { makeWASocket, useMultiFileAuthState, Browsers, fetchLatestBaileysVersion, delay } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, Browsers, fetchLatestBaileysVersion, delay, DisconnectReason } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 
 const targetNumber = process.argv[2];
