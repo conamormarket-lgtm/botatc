@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5068 notes | Score threshold: >40
+> 5074 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,10 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5061 notes | Score threshold: >40
++ > 5068 notes | Score threshold
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -34,19 +36,17 @@
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5045 notes | Score threshold: >40
 + > 5053 notes | Score threshold
 - **⚠️ GOTCHA: Patched security issue Buscar — protects against XSS and CSRF token theft** — -     if not ses["historial"] or ses["historial"][-1].get("msg_id") !=
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5041 notes | Score threshold: >40
-+ > 5045 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Patched security issue Kevin — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - trade-off in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - Updated schema Fixed — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in shared-context.json — confirmed 4x
 
 ## Known Fixes
 
