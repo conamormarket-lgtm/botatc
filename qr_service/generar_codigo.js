@@ -33,10 +33,13 @@ async function startPairing() {
 
     sock.ev.on('creds.update', saveCreds);
 
+    let hasRequestedCode = false;
+
     sock.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect, qr } = update;
 
-        if (qr && !sock.authState.creds.registered) {
+        if (qr && !sock.authState.creds.registered && !hasRequestedCode) {
+            hasRequestedCode = true;
             console.log("🚦 Servidor listo. Solicitando código ahora mismo...");
             try {
                 // Pequeña pausa para no tropezar con el handshake
