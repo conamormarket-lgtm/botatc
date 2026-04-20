@@ -3,7 +3,9 @@ const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBailey
 const pino = require('pino');
 const QRCode = require('qrcode');
 const axios = require('axios');
+const NodeCache = require('node-cache');
 
+const msgRetryCounterCache = new NodeCache();
 const app = express();
 app.use(express.json());
 
@@ -27,6 +29,7 @@ async function connectToWhatsApp() {
         auth: state,
         logger: pino({ level: "silent" }),
         browser: ["Ubuntu", "Chrome", "20.0.04"],
+        msgRetryCounterCache, // CRÍTICO: Requerido por Baileys para habilitar el reintento automático de CIPHERTEXT
         // CRÍTICO: Sin esto, mensajes cifrados (CIPHERTEXT / stub=2) no se pueden descifrar
         getMessage: async (key) => {
             const storeKey = `${key.remoteJid}:${key.id}`;
@@ -91,17 +94,8 @@ async function connectToWhatsApp() {
             if (m.messageStubType === 2 && m.key.senderPn) {
                 const wa_id = m.key.senderPn.split('@')[0];
                 const pushName = m.pushName || "Cliente";
-                console.log(`⚠️  CIPHERTEXT de ${wa_id} (${pushName}) — solicitando reintento y enviando placeholder...`);
+                console.log(`⚠️  CIPHERTEXT de ${wa_id} (${pushName}) — Baileys solicitará reintento automático. Enviando placeholder...`);
                 
-                // Solicitar al remitente que reenvíe con las claves correctas (Signal Protocol retry)
-                // Esto establece la sesión y hace que los siguientes mensajes lleguen descifrados
-                try {
-                    await sock.sendReceipts([m.key], 'retry');
-                    console.log(`🔄 Retry receipt enviado para ${m.key.id} — esperando mensaje descifrado vía messages.update...`);
-                } catch (retryErr) {
-                    console.log(`[WARN] No se pudo enviar retry receipt: ${retryErr.message}`);
-                }
-
                 // Enviar placeholder al CRM para que el agente sepa que llegó un mensaje
                 try {
                     const metaPayload = {
