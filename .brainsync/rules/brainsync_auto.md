@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4970 notes | Score threshold: >40
+> 4981 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,14 +20,15 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in Para — parallelizes async operations for speed** — -         nombre   = s.get("nombre_cliente", num)
++         # Para cl
+- **⚠️ GOTCHA: Patched security issue Webhook — protects against XSS and CSRF token theft** — -     ses = obtener_o_crear_sesion(numero_wa)
++     session_key = get
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4964 notes | Score threshold: >40
++ > 4970 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4950 notes | Score threshold: >40
 + > 4964 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Escachar — prevents null/undefined runtime cra
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4940 notes | Score threshold: >40
-+ > 4943 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4915 notes | Score threshold: >40
-+ > 4940 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Escachar — prevents null/undefined runtime cra
 
 ## Project Standards
