@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4749 notes | Score threshold: >40
+> 4946 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,44 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4740 notes | Score threshold: >40
-+ > 4743 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4736 notes | Score threshold: >40
-+ > 4740 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4734 notes | Score threshold: >40
-+ > 4736 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4940 notes | Score threshold: >40
++ > 4943 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4915 notes | Score threshold: >40
++ > 4940 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Escachar — prevents null/undefined runtime cra
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — -     from bot_manager import get_bot_for_line
++     try:
+-     line
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4892 notes | Score threshold: >40
++ > 4893 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4887 notes | Score threshold: >40
++ > 4889 notes | Score threshold
 
 ## Project Standards
 
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in dump.html — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 10x
+- problem-fix in agent-rules.md — confirmed 9x
+- what-changed in shared-context.json — confirmed 9x
+- problem-fix in agent-rules.md — confirmed 6x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
 - ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in Nivel — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Vincular — wraps unsafe operation in error boundary → ✅ problem-fix in agent-rules.md
-- ❌ - - Fixed null crash in DOCTYPE — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+
+## Recent Decisions
+
+- Optimized Project — evolves the database schema to support new requirements
+- Optimized None — ensures atomic multi-step database operations
+- Optimized None — ensures atomic multi-step database operations
+- Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
 
