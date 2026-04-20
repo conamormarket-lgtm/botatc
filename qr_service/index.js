@@ -30,7 +30,10 @@ async function connectToWhatsApp() {
         // CRÍTICO: Sin esto, mensajes cifrados (CIPHERTEXT / stub=2) no se pueden descifrar
         getMessage: async (key) => {
             const storeKey = `${key.remoteJid}:${key.id}`;
-            return messageStore[storeKey] || { conversation: '' };
+            // Retornar undefined (no un objeto vacío) para mensajes desconocidos.
+            // Esto es crítico: con undefined, Baileys sabe que no tiene el mensaje
+            // y puede manejar el retry del protocolo Signal correctamente.
+            return messageStore[storeKey] || undefined;
         }
     });
 
@@ -88,8 +91,18 @@ async function connectToWhatsApp() {
             if (m.messageStubType === 2 && m.key.senderPn) {
                 const wa_id = m.key.senderPn.split('@')[0];
                 const pushName = m.pushName || "Cliente";
-                console.log(`⚠️  CIPHERTEXT de ${wa_id} (${pushName}) — enviando placeholder al CRM...`);
+                console.log(`⚠️  CIPHERTEXT de ${wa_id} (${pushName}) — solicitando reintento y enviando placeholder...`);
                 
+                // Solicitar al remitente que reenvíe con las claves correctas (Signal Protocol retry)
+                // Esto establece la sesión y hace que los siguientes mensajes lleguen descifrados
+                try {
+                    await sock.sendReceipts([m.key], 'retry');
+                    console.log(`🔄 Retry receipt enviado para ${m.key.id} — esperando mensaje descifrado vía messages.update...`);
+                } catch (retryErr) {
+                    console.log(`[WARN] No se pudo enviar retry receipt: ${retryErr.message}`);
+                }
+
+                // Enviar placeholder al CRM para que el agente sepa que llegó un mensaje
                 try {
                     const metaPayload = {
                         "object": "whatsapp_business_account",
@@ -110,7 +123,7 @@ async function connectToWhatsApp() {
                 } catch (err) {
                     console.log("❌ Error enviando placeholder:", err.message);
                 }
-                continue; // No procesamos más, el agente puede responder desde el CRM
+                continue;
             }
             
             try {

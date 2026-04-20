@@ -2136,8 +2136,20 @@ async def enviar_manual_endpoint(request: Request):
     import re
     
     # Extraer número real y línea desde la sesión (clave puede ser compuesta: line_numero)
-    line_id = s.get("lineId", "principal")
-    numero_envio = s.get("numero_real", wa_id)  # número real sin prefijo de línea
+    line_id = s.get("lineId", "principal") or "principal"
+    # Si lineId es numérico (Meta ID), normalizar a "principal"
+    if line_id.isdigit():
+        line_id = "principal"
+    
+    numero_envio = s.get("numero_real")  # número real guardado explícitamente
+    if not numero_envio:
+        # Fallback: extraer número real desde la clave compuesta "lineId_numero"
+        if "_" in wa_id:
+            _parts = wa_id.rsplit("_", 1)
+            if len(_parts) == 2 and _parts[1].isdigit():
+                numero_envio = _parts[1]
+        if not numero_envio:
+            numero_envio = wa_id  # último recurso: usar wa_id tal cual
 
     async def process_and_send():
         from whatsapp_client import enviar_media, enviar_mensaje, subir_media
