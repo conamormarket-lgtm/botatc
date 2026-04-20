@@ -14,6 +14,9 @@ let sock;
 let currentQR = "";
 let isConnected = false;
 
+// Store simple para ayudar a Baileys a descifrar mensajes CIPHERTEXT (messageStubType=2)
+const messageStore = {};
+
 async function connectToWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     const { version, isLatest } = await fetchLatestBaileysVersion();
@@ -23,7 +26,12 @@ async function connectToWhatsApp() {
         version,
         auth: state,
         logger: pino({ level: "silent" }),
-        browser: ["Ubuntu", "Chrome", "20.0.04"]
+        browser: ["Ubuntu", "Chrome", "20.0.04"],
+        // CRÍTICO: Sin esto, mensajes cifrados (CIPHERTEXT / stub=2) no se pueden descifrar
+        getMessage: async (key) => {
+            const storeKey = `${key.remoteJid}:${key.id}`;
+            return messageStore[storeKey] || { conversation: '' };
+        }
     });
 
     sock.ev.on('creds.update', saveCreds);
@@ -62,6 +70,11 @@ async function connectToWhatsApp() {
         }
         
         for (let m of messages) {
+            // Guardar en store para ayudar a descifrar futuros CIPHERTEXT
+            if (m.message) {
+                messageStore[`${m.key.remoteJid}:${m.key.id}`] = m.message;
+            }
+
             console.log(`[DEBUG] Mensaje: fromMe=${m.key.fromMe}, jid=${m.key.remoteJid}`);
             if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') {
                 console.log('[DEBUG] Saltando (fromMe o broadcast)');
@@ -69,7 +82,9 @@ async function connectToWhatsApp() {
             }
             
             try {
-                const wa_id = m.key.remoteJid.split('@')[0];
+                // Para JIDs tipo @lid, el número real viene en key.senderPn
+                const real_jid = m.key.senderPn || m.key.remoteJid;
+                const wa_id = real_jid.split('@')[0];
                 const msg_id = m.key.id;
                 const timestamp = m.messageTimestamp || Math.floor(Date.now() / 1000);
                 const pushName = m.pushName || "Usuario";
@@ -159,6 +174,78 @@ async function connectToWhatsApp() {
                 if (err.response) {
                     console.log("[DEBUG] Respuesta de error Python:", err.response.status, err.response.data);
                 }
+            }
+        }
+    });
+
+    // Escuchar mensajes que inicialmente llegaron cifrados (CIPHERTEXT, messageStubType=2)
+    // y que Baileys descifra asincrónicamente después
+    sock.ev.on('messages.update', async (updates) => {
+        console.log(`[DEBUG] messages.update: ${updates.length} actualizaciones`);
+        for (let { key, update } of updates) {
+            if (!update.message) continue;
+            if (key.fromMe || key.remoteJid === 'status@broadcast') continue;
+
+            console.log(`[DEBUG] Mensaje descifrado vía update: jid=${key.remoteJid}`);
+
+            // Guardar en store
+            messageStore[`${key.remoteJid}:${key.id}`] = update.message;
+
+            try {
+                const real_jid = key.senderPn || key.remoteJid;
+                const wa_id = real_jid.split('@')[0];
+                const msgTypeKey = Object.keys(update.message || {})[0];
+
+                let msgType = 'unknown';
+                let textBody = '';
+
+                if (msgTypeKey === 'conversation' || msgTypeKey === 'extendedTextMessage') {
+                    msgType = 'text';
+                    textBody = update.message.conversation || update.message.extendedTextMessage?.text || '';
+                } else if (msgTypeKey === 'imageMessage') {
+                    msgType = 'image';
+                    textBody = update.message.imageMessage?.caption || '';
+                } else if (msgTypeKey === 'videoMessage') {
+                    msgType = 'video';
+                    textBody = update.message.videoMessage?.caption || '';
+                } else if (msgTypeKey === 'audioMessage') {
+                    msgType = 'audio';
+                } else if (msgTypeKey === 'documentMessage') {
+                    msgType = 'document';
+                    textBody = update.message.documentMessage?.fileName || '';
+                }
+
+                if (msgType === 'unknown') {
+                    console.log(`[DEBUG] update tipo desconocido: ${msgTypeKey}`);
+                    continue;
+                }
+
+                const metaPayload = {
+                    "object": "whatsapp_business_account",
+                    "entry": [{
+                        "id": "BAILEYS_MOCK",
+                        "changes": [{
+                            "value": {
+                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "contacts": [{ "profile": { "name": "" }, "wa_id": wa_id }],
+                                "messages": [{
+                                    "from": wa_id,
+                                    "id": key.id,
+                                    "timestamp": Math.floor(Date.now() / 1000),
+                                    "type": msgType,
+                                    [msgType]: (msgType === 'text') ? { "body": textBody } : { "caption": textBody }
+                                }]
+                            }
+                        }]
+                    }]
+                };
+
+                console.log(`➡️ [update] Reenviando msj descifrado de ${wa_id} (${msgType}) al CRM...`);
+                const resp = await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 5000 });
+                console.log(`[DEBUG] Respuesta Python: ${resp.status}`);
+
+            } catch (err) {
+                console.log('❌ Error en messages.update:', err.message);
             }
         }
     });
