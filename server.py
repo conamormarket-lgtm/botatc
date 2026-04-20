@@ -2655,11 +2655,20 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         activo = s.get("bot_activo", True)
         is_archived = s.get("is_archived", False)
         
-        # Saltar sesiones corruptas: clave compuesta con phone_number_id numérico de Meta
-        # (se crearon brevemente por un bug ya corregido)
-        ch_line_raw = s.get("lineId", "")
+        # Determinar la línea de esta sesión:
+        # 1) Tomar lineId del campo si existe
+        # 2) Inferirlo desde la clave de sesión (ej: "qr_ventas_1_51997778512" → "qr_ventas_1")
+        # 3) Saltar sesiones con phone_number_id numérico (corruptas del bug anterior)
+        ch_line_raw = s.get("lineId", "") or ""
+        if not ch_line_raw:
+            # Intentar inferir desde el formato de clave compuesta "lineId_numero"
+            for alias_id in parsed_aliases.keys():
+                if num.startswith(alias_id + "_"):
+                    ch_line_raw = alias_id
+                    s["lineId"] = alias_id  # guardar en sesión para futuras consultas
+                    break
         if ch_line_raw and ch_line_raw.isdigit():
-            continue  # Sesión corrupta — ignorar silenciosamente
+            continue  # Sesión corrupta con phone_number_id de Meta — ignorar
         
         # Filtro de Tab
         if tab == "archived":
