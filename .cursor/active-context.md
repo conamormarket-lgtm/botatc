@@ -1,5 +1,5 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `document_loader.py` (Domain: **Generic Logic**)
+> Dynamically loaded for active file: `guia_respuestas.md` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...**: - 
@@ -124,76 +124,53 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Fixed null crash in Form**: -     wallpaper_file: UploadFile = File(None)
++     wallpaper_offset_y: str = Form("50"),
+- ):
++     wallpaper_file: UploadFile = File(None)
+-     if not verificar_sesion(request):
++ ):
+-         return {"ok": False, "error": "No autorizado"}
++     if not verificar_sesion(request):
+-     
++         return {"ok": False, "error": "No autorizado"}
+-     usuario_sesion = obtener_usuario_sesion(request)
++     
+-     if not usuario_sesion: return {"ok": False}
++     usuario_sesion = obtener_usuario_sesion(request)
+-     
++     if not usuario_sesion: return {"ok": False}
+-     # Manejar subida de archivo si existe
++     
+-     if wallpaper_file and wallpaper_file.filename:
++     # Manejar subida de archivo si existe
+-         ext = wallpaper_file.filename.split(".")[-1].lower()
++     if wallpaper_file and wallpaper_file.filename:
+-         if ext in ["mp4", "webm"]:
++         ext = wallpaper_file.filename.split(".")[-1].lower()
+-             import os
++         if ext in ["mp4", "webm"]:
+-             os.makedirs("static/wallpapers", exist_ok=True)
++             import os
+-             filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
++             os.makedirs("static/wallpapers", exist_ok=True)
+-             file_path = f"static/wallpapers/{filename}"
++             filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
+-             content = await wallpaper_file.read()
++             file_path = f"static/wallpapers/{filename}"
+-             if len(content) > 10 * 1024 * 1024:
++             content = await wallpaper_file.read()
+-                 return {"ok": False, "error": "El video supera los 10MB"}
++             if len(content) > 10 * 1024 * 1024:
+-             with open(file_path, "wb") as f:
++                 return {"ok": False, "error": "El video supera los 10MB"}
+-                 f.write(content)
++             with open(file_pa
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] Added API route: /api/test_links**: - 
-+ 
-- @app.get('/api/test_links')
-+ @app.get('/api/test_links')
-- async def api_test_links(text: str = 'Prueba con https://www.instagram.com'):
-+ async def api_test_links(text: str = 'Prueba con https://www.instagram.com'):
--     import re
-+     import re
--     texto_renderizado = text.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
-+     texto_renderizado = text.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
--     def linkify_text(match):
-+     def linkify_text(match):
--         if match.group(1): return match.group(1)
-+         if match.group(1): return match.group(1)
--         url = match.group(2)
-+         url = match.group(2)
--         trailing = ''
-+         trailing = ''
--         while url and url[-1] in '.,!?)':
-+         while url and url[-1] in '.,!?)':
--             trailing = url[-1] + trailing
-+             trailing = url[-1] + trailing
--             url = url[:-1]
-+             url = url[:-1]
--         href = url if url.startswith('http') else 'http://' + url
-+         href = url if url.startswith('http') else 'http://' + url
--         return f'<a href="{href}" target="_blank">{url}</a>{trailing}'
-+         return f'<a href="{href}" target="_blank">{url}</a>{trailing}'
--     texto_renderizado = re.sub(r'(<[^>]+>)|((?:https?://|www\.|wa\.me/)[^\s<>]+|[a-zA-Z0-9_-]+\.[a-zA-Z]{2,5}(?:/[^\s<>]*)?)', linkify_text, texto_renderizado)
-+     texto_renderizado = re.sub(r'(<[^>]+>)|((?:https?://|www\.|wa\.me/)[^\s<>]+|[a-zA-Z0-9_-]+\.[a-zA-Z]{2,5}(?:/[^\s<>]*)?)', linkify_text, texto_renderizado)
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[what-changed] Added API route: /api/test_links**: + @app.get('/api/test_links')
-+ async def api_test_links(text: str = 'Prueba con https://www.instagram.com'):
-+     import re
-+     texto_renderizado = text.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
-+     def linkify_text(match):
-+         if match.group(1): return match.group(1)
-+         url = match.group(2)
-+         trailing = ''
-+         while url and url[-1] in '.,!?)':
-+             trailing = url[-1] + trailing
-+             url = url[:-1]
-+         href = url if url.startswith('http') else 'http://' + url
-+         return f'<a href="{href}" target="_blank">{url}</a>{trailing}'
-+     texto_renderizado = re.sub(r'(<[^>]+>)|((?:https?://|www\.|wa\.me/)[^\s<>]+|[a-zA-Z0-9_-]+\.[a-zA-Z]{2,5}(?:/[^\s<>]*)?)', linkify_text, texto_renderizado)
-+     return {'original': text, 'resultado': texto_renderizado}
-+ 
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[what-changed] what-changed in trace_texto.txt**: File updated (external): trace_texto.txt
-
-Content summary (120 lines):
-��
-- **[what-changed] what-changed in test_regex.py**: File updated (external): test_regex.py
-
-Content summary (7 lines):
-import re
-text='Ver https://google.com y www.bing.com'
-def l(m):
-  if m.group(1): return m.group(1)
-  return m.group(2)
-print(re.sub(r'(<[^>]+>)|(https?://[^\s<>]+|www\.[^\s<>]+)', l, text))
-
-- **[convention] what-changed in dump.html — confirmed 3x**: File updated (external): dump.html
-
-Content summary (815 lines):
-��
 - **[what-changed] what-changed in guia_respuestas.md**: - - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/gracias%20por%20tu%20compa.webp]  -> (Usa este al despedirte luego de que el cliente confirma que est� conforme con su compra)
 + - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/gracias%20por%20tu%20compa.webp]  -> (Usa este al despedirte luego de que el cliente confirma que está conforme con su compra)
 - - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/hola.webp]  -> (Usa este si el cliente saluda durante la ma�ana)
@@ -376,3 +353,55 @@ Content summary (815 lines):
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[convention] what-changed in perfil.html — confirmed 3x**: - 
++ 
+- 
++ 
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] Fixed null crash in Extraer — confirmed 3x**: -                     vid.addEventListener('canplay', function onCanPlay() {
++                     vid.addEventListener('loadedmetadata', function() {
+-                         vid.removeEventListener('canplay', onCanPlay);
++                         // Extraer fotograma de la mitad del video (o de los primeros 5 segundos si falla el duration)
+-                         setTimeout(() => {
++                         let targetTime = vid.duration ? vid.duration / 2 : 2.5; 
+-                             const canvas = document.createElement("canvas");
++                         if (!isFinite(targetTime) || isNaN(targetTime)) targetTime = 1;
+-                             canvas.width = vid.videoWidth;
++                         vid.currentTime = targetTime;
+-                             canvas.height = vid.videoHeight;
++                     });
+-                             const ctx = canvas.getContext("2d");
++ 
+-                             ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
++                     vid.addEventListener('seeked', function() {
+-                             
++                         const canvas = document.createElement("canvas");
+-                             const imgUrl = canvas.toDataURL("image/jpeg");
++                         canvas.width = vid.videoWidth;
+-                             
++                         canvas.height = vid.videoHeight;
+-                             const img = document.getElementById("imageToCrop");
++                         const ctx = canvas.getContext("2d");
+-                             img.src = imgUrl;    
++                         ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+-                             document.getElementById("cropperModal").style.display = "flex";
++                         
+-                             
++                         const imgUrl = canvas.toDataURL("image/jpeg");
+-                             if (cropper) cropper.destroy();
++                         
+-        
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] what-changed in perfil.html — confirmed 3x**: - 
++ 
+- 
++ 
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in brainsync_auto.md**: - > 4732 notes | Score threshold: >40
++ > 4733 notes | Score threshold: >40
+
+📌 IDE AST Context: Modified symbols likely include [# Project Memory — botatc, # Tinybird Python SDK Guidelines, # n8n Expression Syntax, # Python Code Node (Beta), # JavaScript Code Node]
