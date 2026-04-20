@@ -2661,12 +2661,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         # 3) Saltar sesiones con phone_number_id numérico (corruptas del bug anterior)
         ch_line_raw = s.get("lineId", "") or ""
         if not ch_line_raw:
-            # Intentar inferir desde el formato de clave compuesta "lineId_numero"
-            for alias_id in parsed_aliases.keys():
-                if num.startswith(alias_id + "_"):
-                    ch_line_raw = alias_id
-                    s["lineId"] = alias_id  # guardar en sesión para futuras consultas
-                    break
+            # Inferir la línea desde el formato de clave compuesta "lineId_numero"
+            # Ej: "qr_ventas_1_51997778512" → split por el último "_número" → "qr_ventas_1"
+            parts = num.rsplit("_", 1)
+            if len(parts) == 2 and parts[1].isdigit() and parts[0] and not parts[0].isdigit():
+                ch_line_raw = parts[0]
+                s["lineId"] = ch_line_raw  # guardar para optimizar futuras consultas
         if ch_line_raw and ch_line_raw.isdigit():
             continue  # Sesión corrupta con phone_number_id de Meta — ignorar
         
