@@ -1,407 +1,475 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `guia_respuestas.md` (Domain: **Generic Logic**)
+> Dynamically loaded for active file: `document_loader.py` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...**: - 
-+     provider: str | None = None
-- @app.get("/api/admin/lines")
-+     meta_phone_id: str | None = None
-- async def api_list_lines(request: Request):
-+     meta_token: str | None = None
--     if not verificar_sesion(request):
-+ 
--         raise HTTPException(status_code=403, detail="No autorizado")
-+ @app.get("/api/admin/lines")
--     import json
-+ async def api_list_lines(request: Request):
--     import os
-+     if not verificar_sesion(request):
--     aliases = {}
-+         raise HTTPException(status_code=403, detail="No autorizado")
--     try:
-+     import json
--         if os.path.exists("line_aliases.json"):
-+     import os
--             with open("line_aliases.json", "r") as f:
-+     aliases = {}
--                 aliases = json.load(f)
-+     try:
--     except: pass
-+         if os.path.exists("line_aliases.json"):
--     
-+             with open("line_aliases.json", "r") as f:
--     if "principal" not in aliases:
-+                 aliases = json.load(f)
--         aliases["principal"] = "Línea Principal Meta"
-+     except: pass
--         
+- **⚠️ GOTCHA: Patched security issue Buscar — protects against XSS and CSRF token theft**: -     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
 +     
--     from bot_manager import get_bot_for_line
-+     if "principal" not in aliases:
--     lines_rich = {}
-+         aliases["principal"] = {"name": "Línea Principal Meta"}
--     for lid, lname in aliases.items():
-+         
--         # Protegemos frente a basura que se haya podido guardar en json
-+     from bot_manager import get_bot_for_line
--         if isinstance(lname, dict):
-+     lines_rich = {}
--             lname = lname.get("name", "undefined")
-+     for lid, linfo in aliases.items():
+-         import time
++     # Buscar si el mensaje ya existe (ej: placeholder CIPHERTEXT que luego se descifra)
+-         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
++     msg_existente = next((m for m in reversed(ses["historial"][-20:]) if m.get("msg_id") == mensaje_id), None)
+-         cur_unread = ses.get("unread_count", 0)
++     
+-         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
++     import time
+-         try: 
++     if msg_existente:
+-             from firebase_client import guardar_sesion_chat
++         # Si ya existe con este ID, actualizamos el contenido con el texto real
+-             guardar_sesion_chat(session_key, ses)
++         msg_existente["content"] = texto_cliente
+-         except: 
++     else:
+-             pass
++         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
+-     # -----------------------------------------------------------------------------------------
++         cur_unread = ses.get("unread_count", 0)
 - 
-+         if isinstance(linfo, str):
++         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
+-     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
++         
+-     if session_key not in mensajes_pendientes:
++     try: 
+-         mensajes_pendientes[session_key] = [dict_msg]
++         from firebase_client import guardar_sesion_chat
+-         background_tasks.add_task(procesador_agregado, session_key, nombre)
++         guardar_sesion_chat(session_key, ses)
+-     else:
++     except: 
+-         mensajes_pendientes[session_key].append(dict_msg)
++         pass
+- 
++     # -----------------------------------------------------------------------------------------
+-     return {"status": "ok"}
++ 
+- 
++     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async operations for speed**: -     for num, s in todas:
++     # Conjunto para deduplicar por (linea_normalizada, numero_real) — evita mostrar
+-         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
++     # sesiones corruptas con phone_number_id numérico de Meta junto a las correctas
+-         activo = s.get("bot_activo", True)
++     _shown_combos = set()
+-         is_archived = s.get("is_archived", False)
++ 
+-         
++     for num, s in todas:
+-         # Filtro de Tab
++         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
+-         if tab == "archived":
++         activo = s.get("bot_activo", True)
+-             if not is_archived: continue
++         is_archived = s.get("is_archived", False)
+-         else:
++         
+-             if is_archived: continue
++         # Filtro de Tab
+-             if tab == "human" and activo:
++         if tab == "archived":
+-                 continue
++             if not is_archived: continue
+-             
++         else:
+-         session_tags = s.get("etiquetas", [])
++             if is_archived: continue
+-         if session_tags is None: session_tags = []
++             if tab == "human" and activo:
+-         
++                 continue
+-         # Filtro de Etiqueta (Label)
++             
+-         if label_filter and label_filter not in session_tags:
++         session_tags = s.get("etiquetas", [])
+-             continue
++         if session_tags is None: session_tags = []
+-             
++         
+-         # Filtro de No leídos (Verifica si el último mensaje lo envió el usuario)
++         # Filtro de Etiqueta (Label)
+-         if is_unread:
++         if label_filter and label_filter not in session_tags:
+-             hist_sin_sys = [m for m in s.get("historial", []) if m["role"] != "system"]
++             continue
+-             if not hist_sin_sys or hist_sin_sys[-1]["role"] != "user":
++             
+-                 continue
++         # Filtro de No l
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Patched security issue Para — protects against XSS and CSRF token theft**: -     Para la línea principal usamos solo el número (retrocompatible).
++     - Para la línea principal usamos solo el número (retrocompatible).
+-     Para otras líneas usamos '{line_id}_{numero_wa}' para aislar conversaciones
++     - Para líneas QR (prefijo 'qr_') usamos '{line_id}_{numero_wa}'.
+-     del mismo cliente en líneas distintas.
++     - Los phone_number_id numéricos de Meta son la línea principal.
+-     return f"{line_id}_{numero_wa}"
++     # IDs numéricos son el phone_number_id real de Meta → línea principal
+- 
++     if line_id.isdigit():
+- 
++         return numero_wa
+- def obtener_o_crear_sesion(numero_wa: str, line_id: str = "principal") -> dict:
++     # Solo las líneas con prefijo no-numérico (ej: qr_ventas_1) usan clave compuesta
+-     """
++     return f"{line_id}_{numero_wa}"
+-     Retorna la sesión existente si está dentro del tiempo válido,
++ 
+-     la recupera de Firestore si el bot se reinició, o crea una nueva.
++ 
+-     Usa clave compuesta line_id+numero para separar conversaciones por línea.
++ def obtener_o_crear_sesion(numero_wa: str, line_id: str = "principal") -> dict:
+-     ahora = datetime.utcnow()
++     Retorna la sesión existente si está dentro del tiempo válido,
+-     session_key = get_session_key(numero_wa, line_id)
++     la recupera de Firestore si el bot se reinició, o crea una nueva.
+-     sesion = sesiones.get(session_key)
++     Usa clave compuesta line_id+numero para separar conversaciones por línea.
+- 
++     """
+-     if not sesion:
++     ahora = datetime.utcnow()
+-         # 1. Intentar cargar desde Firebase si el servidor se reinició
++     session_key = get_session_key(numero_wa, line_id)
+-         try:
++     sesion = sesiones.get(session_key)
+-             from firebase_client import cargar_sesion_chat
++ 
+-             sesion_db = cargar_sesion_chat(session_key)
++     if not sesion:
+-             if sesion_db:
++         # 1. Intentar cargar desde Firebase si el servidor se reinició
+- 
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed**: -         nombre_chat = s.get("nombre_cliente", wa_id)
++         nombre_chat = s.get("nombre_cliente", s.get("numero_real", wa_id))
+-         activo_chat = s.get("bot_activo", True)
++         numero_chat_display = s.get("numero_real", wa_id)  # número real sin prefijo de línea
+-         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
++         activo_chat = s.get("bot_activo", True)
+-         
++         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
+-         load_all = request.query_params.get("history") == "all" or bool(request.query_params.get("msg_id"))
++         
+-         MAX_MENSAJES = 70
++         load_all = request.query_params.get("history") == "all" or bool(request.query_params.get("msg_id"))
+-         msgs = all_msgs if load_all else all_msgs[-MAX_MENSAJES:]
++         MAX_MENSAJES = 70
+-         
++         msgs = all_msgs if load_all else all_msgs[-MAX_MENSAJES:]
+-         import re
++         
+-         burbujas = ""
++         import re
+-         pinned_messages = []
++         burbujas = ""
+-         starred_messages = []
++         pinned_messages = []
+-         if len(all_msgs) > MAX_MENSAJES and not load_all:
++         starred_messages = []
+-             burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo ([WARN] Más lento)</button></div>'
++         if len(all_msgs) > MAX_MENSAJES and not load_all:
+-         last_date
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Fixed null crash in Para — parallelizes async operations for speed**: -         nombre   = s.get("nombre_cliente", num)
++         # Para claves compuestas (line_id_numero), extraer el número real para mostrar
+-         if not nombre: nombre = num
++         numero_display = s.get("numero_real", num)
+-         preview  = ultimo_msg(s)
++         nombre   = s.get("nombre_cliente", numero_display)
+-         time_str = tiempo_relativo(s["ultima_actividad"])
++         if not nombre: nombre = numero_display
+-         
++         preview  = ultimo_msg(s)
+-         is_vg = s.get("is_virtual_group", False)
++         time_str = tiempo_relativo(s["ultima_actividad"])
+-         if is_vg:
++         
+-             badge_html = '<span class="badge" style="background:rgba(168, 85, 247, 0.15); color:#a855f7; border: 1px solid rgba(168, 85, 247, 0.3);">👥 GRUPO VIRTUAL</span>'
++         is_vg = s.get("is_virtual_group", False)
+-         else:
++         if is_vg:
+-             badge_html = '<span class="badge">🟢 Bot Activo</span>'
++             badge_html = '<span class="badge" style="background:rgba(168, 85, 247, 0.15); color:#a855f7; border: 1px solid rgba(168, 85, 247, 0.3);">👥 GRUPO VIRTUAL</span>'
+-             if not activo:
++         else:
+-                 badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
++             badge_html = '<span class="badge">🟢 Bot Activo</span>'
+-             
++             if not activo:
+-         active_class = "active-row" if wa_id == num else ""
++                 badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
+-         tags_html = ""
++         active_class = "active-row" if wa_id == num else ""
+-         if session_tags:
++             
+-             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
++         tags_html = ""
+-             for tid in session_tags:
++         if session_tags:
+-                 lbl = next((l for l in global_labels if l.get("id") == tid), None)
++             tags_html = '<div 
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Patched security issue Webhook — protects against XSS and CSRF token theft**: -     ses = obtener_o_crear_sesion(numero_wa)
++     session_key = get_session_key(numero_wa, phone_number_id)
+-     ses["ultima_actividad"] = datetime.utcnow()
++     ses = obtener_o_crear_sesion(numero_wa, phone_number_id)
+-     ses["nombre_cliente"]   = nombre
++     ses["ultima_actividad"] = datetime.utcnow()
+-     ses["lineId"]           = phone_number_id
++     ses["nombre_cliente"]   = nombre
+-     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
++     ses["lineId"]           = phone_number_id
+-         import time
++     ses["numero_real"]      = numero_wa
+-         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
++     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
+-         cur_unread = ses.get("unread_count", 0)
++         import time
+-         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
++         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
+-         try: 
++         cur_unread = ses.get("unread_count", 0)
+-             from firebase_client import guardar_sesion_chat
++         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
+-             guardar_sesion_chat(numero_wa, ses)
++         try: 
+-         except: 
++             from firebase_client import guardar_sesion_chat
+-             pass
++             guardar_sesion_chat(session_key, ses)
+-     # -----------------------------------------------------------------------------------------
++         except: 
+- 
++             pass
+-     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
++     # -----------------------------------------------------------------------------------------
+-     if numero_wa not in mensajes_pendientes:
++ 
+-         mensajes_pendientes[numero_wa] = [dict_msg]
++     dict_msg = {"texto": texto_cliente, "id": mensaje_i
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...**: -     from bot_manager import get_bot_for_line
++     try:
+-     lines_rich = {}
++         from server import get_qr_status
+-     for lid, linfo in aliases.items():
++         qr_status = get_qr_status()
+-         if isinstance(linfo, str):
++         if qr_status.get("connected"):
+-             linfo = {"name": linfo}  # Migration from old string format
++             qr_line_id = qr_status.get("lineId", "qr_ventas_1")
+-             
++             if qr_line_id not in aliases:
+-         lname = linfo.get("name", "undefined")
++                 aliases[qr_line_id] = {"name": "Bot Ventas (Baileys Web)", "provider": "baileys"}
+-         provider = linfo.get("provider", "meta" if lid == "principal" else "")
++     except Exception as e:
+-         meta_phone_id = linfo.get("meta_phone_id", "")
++         pass
+-         meta_token_has_value = bool(linfo.get("meta_token"))
++         
+-         
++     from bot_manager import get_bot_for_line
 -         lines_rich[lid] = {
-+             linfo = {"name": linfo}  # Migration from old string format
++     lines_rich = {}
 -             "name": lname,
++     for lid, linfo in aliases.items():
+-             "provider": provider,
++         if isinstance(linfo, str):
+-             "meta_phone_id": meta_phone_id,
++             linfo = {"name": linfo}  # Migration from old string format
+-             "has_meta_token": meta_token_has_value, # Nunca devolver el token crudo a la UI por seguridad
 +             
 -             "bot_id": get_bot_for_line(lid)
 +         lname = linfo.get("name", "undefined")
 -         }
 +         provider = linfo.get("provider", "meta" if lid == "principal" else "")
-
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Added JWT tokens authentication**: -             const div = documclass LineAliasPayload(BaseModel):
-+             const div = document.createElement('div');
--     id: str
-+             div.className = `msg msg-bot typing`;
--     name: str
-+             div.id = id;
--     bot_id: str | None = None
-+             div.innerText = 'escribiendo...';
--     provider: str | None = None
-+             chat.appendChild(div);
--     meta_phone_id: str | None = None
-+             scrollBottom();
--     meta_token: str | None = None
-+         }
+-         
++         meta_phone_id = linfo.get("meta_phone_id", "")
+-     return {"ok": True, "lines": lines_rich}
++         meta_token_has_value = bool(linfo.get("meta_token"))
 - 
 +         
-- @app.get("/api/admin/lines")
-+         function removeTyping(id) {
-- async def api_list_lines(request: Request):
-+             const div = document.getElementById(id);
--     if not verificar_sesion(request):
-+             if(div) div.remove();
--         raise HTTPException(status_code=403, detail="No autorizado")
-+         }
--     import json
-+         
--     import os
-+         function scrollBottom() {
--     aliases = {}
-+             chat.scrollTop = chat.scrollHeight;
--     try:
-+         }
--         if os.path.exists("line_aliases.json"):
-+       </script>
--             with open("line_aliases.json", "r") as f:
-+     </html>
--                 aliases = json.load(f)
-+     """)
--     except: pass
-+ 
--     
-+ @app.post("/api/simulador/send")
--     if "principal" not in aliases:
-+ async def api_simular_mensaje(request: Request):
--         aliases["principal"] = {"name": "Línea Principal Meta"}
-+     """Recibe el mensaje falso del simulador y procesa la lógica nativa del webhook."""
--         
-+     try:
--     from bot_manager import get_bot_for_line
-+         data = await request.json()
--     lines_rich = {}
-+     except Exception:
--     for lid, linfo in aliases.items():
-+         raise HTTPException(status_code=400, detail="JSON inválido")
--         if isinstance(linfo, str):
-+         
--             linfo = {"name": linfo}  # Migration from old string format
-+     if not verificar_sesion(request):
--
+- @app.post("/api/admin/lines")
++         lines_rich[lid] = {
+- async def api_save_line(payload: LineAliasPayload, request: Request):
++             "name": lname,
+-     if not verificar_sesion(r
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Fixed null crash in Form**: -     wallpaper_file: UploadFile = File(None)
-+     wallpaper_offset_y: str = Form("50"),
-- ):
-+     wallpaper_file: UploadFile = File(None)
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...**: - 
++     line_id: str = "principal"
+- @app.post("/api/admin/templates/save")
++ 
+- async def api_save_template(payload: TemplatePayload, request: Request):
++ @app.post("/api/admin/templates/save")
 -     if not verificar_sesion(request):
-+ ):
--         return {"ok": False, "error": "No autorizado"}
++ async def api_save_template(payload: TemplatePayload, request: Request):
+-         raise HTTPException(status_code=403, detail="No autorizado")
 +     if not verificar_sesion(request):
--     
-+         return {"ok": False, "error": "No autorizado"}
--     usuario_sesion = obtener_usuario_sesion(request)
-+     
--     if not usuario_sesion: return {"ok": False}
-+     usuario_sesion = obtener_usuario_sesion(request)
--     
-+     if not usuario_sesion: return {"ok": False}
--     # Manejar subida de archivo si existe
-+     
--     if wallpaper_file and wallpaper_file.filename:
-+     # Manejar subida de archivo si existe
--         ext = wallpaper_file.filename.split(".")[-1].lower()
-+     if wallpaper_file and wallpaper_file.filename:
--         if ext in ["mp4", "webm"]:
-+         ext = wallpaper_file.filename.split(".")[-1].lower()
--             import os
-+         if ext in ["mp4", "webm"]:
--             os.makedirs("static/wallpapers", exist_ok=True)
-+             import os
--             filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
-+             os.makedirs("static/wallpapers", exist_ok=True)
--             file_path = f"static/wallpapers/{filename}"
-+             filename = f"wp_{usuario_sesion.get('username', 'user')}_{int(datetime.utcnow().timestamp())}.{ext}"
--             content = await wallpaper_file.read()
-+             file_path = f"static/wallpapers/{filename}"
--             if len(content) > 10 * 1024 * 1024:
-+             content = await wallpaper_file.read()
--                 return {"ok": False, "error": "El video supera los 10MB"}
-+             if len(content) > 10 * 1024 * 1024:
--             with open(file_path, "wb") as f:
-+                 return {"ok": False, "error": "El video supera los 10MB"}
--                 f.write(content)
-+             with open(file_pa
+-     from firebase_client import guardar_plantilla_bd
++         raise HTTPException(status_code=403, detail="No autorizado")
+-     guardar_plantilla_bd(payload.name, payload.language)
++     from firebase_client import guardar_plantilla_bd
+-     return {"ok": True}
++     guardar_plantilla_bd(payload.name, payload.language, payload.line_id)
+- 
++     return {"ok": True}
+- @app.post("/api/admin/templates/delete")
++ 
+- async def api_delete_template(payload: TemplatePayload, request: Request):
++ @app.post("/api/admin/templates/delete")
+-     if not verificar_sesion(request):
++ async def api_delete_template(payload: TemplatePayload, request: Request):
+-         raise HTTPException(status_code=403, detail="No autorizado")
++     if not verificar_sesion(request):
+-     from firebase_client import eliminar_plantilla_bd
++         raise HTTPException(status_code=403, detail="No autorizado")
+-     eliminar_plantilla_bd(payload.name)
++     from firebase_client import eliminar_plantilla_bd
+-     return {"ok": True}
++     eliminar_plantilla_bd(payload.name)
+- 
++     return {"ok": True}
+- @app.get("/api/admin/templates/list")
++ 
+- async def api_list_templates(request: Request):
++ @app.get("/api/admin/templates/list")
+-     if not verificar_sesion(request):
++ async def api_list_templates(request: Request):
+-         raise HTTPException(status_code=403, detail="No autorizado")
++     if not verificar_sesion(request):
+-     from firebase_client import cargar_plantillas_bd
++         raise HTTPException(status_code=403, detail="No a
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] what-changed in guia_respuestas.md**: - - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/gracias%20por%20tu%20compa.webp]  -> (Usa este al despedirte luego de que el cliente confirma que est� conforme con su compra)
-+ - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/gracias%20por%20tu%20compa.webp]  -> (Usa este al despedirte luego de que el cliente confirma que está conforme con su compra)
-- - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/hola.webp]  -> (Usa este si el cliente saluda durante la ma�ana)
-+ - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/hola.webp]  -> (Usa este si el cliente saluda durante la mañana)
-- - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/quedo%20atento.webp]  -> (Usa este cuando queda algo pendiente al finalizar la conversaci�n)
-+ - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/quedo%20atento.webp]  -> (Usa este cuando queda algo pendiente al finalizar la conversación)
-- - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/un%20minuto.webp]  -> (Usa este cuando escalas la conversacion a un humano)
-+ - [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/un%20minuto.webp]  -> (Usa este cuando escalas la conversación a un humano)
-
-📌 IDE AST Context: Modified symbols likely include [# Guía de Respuestas — Bot de Atención al Cliente]
-- **[what-changed] what-changed in guia_respuestas.md**: - Tienes un pequeño catálogo de stickers oficiales para ser m�s din�mica.
-+ Tienes un pequeño catálogo de stickers oficiales para ser más dinámica.
-- EST� ESTRICTAMENTE PROHIBIDO inventar URLs o usar im�genes que no est�n en esta lista.
-+ ESTÁ ESTRICTAMENTE PROHIBIDO inventar URLs o usar imágenes que no estén en esta lista.
-- Para usarlos, copia y pega EXACTAMENTE la etiqueta a continuaci�n al final de tu respuesta:
-+ Para usarlos, copia y pega EXACTAMENTE la etiqueta a continuación al final de tu respuesta:
-
-📌 IDE AST Context: Modified symbols likely include [# Guía de Respuestas — Bot de Atención al Cliente]
-- **[convention] what-changed in guia_respuestas.md — confirmed 4x**: - Tienes un pequeño cat�logo de stickers oficiales para ser m�s din�mica.
-+ Tienes un pequeño catálogo de stickers oficiales para ser m�s din�mica.
-
-📌 IDE AST Context: Modified symbols likely include [# Guía de Respuestas — Bot de Atención al Cliente]
-- **[convention] problem-fix in server.py — confirmed 3x**: -         line_alias = aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
-+         line_alias = parsed_aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[convention] Added JWT tokens authentication — confirmed 6x**: -     headers = {
-+     meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
--         "Authorization": f"Bearer {META_ACCESS_TOKEN}",
-+ 
--         "Content-Type": "application/json",
-+     headers = {
--     }
-+         "Authorization": f"Bearer {meta_token}",
--     payload = {
-+         "Content-Type": "application/json",
--         "messaging_product": "whatsapp",
-+     }
--         "recipient_type": "individual",
-+     payload = {
--         "to": numero_destino,
-+         "messaging_product": "whatsapp",
--         "type": "text",
-+         "recipient_type": "individual",
--         "text": {"body": texto},
-+         "to": numero_destino,
--     }
-+         "type": "text",
--     try:
-+         "text": {"body": texto},
--         async with httpx.AsyncClient() as client:
-+     }
--             response = await client.post(META_API_URL, headers=headers, json=payload, timeout=10)
-+     try:
--             response.raise_for_status()
-+         async with httpx.AsyncClient() as client:
--             print(f"[OK] Mensaje manual enviado a {numero_destino}")
-+             response = await client.post(meta_api_url, headers=headers, json=payload, timeout=10)
--             return response.json().get("messages", [{}])[0].get("id")
-+             response.raise_for_status()
--     except httpx.HTTPStatusError as e:
-+             print(f"[OK] Mensaje manual enviado a {numero_destino}")
--         print(f"[ERROR] Error Meta API al enviar manual ({e.response.status_code}): {e.response.text}")
-+             return response.json().get("messages", [{}])[0].get("id")
--         return None
-+     except httpx.HTTPStatusError as e:
--     except Exception as e:
-+         print(f"[ERROR] Error Meta API al enviar manual ({e.response.status_code}): {e.response.text}")
--         print(f"[ERROR] Error enviando mensaje manual: {e}")
-+         return None
--         return None
-+     except Exception as e:
-- 
-+         print(f"[ERROR] Erro
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [_get_line_id, _get_meta_credentials, enviar_mensaje, enviar_media, enviar_mensaje_texto]
-- **[what-changed] Updated configuration Eres — externalizes configuration for environment flexi...**: -         return {
-+         prompt_base = "Eres María, la asistente virtual de Wala..."
--             "bots": {
-+         try:
--                 "bot_wala": {
-+             if os.path.exists('guia_respuestas.md'):
--                     "name": "Wala Principal",
-+                 with open('guia_respuestas.md', 'r', encoding='utf-8') as mf:
--                     "is_active": True,
-+                     prompt_base = mf.read()
--                     "prompt": "Eres María, la asistente virtual de Wala..."
-+         except:
--                 }
-+             pass
--             },
-+             
--             "lines_mapping": {
-+         default_data = {
--                 "principal": "bot_wala"
-+             "bots": {
--             }
-+                 "bot_wala": {
+- **[problem-fix] Fixed null crash in False — evolves the database schema to support new requir...**: -             "pedido_id": s.get("datos_pedido", {}).get("id") if s.get("datos_pedido") else None,
++             "lineId": s.get("lineId"),
+-             "estado_pedido": s.get("datos_pedido", {}).get("estadoGeneral") if s.get("datos_pedido") else None,
++             "numero_real": s.get("numero_real"),
+-             "mensajes": historial_resumido,
++             "is_archived": s.get("is_archived", False),
 -         }
-+                     "name": "Wala Principal",
--     with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-+                     "is_active": True,
--         return json.load(f)
-+                     "prompt": prompt_base
-- 
-+                 }
-- def _save_config(data):
-+             },
--     with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
-+             "lines_mapping": {
--         json.dump(data, f, ensure_ascii=False, indent=4)
-+                 "principal": "bot_wala"
-- 
-+             }
-- def get_bot_for_line(line_id: str) -> str | None:
++             "pedido_id": s.get("datos_pedido", {}).get("id") if s.get("datos_pedido") else None,
+-     return resultado
 +         }
--     """Devuelve el ID del bot asignado a una línea, o None si atiende un humano."""
-+         with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
--     config = _load_config()
-+             json.dump(default_data, f, ensure_ascii=False, indent=4)
--     return config.get("lines_mapping", {}).get(line_id)
-+         return default_data
 - 
-+         
-- def set_bot_for_line(line_id: str, bot_id: str | None):
-+     with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
--     config = _load_config()
-+         return json.load(f)
--     if "lines_mapping" not in config:
++     return resultado
+- # ─────────────────────────────────────────────
 + 
--         config["lines_mapping"] = {}
-+ def _save_config(data):
--     config["lines_
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [CONFIG_FILE, _load_config, _save_config, get_bot_for_line, set_bot_for_line]
-- **[what-changed] what-changed in prompts.py**: - 11. Cuando se le indique al cliente por primera vez en la sesión (cuéntese sesión como cada vez que tienes que saludar nuevamente al cliente) el estado de su pedido también recordarle que puede verificar el estado de su pedido en la página hhttps://wala-two.vercel.app/pedidos e informar que ahí encontrará la misma información que le brindarás tú.
-+ 11. Cuando se le indique al cliente por primera vez en la sesión (cuéntese sesión como cada vez que tienes que saludar nuevamente al cliente) el estado de su pedido también recordarle que puede verificar el estado de su pedido en la página https://wala-two.vercel.app/pedidos e informar que ahí encontrará la misma información que le brindarás tú.
-
-📌 IDE AST Context: Modified symbols likely include [_GUIA_CACHE, _obtener_guia, get_system_prompt, MENSAJE_BIENVENIDA]
-- **[convention] Patched security issue Creamos — protects against XSS and CSRF token theft — confirmed 3x**: -     # Reemplazamos el texto original (raw) con el normalizado para Gemini
-+     # Creamos la copia para Gemini SIN alterar el historial persistente para que en el UI sigan las burbujas separadas.
--     if sesion["historial"] and sesion["historial"][-1]["role"] == "user":
-+     historial_para_gemini = recortar_historial(sesion["historial"])
--         sesion["historial"][-1]["content"] = texto_modelo
-+     if historial_para_gemini and historial_para_gemini[-1]["role"] == "user":
--         
-+         # Usamos texto_modelo que concatena todo con ' | ' para que la IA entienda el contexto fusionado
--     historial_para_gemini = recortar_historial(sesion["historial"])
-+         historial_para_gemini[-1]["content"] = texto_modelo
--     print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
-+         
--     respuesta_bot = llamar_gemini(historial_para_gemini)
-+     print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
--     
-+     respuesta_bot = llamar_gemini(historial_para_gemini)
--     if not respuesta_bot.strip():
-+     
--         # Falla silenciosamente si Gemini no genera respuesta útil o tira error
-+     if not respuesta_bot.strip():
--         print("  [[ERROR] Respuesta vacía de Gemini. Ignorando...]")
-+         # Falla silenciosamente si Gemini no genera respuesta útil o tira error
--         return None
-+         print("  [[ERROR] Respuesta vacía de Gemini. Ignorando...]")
+- #  Simulador Web de Chat
++ # ─────────────────────────────────────────────
+- # ─────────────────────────────────────────────
++ #  Simulador Web de Chat
 - 
-+         return None
--     # ── Procesar escalación si el modelo la detectó ───────
++ # ─────────────────────────────────────────────
+- @app.get("/simulador", response_class=HTMLResponse)
 + 
--     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
-+     # ── Procesar escalación si el modelo la detectó ───────
-- 
-+     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
--     # ── Enviar respuesta al cliente por WhatsApp ──────────
-+ 
--     print(f"🤖 María: {respuesta_final[:80]}...")
-+     # ── Enviar respuesta al cliente por WhatsApp ──────────
--     wamid_out = None
-+     print(f"���
+- async def pagina_simulador(request: Request):
++ @app.get("/simulador", response_class=HTMLResponse)
+-     """Interfaz web para probar el comportamiento del bot."""
++ async def pagina_simulador(request: Request):
+-     if not verificar_sesion(request):
++     """Interfaz web para probar el comportamiento del bot."""
+-         return RedirectResponse(url=f"/admin", status_code=302)
++     if not verificar_sesion(request):
+-     return HTMLResponse("""
++         return RedirectResponse(url=f"/admin", status_code=302)
+-     <html>
++     return HTMLResponse("""
+-     <head>
++     <html>
+-       <title>Simulador de WhatsApp</title>
++     <head>
+-       <meta name="viewport" content="width=device-width,initial-scale=1">
++       <title>Simulador de WhatsApp</title>
+-       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
++       <meta name="viewport" content="width=device-width,initial-scale=1">
+-       <style>
++       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[convention] what-changed in perfil.html — confirmed 3x**: - 
-+ 
-- 
-+ 
+- **[problem-fix] problem-fix in server.py**: -         if qr_status.get("connected"):
++         if qr_status.get("status") == "connected":
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[what-changed] what-changed in inbox.html**: -                     body: JSON.stringify({ name: name.trim(), language: lang.trim() })
++                     body: JSON.stringify({ name: name.trim(), language: lang.trim(), line_id: new URLSearchParams(window.location.search).get("line") || "principal" })
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in Extraer — confirmed 3x**: -                     vid.addEventListener('canplay', function onCanPlay() {
-+                     vid.addEventListener('loadedmetadata', function() {
--                         vid.removeEventListener('canplay', onCanPlay);
-+                         // Extraer fotograma de la mitad del video (o de los primeros 5 segundos si falla el duration)
--                         setTimeout(() => {
-+                         let targetTime = vid.duration ? vid.duration / 2 : 2.5; 
--                             const canvas = document.createElement("canvas");
-+                         if (!isFinite(targetTime) || isNaN(targetTime)) targetTime = 1;
--                             canvas.width = vid.videoWidth;
-+                         vid.currentTime = targetTime;
--                             canvas.height = vid.videoHeight;
-+                     });
--                             const ctx = canvas.getContext("2d");
+- **[discovery] discovery in server.py**: - async def api_list_templates(request: Request):
++ async def api_list_templates(request: Request, line_id: str = None):
+-     plantillas = cargar_plantillas_bd()
++     plantillas = cargar_plantillas_bd(line_id)
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[convention] problem-fix in server.py — confirmed 4x**: - def get_quick_replies(request: Request):
++ def get_quick_replies(request: Request, line: str = None):
+-     return cargar_quick_replies_bd()
++     return cargar_quick_replies_bd(line)
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[what-changed] what-changed in server_bad2.py**: File updated (external): server_bad2.py
+
+Content summary (5030 lines):
+��#
+- **[convention] Fixed null crash in POST — prevents null/undefined runtime crashes — confirmed 3x**: -                 const urlParams = new URLSearchParams(window.location.search);
++                 const res = await fetch("/api/admin/templates/save", {
+-                 const currentLine = urlParams.get("line") || "principal";
++                     method: "POST",
+-                 const res = await fetch("/api/admin/templates/save", {
++                     headers: { "Content-Type": "application/json" },
+-                     method: "POST",
++                     body: JSON.stringify({ name: name.trim(), language: lang.trim() })
+-                     headers: { "Content-Type": "application/json" },
++                 });
+-                     body: JSON.stringify({ name: name.trim(), language: lang.trim(), line_id: currentLine })
++                 if (res.ok) cargarPlantillas();
+-                 });
++             } catch (e) {
+-                 if (res.ok) cargarPlantillas();
++                 alert("Error guardando plantilla");
+-             } catch (e) {
++             }
+-                 alert("Error guardando plantilla");
++         }
+-             }
 + 
--                             ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
-+                     vid.addEventListener('seeked', function() {
--                             
-+                         const canvas = document.createElement("canvas");
--                             const imgUrl = canvas.toDataURL("image/jpeg");
-+                         canvas.width = vid.videoWidth;
--                             
-+                         canvas.height = vid.videoHeight;
--                             const img = document.getElementById("imageToCrop");
-+                         const ctx = canvas.getContext("2d");
--                             img.src = imgUrl;    
-+                         ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
--                             document.getElementById("cropperModal").style.display = "flex";
-+                         
--                             
-+                         const imgUrl = canvas.toDataURL("image/jpeg");
--                             if (cropper) cropper.destroy();
-+                         
--        
+-         }
++         async function eliminarPlantilla(name) {
+- 
++             if (!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
+-         async function eliminarPlantilla(name) {
++             try {
+-             if (!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
++                 const res = await fetch("/api/admin/templates/delete", {
+-             try {
++                     method: "POST",
+-                 const res = await fetch("/api/admin/templates/delete", {
++                     headers: { "Content-Type": "application/json" },
+-                     method: "POST",
++                     body: JSON.stringify({ name: name })
+-                     headers: { "Content-Type": "application/json" },
++                 });
+-                     body: JSON.stringify({ name: name })
++                 if (res.ok) cargarPlanti
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] what-changed in perfil.html — confirmed 3x**: - 
-+ 
-- 
-+ 
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] what-changed in brainsync_auto.md**: - > 4732 notes | Score threshold: >40
-+ > 4733 notes | Score threshold: >40
-
-📌 IDE AST Context: Modified symbols likely include [# Project Memory — botatc, # Tinybird Python SDK Guidelines, # n8n Expression Syntax, # Python Code Node (Beta), # JavaScript Code Node]

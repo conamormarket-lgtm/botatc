@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5074 notes | Score threshold: >40
+> 5078 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,33 +20,35 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5061 notes | Score threshold: >40
-+ > 5068 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "780c9f8f99075289",
-+
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5058 notes | Score threshold: >40
-+ > 5061 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5053 notes | Score threshold: >40
-+ > 5058 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5045 notes | Score threshold: >40
-+ > 5053 notes | Score threshold
 - **⚠️ GOTCHA: Patched security issue Buscar — protects against XSS and CSRF token theft** — -     if not ses["historial"] or ses["historial"][-1].get("msg_id") !=
+- **⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async operations for speed** — -     for num, s in todas:
++     # Conjunto para deduplicar por (line
+- **⚠️ GOTCHA: Patched security issue Para — protects against XSS and CSRF token theft** — -     Para la línea principal usamos solo el número (retrocompatible).
+- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed** — -         nombre_chat = s.get("nombre_cliente", wa_id)
++         nomb
+- **⚠️ GOTCHA: Fixed null crash in Para — parallelizes async operations for speed** — -         nombre   = s.get("nombre_cliente", num)
++         # Para cl
+- **⚠️ GOTCHA: Patched security issue Webhook — protects against XSS and CSRF token theft** — -     ses = obtener_o_crear_sesion(numero_wa)
++     session_key = get
+
+## Active: `.`
+
+- **⚠️ GOTCHA: Patched security issue Buscar — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async operations for speed**
+- **⚠️ GOTCHA: Patched security issue Para — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed**
+- **⚠️ GOTCHA: Fixed null crash in Para — parallelizes async operations for speed**
 
 ## Project Standards
 
+- problem-fix in server.py — confirmed 4x
+- Fixed null crash in POST — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in inbox.html — confirmed 3x
+- what-changed in dump.html — confirmed 3x
+- what-changed in guia_respuestas.md — confirmed 4x
+- problem-fix in server.py — confirmed 3x
+- Added JWT tokens authentication — confirmed 6x
 - what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- trade-off in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Updated schema Fixed — confirmed 3x
 
 ## Known Fixes
 
@@ -58,10 +60,10 @@
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Project — evolves the database schema to support new requirements
 - Optimized None — ensures atomic multi-step database operations
 - Optimized None — ensures atomic multi-step database operations
+- Optimized General — ensures atomic multi-step database operations
+- Optimized True — ensures atomic multi-step database operations
 
 ## Learned Patterns
 
