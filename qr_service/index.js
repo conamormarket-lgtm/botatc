@@ -80,6 +80,26 @@ async function connectToWhatsApp() {
 
                 const msgTypeKey = Object.keys(m.message || {})[0];
                 console.log(`[DEBUG] msgTypeKey='${msgTypeKey}' de ${wa_id}`);
+
+                // Si el JID es @lid y no hay mensaje, loguear estructura completa para diagnóstico
+                if (m.key.remoteJid.endsWith('@lid') || !msgTypeKey) {
+                    console.log('[DEBUG] === ESTRUCTURA COMPLETA DEL MENSAJE ===');
+                    console.log(JSON.stringify({
+                        key: m.key,
+                        messageTimestamp: m.messageTimestamp,
+                        pushName: m.pushName,
+                        messageType: m.messageType,
+                        messageStubType: m.messageStubType,
+                        message: m.message,
+                        userReceipt: m.userReceipt,
+                        // Ver si hay contenido en algún otro campo
+                        hasMessage: !!m.message,
+                        messageKeys: Object.keys(m.message || {}),
+                        fullMessageKeys: Object.keys(m),
+                    }, null, 2));
+                    console.log('[DEBUG] === FIN ESTRUCTURA ===');
+                }
+
                 if (!msgTypeKey) {
                     console.log('[DEBUG] Sin tipo de mensaje, saltando.');
                     continue;
