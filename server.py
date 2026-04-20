@@ -666,16 +666,24 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     ses["nombre_cliente"]   = nombre
     ses["lineId"]           = phone_number_id
     ses["numero_real"]      = numero_wa
-    if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
-        import time
+    
+    # Buscar si el mensaje ya existe (ej: placeholder CIPHERTEXT que luego se descifra)
+    msg_existente = next((m for m in reversed(ses["historial"][-20:]) if m.get("msg_id") == mensaje_id), None)
+    
+    import time
+    if msg_existente:
+        # Si ya existe con este ID, actualizamos el contenido con el texto real
+        msg_existente["content"] = texto_cliente
+    else:
         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
         cur_unread = ses.get("unread_count", 0)
         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
-        try: 
-            from firebase_client import guardar_sesion_chat
-            guardar_sesion_chat(session_key, ses)
-        except: 
-            pass
+        
+    try: 
+        from firebase_client import guardar_sesion_chat
+        guardar_sesion_chat(session_key, ses)
+    except: 
+        pass
     # -----------------------------------------------------------------------------------------
 
     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
