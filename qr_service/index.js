@@ -51,12 +51,22 @@ async function connectToWhatsApp() {
         }
     });
 
-    // Escachar mensajes y re-transmitirlos al CRM Python imitando el SDK de Meta Cloud
+    // DEBUG: Escuchar TODOS los eventos para ver qué llega
     sock.ev.on('messages.upsert', async ({ messages, type }) => {
-        if (type !== 'notify') return;
+        console.log(`[DEBUG] messages.upsert disparado. type='${type}', cantidad=${messages.length}`);
+
+        // Aceptar 'notify' (mensajes nuevos en vivo) Y 'append' (mensajes al reconectar)
+        if (type !== 'notify' && type !== 'append') {
+            console.log(`[DEBUG] Tipo '${type}' descartado.`);
+            return;
+        }
         
         for (let m of messages) {
-            if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue;
+            console.log(`[DEBUG] Mensaje: fromMe=${m.key.fromMe}, jid=${m.key.remoteJid}`);
+            if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') {
+                console.log('[DEBUG] Saltando (fromMe o broadcast)');
+                continue;
+            }
             
             try {
                 const wa_id = m.key.remoteJid.split('@')[0];
@@ -69,7 +79,11 @@ async function connectToWhatsApp() {
                 let mimeType = "";
 
                 const msgTypeKey = Object.keys(m.message || {})[0];
-                if (!msgTypeKey) continue;
+                console.log(`[DEBUG] msgTypeKey='${msgTypeKey}' de ${wa_id}`);
+                if (!msgTypeKey) {
+                    console.log('[DEBUG] Sin tipo de mensaje, saltando.');
+                    continue;
+                }
                 
                 if (msgTypeKey === 'conversation' || msgTypeKey === 'extendedTextMessage') {
                     msgType = 'text';
@@ -90,7 +104,10 @@ async function connectToWhatsApp() {
                     textBody = m.message.documentMessage?.fileName || "";
                 }
                 
-                if (msgType === "unknown") continue;
+                if (msgType === "unknown") {
+                    console.log(`[DEBUG] Tipo desconocido '${msgTypeKey}', saltando.`);
+                    continue;
+                }
 
                 // Construimos payload fingiendo ser Meta
                 const metaPayload = {
@@ -113,11 +130,15 @@ async function connectToWhatsApp() {
                     }]
                 };
 
-                console.log(`➡️ Reenviando msj de ${wa_id} al CRM Python...`);
-                await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 3000 });
+                console.log(`➡️ Reenviando msj de ${wa_id} (${msgType}: '${textBody}') al CRM Python...`);
+                const resp = await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 5000 });
+                console.log(`[DEBUG] Respuesta Python: ${resp.status} - ${JSON.stringify(resp.data)}`);
                 
             } catch (err) {
                 console.log("❌ Error procesando mensaje de Baileys:", err.message);
+                if (err.response) {
+                    console.log("[DEBUG] Respuesta de error Python:", err.response.status, err.response.data);
+                }
             }
         }
     });
@@ -167,6 +188,6 @@ app.get('/api/qr/link', async (req, res) => {
 });
 
 app.listen(PORT, '127.0.0.1', () => {
-    console.log(`Servicio QR escuchando en puerto ${PORT} (solo vinculación, sin procesamiento de mensajes)`);
+    console.log(`✅ Servicio QR v2 escuchando en puerto ${PORT} — Interceptor de mensajes ACTIVO`);
     connectToWhatsApp();
 });
