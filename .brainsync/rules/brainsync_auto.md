@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4950 notes | Score threshold: >40
+> 4964 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Escachar — prevents null/undefined runtime cra
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4940 notes | Score threshold: >40
 + > 4943 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4915 notes | Score threshold: >40
@@ -28,10 +30,6 @@
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — -     from bot_manager import get_bot_for_line
 +     try:
 -     line
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4892 notes | Score threshold: >40
-+ > 4893 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4887 notes | Score threshold: >40
-+ > 4889 notes | Score threshold
 
 ## Project Standards
 
