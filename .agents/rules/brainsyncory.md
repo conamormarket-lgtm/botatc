@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4736 notes | Score threshold: >40
+> 4743 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,13 +18,20 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4736 notes | Score threshold: >40
++ > 4740 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4734 notes | Score threshold: >40
++ > 4736 notes | Score threshold
+
+## Project Standards
+
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in dump.html — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in brainsync_auto.md
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x

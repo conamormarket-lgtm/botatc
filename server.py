@@ -2941,10 +2941,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             def linkify_text(match):
                 if match.group(1): return match.group(1)
                 url = match.group(2)
-                href = url if url.startswith('http') else 'http://' + url
-                return f'<a href="{href}" target="_blank" rel="noopener noreferrer" style="text-decoration:underline; font-weight:500; color:inherit;">{url}</a>'
+                # Cleanup common trailing punctuation that users might type right after the URL
+                trailing = ""
+                while url and url[-1] in ".,!?)":
+                    trailing = url[-1] + trailing
+                    url = url[:-1]
                 
-            texto_renderizado = re.sub(r'(<[^>]+>)|(https?://[^\s<>]+|www\.[^\s<>]+)', linkify_text, texto_renderizado)
+                href = url if url.startswith('http') else 'http://' + url
+                return f'<a href="{href}" target="_blank" rel="noopener noreferrer" style="text-decoration:underline; font-weight:500; color:inherit;">{url}</a>{trailing}'
+                
+            texto_renderizado = re.sub(r'(<[^>]+>)|((?:https?://|www\.|wa\.me/)[^\s<>]+|[a-zA-Z0-9_-]+\.[a-zA-Z]{2,5}(?:/[^\s<>]*)?)', linkify_text, texto_renderizado)
             
             wamid = m.get("msg_id", "")
             wamid_attr = f' id="msg-{wamid}" data-wamid="{wamid}"' if wamid else ""
