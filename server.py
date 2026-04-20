@@ -4271,9 +4271,10 @@ async def debug_sesiones():
         resultado[num] = {
             "nombre": s.get("nombre_cliente"),
             "bot_activo": s.get("bot_activo"),
+            "lineId": s.get("lineId"),
+            "numero_real": s.get("numero_real"),
+            "is_archived": s.get("is_archived", False),
             "pedido_id": s.get("datos_pedido", {}).get("id") if s.get("datos_pedido") else None,
-            "estado_pedido": s.get("datos_pedido", {}).get("estadoGeneral") if s.get("datos_pedido") else None,
-            "mensajes": historial_resumido,
         }
     return resultado
 
