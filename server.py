@@ -251,12 +251,16 @@ REGEX_ESCALAR = re.compile(
 def get_session_key(numero_wa: str, line_id: str = "principal") -> str:
     """
     Devuelve la clave compuesta para el dict de sesiones.
-    Para la línea principal usamos solo el número (retrocompatible).
-    Para otras líneas usamos '{line_id}_{numero_wa}' para aislar conversaciones
-    del mismo cliente en líneas distintas.
+    - Para la línea principal usamos solo el número (retrocompatible).
+    - Para líneas QR (prefijo 'qr_') usamos '{line_id}_{numero_wa}'.
+    - Los phone_number_id numéricos de Meta son la línea principal.
     """
     if not line_id or line_id == "principal":
         return numero_wa
+    # IDs numéricos son el phone_number_id real de Meta → línea principal
+    if line_id.isdigit():
+        return numero_wa
+    # Solo las líneas con prefijo no-numérico (ej: qr_ventas_1) usan clave compuesta
     return f"{line_id}_{numero_wa}"
 
 
@@ -2131,6 +2135,10 @@ async def enviar_manual_endpoint(request: Request):
     from whatsapp_client import enviar_mensaje, enviar_media
     import re
     
+    # Extraer número real y línea desde la sesión (clave puede ser compuesta: line_numero)
+    line_id = s.get("lineId", "principal")
+    numero_envio = s.get("numero_real", wa_id)  # número real sin prefijo de línea
+
     async def process_and_send():
         from whatsapp_client import enviar_media, enviar_mensaje, subir_media
         partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
@@ -2151,18 +2159,18 @@ async def enviar_manual_endpoint(request: Request):
             w_id_current = None
             import urllib.parse
             if match_sticker: 
-                w_id_current = enviar_media(wa_id, "sticker", match_sticker.group(1), reply_to_wamid)
+                w_id_current = enviar_media(numero_envio, "sticker", match_sticker.group(1), reply_to_wamid, line_id=line_id)
             elif match_img:
                 cap = urllib.parse.unquote(match_img.group(2)) if match_img.group(2) else None
-                w_id_current = enviar_media(wa_id, "image", match_img.group(1), reply_to_wamid, caption=cap)
+                w_id_current = enviar_media(numero_envio, "image", match_img.group(1), reply_to_wamid, caption=cap, line_id=line_id)
             elif match_video:
                 cap = urllib.parse.unquote(match_video.group(2)) if match_video.group(2) else None
-                w_id_current = enviar_media(wa_id, "video", match_video.group(1), reply_to_wamid, caption=cap)
+                w_id_current = enviar_media(numero_envio, "video", match_video.group(1), reply_to_wamid, caption=cap, line_id=line_id)
             elif match_doc:
                 cap = urllib.parse.unquote(match_doc.group(2)) if match_doc.group(2) else None
-                w_id_current = enviar_media(wa_id, "document", match_doc.group(1), reply_to_wamid, caption=cap)
+                w_id_current = enviar_media(numero_envio, "document", match_doc.group(1), reply_to_wamid, caption=cap, line_id=line_id)
             elif match_audio:
-                w_id_current = enviar_media(wa_id, "audio", match_audio.group(1), reply_to_wamid)
+                w_id_current = enviar_media(numero_envio, "audio", match_audio.group(1), reply_to_wamid, line_id=line_id)
             elif match_sticker_local:
                 filename = match_sticker_local.group(1)
                 from firebase_client import obtener_sticker_de_bd
@@ -2172,9 +2180,9 @@ async def enviar_manual_endpoint(request: Request):
                     w_id_meta = await subir_media(file_bytes, mime, filename)
                     if w_id_meta:
                         tipo = "sticker" if mime == "image/webp" else "image"
-                        w_id_current = enviar_media(wa_id, tipo, w_id_meta, reply_to_wamid)
+                        w_id_current = enviar_media(numero_envio, tipo, w_id_meta, reply_to_wamid, line_id=line_id)
             else: 
-                w_id_current = enviar_mensaje(wa_id, p, reply_to_wamid)
+                w_id_current = enviar_mensaje(numero_envio, p, reply_to_wamid, line_id=line_id)
             
             if w_id_current:
                 last_wamid = w_id_current
@@ -2193,7 +2201,7 @@ async def enviar_manual_endpoint(request: Request):
         sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
         s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name, "quick_reply_title": quick_reply_title})
         s["ultima_actividad"] = datetime.utcnow()
-        print(f"  [👤 Humano -> {wa_id}]: {texto}")
+        print(f"  [👤 Humano -> {numero_envio} ({line_id})]: {texto}")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
         except: pass
         return {"ok": True}
@@ -2800,7 +2808,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     else:
         # Renderizar Chat Activo
         s = s_fake_vg if s_fake_vg else sesiones[wa_id]
-        nombre_chat = s.get("nombre_cliente", wa_id)
+        nombre_chat = s.get("nombre_cliente", s.get("numero_real", wa_id))
+        numero_chat_display = s.get("numero_real", wa_id)  # número real sin prefijo de línea
         activo_chat = s.get("bot_activo", True)
         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
         
