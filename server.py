@@ -4475,6 +4475,16 @@ async def api_list_lines(request: Request):
     if "principal" not in aliases:
         aliases["principal"] = {"name": "Línea Principal Meta"}
         
+    try:
+        from server import get_qr_status
+        qr_status = get_qr_status()
+        if qr_status.get("connected"):
+            qr_line_id = qr_status.get("lineId", "qr_ventas_1")
+            if qr_line_id not in aliases:
+                aliases[qr_line_id] = {"name": "Bot Ventas (Baileys Web)", "provider": "baileys"}
+    except Exception as e:
+        pass
+        
     from bot_manager import get_bot_for_line
     lines_rich = {}
     for lid, linfo in aliases.items():
