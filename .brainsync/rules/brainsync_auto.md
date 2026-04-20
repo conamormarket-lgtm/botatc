@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5015 notes | Score threshold: >40
+> 5018 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -33,6 +33,7 @@
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized Score — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
@@ -40,7 +41,6 @@
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 5x
-- what-changed in shared-context.json — confirmed 6x
 
 ## Known Fixes
 
