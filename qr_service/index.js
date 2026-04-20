@@ -1,5 +1,5 @@
 const express = require('express');
-const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers, makeInMemoryStore } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
 const axios = require('axios');
@@ -16,9 +16,6 @@ let sock;
 let currentQR = "";
 let isConnected = false;
 
-// CRÍTICO: Baileys requiere un store oficial para manejar el contexto de cifrado y reintentos.
-const store = makeInMemoryStore({ logger: pino({ level: 'silent' }) });
-
 async function connectToWhatsApp() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     const { version, isLatest } = await fetchLatestBaileysVersion();
@@ -32,18 +29,8 @@ async function connectToWhatsApp() {
         markOnlineOnConnect: true,
         generateHighQualityLinkPreview: true,
         msgRetryCounterCache, // CRÍTICO para reintentos automáticos
-        retryRequestDelayMs: 2000, // Darle tiempo al Signal channel
-        getMessage: async (key) => {
-            if (store) {
-                const msg = await store.loadMessage(key.remoteJid, key.id);
-                return msg?.message || undefined;
-            }
-            return undefined;
-        }
+        retryRequestDelayMs: 2000 // Darle tiempo al Signal channel
     });
-
-    // Vincular la base de memoria
-    store.bind(sock.ev);
 
     sock.ev.on('creds.update', saveCreds);
 
@@ -199,8 +186,7 @@ async function connectToWhatsApp() {
 
             console.log(`[DEBUG] Mensaje descifrado vía update: jid=${key.remoteJid}`);
 
-            // Guardar en store
-            messageStore[`${key.remoteJid}:${key.id}`] = update.message;
+            // Removed buggy store
 
             try {
                 const real_jid = key.senderPn || key.remoteJid;
