@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -24,7 +24,7 @@
             /* 1. Nivel de Color Principal */
             --primary-color: #717f7f;       
             --primary-hover: #2563eb;       
-            /* 2. Nivel de Color de Acento (translÃºcidos adaptables) */
+            /* 2. Nivel de Color de Acento (translúcidos adaptables) */
             --accent-bg: rgba(255, 255, 255, 0.05);           
             --accent-border: rgba(255, 255, 255, 0.1);       
             --accent-hover-soft: rgba(255, 255, 255, 0.08);   
@@ -32,7 +32,7 @@
             --bg-main: #213668;             
             --bg-sidebar: var(--bg-main);
             --bg-list: var(--bg-main);
-            /* 4. TipografÃ­as */
+            /* 4. Tipografías */
             --font-main: 'Inter', sans-serif;
             --font-heading: 'Outfit', sans-serif;
             /* 5. Texto y Estados */
@@ -321,7 +321,7 @@
             {chat_view_css}
 
         /* ==================================================
-           RESPONSIVE DESIGN (MÃ“VIL / TABLET)
+           RESPONSIVE DESIGN (MÓVIL / TABLET)
            ================================================== */
         @media (max-width: 768px) {
             body {
@@ -355,7 +355,7 @@
                 order: 1;
             }
 
-            /* LOGICA DE VISIBILIDAD SPA MÃ“VIL */
+            /* LOGICA DE VISIBILIDAD SPA MÓVIL */
             /* Si class="view-list", muestra lista y oculta chat */
             body.view-list .chat-viewer-panel {
                 display: none !important;
@@ -370,9 +370,9 @@
                 display: none !important;
         }
 
-            /* Ocultar tab bar inferior en el chat si se desea mÃ¡s espacio */
+            /* Ocultar tab bar inferior en el chat si se desea más espacio */
 
-            /* Mostrar el botÃ³n de regresar en el Header del Chat */
+            /* Mostrar el botón de regresar en el Header del Chat */
             .btn-responsive-back {
                 display: flex;
                 align-items: center;
@@ -407,7 +407,7 @@
             background: var(--text-muted);
         }
     
-        /* â”€â”€â”€ Panel de Info de Mensaje â”€â”€â”€ */
+        /* ─── Panel de Info de Mensaje ─── */
         #msg-info-panel {
             position: fixed; top: 0; right: -360px; width: 340px; height: 100%;
             background: var(--bg-card, #1e293b); border-left: 1px solid var(--accent-border, rgba(255,255,255,0.1));
@@ -505,17 +505,17 @@
         <div id="btnToggleBot" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('toggleBot'); return false;">Pausar/Reactivar Bot</div>
         <div class="ctx-menu-item" style="position:relative;" onmouseover="document.getElementById('ctxSubMenuLabels').style.display='flex'" onmouseout="document.getElementById('ctxSubMenuLabels').style.display='none'">
             <div style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                AÃ±adir etiqueta <span style="font-size:0.7rem;">â–¶</span>
+                Añadir etiqueta <span style="font-size:0.7rem;">▶</span>
             </div>
             <div id="ctxSubMenuLabels" style="display:none; position:absolute; top:0; left:100%; min-width:180px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; overflow-y:auto; max-height:250px;">
                 <!-- LABEL_CONTEXT_INJECTION -->
             </div>
         </div>
-        <div id="btnMarcarNoLeido" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('unread'); return false;">Marcar como no leÃ­do</div>
+        <div id="btnMarcarNoLeido" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('unread'); return false;">Marcar como no leído</div>
         <div id="btnBorrarChat" style="padding:0.8rem 1rem; color:#ef4444; font-size:0.85rem; cursor:pointer; font-weight:bold;" onclick="window.chatAction('delete'); return false;">Borrar chat</div>
     </div>
 
-    <!-- 1. BARRA LATERAL IZQUIERDA (NavegaciÃ³n Desktop / Bottom Mobile) -->
+    <!-- 1. BARRA LATERAL IZQUIERDA (Navegación Desktop / Bottom Mobile) -->
     <nav class="sidebar-nav">
         <!-- Inbox Icon -->
         <a href="/inbox" class="nav-item active" title="Bandeja de Entrada (Inbox)">
@@ -530,17 +530,17 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         </a>
         <!-- System Settings Icon -->
-        <a href="/admin" class="nav-item" title="Panel ClÃ¡sico Anterior">
+        <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
             <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
         </a>
         
         <div style="flex:1;"></div>
         
-        <!-- ConfiguraciÃ³n de Perfil Usuario -->
+        <!-- Configuración de Perfil Usuario -->
         <a href="/perfil" class="nav-item" title="Mi Perfil" style="margin-bottom: 5px; color: var(--text-muted); display: flex; justify-content: center; text-decoration: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </a>
-        <a href="/logout" class="nav-item" title="Cerrar SesiÃ³n" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
+        <a href="/logout" class="nav-item" title="Cerrar Sesión" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; opacity: 0.8; transition: opacity 0.2s;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         </a>
     </nav>
@@ -561,7 +561,7 @@
 
             <!-- BUSCADOR / NUEVO CHAT -->
             <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
-                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar nÃºmero en 51..."
+                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar número en 51..."
                     style="width:100%; padding: 0.6rem 2.5rem; border-radius: 8px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.9rem; outline:none;"
                     autocomplete="off">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"
@@ -572,7 +572,7 @@
 
                 <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()"
                     style="display:none; position:absolute; right:0.4rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:6px; color:white; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight:bold; cursor:pointer;"
-                    title="Empezar un chat con este nÃºmero">NUEVO</button>
+                    title="Empezar un chat con este número">NUEVO</button>
             </div>
         </div>
 
@@ -583,24 +583,24 @@
         </div>
     </div>
 
-    <!-- 3. PANEL DERECHO (Visor de Chat o Estado VacÃ­o) -->
+    <!-- 3. PANEL DERECHO (Visor de Chat o Estado Vacío) -->
     <div class="chat-viewer-panel">
         {chat_viewer_html}
     </div>
     </div>
 
-    <!-- MENÃš CONTEXTUAL PERSONALIZADO (Click derecho PC o Mantener en MÃ³vil) -->
+    <!-- MENÚ CONTEXTUAL PERSONALIZADO (Click derecho PC o Mantener en Móvil) -->
     <div id="bubbleContextMenu"
         style="display:none; position:fixed; z-index:9999; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.15); min-width:220px; font-family:var(--font-main); overflow:hidden;">
         <!-- BARRA DE REACCIONES -->
         <div
             style="display:flex; justify-content:space-around; padding:0.6rem; border-bottom:1px solid var(--accent-border); background:var(--accent-bg);">
-            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ‘')">ðŸ‘</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('â¤ï¸')">â¤ï¸</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ˜‚')">ðŸ˜‚</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ˜®')">ðŸ˜®</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ˜¢')">ðŸ˜¢</div>
-            <div class="ctx-emoji" onclick="enviarReaccion('ðŸ™')">ðŸ™</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('👍')">👍</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('❤️')">❤️</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('😂')">😂</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('😮')">😮</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('😢')">😢</div>
+            <div class="ctx-emoji" onclick="enviarReaccion('🙏')">🙏</div>
         </div>
 
         <div class="ctx-item" id="ctxStar" style="padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem; border-bottom:1px solid var(--accent-border); color:var(--text-main); display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;">
@@ -680,7 +680,7 @@
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
-            <strong>InformaciÃ³n</strong>
+            <strong>Información</strong>
         </div>
     </div>
     <style>
@@ -752,8 +752,8 @@
                 const modalHtml = `
                     <div id="deleteConfirmModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; display:flex; align-items:center; justify-content:center;">
                         <div style="background:var(--bg-main); padding:2rem; border-radius:12px; max-width:400px; text-align:center; border:1px solid var(--accent-border);">
-                            <h3 style="margin-top:0; color:#ef4444;">Â¿Borrar este chat?</h3>
-                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Esta acciÃ³n eliminarÃ¡ el chat permanentemente y no se puede deshacer.</p>
+                            <h3 style="margin-top:0; color:#ef4444;">¿Borrar este chat?</h3>
+                            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Esta acción eliminará el chat permanentemente y no se puede deshacer.</p>
                             <div style="display:flex; justify-content:center; gap:1rem;">
                                 <button onclick="document.body.removeChild(document.getElementById('deleteConfirmModal'))" style="padding:0.6rem 1.5rem; border-radius:8px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); cursor:pointer;">Cancelar</button>
                                 <button onclick="window.confirmDeleteChat()" style="padding:0.6rem 1.5rem; border-radius:8px; border:none; background:#ef4444; color:white; cursor:pointer;">Borrar Permanente</button>
@@ -822,7 +822,7 @@
             if(menu1 && !menu1.contains(e.target)) menu1.style.display = 'none';
         });
 
-        // LOGICA DE MENÃšs CONTEXTUAL
+        // LOGICA DE MENÚs CONTEXTUAL
         let ctxTargetWamid = "";
         let ctxTargetText = "";
         let ctxTargetMediaId = "";
@@ -833,12 +833,12 @@
         document.addEventListener("contextmenu", function (e) {
             const bubble = e.target.closest('.bubble');
             if (bubble) {
-                e.preventDefault(); // Evitamos menÃº del navegador
+                e.preventDefault(); // Evitamos menú del navegador
 
                 ctxTargetWamid = bubble.getAttribute('data-wamid');
                 ctxTargetBubble = bubble;
                 
-                // Show InformaciÃ³n only for bot messages with data-sent-by
+                // Show Información only for bot messages with data-sent-by
                 const infoItem = document.getElementById('ctxMsgInfo');
                 if (infoItem) {
                     infoItem.style.display = bubble.classList.contains('bubble-bot') && bubble.dataset.sentBy !== undefined ? 'flex' : 'none';
@@ -1019,7 +1019,7 @@
                         ]);
                     } catch(err) {
                         console.error("Clipboard API error", err);
-                        alert("El navegador bloqueÃ³ la copia de la imagen.");
+                        alert("El navegador bloqueó la copia de la imagen.");
                     }
                 }, 'image/png');
             } catch(e) {
@@ -1053,13 +1053,13 @@
                 document.body.removeChild(a);
             } catch(e) {
                 console.error("Error downloading image", e);
-                alert("OcurriÃ³ un error al descargar la imagen.");
+                alert("Ocurrió un error al descargar la imagen.");
             }
         });
 
         async function enviarReaccion(emojiStr) {
             document.getElementById("bubbleContextMenu").style.display = "none";
-            if (!ctxTargetWamid) return alert("âŒ Este mensaje no se puede reaccionar");
+            if (!ctxTargetWamid) return alert("❌ Este mensaje no se puede reaccionar");
 
             const wa_id = window.location.pathname.split('/').pop(); // /inbox/519...
             try {
@@ -1070,10 +1070,10 @@
                 });
                 const data = await res.json();
                 if (!data.ok) {
-                    alert("âŒ Error: " + data.error);
+                    alert("❌ Error: " + data.error);
                 }
             } catch (e) {
-                alert("âŒ Falla de conectividad");
+                alert("❌ Falla de conectividad");
             }
         }
 
@@ -1092,22 +1092,22 @@
                 });
                 const data = await res.json();
                 if (data.ok) {
-                    alert("â­ Sticker guardado en tus favoritos extra (Firebase) con Ã©xito!");
+                    alert("⭐ Sticker guardado en tus favoritos extra (Firebase) con éxito!");
                     toggleStickersMenu(); toggleStickersMenu(); // refresh silently
                 } else {
-                    alert("âŒ Error guardando sticker: " + data.error);
+                    alert("❌ Error guardando sticker: " + data.error);
                 }
             } catch (e) {
-                alert("âŒ Falla de conectividad");
+                alert("❌ Falla de conectividad");
             }
         });
-        // DOM AJAX REFRESHER PARA LIVE CHAT (Mantiene posiciÃ³n del scroll y reemplaza listas suavemente)
+        // DOM AJAX REFRESHER PARA LIVE CHAT (Mantiene posición del scroll y reemplaza listas suavemente)
         setInterval(async () => {
             try {
-                // Prevenir cachÃ© del navegador
+                // Prevenir caché del navegador
                 const url = window.location.href;
                 let fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
-                // Si se cargÃ³ el historial completo (bÃºsqueda de mensaje antiguo), mantenerlo en el polling
+                // Si se cargó el historial completo (búsqueda de mensaje antiguo), mantenerlo en el polling
                 if (window._viewingAllHistory) fetchUrl += '&history=all';
 
                 const res = await fetch(fetchUrl, {
@@ -1135,7 +1135,7 @@
                     const isAtBottom = (oldScroll.scrollHeight - oldScroll.scrollTop) <= (oldScroll.clientHeight + 50);
                     let didAppend = false;
                     
-                    // Aislar temporalmente elementos de subida asÃ­ncrona (fantasmas)
+                    // Aislar temporalmente elementos de subida asíncrona (fantasmas)
                     const tempNodes = Array.from(oldScroll.querySelectorAll('[data-temp="true"]'));
                     tempNodes.forEach(node => oldScroll.removeChild(node));
                     
@@ -1165,7 +1165,7 @@
                         oldScroll.removeChild(oldScroll.lastChild);
                     }
                     
-                    // Reinyectar elementos asÃ­ncronos fantasma
+                    // Reinyectar elementos asíncronos fantasma
                     tempNodes.forEach(node => oldScroll.appendChild(node));
                     
                     if (didAppend && isAtBottom && !window._isSearching) {
@@ -1212,7 +1212,7 @@
                             // Visual feedback
                             const manualInput = document.getElementById("manualMsgInput");
                             if(manualInput) {
-                                manualInput.value = "ðŸ“¤ Subiendo audio...";
+                                manualInput.value = "📤 Subiendo audio...";
                                 manualInput.disabled = true;
                             }
 
@@ -1234,12 +1234,12 @@
                                         if(c) {
                                             const div = document.createElement('div');
                                             div.className = 'bubble bubble-bot lado-der';
-                                            div.innerHTML = `<div class="bubble-content" style="background:var(--primary-color);color:white;padding:0.8rem;border-radius:12px;"><span style="font-size:1.5rem;">ðŸŽ¤</span> <span style="font-size:0.9rem;">Audio enviado</span></div>`;
+                                            div.innerHTML = `<div class="bubble-content" style="background:var(--primary-color);color:white;padding:0.8rem;border-radius:12px;"><span style="font-size:1.5rem;">🎤</span> <span style="font-size:0.9rem;">Audio enviado</span></div>`;
                                             c.appendChild(div);
                                             c.scrollTop = c.scrollHeight;
                                         }
                                     } else {
-                                        alert("El servidor de WhatsApp (Meta) rechazÃ³ o no pudo procesar el formato del audio.\n\nDetalle tÃ©cnico: " + (enviaRes?.error || "Desconocido"));
+                                        alert("El servidor de WhatsApp (Meta) rechazó o no pudo procesar el formato del audio.\n\nDetalle técnico: " + (enviaRes?.error || "Desconocido"));
                                     }
                                 } else {
                                     alert("Error procesando o subiendo el audio:\n\n" + (data.error || "Rechazo desconocido en el servidor."));
@@ -1258,19 +1258,19 @@
                         btnRecord.style.color = "white";
                         btnRecord.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>`;
                         
-                        // Opcional: Mostrar que estÃ¡ grabando en el input
+                        // Opcional: Mostrar que está grabando en el input
                         const manualInput = document.getElementById("manualMsgInput");
                         if(manualInput) {
                             manualInput.dataset.originalPlaceholder = manualInput.placeholder;
-                            manualInput.placeholder = "ðŸ”´ Grabando audio... (Presiona el cuadro rojo para detener/enviar)";
+                            manualInput.placeholder = "🔴 Grabando audio... (Presiona el cuadro rojo para detener/enviar)";
                         }
 
                     } catch(err) {
                         console.error('Audio Recorder Error:', err);
                         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                            alert("âŒ Â¡ConexiÃ³n Insegura! Tu navegador ha bloqueado el micrÃ³fono por seguridad. Las web de grabaciÃ³n de audio OBLIGAN a que uses 'https://' o entres desde 'http://localhost' en lugar de usar una IP directa de la red.");
+                            alert("❌ ¡Conexión Insegura! Tu navegador ha bloqueado el micrófono por seguridad. Las web de grabación de audio OBLIGAN a que uses 'https://' o entres desde 'http://localhost' en lugar de usar una IP directa de la red.");
                         } else {
-                            alert("Permiso Denegado o Error: " + err.message + ". Verifica el candadito arriba a la izquierda y dale permisos al micrÃ³fono.");
+                            alert("Permiso Denegado o Error: " + err.message + ". Verifica el candadito arriba a la izquierda y dale permisos al micrófono.");
                         }
                     }
                 } else {
@@ -1387,7 +1387,7 @@
         window.transcribeAudio = async function(e, btn, mediaId, waId, msgId) {
             e.stopPropagation(); // Prevenir interaccion de speed
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<span style="display:inline-block; animation: spin 1s linear infinite;">â†»</span>';
+            btn.innerHTML = '<span style="display:inline-block; animation: spin 1s linear infinite;">↻</span>';
             btn.disabled = true;
             try {
                 const res = await fetch(`/api/transcribe/${mediaId}`, {
@@ -1401,7 +1401,7 @@
                 btn.innerHTML = 'Aa'; // restaurar, igual el div se recargara
                 btn.disabled = false;
             } catch (err) {
-                alert("Fallo la transcripciÃ³n: " + err.message);
+                alert("Fallo la transcripción: " + err.message);
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
@@ -1456,7 +1456,7 @@
             }
         });
         
-        // Interceptar asignaciones programÃ¡ticas a value
+        // Interceptar asignaciones programáticas a value
         const originalValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
         setTimeout(() => {
             const msgInput = document.getElementById('manualMsgInput');
@@ -1485,7 +1485,7 @@
                 qContainer = document.createElement('div');
                 qContainer.id = 'pendingMediaQueue';
                 qContainer.className = 'media-queue-container';
-                // Insertar encima del reply preview o del form de envÃ­o
+                // Insertar encima del reply preview o del form de envío
                 const anchor = document.getElementById('replyPreviewContainer') ||
                                document.querySelector('form[onsubmit*="enviarMensajeManual"]');
                 if (anchor && anchor.parentNode) {
@@ -1554,7 +1554,7 @@
                     };
                 } else {
                     el.style.background = '#333';
-                    el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;font-size:24px;">ðŸ“„</div>';
+                    el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;font-size:24px;">📄</div>';
                 }
                 
                 if (idx === 0) {
@@ -1582,7 +1582,7 @@
 
                 const rm = document.createElement('button');
                 rm.className = 'media-queue-remove';
-                rm.innerHTML = 'Ã—';
+                rm.innerHTML = '×';
                 rm.onclick = () => {
                     window.pendingUploads.splice(idx, 1);
                     window.renderPendingMediaUI();
@@ -1609,13 +1609,13 @@
                 // Wait for all uploads to complete (have media_id) or error
                 const inProgress = window.pendingUploads.filter(u => !u.media_id && !u.error);
                 if (inProgress.length > 0) {
-                    alert("AÃºn hay archivos subiÃ©ndose, por favor espera un instante y vuelve a presionar enviar.");
+                    alert("Aún hay archivos subiéndose, por favor espera un instante y vuelve a presionar enviar.");
                     return;
                 }
                 
                 const validUploads = window.pendingUploads.filter(u => u.media_id);
                 if (validUploads.length === 0) {
-                    alert("No se pudo subir ningÃºn archivo vÃ¡lido.");
+                    alert("No se pudo subir ningún archivo válido.");
                     window.pendingUploads = [];
                     window.renderPendingMediaUI();
                     return;
@@ -1688,9 +1688,9 @@
                 if (!data.ok) {
                     if (scroll && bubble) scroll.removeChild(bubble);
                     if (data.error === "META_API_REJECTED") {
-                        alert("âŒ Error de WhatsApp (Meta): No puedes enviar mensajes libres a este nÃºmero porque no te ha escrito en las Ãºltimas 24 horas.");
+                        alert("❌ Error de WhatsApp (Meta): No puedes enviar mensajes libres a este número porque no te ha escrito en las últimas 24 horas.");
                     } else {
-                        alert("âŒ Error no controlado al enviar: " + data.error);
+                        alert("❌ Error no controlado al enviar: " + data.error);
                     }
                 }
             } catch (e) {
@@ -1700,7 +1700,7 @@
             }
         };
 
-        // LIBRERÃA LOCAL DE STICKERS
+        // LIBRERÍA LOCAL DE STICKERS
         window.cargarStickers = async function () {
             const grid = document.getElementById('stickersGrid');
             if (!grid) return;
@@ -1713,7 +1713,7 @@
                         `<img src="/api/media/sticker/${s}" style="width:70px; height:70px; object-fit:contain; cursor:pointer; padding:5px; border-radius:8px; border:2px solid transparent; transition:border 0.2s;" onmouseover="this.style.border='2px solid var(--primary-color)'" onmouseout="this.style.border='2px solid transparent'" onclick="insertStickerLocal('${s}')" title="${s}">`
                     ).join('');
                 } else {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5; font-size:0.85rem; color:var(--text-muted);">AÃºn no tienes stickers guardados.</div>';
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:2rem; opacity:0.5; font-size:0.85rem; color:var(--text-muted);">Aún no tienes stickers guardados.</div>';
                 }
             } catch (e) { grid.innerHTML = '<div style="grid-column: 1/-1; padding:2rem; color:var(--danger-color);">Error cargando.</div>'; }
         };
@@ -1724,7 +1724,7 @@
             const file = input.files[0];
             if (!file) return;
             const grid = document.getElementById('stickersGrid');
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; opacity:0.5;">â³ Subiendo...</div>';
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; opacity:0.5;">⏳ Subiendo...</div>';
             const fd = new FormData();
             fd.append('files', file);
             try {
@@ -1752,7 +1752,7 @@
             }
         };
 
-        // LÃ“GICA DE SUBIDA MULTIMEDIA ASÃNCRONA EN SEGUNDO PLANO
+        // LÓGICA DE SUBIDA MULTIMEDIA ASÍNCRONA EN SEGUNDO PLANO
         const uploadMedia = async (file, mode = 'imagen') => {
             const wa_id = window.location.pathname.split('/').pop();
             if (!wa_id || isNaN(wa_id) || wa_id === 'inbox') {
@@ -1794,7 +1794,7 @@
             formData.append("mode", mode);
 
             try {
-                // Sube el archivo de forma completamente asÃ­ncrona a nuestro servidor
+                // Sube el archivo de forma completamente asíncrona a nuestro servidor
                 const uploadRes = await fetch('/api/admin/upload_media', {
                     method: 'POST',
                     body: formData
@@ -1809,7 +1809,7 @@
 
                 upObj.media_id = uploadData.media_id;
                 window.renderPendingMediaUI();
-                // Siempre queda en la cola â€” el usuario decide si agrega pie de imagen y presiona Enviar
+                // Siempre queda en la cola — el usuario decide si agrega pie de imagen y presiona Enviar
 
             } catch (e) {
                 console.error("Fallo de red al enviar media:", e);
@@ -1949,11 +1949,11 @@
                                 let html = `<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem; padding-left:0.5rem; text-transform:uppercase; letter-spacing:1px;">Mensajes (${data.resultados.length})</div>`;
                                 data.resultados.forEach(r => {
                                     r.matches.forEach(m => {
-                                        let icon = m.role === 'assistant' ? 'ðŸ¤–' : 'ðŸ‘¤';
+                                        let icon = m.role === 'assistant' ? '🤖' : '👤';
                                         html += `
                                         <a href="/inbox/${r.wa_id}?msg_id=${m.msg_id}" class="chat-row search-msg-row" style="display:block; text-decoration:none; background:var(--accent-bg); border-radius:8px; margin-bottom:0.5rem; padding:0.8rem; border:1px solid transparent; transition:border 0.2s;">
                                             <div style="font-weight:600; color:var(--text-main); font-size:0.9rem; margin-bottom:0.3rem; display:flex; justify-content:space-between; align-items:center;">
-                                                <span>${r.nombre}${r.nombre_real ? `<span style="font-weight:400; color:var(--text-muted); font-size:0.8rem;"> â€º ${r.nombre_real}</span>` : ''}</span>
+                                                <span>${r.nombre}${r.nombre_real ? `<span style="font-weight:400; color:var(--text-muted); font-size:0.8rem;"> › ${r.nombre_real}</span>` : ''}</span>
                                             </div>
                                             <div style="color:var(--text-muted); font-size:0.8rem; line-height:1.4; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
                                                 <span style="opacity:0.6; margin-right:4px;">${icon}</span>${m.snippet.replace(new RegExp(val, "gi"), match => `<mark style="background:var(--primary-color); color:white; padding:0 2px; border-radius:2px;">${match}</mark>`)}
@@ -2022,8 +2022,8 @@
 
         function iniciarNuevoChat() {
             let val = document.getElementById('chatSearchInput').value.trim();
-            val = val.replace(/\D/g, ''); // purgar caracteres no numÃ©ricos
-            if (val.length < 9) return alert("NÃºmero muy corto");
+            val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
+            if (val.length < 9) return alert("Número muy corto");
             if (!val.startsWith("51")) val = "51" + val;
             window.location.href = `/inbox/${val}`;
         }
@@ -2037,7 +2037,7 @@
             }
         });
 
-        // CERRAR MENÃšS FLOTANTES AL HACER CLICK AFUERA
+        // CERRAR MENÚS FLOTANTES AL HACER CLICK AFUERA
         document.addEventListener("click", function (e) {
             const combinedEmojiMenu = document.getElementById("combinedEmojiMenu");
             if (combinedEmojiMenu && !e.target.closest('#combinedEmojiMenu') && !e.target.closest('button[title="Emojis y Stickers"]')) {
@@ -2075,14 +2075,12 @@
             if (!list) return;
             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
             try {
-                const urlParams = new URLSearchParams(window.location.search);
-const currentLine = urlParams.get("line") || "all";
-const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
+                const res = await fetch("/api/admin/templates/list");
                 const data = await res.json();
                 if (data.ok) {
                     list.innerHTML = "";
                     if (data.plantillas.length === 0) {
-                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para aÃ±adir.</div>`;
+                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
                     } else {
                         data.plantillas.forEach(p => {
                             const btn = document.createElement("div");
@@ -2096,7 +2094,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
 
                             const delBtn = document.createElement("button");
                             delBtn.type = "button";
-                            delBtn.innerText = "Ã—";
+                            delBtn.innerText = "×";
                             delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:#ef4444; font-size:1.1rem; padding:0 0.2rem;";
                             delBtn.onclick = () => eliminarPlantilla(p.name);
 
@@ -2114,12 +2112,12 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         async function crearPlantilla() {
             const name = prompt("Escribe el NOMBRE EXACTO de la plantilla en Meta (ej: hola_cliente)");
             if (!name) return;
-            const lang = prompt("Esribe el cÃ³digo de idioma (ej: es, es_PE). Si no sabes, pon 'es'") || "es";
+            const lang = prompt("Esribe el código de idioma (ej: es, es_PE). Si no sabes, pon 'es'") || "es";
             try {
                 const res = await fetch("/api/admin/templates/save", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: name.trim(), language: lang.trim(), line_id: new URLSearchParams(window.location.search).get("line") || "principal" })
+                    body: JSON.stringify({ name: name.trim(), language: lang.trim() })
                 });
                 if (res.ok) cargarPlantillas();
             } catch (e) {
@@ -2128,7 +2126,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         }
 
         async function eliminarPlantilla(name) {
-            if (!confirm(`Â¿Borrar la plantilla '${name}' de tu lista local?`)) return;
+            if (!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
             try {
                 const res = await fetch("/api/admin/templates/delete", {
                     method: "POST",
@@ -2142,10 +2140,10 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         }
 
         async function enviarPlantillaLoc(name, lang) {
-            const wa_id = location.pathname.split("/").pop(); // Obtiene el NÂ° de la URL
-            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat vÃ¡lido seleccionado.");
+            const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
+            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
 
-            if (!confirm(`Se le enviarÃ¡ la plantilla '${name}' al nÃºmero +${wa_id}. Â¿Deseas continuar?`)) return;
+            if (!confirm(`Se le enviará la plantilla '${name}' al número +${wa_id}. ¿Deseas continuar?`)) return;
             const tMenu = document.getElementById("templateMenu");
             if(tMenu) tMenu.style.display = "none";
 
@@ -2160,7 +2158,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                     // Cargar el chat inmediatamente para ver la burbuja
                     window.location.reload();
                 } else {
-                    alert("âŒ Error: " + data.error);
+                    alert("❌ Error: " + data.error);
                 }
             } catch (e) {
                 alert("Falla de conectividad");
@@ -2208,7 +2206,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
 
         async function eliminarGlobalLabel(id, name, event) {
             event.stopPropagation();
-            if (!confirm(`Â¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminarÃ¡ de todos los chats asignados).`)) return;
+            if (!confirm(`¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminará de todos los chats asignados).`)) return;
             try {
                 const res = await fetch("/api/admin/labels/delete", {
                     method: "POST",
@@ -2233,7 +2231,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                 if (data.ok) {
                     list.innerHTML = "";
                     if (data.labels.length === 0) {
-                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin etiquetas. Apreta (+) para aÃ±adir.</div>`;
+                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin etiquetas. Apreta (+) para añadir.</div>`;
                     } else {
                         data.labels.forEach(lbl => {
                             const btn = document.createElement("div");
@@ -2284,7 +2282,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
 
                                 const delBtn = document.createElement("button");
                                 delBtn.type = "button";
-                                delBtn.innerText = "Ã—";
+                                delBtn.innerText = "×";
                                 delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.1rem; padding:0 0.2rem;";
                                 delBtn.onclick = (e) => eliminarGlobalLabel(lbl.id, lbl.name, e);
                                 
@@ -2303,8 +2301,8 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         }
 
         async function alternarChatLabel(lbl_id) {
-            const wa_id = location.pathname.split("/").pop(); // Obtiene el NÂ° de la URL
-            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat vÃ¡lido seleccionado.");
+            const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
+            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
 
             try {
                 const res = await fetch(`/api/admin/chats/labels/toggle`, {
@@ -2320,7 +2318,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                     alert("Error: " + data.error);
                 }
             } catch (e) {
-                alert("Error de conexiÃ³n al alternar etiqueta.");
+                alert("Error de conexión al alternar etiqueta.");
             }
         }
 
@@ -2338,14 +2336,14 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
 
     </script>
 
-    <!-- Modal de CreaciÃ³n de Etiqueta (Tipo WhatsApp Business) -->
+    <!-- Modal de Creación de Etiqueta (Tipo WhatsApp Business) -->
     <div id="createLabelModal"
         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
         <div
             style="background:var(--bg-main); border:1px solid var(--accent-border); border-radius:12px; width:350px; flex-direction:column; box-shadow:0 10px 25px rgba(0,0,0,0.5); overflow:hidden;">
             <div
                 style="padding:1rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
-                <h3 id="modalTitle" style="margin:0; font-family:var(--font-heading); font-size:1.1rem;">AÃ±adir etiqueta</h3>
+                <h3 id="modalTitle" style="margin:0; font-family:var(--font-heading); font-size:1.1rem;">Añadir etiqueta</h3>
                 <input type="hidden" id="editingLabelId" value="">
                 <button onclick="document.getElementById('createLabelModal').style.display='none'"
                     style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.5rem;">&times;</button>
@@ -2432,7 +2430,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                         viewer.innerHTML = `
                         <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
                             <h3>Bandeja de Entrada</h3>
-                            <p style="font-size:0.9rem; max-width:400px; text-align:center;">Selecciona una conversaciÃ³n para empezar o continuar chateando.</p>
+                            <p style="font-size:0.9rem; max-width:400px; text-align:center;">Selecciona una conversación para empezar o continuar chateando.</p>
                         </div>`;
                     }
                 }
@@ -2455,7 +2453,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
     <!-- Elementos ocultos para selectores del sistema -->
     <input type="file" id="hiddenFileInput" style="display:none;" multiple accept="*/*">
 
-    <!-- Lightbox para imÃ¡genes avanzado con Zoom y Paneo -->
+    <!-- Lightbox para imágenes avanzado con Zoom y Paneo -->
     <div id="imageLightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; cursor:pointer; overflow:hidden;" onclick="if(event.target === this) closeLightbox()">
         <button onclick="closeLightbox()" style="position:absolute; top:20px; right:30px; background:none; border:none; color:white; font-size:2.5rem; cursor:pointer; text-shadow:0 2px 4px rgba(0,0,0,0.5); z-index:10000;">&times;</button>
         <img id="lightboxImg" src="" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.7); cursor:grab; transition: transform 0.1s ease-out;" oncontextmenu="event.stopPropagation();" draggable="false">
@@ -2577,16 +2575,16 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
 
     <!-- Phone Context Menu -->
     <div id="phoneContextMenu" style="display:none; position:fixed; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:8px; padding:0.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.5); z-index:10000; min-width:180px;">
-        <div id="ctxPhoneTitle" style="font-size:0.75rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); margin-bottom:0.3rem;">TelÃ©fono</div>
+        <div id="ctxPhoneTitle" style="font-size:0.75rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); margin-bottom:0.3rem;">Teléfono</div>
         <button id="ctxPhoneChat" style="background:none; border:none; text-align:left; color:var(--text-main); font-size:0.85rem; padding:0.5rem; border-radius:4px; cursor:pointer; width:100%; display:flex; align-items:center; gap:0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Iniciar Chat
         </button>
         <button id="ctxPhoneCopy" style="background:none; border:none; text-align:left; color:var(--text-main); font-size:0.85rem; padding:0.5rem; border-radius:4px; cursor:pointer; width:100%; display:flex; align-items:center; gap:0.5rem;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar NÃºmero
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar Número
         </button>
     </div>
 
-    <!-- Script para manejadores de telÃ©fono -->
+    <!-- Script para manejadores de teléfono -->
     <script>
         let targetPhoneCtx = "";
         function abrirCtxTelefono(e, phone) {
@@ -2610,9 +2608,9 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             document.getElementById('phoneContextMenu').style.display = 'none';
             let wa_id = targetPhoneCtx.replace(/\D/g, '');
             if(wa_id.length > 6) {
-                // Normalizar: si tiene 9 dÃ­gitos (formato peruano sin cÃ³digo de paÃ­s), agregar "51"
+                // Normalizar: si tiene 9 dígitos (formato peruano sin código de país), agregar "51"
                 if (wa_id.length === 9) wa_id = '51' + wa_id;
-                // Si empieza con "+" quitar solo el +, ya tiene cÃ³digo de paÃ­s
+                // Si empieza con "+" quitar solo el +, ya tiene código de país
                 let final_wa_id = wa_id;
                 try {
                     const res = await fetch('/api/admin/chat/init', { method: 'POST', body: JSON.stringify({wa_id}), headers:{'Content-Type':'application/json'} });
@@ -2659,9 +2657,9 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         
 
         
-        // â”€â”€â”€ Panel de Info de Mensaje â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ─── Panel de Info de Mensaje ───────────────────────────────
         function formatTsUnix(ts) {
-            if (!ts) return 'â€”';
+            if (!ts) return '—';
             const d = new Date(parseInt(ts) * 1000);
             return d.toLocaleString('es-PE', {
                 hour: '2-digit', minute: '2-digit',
@@ -2670,7 +2668,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         }
 
         function openMsgInfoPanel(bubble) {
-            const sentBy = bubble.dataset.sentBy || 'â€”';
+            const sentBy = bubble.dataset.sentBy || '—';
             const ts = bubble.dataset.ts || '';
             const deliveredTs = bubble.dataset.deliveredTs || '';
             const readTs = bubble.dataset.readTs || '';
@@ -2681,7 +2679,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             if (metaEl) metaEl.remove();
             const preview = clone.innerText.trim().slice(0, 200);
 
-            document.getElementById('info-preview-text').textContent = preview || 'â€”';
+            document.getElementById('info-preview-text').textContent = preview || '—';
             document.getElementById('info-sent-by').textContent = sentBy;
             
             // Handle QR title display
@@ -2693,8 +2691,8 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                 qrRow.style.display = 'none';
             }
             document.getElementById('info-sent-ts').textContent = formatTsUnix(ts);
-            document.getElementById('info-delivered-ts').textContent = deliveredTs ? formatTsUnix(deliveredTs) : 'â€”';
-            document.getElementById('info-read-ts').textContent = readTs ? formatTsUnix(readTs) : 'â€”';
+            document.getElementById('info-delivered-ts').textContent = deliveredTs ? formatTsUnix(deliveredTs) : '—';
+            document.getElementById('info-read-ts').textContent = readTs ? formatTsUnix(readTs) : '—';
 
             document.getElementById('msg-info-panel').classList.add('open');
         }
@@ -2724,30 +2722,30 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
     <!-- Panel de info de mensaje -->
     <div id="msg-info-panel">
         <div class="info-header">
-            <h3>â„¹ï¸ Info del Mensaje</h3>
-            <button class="info-close-btn" onclick="closeMsgInfoPanel()">âœ•</button>
+            <h3>ℹ️ Info del Mensaje</h3>
+            <button class="info-close-btn" onclick="closeMsgInfoPanel()">✕</button>
         </div>
         <div class="info-body">
-            <div class="info-preview" id="info-preview-text">â€”</div>
+            <div class="info-preview" id="info-preview-text">—</div>
             <div class="info-row">
                 <span class="info-label">Enviado por</span>
-                <span class="info-value"><span class="icon">ðŸ‘¤</span><span id="info-sent-by">â€”</span></span>
+                <span class="info-value"><span class="icon">👤</span><span id="info-sent-by">—</span></span>
             </div>
             <div class="info-row" id="info-row-qr" style="display: none;">
-                <span class="info-label">Respuesta RÃ¡pida</span>
-                <span class="info-value"><span class="icon">âš¡</span><span id="info-qr-title">â€”</span></span>
+                <span class="info-label">Respuesta Rápida</span>
+                <span class="info-value"><span class="icon">⚡</span><span id="info-qr-title">—</span></span>
             </div>
             <div class="info-row">
-                <span class="info-label">Hora de envÃ­o</span>
-                <span class="info-value"><span class="icon">ðŸ“¤</span><span id="info-sent-ts">â€”</span></span>
+                <span class="info-label">Hora de envío</span>
+                <span class="info-value"><span class="icon">📤</span><span id="info-sent-ts">—</span></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Entregado</span>
-                <span class="info-value"><span class="icon">âœ“âœ“</span><span id="info-delivered-ts">â€”</span></span>
+                <span class="info-value"><span class="icon">✓✓</span><span id="info-delivered-ts">—</span></span>
             </div>
             <div class="info-row">
-                <span class="info-label">LeÃ­do</span>
-                <span class="info-value"><span class="icon" style="color:#34b7f1">âœ“âœ“</span><span id="info-read-ts">â€”</span></span>
+                <span class="info-label">Leído</span>
+                <span class="info-value"><span class="icon" style="color:#34b7f1">✓✓</span><span id="info-read-ts">—</span></span>
             </div>
         </div>
     </div>
@@ -2896,7 +2894,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             });
             
             if(targets.length === 0) {
-                return alert("Selecciona al menos un chat o ingresa un nÃºmero.");
+                return alert("Selecciona al menos un chat o ingresa un número.");
             }
             
             let btn = document.getElementById('btnConfirmForward');
@@ -2918,13 +2916,13 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                 
                 const data = await res.json();
                 if(res.ok && data.ok) {
-                    alert('Â¡Enviado! Mensajes enviados a ' + data.count + ' destino(s).');
+                    alert('¡Enviado! Mensajes enviados a ' + data.count + ' destino(s).');
                     cancelForwardMode();
                 } else {
-                    alert('Error: ' + (data.error || 'Algo saliÃ³ mal'));
+                    alert('Error: ' + (data.error || 'Algo salió mal'));
                 }
             } catch(e) {
-                alert("Error de red enviando peticiÃ³n.");
+                alert("Error de red enviando petición.");
             }
             
             btn.innerText = prevText;
@@ -3004,7 +3002,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                 
                 // Actualizar el archivo en el pendingUploads
                 window.pendingUploads[indexToUpload].file = newFile;
-                // Si la imagen ya se habÃ­a subido o estaba en proceso, hay que resetearla para q se vuelva a subir
+                // Si la imagen ya se había subido o estaba en proceso, hay que resetearla para q se vuelva a subir
                 window.pendingUploads[indexToUpload].media_id = null;
                 window.pendingUploads[indexToUpload].error = null;
                 
@@ -3017,7 +3015,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             }, "image/jpeg", 0.85);
         }
 
-        // Subir especificamente un item del index que se modificÃ³
+        // Subir especificamente un item del index que se modificó
         async function resubirMediaLocal(index) {
             const upObj = window.pendingUploads[index];
             if (!upObj) return;
@@ -3172,9 +3170,9 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
     
     <script>
     const ERP_ETAPAS = [
-        { key: "diseÃ±o", label: "DiseÃ±o", color: "#A855F7" },
-        { key: "impresion", label: "ImpresiÃ³n", color: "#EAB308" },
-        { key: "preparacion", label: "PreparaciÃ³n", color: "#3B82F6" },
+        { key: "diseño", label: "Diseño", color: "#A855F7" },
+        { key: "impresion", label: "Impresión", color: "#EAB308" },
+        { key: "preparacion", label: "Preparación", color: "#3B82F6" },
         { key: "estampado", label: "Estampado", color: "#F97316" },
         { key: "empaquetado", label: "Empaquetado", color: "#10B981" },
         { key: "reparto", label: "Reparto", color: "#14B8A6" },
@@ -3189,7 +3187,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         if (s.includes("estampado")) return 3;
         if (s.includes("preparac") || s.includes("listo para")) return 2;
         if (s.includes("impres")) return 1;
-        if (s.includes("diseÃ±o")) return 0;
+        if (s.includes("diseño")) return 0;
         return -1;
     }
     
@@ -3197,7 +3195,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         const s = (status || "").toLowerCase();
         if (s.includes("estampado")) return "#f97316";
         if (s.includes("preparado") || s.includes("listo para") || s.includes("empaquetado")) return "#22c55e";
-        if (s.includes("diseÃ±o")) return "#a855f7";
+        if (s.includes("diseño")) return "#a855f7";
         if (s.includes("cobranza")) return "#eab308";
         if (s.includes("reparto") || s.includes("entregado")) return "#14b8a6";
         return "#64748b";
@@ -3288,12 +3286,12 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             } else {
                 fechaEntrada = formatFechaCorta(pedido[etapa.key]?.fechaEntrada);
             }
-            if (fechaEntrada === "No disponible") fechaEntrada = "â€“";
+            if (fechaEntrada === "No disponible") fechaEntrada = "–";
             
             let circleStyle = `border-color: ${isFuture ? '#cbd5e1' : etapa.color}; background-color: ${isFuture ? '#f1f5f9' : etapa.color};`;
             if (isCurrent) circleStyle += ` box-shadow: 0 0 0 4px ${etapa.color}33, 0 2px 8px ${etapa.color}55; transform: scale(1.18);`;
             
-            let innerHTML = isPast ? `<span style="color:white; font-size:12px; font-weight:bold;">âœ“</span>` :
+            let innerHTML = isPast ? `<span style="color:white; font-size:12px; font-weight:bold;">✓</span>` :
                             (isCurrent ? `<div style="width:10px; height:10px; background:white; border-radius:50%;"></div>` :
                                          `<div style="width:10px; height:10px; background:#cbd5e1; border-radius:50%;"></div>`);
     
@@ -3305,7 +3303,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                 <span class="erp-stage-label" style="color: ${isFuture ? '#94A3B8' : (isCurrent ? etapa.color : '#475569')}; font-weight: ${isCurrent ? 800 : (isPast ? 600 : 400)};">
                     ${etapa.label}
                 </span>
-                <span class="erp-stage-label" style="font-size:0.55rem; font-weight:500; margin-top:0.15rem; color: ${fechaEntrada !== 'â€“' ? (isCurrent ? etapa.color : '#64748B') : 'transparent'};" title="${fechaEntrada}">
+                <span class="erp-stage-label" style="font-size:0.55rem; font-weight:500; margin-top:0.15rem; color: ${fechaEntrada !== '–' ? (isCurrent ? etapa.color : '#64748B') : 'transparent'};" title="${fechaEntrada}">
                     ${fechaEntrada}
                 </span>
             </div>`;
@@ -3329,19 +3327,19 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
     }
     
     function renderResponsables(pedido) {
-        const diseÃ±ador = pedido.diseÃ±o?.diseÃ±adorNombre;
+        const diseñador = pedido.diseño?.diseñadorNombre;
         const impresor = pedido.impresion?.operador || pedido.impresion?.operadorNombre;
         const preparador = pedido.preparacion?.operador || pedido.preparacion?.operadorNombre;
         const estampador = pedido.estampado?.operador || pedido.estampado?.operadorNombre;
         const empaquetador = pedido.empaquetado?.operador || pedido.empaquetado?.operadorNombre;
         
-        const hayAlguno = diseÃ±ador || impresor || preparador || estampador || empaquetador;
+        const hayAlguno = diseñador || impresor || preparador || estampador || empaquetador;
         if (!hayAlguno) return "";
         
         const ETAPA_RESP = [
-            { label: "DiseÃ±o", color: "#A855F7", bg: "#F5F3FF", border: "#DDD6FE", value: diseÃ±ador },
-            { label: "ImpresiÃ³n", color: "#EAB308", bg: "#FEFCE8", border: "#FEF08A", value: impresor },
-            { label: "PreparaciÃ³n", color: "#3B82F6", bg: "#EFF6FF", border: "#BFDBFE", value: preparador },
+            { label: "Diseño", color: "#A855F7", bg: "#F5F3FF", border: "#DDD6FE", value: diseñador },
+            { label: "Impresión", color: "#EAB308", bg: "#FEFCE8", border: "#FEF08A", value: impresor },
+            { label: "Preparación", color: "#3B82F6", bg: "#EFF6FF", border: "#BFDBFE", value: preparador },
             { label: "Estampado", color: "#F97316", bg: "#FFF7ED", border: "#FED7AA", value: estampador },
             { label: "Empaquetado", color: "#10B981", bg: "#F0FDF4", border: "#BBF7D0", value: empaquetador },
         ];
@@ -3356,7 +3354,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             html += `
             <div style="display:flex; flex-direction:column; gap:2px; border-radius:8px; padding:0.5rem 0.75rem; border:1px solid ${et.value ? et.border : '#e2e8f0'}; background:${et.value ? et.bg : '#ffffff'};">
                 <span style="font-size:0.65rem; font-weight:800; text-transform:uppercase; color:${et.value ? et.color : '#94a3b8'};">${et.label}</span>
-                <span style="font-size:0.85rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:${et.value ? '#1e293b' : '#cbd5e1'};" title="${et.value || 'Sin asignar'}">${et.value || "â€”"}</span>
+                <span style="font-size:0.85rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:${et.value ? '#1e293b' : '#cbd5e1'};" title="${et.value || 'Sin asignar'}">${et.value || "—"}</span>
             </div>
             `;
         });
@@ -3366,11 +3364,11 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
     }
 
     function renderGaleriaDiseno(pedido) {
-        const urls = getCleanImageUrls(pedido.diseÃ±o?.urlImagen);
+        const urls = getCleanImageUrls(pedido.diseño?.urlImagen);
         if (urls.length === 0) return "";
         
         let html = `
-        <div class="erp-title-section">GALERÃA DE DISEÃ‘OS</div>
+        <div class="erp-title-section">GALERÍA DE DISEÑOS</div>
         <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:1.5rem;">
         `;
         
@@ -3418,7 +3416,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                 <option value="">Talla...</option>
                 ${renderSelectOptions(ERP_TALLAS, talla)}
             </select>
-            <button onclick="this.parentElement.remove()" style="background:#fee2e2; color:#ef4444; border:none; border-radius:4px; cursor:pointer; padding:4px 8px;">âœ•</button>
+            <button onclick="this.parentElement.remove()" style="background:#fee2e2; color:#ef4444; border:none; border-radius:4px; cursor:pointer; padding:4px 8px;">✕</button>
         `;
         document.getElementById(containerId).appendChild(div);
     }
@@ -3444,7 +3442,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
         const prenWrap = document.getElementById(`prendas-wrapper-${idPedido}`);
         prenWrap.innerHTML = `
             <div id="prendas-edit-list-${idPedido}" style="display:flex; flex-direction:column; gap:5px; margin-top:5px;"></div>
-            <button onclick="addPrendaEditRow('prendas-edit-list-${idPedido}', 0)" style="margin-top:5px; background:#e0f2fe; color:#0369a1; border:none; padding:4px 8px; border-radius:4px; font-size:0.75rem; cursor:pointer;">+ AÃ±adir Prenda</button>
+            <button onclick="addPrendaEditRow('prendas-edit-list-${idPedido}', 0)" style="margin-top:5px; background:#e0f2fe; color:#0369a1; border:none; padding:4px 8px; border-radius:4px; font-size:0.75rem; cursor:pointer;">+ Añadir Prenda</button>
         `;
         
         let arrPrendas = (Array.isArray(pedido.prendas) && pedido.prendas.length > 0) ? pedido.prendas : [];
@@ -3495,7 +3493,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             });
             const dat = await res.json();
             if (dat.ok) {
-                alert("Â¡Actualizado exitosamente en ERP!");
+                alert("¡Actualizado exitosamente en ERP!");
                 abrirModalPedido(window.currentModalWaId); // Reabrir para refrescar info
             } else {
                 alert("Error: " + dat.error);
@@ -3511,9 +3509,9 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
     }
 
     function generarTarjetaPedido(pedido, index) {
-        const totalA = Number(pedido.cobranza?.montoTotalAnadidos || pedido.diseÃ±o?.montoTotalAnadidos) || 0;
-        const totalC = Number(pedido.cobranza?.montoTotalComplementos || pedido.diseÃ±o?.montoTotalComplementos) || 0;
-        const totalCalc = (pedido.montoTotal || 0) + (pedido.montoEnvio || 0) + (pedido.costoDiseÃ±oTotal || 0) + totalA + totalC;
+        const totalA = Number(pedido.cobranza?.montoTotalAnadidos || pedido.diseño?.montoTotalAnadidos) || 0;
+        const totalC = Number(pedido.cobranza?.montoTotalComplementos || pedido.diseño?.montoTotalComplementos) || 0;
+        const totalCalc = (pedido.montoTotal || 0) + (pedido.montoEnvio || 0) + (pedido.costoDiseñoTotal || 0) + totalA + totalC;
         
         let deuda = Number(pedido.deudaTotal);
         if (isNaN(deuda)) deuda = pedido.montoPendiente !== undefined ? pedido.montoPendiente : Math.max(0, totalCalc - (pedido.montoAdelanto || 0));
@@ -3528,19 +3526,19 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                 <div style="display:flex; align-items:center; gap:0.5rem;"><h3 class="erp-card-title">Pedido: #${formatNumeroPedido(pedido)}</h3></div>
                 <div style="display:flex; align-items:center; gap:0.5rem;">
                     <span class="erp-badge" style="background: ${statusColor}; border:1px solid rgba(255,255,255,0.4); box-shadow: 0 1px 3px rgba(0,0,0,0.1);">${pedido.estadoGeneral || "DESCONOCIDO"}</span>
-                    <span style="opacity:0.8;">â–¼</span>
+                    <span style="opacity:0.8;">▼</span>
                 </div>
             </div>
             
             <div class="erp-card-body" id="body-pedido-${pedido.id}" style="display: ${index === 0 ? 'block' : 'none'};">
                 <div class="erp-title-section" style="margin-top:0; border-top:none; padding-top:0; display:flex; justify-content:space-between; align-items:center;">
-                    INFORMACIÃ“N
+                    INFORMACIÓN
                     <div style="display:flex; gap:5px;">
                         <button id="btn-edit-${pedido.id}" onclick="activarEdicionPedido('${pedido.id}')" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer; display:flex; align-items:center; gap:4px; font-weight:bold;">
-                            âœï¸ Editar Info
+                            ✏️ Editar Info
                         </button>
                         <button id="btn-save-${pedido.id}" onclick="guardarEdicionPedido('${pedido.id}')" style="display:none; background:#10b981; border:transparent; color:white; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer; align-items:center; gap:4px; font-weight:bold;">
-                            ðŸ’¾ Guardar
+                            💾 Guardar
                         </button>
                     </div>
                 </div>
@@ -3594,22 +3592,22 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
                     
                     <div class="erp-field" style="grid-column: 1 / -1;">
                         <div class="erp-alert ${isPaid ? 'erp-saldo-ok' : 'erp-saldo-pending'}">
-                            ${isPaid ? 'âœ… PEDIDO PAGADO: Cancelado al 100%' : `ðŸ’° SALDO PENDIENTE: <span class="erp-saldo-pending-amount">S/ ${formatMoneyStrict(saldoPendiente)}</span>`}
+                            ${isPaid ? '✅ PEDIDO PAGADO: Cancelado al 100%' : `💰 SALDO PENDIENTE: <span class="erp-saldo-pending-amount">S/ ${formatMoneyStrict(saldoPendiente)}</span>`}
                         </div>
                     </div>
                 </div>
                 
-                ${pedido.notasDiseÃ±o ? `
+                ${pedido.notasDiseño ? `
                 <div style="background:#fffbeb; border:1px solid #fde68a; padding:1rem; border-radius:12px; margin-bottom:1.5rem;">
-                    <div style="font-size:0.75rem; font-weight:800; color:#d97706; margin-bottom:0.5rem; display:flex; align-items:center; gap:5px;">âš ï¸ NOTAS DE DISEÃ‘O</div>
-                    <div style="font-size:0.9rem; color:#92400e; font-weight:500; white-space:pre-wrap;">${pedido.notasDiseÃ±o}</div>
+                    <div style="font-size:0.75rem; font-weight:800; color:#d97706; margin-bottom:0.5rem; display:flex; align-items:center; gap:5px;">⚠️ NOTAS DE DISEÑO</div>
+                    <div style="font-size:0.9rem; color:#92400e; font-weight:500; white-space:pre-wrap;">${pedido.notasDiseño}</div>
                 </div>` : ''}
                 
                 ${renderGaleriaDiseno(pedido)}
                 
                 ${pedido.etiquetaEmpaquetado ? `
                 <div class="erp-tags-box">
-                    <div style="font-size:0.75rem; font-weight:800; color:#dc2626; margin-bottom:0.5rem; display:flex; align-items:center; gap:5px;">âš ï¸ ETIQUETA / ESTADO EMPAQUE</div>
+                    <div style="font-size:0.75rem; font-weight:800; color:#dc2626; margin-bottom:0.5rem; display:flex; align-items:center; gap:5px;">⚠️ ETIQUETA / ESTADO EMPAQUE</div>
                     <div style="font-size:1.2rem; font-weight:900; color:#dc2626; text-transform:uppercase; letter-spacing:0.05em;">${pedido.etiquetaEmpaquetado}</div>
                 </div>` : ''}
                 
@@ -3647,7 +3645,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             if (!data.ok || !data.pedidos || data.pedidos.length === 0) {
                 container.innerHTML = `
                 <div style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:1rem; border-radius:12px; font-weight:600; text-align:center;">
-                    No se encontrÃ³ historial de pedidos en el ERP para este nÃºmero de contacto (+${numToSearch}).
+                    No se encontró historial de pedidos en el ERP para este número de contacto (+${numToSearch}).
                 </div>`;
                 return;
             }
@@ -3655,7 +3653,7 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
             if (data.pedidos.length > 1) {
                 let infobar = document.createElement('div');
                 infobar.style = "background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; padding:0.75rem; border-radius:10px; font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:8px;";
-                infobar.innerHTML = `ðŸ” Se encontraron <b>${data.pedidos.length}</b> pedidos de este contacto. Los 5 mÃ¡s recientes:`;
+                infobar.innerHTML = `🔍 Se encontraron <b>${data.pedidos.length}</b> pedidos de este contacto. Los 5 más recientes:`;
                 container.appendChild(infobar);
             }
             
@@ -3684,7 +3682,4 @@ const res = await fetch("/api/admin/templates/list?line_id=" + currentLine);
     });
     </script>
 </body>
-
-
-
 
