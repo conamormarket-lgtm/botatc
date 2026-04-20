@@ -248,23 +248,37 @@ REGEX_ESCALAR = re.compile(
 #  Gestión de sesiones
 # ─────────────────────────────────────────────
 
-def obtener_o_crear_sesion(numero_wa: str) -> dict:
+def get_session_key(numero_wa: str, line_id: str = "principal") -> str:
+    """
+    Devuelve la clave compuesta para el dict de sesiones.
+    Para la línea principal usamos solo el número (retrocompatible).
+    Para otras líneas usamos '{line_id}_{numero_wa}' para aislar conversaciones
+    del mismo cliente en líneas distintas.
+    """
+    if not line_id or line_id == "principal":
+        return numero_wa
+    return f"{line_id}_{numero_wa}"
+
+
+def obtener_o_crear_sesion(numero_wa: str, line_id: str = "principal") -> dict:
     """
     Retorna la sesión existente si está dentro del tiempo válido,
     la recupera de Firestore si el bot se reinició, o crea una nueva.
+    Usa clave compuesta line_id+numero para separar conversaciones por línea.
     """
     ahora = datetime.utcnow()
-    sesion = sesiones.get(numero_wa)
+    session_key = get_session_key(numero_wa, line_id)
+    sesion = sesiones.get(session_key)
 
     if not sesion:
         # 1. Intentar cargar desde Firebase si el servidor se reinició
         try:
             from firebase_client import cargar_sesion_chat
-            sesion_db = cargar_sesion_chat(numero_wa)
+            sesion_db = cargar_sesion_chat(session_key)
             if sesion_db:
-                sesiones[numero_wa] = sesion_db
+                sesiones[session_key] = sesion_db
                 sesion = sesion_db
-                print(f"  [☁️ Historial recuperado desde la nube para {numero_wa}]")
+                print(f"  [☁️ Historial recuperado desde la nube para {session_key}]")
         except Exception as e:
             print(f"  [[ERROR] Error al cargar historial de Firestore: {e}]")
 
@@ -272,7 +286,7 @@ def obtener_o_crear_sesion(numero_wa: str) -> dict:
         pass # La sesión ya no expira nunca, como en un Inbox real
 
     if not sesion:
-        sesiones[numero_wa] = {
+        sesiones[session_key] = {
             "historial":         [{"role": "system", "content": get_system_prompt()}],
             "datos_pedido":      None,
             "bot_activo":        True,
@@ -280,9 +294,11 @@ def obtener_o_crear_sesion(numero_wa: str) -> dict:
             "escalado_en":       None,
             "motivo_escalacion": None,
             "nombre_cliente":    "Cliente",
+            "lineId":            line_id,
+            "numero_real":       numero_wa,  # El número real del cliente, sin prefijo de línea
         }
 
-    return sesiones[numero_wa]
+    return sesiones[session_key]
 
 
 def normalizar_numero(numero_wa: str) -> str:
@@ -510,9 +526,11 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         numero_wa     = mensaje_data["from"]           # ej: "51945257117" — Meta siempre envía con código de país
         tipo_mensaje  = mensaje_data.get("type", "")
 
-        # Ignorar si el webhook trata de entregar un mensaje que YA fue guardado históricamente (ej. al reiniciar server)
-        if numero_wa in sesiones:
-            for it_hist in reversed(sesiones[numero_wa].get("historial", [])):
+        # Ignorar si el webhook trata de entregar un mensaje que YA fue guardado históricamente
+        # (clave compuesta para aislamiento multisucursal)
+        session_key_check = get_session_key(numero_wa, changes.get("metadata", {}).get("phone_number_id", "principal"))
+        if session_key_check in sesiones:
+            for it_hist in reversed(sesiones[session_key_check].get("historial", [])):
                 if it_hist.get("msg_id") == mensaje_id:
                     return {"status": "ok"}
 
@@ -638,10 +656,12 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     phone_number_id = changes.get("metadata", {}).get("phone_number_id", "principal")
 
     # --- AGREGAR AL HISTORIAL INMEDIATAMENTE PARA QUE EL UI LO VEA EN BURBUJAS SEPARADAS ---
-    ses = obtener_o_crear_sesion(numero_wa)
+    session_key = get_session_key(numero_wa, phone_number_id)
+    ses = obtener_o_crear_sesion(numero_wa, phone_number_id)
     ses["ultima_actividad"] = datetime.utcnow()
     ses["nombre_cliente"]   = nombre
     ses["lineId"]           = phone_number_id
+    ses["numero_real"]      = numero_wa
     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
         import time
         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
@@ -649,17 +669,17 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
         try: 
             from firebase_client import guardar_sesion_chat
-            guardar_sesion_chat(numero_wa, ses)
+            guardar_sesion_chat(session_key, ses)
         except: 
             pass
     # -----------------------------------------------------------------------------------------
 
     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
-    if numero_wa not in mensajes_pendientes:
-        mensajes_pendientes[numero_wa] = [dict_msg]
-        background_tasks.add_task(procesador_agregado, numero_wa, nombre)
+    if session_key not in mensajes_pendientes:
+        mensajes_pendientes[session_key] = [dict_msg]
+        background_tasks.add_task(procesador_agregado, session_key, nombre)
     else:
-        mensajes_pendientes[numero_wa].append(dict_msg)
+        mensajes_pendientes[session_key].append(dict_msg)
 
     return {"status": "ok"}
 
@@ -2657,8 +2677,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         badge_line = f'<span style="font-size:0.65rem; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:0.5rem; border:1px solid rgba(255,255,255,0.1); color:var(--text-muted);">{line_alias}</span>' if ch_line != "principal" else ""
 
 
-        nombre   = s.get("nombre_cliente", num)
-        if not nombre: nombre = num
+        # Para claves compuestas (line_id_numero), extraer el número real para mostrar
+        numero_display = s.get("numero_real", num)
+        nombre   = s.get("nombre_cliente", numero_display)
+        if not nombre: nombre = numero_display
         preview  = ultimo_msg(s)
         time_str = tiempo_relativo(s["ultima_actividad"])
         
