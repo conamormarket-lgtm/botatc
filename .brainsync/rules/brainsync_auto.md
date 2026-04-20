@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5008 notes | Score threshold: >40
+> 5015 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async opera
+- **⚠️ GOTCHA: Optimized Score** — - > 5004 notes | Score threshold: >40
++ > 5008 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score** — - > 5002 notes | Score threshold: >40
 + > 5004 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score** — - > 4981 notes | Score threshold: >40
@@ -27,9 +30,6 @@
 - **⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async operations for speed** — -     for num, s in todas:
 +     # Conjunto para deduplicar por (line
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Fixed null crash in True — parallelizes async operation
-- **⚠️ GOTCHA: Patched security issue Para — protects against XSS and CSRF token theft** — -     Para la línea principal usamos solo el número (retrocompatible).
-- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed** — -         nombre_chat = s.get("nombre_cliente", wa_id)
-+         nomb
 
 ## Project Standards
 
