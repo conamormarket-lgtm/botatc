@@ -5009,3 +5009,19 @@ async def api_chat_action(payload: ChatActionPayload, request: Request):
 
 
 
+
+@app.get('/api/test_links')
+async def api_test_links(text: str = 'Prueba con https://www.instagram.com'):
+    import re
+    texto_renderizado = text.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br>')
+    def linkify_text(match):
+        if match.group(1): return match.group(1)
+        url = match.group(2)
+        trailing = ''
+        while url and url[-1] in '.,!?)':
+            trailing = url[-1] + trailing
+            url = url[:-1]
+        href = url if url.startswith('http') else 'http://' + url
+        return f'<a href="{href}" target="_blank">{url}</a>{trailing}'
+    texto_renderizado = re.sub(r'(<[^>]+>)|((?:https?://|www\.|wa\.me/)[^\s<>]+|[a-zA-Z0-9_-]+\.[a-zA-Z]{2,5}(?:/[^\s<>]*)?)', linkify_text, texto_renderizado)
+    return {'original': text, 'resultado': texto_renderizado}
