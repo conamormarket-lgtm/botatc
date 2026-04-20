@@ -28,7 +28,7 @@ async function connectToWhatsApp() {
         version,
         auth: state,
         logger: pino({ level: "silent" }),
-        browser: Browsers.macOS('Desktop'),
+        browser: Browsers.ubuntu('Chrome'),
         markOnlineOnConnect: true,
         generateHighQualityLinkPreview: true,
         msgRetryCounterCache, // CRÍTICO para reintentos automáticos
@@ -266,6 +266,24 @@ async function connectToWhatsApp() {
 // ----------------------------------------
 // ENDPOINTS PARA EL PANEL ADMINISTRATIVO
 // ----------------------------------------
+
+app.post('/api/qr/pair', async (req, res) => {
+    let { telefono } = req.body;
+    if (!telefono) return res.status(400).json({error: "Falta telefono (ej: 51984...)"});
+    telefono = telefono.replace(/[^0-9]/g, '');
+    
+    try {
+        if (!sock) return res.status(500).json({error: "Módulo Baileys no iniciado aún."});
+        if (isConnected) return res.status(400).json({error: "Ya estás conectado. Desvincula primero."});
+        
+        let code = await sock.requestPairingCode(telefono);
+        console.log(`\n\n======================================\n🔥 CÓDIGO DE EMPAREJAMIENTO: ${code}\n======================================\n\n`);
+        return res.json({ message: "Éxito", code: code });
+    } catch (e) {
+        console.error("Error pidiendo código:", e);
+        return res.status(500).json({ error: e.message });
+    }
+});
 
 // Estado de conexión de la línea QR
 app.get('/api/qr/status', (req, res) => {

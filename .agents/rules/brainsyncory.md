@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5112 notes | Score threshold: >40
+> 5119 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5112 notes | Score threshold: >40
++ > 5116 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5105 notes | Score threshold: >40
++ > 5112 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Updated schema Fixed
 + - ⚠️ GOTCHA: Added JWT tokens au
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5094 notes | Score threshold: >40
@@ -34,25 +38,16 @@
 - }
 +       "id": "30455430262819bd",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5087 notes | Score threshold: >40
-+ > 5094 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "2e4b4774ccd8419a",
-+
 
 ## Project Standards
 
+- convention in shared-context.json
+- what-changed in shared-context.json — confirmed 4x
 - Added JWT tokens authentication — confirmed 3x
 - problem-fix in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Patched security issue Patched — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
