@@ -297,11 +297,19 @@ app.post('/api/qr/send', async (req, res) => {
         const { to, text } = req.body;
         if (!to || !text) return res.status(400).json({ error: "Faltan datos 'to' y 'text'" });
         
-        const jid = to.includes('@') ? to : `${to}@s.whatsapp.net`;
+        // Limpiar el número: eliminar todo lo que no sea dígito
+        const cleanNumber = to.replace(/[^0-9]/g, '');
+        const jid = `${cleanNumber}@s.whatsapp.net`;
+        
+        console.log(`[SEND] Intentando enviar a JID: ${jid}`);
+        console.log(`[SEND] Texto: "${text}"`);
+        
         const sentMsg = await sock.sendMessage(jid, { text: text });
+        console.log(`[SEND] ✅ Enviado con éxito. msg_id: ${sentMsg?.key?.id}`);
         
         return res.json({ status: "ok", message: "Sent", id: sentMsg?.key?.id });
     } catch (err) {
+        console.error(`[SEND] ❌ ERROR al enviar: ${err.message}`);
         return res.status(500).json({ error: err.message });
     }
 });
