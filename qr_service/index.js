@@ -109,7 +109,13 @@ async function connectToWhatsApp() {
                 const msg_id = m.key.id;
                 const timestamp = m.messageTimestamp || Math.floor(Date.now() / 1000);
                 const pushName = m.pushName || "Usuario";
-                const isFromMe = m.key.fromMe; // Detectar si se envió desde app oficial
+                const isFromMe = m.key.fromMe;
+
+                // CRÍTICO: Ignorar mensajes enviados por nosotros para evitar el eco duplicado
+                if (isFromMe) {
+                    console.log(`[DEBUG] Mensaje propio (fromMe=true) ignorado para evitar eco.`);
+                    continue;
+                }
                 
                 let msgType = "unknown";
                 let textBody = "";

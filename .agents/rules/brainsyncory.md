@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5158 notes | Score threshold: >40
+> 5175 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -25,6 +25,15 @@
 -   ]
 +     {
 - }
++       "id": "c038486d142b9d7d",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5153 notes | Score threshold: >40
++ > 5158 notes | Score threshold
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
 +       "id": "37c9cf6fb853c675",
 +
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5112 notes | Score threshold: >40
@@ -33,11 +42,6 @@
 + > 5112 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Updated schema Fixed
 + - ⚠️ GOTCHA: Added JWT tokens au
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5094 notes | Score threshold: >40
-+ > 5105 notes | Score threshold
-- **⚠️ GOTCHA: Updated schema Fixed** — - - problem-fix in shared-context.json
-+ - problem-fix in server.py
-- 
 
 ## Project Standards
 
