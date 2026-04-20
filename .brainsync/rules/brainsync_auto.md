@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5105 notes | Score threshold: >40
+> 5112 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Updated schema Fixed
++ - ⚠️ GOTCHA: Added JWT tokens au
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5094 notes | Score threshold: >40
++ > 5105 notes | Score threshold
 - **⚠️ GOTCHA: Updated schema Fixed** — - - problem-fix in shared-context.json
 + - problem-fix in server.py
 - 
@@ -39,22 +43,17 @@
 - }
 +       "id": "2e4b4774ccd8419a",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5078 notes | Score threshold: >40
-+ > 5081 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- problem-fix in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Patched security issue Patched — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Patched security issue Kevin — confirmed 3x
 
 ## Known Fixes
 
