@@ -658,6 +658,9 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
 
     # Extraer la línea destino para segmentación multisucursal
     phone_number_id = changes.get("metadata", {}).get("phone_number_id", "principal")
+    # Normalizar IDs numéricos de Meta a 'principal' para mantener ruteo de bot nativo
+    if phone_number_id and str(phone_number_id).isdigit():
+        phone_number_id = "principal"
 
     # --- AGREGAR AL HISTORIAL INMEDIATAMENTE PARA QUE EL UI LO VEA EN BURBUJAS SEPARADAS ---
     session_key = get_session_key(numero_wa, phone_number_id)
