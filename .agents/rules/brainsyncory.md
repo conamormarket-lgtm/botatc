@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5132 notes | Score threshold: >40
+> 5146 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -41,14 +41,14 @@
 
 ## Project Standards
 
+- Fixed null crash in Removed — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - convention in shared-context.json
 - what-changed in shared-context.json — confirmed 4x
 - Added JWT tokens authentication — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
 
 ## Known Fixes
 

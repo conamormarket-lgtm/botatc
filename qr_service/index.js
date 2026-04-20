@@ -262,6 +262,13 @@ app.post('/api/qr/pair', async (req, res) => {
         if (!sock) return res.status(500).json({error: "Módulo Baileys no iniciado aún."});
         if (isConnected) return res.status(400).json({error: "Ya estás conectado. Desvincula primero."});
         
+        // CRÍTICO: Meta exige que el WebSocket esté 100% abierto antes de pedir el Pairing Code (sino da Error 428)
+        let attempts = 0;
+        while (!currentQR && attempts < 10) {
+            await new Promise(r => setTimeout(r, 1000));
+            attempts++;
+        }
+        
         let code = await sock.requestPairingCode(telefono);
         console.log(`\n\n======================================\n🔥 CÓDIGO DE EMPAREJAMIENTO: ${code}\n======================================\n\n`);
         return res.json({ message: "Éxito", code: code });
