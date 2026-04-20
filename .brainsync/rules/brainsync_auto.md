@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 4964 notes | Score threshold: >40
+> 4970 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4950 notes | Score threshold: >40
++ > 4964 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Store — prevents null/undefined runtime crashe
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Escachar — prevents null/undefined runtime cra
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 4940 notes | Score threshold: >40
@@ -27,20 +29,17 @@
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 4915 notes | Score threshold: >40
 + > 4940 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Escachar — prevents null/undefined runtime cra
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — -     from bot_manager import get_bot_for_line
-+     try:
--     line
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 5x
+- what-changed in shared-context.json — confirmed 6x
+- Fixed null crash in Guardar — prevents null/undefined runtime crashes — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 10x
 - problem-fix in agent-rules.md — confirmed 9x
 - what-changed in shared-context.json — confirmed 9x
 - problem-fix in agent-rules.md — confirmed 6x
-- Added JWT tokens authentication — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
