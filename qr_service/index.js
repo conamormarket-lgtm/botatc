@@ -76,9 +76,41 @@ async function connectToWhatsApp() {
             }
 
             console.log(`[DEBUG] Mensaje: fromMe=${m.key.fromMe}, jid=${m.key.remoteJid}`);
-            if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') {
-                console.log('[DEBUG] Saltando (fromMe o broadcast)');
-                continue;
+            
+            // Ignorar mensajes propios y broadcasts
+            if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue;
+
+            // ------------------------------------------------------------------
+            // CIPHERTEXT (messageStubType=2): mensaje cifrado que no se pudo
+            // descifrar. Tenemos el número del remitente (senderPn) pero no el
+            // contenido. Enviamos placeholder al CRM para abrir la conversación.
+            // ------------------------------------------------------------------
+            if (m.messageStubType === 2 && m.key.senderPn) {
+                const wa_id = m.key.senderPn.split('@')[0];
+                const pushName = m.pushName || "Cliente";
+                console.log(`⚠️  CIPHERTEXT de ${wa_id} (${pushName}) — enviando placeholder al CRM...`);
+                
+                try {
+                    const metaPayload = {
+                        "object": "whatsapp_business_account",
+                        "entry": [{ "id": "BAILEYS_MOCK", "changes": [{ "value": {
+                            "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                            "contacts": [{ "profile": { "name": pushName }, "wa_id": wa_id }],
+                            "messages": [{
+                                "from": wa_id,
+                                "id": m.key.id,
+                                "timestamp": m.messageTimestamp || Math.floor(Date.now() / 1000),
+                                "type": "text",
+                                "text": { "body": "📱 [Mensaje recibido — ver contenido en el teléfono vinculado]" }
+                            }]
+                        }}]}]
+                    };
+                    const resp = await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 5000 });
+                    console.log(`✅ Placeholder enviado al CRM: ${resp.status}`);
+                } catch (err) {
+                    console.log("❌ Error enviando placeholder:", err.message);
+                }
+                continue; // No procesamos más, el agente puede responder desde el CRM
             }
             
             try {
