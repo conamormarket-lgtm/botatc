@@ -398,9 +398,7 @@ app.get('/api/qr/status', (req, res) => {
     res.json({ connected: isConnected, lineId: LINE_ID });
 });
 
-app.post('/api/qr/send', async (req, res) => {
-    // ... logic remains but we prepend it alongside the new endpoint. Wait, I will just add the endpoint before `/api/qr/send`
-});
+
 
 // Endpoint principal para envío de media
 app.post('/api/qr/send-media', async (req, res) => {
