@@ -1103,6 +1103,7 @@
         });
         // DOM AJAX REFRESHER PARA LIVE CHAT (Mantiene posición del scroll y reemplaza listas suavemente)
         setInterval(async () => {
+            if (window.isSending) return;
             try {
                 // Prevenir caché del navegador
                 const url = window.location.href;
@@ -1649,7 +1650,7 @@
                 for (let rMsg of remainingMessages) {
                     await window._sendRawTextManual(rMsg, wa_id, "", null);
                 }
-                setTimeout(() => window.location.reload(), 500);
+                
                 return;
             }
 
@@ -1664,6 +1665,7 @@
         };
 
         window._sendRawTextManual = async function(rawPayload, wa_id, optimisticText, replyWamid) {
+            window.isSending = true;
             const scroll = document.getElementById('chatScroll');
             let bubble = null;
             if (scroll && optimisticText) {
@@ -1697,6 +1699,8 @@
                 console.error("Fallo al enviar:", e);
                 if (scroll && bubble) scroll.removeChild(bubble);
                 alert("Error de red conectando con el panel Web o timeout.");
+            } finally {
+                window.isSending = false;
             }
         };
 

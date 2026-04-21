@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5346 notes | Score threshold: >40
+> 5349 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
 - **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -         import asyncio
 +         from starlette.concurrency import 
