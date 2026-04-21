@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5364 notes | Score threshold: >40
+> 5412 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,28 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in TICO — prevents null/undefined runtime crashes** — -         generateHighQualityLinkPreview: true,
-+         emitOwnRecei
-- **⚠️ GOTCHA: Fixed null crash in Prevenir — reduces excessive function call frequency** — -             try {
-+             if (window.isSending) return;
--   
-- **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -         import asyncio
-+         from starlette.concurrency import 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5315 notes | Score threshold: >40
-+ > 5319 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5306 notes | Score threshold: >40
-+ > 5315 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
-+ - problem-fix in server.py
-- - Fixe
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5401 notes | Score threshold: >40
++ > 5408 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - ⚠️ GOTCHA: Added JWT tokens authen
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5399 notes | Score threshold: >40
++ > 5401 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5397 notes | Score threshold: >40
++ > 5399 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5391 notes | Score threshold: >40
++ > 5397 notes | Score threshold
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 5x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in agent-rules.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 4x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
 
 ## Known Fixes
 

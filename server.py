@@ -4828,6 +4828,7 @@ class EnviarPlantillaPayload(BaseModel):
     template_name: str
     language_code: str = "es"
     body_params: list[str] = None
+    line_id: str = None
 
 
 @app.post("/api/admin/enviar_plantilla")
@@ -4837,7 +4838,15 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
         
     
     from whatsapp_client import enviar_plantilla
-    wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code, payload.body_params)
+    
+    # Obtener el line_id del payload o desde la sesión en memoria
+    line_id = payload.line_id
+    if not line_id:
+        ses = sesiones.get(payload.wa_id, {})
+        line_id = ses.get("lineId", "principal")
+    
+    print(f"[PLANTILLA] Enviando '{payload.template_name}' a {payload.wa_id} vía línea '{line_id}'")
+    wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code, payload.body_params, line_id=line_id)
 
     
     if wamid:
