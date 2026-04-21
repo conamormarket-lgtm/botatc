@@ -15,6 +15,10 @@ if (!fs.existsSync(mediaPath)) {
 
 const msgRetryCounterCache = new NodeCache();
 const app = express();
+
+// Mapa: msgId -> número de teléfono real (para resolver LIDs en status updates)
+// TTL de 1 hora para evitar fugas de memoria
+const sentMsgPhoneMap = new NodeCache({ stdTTL: 3600 });
 app.use(express.json());
 // Servir estáticos de media local para que Python los consuma a través de la ruta esperada por qr_client.py
 app.use('/media', express.static(mediaPath));
@@ -248,16 +252,28 @@ async function connectToWhatsApp() {
             
             // Procesamiento de Recibos de Entrega y Lectura para mensajes propios
             if (key.fromMe && update.status) {
-                const real_jid = resolveRealJid(key, update);
-                if (!real_jid) continue;
-                const wa_id = real_jid.split('@')[0].split(':')[0];
-                
                 let metaStatus = '';
-                if (update.status === 3) metaStatus = 'sent';
-                else if (update.status === 4) metaStatus = 'delivered';
+                if (update.status === 4) metaStatus = 'delivered';
                 else if (update.status === 5 || update.status === 6) metaStatus = 'read';
+                // status 3 = 'sent' lo ignoramos (ya lo manejamos al enviar)
                 
                 if (metaStatus) {
+                    // CRÍTICO: Intentar resolver el número real desde el mapa, porque
+                    // Baileys puede reportar el LID (152286...) en lugar del número de teléfono
+                    let wa_id = sentMsgPhoneMap.get(key.id);
+                    if (!wa_id) {
+                        // Fallback: resolver desde el JID del evento
+                        const real_jid = resolveRealJid(key, update);
+                        if (real_jid) wa_id = real_jid.split('@')[0].split(':')[0];
+                    }
+                    
+                    if (!wa_id) {
+                        console.log(`[STATUS WARN] No se pudo resolver wa_id para msg_id=${key.id}, status=${metaStatus}`);
+                        continue;
+                    }
+                    
+                    console.log(`[STATUS] ${metaStatus} para ${key.id} -> resuelto a ${wa_id}`);
+                    
                     const metaPayload = {
                         "object": "whatsapp_business_account",
                         "entry": [{
@@ -276,7 +292,7 @@ async function connectToWhatsApp() {
                     };
                     try {
                         await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 3000 });
-                        console.log(`[STATUS] Estado '${metaStatus}' de msg_id=${key.id} reenviado a webhook`);
+                        console.log(`[STATUS] ✅ Estado '${metaStatus}' de msg_id=${key.id} reenviado (wa_id=${wa_id})`);
                     } catch (e) {
                         console.log(`[STATUS ERROR] HTTP al reenviar estado: ${e.message}`);
                     }
@@ -475,6 +491,13 @@ app.post('/api/qr/send-media', async (req, res) => {
         const sentMsg = await sock.sendMessage(jid, mediaPayload);
         console.log(`[SEND_MEDIA] ✉️ ✅ ${type} mandado a ${jid}`);
         
+        // Guardar mapeo msgId -> número real para resolver LIDs después
+        if (sentMsg?.key?.id) {
+            const realPhone = cleanNumber;
+            sentMsgPhoneMap.set(sentMsg.key.id, realPhone);
+            console.log(`[MAP] ${sentMsg.key.id} -> ${realPhone}`);
+        }
+        
         return res.json({ status: "ok", message: "Sent", id: sentMsg?.key?.id });
     } catch (err) {
         console.error(`[SEND_MEDIA] ❌ ERROR: ${err.message}`);
@@ -501,6 +524,13 @@ app.post('/api/qr/send', async (req, res) => {
         
         const sentMsg = await sock.sendMessage(jid, { text: text });
         console.log(`[SEND] ✅ Enviado con éxito. msg_id: ${sentMsg?.key?.id}`);
+        
+        // Guardar mapeo msgId -> número real para resolver LIDs después
+        if (sentMsg?.key?.id) {
+            const realPhone = cleanNumber;
+            sentMsgPhoneMap.set(sentMsg.key.id, realPhone);
+            console.log(`[MAP] ${sentMsg.key.id} -> ${realPhone}`);
+        }
         
         return res.json({ status: "ok", message: "Sent", id: sentMsg?.key?.id });
     } catch (err) {
