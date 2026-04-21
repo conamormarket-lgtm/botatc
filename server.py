@@ -1742,8 +1742,8 @@ async def pausar_bot_manual(request: Request, numero_wa: str):
 
 
 @app.post("/api/admin/upload_media")
-async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None)):
-    """Sube media directamente desde la interfaz Web a Meta Graph."""
+async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None), wa_id: str = Form(None)):
+    """Sube media directamente desde la interfaz Web a Meta Graph (o la cachea si es QR local)."""
     try:
         from whatsapp_client import subir_media
         content = await file.read()
@@ -1799,8 +1799,6 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                 return {"ok": False, "error": f"FFMPEG Missing on server: {ex}"}
 
         # Conversion y estabilizacion nativa de Video a MP4 (H.264)
-        # Esto soluciona los videos horizontales rotados (plancha la metadata a los pixeles)
-        # y soluciona la pantalla blanca en web (porque convierte HEVC de iPhone/Samsung a H264)
         elif "video" in final_mime.lower() or file.filename.lower().endswith(('.mov', '.mp4', '.avi', '.mkv')):
             import subprocess, os, tempfile
             import imageio_ffmpeg
@@ -1814,9 +1812,6 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                 
                 tmp_out_name = tmp_in_name + "_out.mp4"
                 
-                # Transcodificar a H.264. Utiliza preset ultrafast para evitar timeouts.
-                # IMPORTANTE: -threads 1 evita que FFMPEG detecte los 32 cores del host de Railway
-                # y sature la memoria RAM (OOM Killer) con multiples buffers.
                 result = subprocess.run([
                     ffmpeg_exe, '-y', '-hide_banner', '-loglevel', 'error', '-i', tmp_in_name,
                     '-vf', 'scale=w=min(854\\,iw):h=-2',
@@ -1837,7 +1832,6 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
                     if result.returncode < 0:
                         err_msg += f" (Killed by OS, Signal {-result.returncode}, probably OOM/Memory Limit)"
                     print("FFMPEG video error crítico:", err_msg)
-                    # Mostrar el error limpio, ya que loglevel error quita la basura
                     return {"ok": False, "error": f"Error FFMPEG: {err_msg[:200]}"}
                 
                 os.remove(tmp_in_name)
@@ -1851,11 +1845,15 @@ async def admin_upload_media(file: UploadFile = File(...), mode: str = Form(None
         elif "video/mp4" in final_mime: safe_filename = "video.mp4"
         elif "image/" in final_mime: safe_filename = "image.png"
 
+        import uuid
+        if wa_id and wa_id.startswith("qr_"):
+            local_id = f"local_{uuid.uuid4().hex[:8]}_{safe_filename}"
+            media_cache[local_id] = (content, final_mime)
+            return {"ok": True, "media_id": local_id}
+
         media_id = await subir_media(content, final_mime, safe_filename)
         
         if media_id and not media_id.startswith("ERROR"):
-            # Meta no permite descargar media enviada por nosotros mismos.
-            # Por lo que es de vital importancia guardarla en la cache para mostrarla en nuestro propio chat.
             media_cache[media_id] = (content, final_mime)
             return {"ok": True, "media_id": media_id}
         
@@ -2104,16 +2102,20 @@ async def forward_messages(request: Request):
                         w_id_current = enviar_media(target, "audio", match_audio.group(1))
                     elif match_sticker_local:
                         filename = match_sticker_local.group(1)
-                        from firebase_client import obtener_sticker_de_bd
-                        file_bytes = obtener_sticker_de_bd(filename)
-                        if file_bytes:
-                            mime = "image/webp" if filename.endswith(".webp") else "image/png"
-                            w_id_meta = await subir_media(file_bytes, mime, filename)
-                            if w_id_meta:
-                                tipo = "sticker" if mime == "image/webp" else "image"
-                                w_id_current = enviar_media(target, tipo, w_id_meta)
+                        target_line_id = target_sesion.get("lineId", "principal") if 'target_sesion' in locals() else "principal"
+                        if target_line_id.startswith("qr_"):
+                            w_id_current = enviar_media(target, "sticker", filename, line_id=target_line_id)
+                        else:
+                            from firebase_client import obtener_sticker_de_bd
+                            file_bytes = obtener_sticker_de_bd(filename)
+                            if file_bytes:
+                                mime = "image/webp" if filename.endswith(".webp") else "image/png"
+                                w_id_meta = await subir_media(file_bytes, mime, filename)
+                                if w_id_meta:
+                                    tipo = "sticker" if mime == "image/webp" else "image"
+                                    w_id_current = enviar_media(target, tipo, w_id_meta, line_id=target_line_id)
                     else: 
-                        w_id_current = enviar_mensaje(target, p)
+                        w_id_current = enviar_mensaje(target, p, line_id=target_line_id)
                 except Exception as e:
                     print(f"Error reenviando mensaje a {target}: {e}")
                     continue
@@ -2202,14 +2204,18 @@ async def enviar_manual_endpoint(request: Request):
                 w_id_current = enviar_media(numero_envio, "audio", match_audio.group(1), reply_to_wamid, line_id=line_id)
             elif match_sticker_local:
                 filename = match_sticker_local.group(1)
-                from firebase_client import obtener_sticker_de_bd
-                file_bytes = obtener_sticker_de_bd(filename)
-                if file_bytes:
-                    mime = "image/webp" if filename.endswith(".webp") else "image/png"
-                    w_id_meta = await subir_media(file_bytes, mime, filename)
-                    if w_id_meta:
-                        tipo = "sticker" if mime == "image/webp" else "image"
-                        w_id_current = enviar_media(numero_envio, tipo, w_id_meta, reply_to_wamid, line_id=line_id)
+                if line_id.startswith("qr_"):
+                    # Evitar la subida a Meta si es línea QR, enviar filename puro para resolución local en qr_client
+                    w_id_current = enviar_media(numero_envio, "sticker", filename, reply_to_wamid, line_id=line_id)
+                else:
+                    from firebase_client import obtener_sticker_de_bd
+                    file_bytes = obtener_sticker_de_bd(filename)
+                    if file_bytes:
+                        mime = "image/webp" if filename.endswith(".webp") else "image/png"
+                        w_id_meta = await subir_media(file_bytes, mime, filename)
+                        if w_id_meta:
+                            tipo = "sticker" if mime == "image/webp" else "image"
+                            w_id_current = enviar_media(numero_envio, tipo, w_id_meta, reply_to_wamid, line_id=line_id)
             else: 
                 w_id_current = enviar_mensaje(numero_envio, p, reply_to_wamid, line_id=line_id)
             

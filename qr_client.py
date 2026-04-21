@@ -131,7 +131,7 @@ def enviar_media_qr(
             parsed_url = f"http://127.0.0.1:8000/api/admin/stickers/file/{parsed_url}"
         else:
             # Fallback for other local files if added in the future
-            parsed_url = f"http://127.0.0.1:8000/api/admin/media/{parsed_url}"
+            parsed_url = f"http://127.0.0.1:8000/api/media/{parsed_url}"
 
     payload = {
         "to": numero_destino,

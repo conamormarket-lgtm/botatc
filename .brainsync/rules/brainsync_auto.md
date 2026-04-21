@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5277 notes | Score threshold: >40
+> 5282 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,15 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "316837a729fc21fa",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5274 notes | Score threshold: >40
++ > 5277 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5269 notes | Score threshold: >40
 + > 5274 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5265 notes | Score threshold: >40
@@ -28,13 +37,10 @@
 + > 5265 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5258 notes | Score threshold: >40
 + > 5261 notes | Score threshold
-- **⚠️ GOTCHA: Updated schema Score** — - > 5254 notes | Score threshold: >40
-+ > 5258 notes | Score threshold
-- **⚠️ GOTCHA: Updated schema Score** — - > 5248 notes | Score threshold: >40
-+ > 5251 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 4x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
@@ -42,7 +48,6 @@
 - Optimized Optimized — confirmed 3x
 - what-changed in shared-context.json — confirmed 8x
 - decision in task.md — confirmed 3x
-- Updated schema Fixed — confirmed 3x
 
 ## Known Fixes
 

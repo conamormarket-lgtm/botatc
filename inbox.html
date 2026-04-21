@@ -1755,7 +1755,7 @@
         // LÓGICA DE SUBIDA MULTIMEDIA ASÍNCRONA EN SEGUNDO PLANO
         const uploadMedia = async (file, mode = 'imagen') => {
             const wa_id = window.location.pathname.split('/').pop();
-            if (!wa_id || isNaN(wa_id) || wa_id === 'inbox') {
+            if (!wa_id || (isNaN(wa_id) && !wa_id.startsWith('qr_')) || wa_id === 'inbox') {
                 alert("Debes tener un chat abierto para enviar multimedia directamente.");
                 return;
             }
@@ -1792,6 +1792,9 @@
             const formData = new FormData();
             formData.append("file", file);
             formData.append("mode", mode);
+            if (wa_id && wa_id !== "inbox") {
+                formData.append("wa_id", wa_id);
+            }
 
             try {
                 // Sube el archivo de forma completamente asíncrona a nuestro servidor
@@ -2141,7 +2144,7 @@
 
         async function enviarPlantillaLoc(name, lang) {
             const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
-            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+            if (!wa_id || (isNaN(wa_id) && !wa_id.startsWith('qr_'))) return alert("No hay un chat válido seleccionado.");
 
             if (!confirm(`Se le enviará la plantilla '${name}' al número +${wa_id}. ¿Deseas continuar?`)) return;
             const tMenu = document.getElementById("templateMenu");
@@ -2302,7 +2305,7 @@
 
         async function alternarChatLabel(lbl_id) {
             const wa_id = location.pathname.split("/").pop(); // Obtiene el N° de la URL
-            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+            if (!wa_id || (isNaN(wa_id) && !wa_id.startsWith('qr_'))) return alert("No hay un chat válido seleccionado.");
 
             try {
                 const res = await fetch(`/api/admin/chats/labels/toggle`, {
