@@ -16,8 +16,9 @@ if (!fs.existsSync(mediaPath)) {
 const msgRetryCounterCache = new NodeCache();
 const app = express();
 app.use(express.json());
-// Servir estáticos de media local para que Python los consuma con peticiones GET
+// Servir estáticos de media local para que Python los consuma a través de la ruta esperada por qr_client.py
 app.use('/media', express.static(mediaPath));
+app.use('/api/qr/media', express.static(mediaPath));
 
 const PORT = 3000;
 const LINE_ID = "qr_ventas_1";
@@ -173,9 +174,10 @@ async function connectToWhatsApp() {
                         const fileName = `qr_media_${msg_id}.${extension}`;
                         fs.writeFileSync(path.join(mediaPath, fileName), buffer);
                         
-                        // Pseudo-URL local apuntando a Express
-                        mediaUrl = `http://127.0.0.1:${PORT}/media/${fileName}`;
-                        console.log(`[DEBUG] Media descargada: ${mediaUrl}`);
+                        // En lugar de una Pseudo-URL, devolvemos solo el nombre de archivo (que empieza por qr_)
+                        // para que el CRM backend (FastAPI) lo descargue mediante qr_client.py
+                        mediaUrl = fileName;
+                        console.log(`[DEBUG] Media descargada localmente: ${fileName}`);
                         
                     } catch (e) {
                         console.log("❌ Error descargando media de Baileys:", e.message);

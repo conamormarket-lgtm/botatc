@@ -174,6 +174,8 @@ async def obtener_media_url(media_id: str) -> str | None:
     """Consigue la URL temporal de descarga de un media_id de Meta o retorna la URL cruda si es local (QR)."""
     if media_id.startswith("http"):
         return media_id
+    if media_id.startswith("qr_"):
+        return f"http://127.0.0.1:3000/api/qr/media/{media_id}"
 
     url = f"https://graph.facebook.com/{META_API_VERSION}/{media_id}"
     headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
