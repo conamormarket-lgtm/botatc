@@ -2172,14 +2172,15 @@ async def enviar_manual_endpoint(request: Request):
 
     async def process_and_send():
         from whatsapp_client import enviar_media, enviar_mensaje, subir_media
-        import asyncio
-        loop = asyncio.get_event_loop()
+        from starlette.concurrency import run_in_threadpool
         
         async def call_enviar_media(*args, **kwargs):
-            return await loop.run_in_executor(None, lambda: enviar_media(*args, **kwargs))
+            from functools import partial
+            return await run_in_threadpool(partial(enviar_media, *args, **kwargs))
             
         async def call_enviar_mensaje(*args, **kwargs):
-            return await loop.run_in_executor(None, lambda: enviar_mensaje(*args, **kwargs))
+            from functools import partial
+            return await run_in_threadpool(partial(enviar_mensaje, *args, **kwargs))
         partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
         last_wamid = None
         exito_alguna_parte = False

@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5336 notes | Score threshold: >40
+> 5346 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -         import asyncio
++         from starlette.concurrency import 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5315 notes | Score threshold: >40
 + > 5319 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5306 notes | Score threshold: >40
@@ -31,19 +33,17 @@
 + > 5306 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5298 notes | Score threshold: >40
 + > 5303 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5294 notes | Score threshold: >40
-+ > 5298 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 5x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
