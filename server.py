@@ -488,8 +488,11 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
                 msg_wamid = st.get("id")
                 status_val = st.get("status")
                 num_wa = st.get("recipient_id")
+                print(f"[WEBHOOK] Recibido status: {status_val} para WAMID: {msg_wamid} de {num_wa}")
                 if num_wa and num_wa in sesiones:
+                    print(f"[WEBHOOK] Sesion encontrada para {num_wa}, buscando msg_id {msg_wamid}")
                     se = sesiones[num_wa]
+                    found = False
                     for it in reversed(se.get("historial", [])):
                         if it.get("msg_id") == msg_wamid:
                             # Evitar degradar el estado (ej. de read a delivered)

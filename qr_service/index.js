@@ -380,12 +380,14 @@ async function connectToWhatsApp() {
                         }]
                     }]
                 };
-                try {
-                    await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 3000 });
-                    console.log(`[STATUS] Receipt '${metaStatus}' msg_id=${ev.key.id} reenviado a webhook`);
-                } catch (e) {
-                    console.log(`[STATUS ERROR] HTTP reenviando receipt al webhook: ${e.message}`);
-                }
+                setTimeout(async () => {
+                    try {
+                        await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 3000 });
+                        console.log(`[STATUS] Receipt '${metaStatus}' msg_id=${ev.key.id} reenviado (Delayed)`);
+                    } catch (e) {
+                        console.log(`[STATUS ERROR] HTTP reenviando receipt al webhook: ${e.message}`);
+                    }
+                }, 1500);
             }
         }
     });

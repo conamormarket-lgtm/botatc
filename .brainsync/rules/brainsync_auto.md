@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5349 notes | Score threshold: >40
+> 5360 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,11 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in TICO — prevents null/undefined runtime crashes** — -         generateHighQualityLinkPreview: true,
++         emitOwnRecei
+- **⚠️ GOTCHA: Fixed null crash in Prevenir — reduces excessive function call frequency** — -             try {
++             if (window.isSending) return;
+-   
 - **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed** — -         import asyncio
 +         from starlette.concurrency import 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5315 notes | Score threshold: >40
@@ -29,10 +34,6 @@
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - problem-fix in server.py
 - - Fixe
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5303 notes | Score threshold: >40
-+ > 5306 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5298 notes | Score threshold: >40
-+ > 5303 notes | Score threshold
 
 ## Project Standards
 
