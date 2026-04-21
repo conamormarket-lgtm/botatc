@@ -3632,7 +3632,9 @@
         erpAbortController = new AbortController();
         
         try {
-            const numToSearch = wa_id.replace(/\D/g, "");
+            // Evitar que números del nombre de la línea (ej. qr_ventas_1_) se filtren en el número extraído
+            const rawLastPart = wa_id.split('_').pop();
+            const numToSearch = rawLastPart.replace(/\D/g, "");
             const res = await fetch(`/api/admin/pedidos_por_telefono?num=${numToSearch}`, { signal: erpAbortController.signal });
             const data = await res.json();
             
