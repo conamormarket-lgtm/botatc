@@ -299,7 +299,9 @@ app.post('/api/qr/send', async (req, res) => {
         
         // Limpiar el número: eliminar todo lo que no sea dígito
         const cleanNumber = to.replace(/[^0-9]/g, '');
-        const jid = `${cleanNumber}@s.whatsapp.net`;
+        // LIDs de Meta tienen 15 dígitos. Números telefónicos reales tienen 10-13.
+        const isLid = cleanNumber.length >= 14;
+        const jid = isLid ? `${cleanNumber}@lid` : `${cleanNumber}@s.whatsapp.net`;
         
         console.log(`[SEND] Intentando enviar a JID: ${jid}`);
         console.log(`[SEND] Texto: "${text}"`);
