@@ -1,13 +1,23 @@
 const express = require('express');
-const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers, downloadMediaMessage } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
 const axios = require('axios');
 const NodeCache = require('node-cache');
+const fs = require('fs');
+const path = require('path');
+
+// Setup qr media cache dir
+const mediaPath = path.join(__dirname, 'qr_media_cache');
+if (!fs.existsSync(mediaPath)) {
+    fs.mkdirSync(mediaPath, { recursive: true });
+}
 
 const msgRetryCounterCache = new NodeCache();
 const app = express();
 app.use(express.json());
+// Servir estáticos de media local para que Python los consuma con peticiones GET
+app.use('/media', express.static(mediaPath));
 
 const PORT = 3000;
 const LINE_ID = "qr_ventas_1";
@@ -50,8 +60,6 @@ async function connectToWhatsApp() {
             if (statusCode === DisconnectReason.loggedOut) {
                 // 401: Dispositivo desvinculado → limpiar sesión y generar QR fresco
                 console.log('🔄 Dispositivo desvinculado. Limpiando sesión para generar nuevo QR...');
-                const fs = require('fs');
-                const path = require('path');
                 const authDir = path.join(__dirname, 'auth_info_baileys');
                 try { fs.rmSync(authDir, { recursive: true, force: true }); } catch(e) {}
                 setTimeout(connectToWhatsApp, 2000);
@@ -130,6 +138,7 @@ async function connectToWhatsApp() {
                 let msgType = "unknown";
                 let textBody = "";
                 let mimeType = "";
+                let mediaUrl = "";
 
                 const msgTypeKey = Object.keys(m.message || {})[0];
                 if (!msgTypeKey) continue;
@@ -137,25 +146,67 @@ async function connectToWhatsApp() {
                 if (msgTypeKey === 'conversation' || msgTypeKey === 'extendedTextMessage') {
                     msgType = 'text';
                     textBody = m.message.conversation || m.message.extendedTextMessage?.text || "";
-                } else if (msgTypeKey === 'imageMessage') {
-                    msgType = 'image';
-                    textBody = m.message.imageMessage?.caption || "";
-                    mimeType = m.message.imageMessage?.mimetype || "image/jpeg";
-                } else if (msgTypeKey === 'videoMessage') {
-                    msgType = 'video';
-                    textBody = m.message.videoMessage?.caption || "";
-                    mimeType = m.message.videoMessage?.mimetype || "video/mp4";
-                } else if (msgTypeKey === 'audioMessage') {
-                    msgType = 'audio';
-                    mimeType = m.message.audioMessage?.mimetype || "audio/ogg";
-                } else if (msgTypeKey === 'documentMessage') {
-                    msgType = 'document';
-                    textBody = m.message.documentMessage?.fileName || "";
+                } else if (['imageMessage', 'videoMessage', 'audioMessage', 'documentMessage', 'stickerMessage'].includes(msgTypeKey)) {
+                    // Mapeo unificado para manejo de multimedia entrante
+                    const isVid = msgTypeKey === 'videoMessage';
+                    const isAud = msgTypeKey === 'audioMessage';
+                    const isDoc = msgTypeKey === 'documentMessage';
+                    const isSticker = msgTypeKey === 'stickerMessage';
+                    
+                    msgType = isVid ? 'video' : isAud ? 'audio' : isDoc ? 'document' : isSticker ? 'sticker' : 'image';
+                    textBody = m.message[msgTypeKey]?.caption || m.message[msgTypeKey]?.fileName || "";
+                    mimeType = m.message[msgTypeKey]?.mimetype || "application/octet-stream";
+                    
+                    try {
+                        const buffer = await downloadMediaMessage(
+                            m,
+                            'buffer',
+                            { },
+                            { 
+                                logger: pino({ level: 'silent' }),
+                                reuploadRequest: sock.updateMediaMessage
+                            }
+                        );
+                        
+                        // Guardar en la caché local
+                        const extension = mimeType.split('/')[1]?.split(';')[0] || 'bin';
+                        const fileName = `qr_media_${msg_id}.${extension}`;
+                        fs.writeFileSync(path.join(mediaPath, fileName), buffer);
+                        
+                        // Pseudo-URL local apuntando a Express
+                        mediaUrl = `http://127.0.0.1:${PORT}/media/${fileName}`;
+                        console.log(`[DEBUG] Media descargada: ${mediaUrl}`);
+                        
+                    } catch (e) {
+                        console.log("❌ Error descargando media de Baileys:", e.message);
+                    }
                 }
                 
                 if (msgType === "unknown") {
                     console.log(`[DEBUG] Tipo desconocido '${msgTypeKey}', saltando.`);
                     continue;
+                }
+
+                // Payload base de mapeo hacia Cloud API
+                const metaMessage = {
+                    "from": wa_id,
+                    "id": msg_id,
+                    "timestamp": timestamp,
+                    "type": msgType
+                };
+                
+                if (msgType === 'text') {
+                    metaMessage[msgType] = { "body": textBody };
+                } else {
+                    metaMessage[msgType] = { "mime_type": mimeType };
+                    if (mediaUrl) metaMessage[msgType]["id"] = mediaUrl; // Truco local
+                    if (textBody) {
+                        if (msgType === 'document') {
+                            metaMessage[msgType]["filename"] = textBody;
+                        } else {
+                            metaMessage[msgType]["caption"] = textBody;
+                        }
+                    }
                 }
 
                 // Construimos payload fingiendo ser Meta
@@ -167,13 +218,7 @@ async function connectToWhatsApp() {
                             "value": {
                                 "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
                                 "contacts": [{ "profile": { "name": pushName }, "wa_id": wa_id }],
-                                "messages": [{
-                                    "from": wa_id,
-                                    "id": msg_id,
-                                    "timestamp": timestamp,
-                                    "type": msgType,
-                                    [msgType]: (msgType === 'text') ? { "body": textBody } : { "caption": textBody, "mime_type": mimeType }
-                                }]
+                                "messages": [metaMessage]
                             }
                         }]
                     }]
@@ -310,6 +355,49 @@ app.post('/api/qr/pair', async (req, res) => {
 // Estado de conexión de la línea QR
 app.get('/api/qr/status', (req, res) => {
     res.json({ connected: isConnected, lineId: LINE_ID });
+});
+
+app.post('/api/qr/send', async (req, res) => {
+    // ... logic remains but we prepend it alongside the new endpoint. Wait, I will just add the endpoint before `/api/qr/send`
+});
+
+// Endpoint principal para envío de media
+app.post('/api/qr/send-media', async (req, res) => {
+    if (!isConnected || !sock) {
+        return res.status(503).json({ error: "El servicio QR no está conectado" });
+    }
+    try {
+        const { to, type, url, caption } = req.body;
+        if (!to || !type) return res.status(400).json({ error: "Faltan parámetros 'to' o 'type'" });
+
+        // Limpiar el número saliente
+        const cleanNumber = to.split(':')[0].replace(/[^0-9]/g, '');
+        const isLid = cleanNumber.length >= 14;
+        const jid = isLid ? `${cleanNumber}@lid` : `${cleanNumber}@s.whatsapp.net`;
+
+        let mediaPayload = {};
+        if (url) {
+            // Si es URL directamente, Baileys normalmente la procesará sola si es { url: "http..." }
+            mediaPayload = { [type]: { url: url } }; 
+        }
+
+        if (caption && type !== 'audio' && type !== 'sticker') {
+            mediaPayload.caption = caption;
+        }
+
+        // Forzar ptt en audios si quieres notas de voz (depende de tu necesidad, usaremos ptt: true)
+        if (type === 'audio') {
+            mediaPayload.ptt = true;
+        }
+
+        const sentMsg = await sock.sendMessage(jid, mediaPayload);
+        console.log(`[SEND_MEDIA] ✉️ ✅ ${type} mandado a ${jid}`);
+        
+        return res.json({ status: "ok", message: "Sent", id: sentMsg?.key?.id });
+    } catch (err) {
+        console.error(`[SEND_MEDIA] ❌ ERROR: ${err.message}`);
+        return res.status(500).json({ error: err.message });
+    }
 });
 
 app.post('/api/qr/send', async (req, res) => {

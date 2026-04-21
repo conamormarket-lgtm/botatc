@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5265 notes | Score threshold: >40
+> 5269 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5261 notes | Score threshold: >40
++ > 5265 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5258 notes | Score threshold: >40
 + > 5261 notes | Score threshold
 - **⚠️ GOTCHA: Updated schema Score** — - > 5254 notes | Score threshold: >40
@@ -28,8 +30,6 @@
 + > 5251 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
 - **⚠️ GOTCHA: Updated schema Fixed** — - - Fixed null crash in Browsers — prevents null/undefined runtime cra
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5230 notes | Score threshold: >40
-+ > 5232 notes | Score threshold
 
 ## Project Standards
 

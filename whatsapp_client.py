@@ -171,7 +171,10 @@ async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "
 
 
 async def obtener_media_url(media_id: str) -> str | None:
-    """Consigue la URL temporal de descarga de un media_id de Meta."""
+    """Consigue la URL temporal de descarga de un media_id de Meta o retorna la URL cruda si es local (QR)."""
+    if media_id.startswith("http"):
+        return media_id
+
     url = f"https://graph.facebook.com/{META_API_VERSION}/{media_id}"
     headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
     try:
@@ -185,8 +188,8 @@ async def obtener_media_url(media_id: str) -> str | None:
 
 
 async def descargar_media(media_url: str) -> tuple[bytes | None, str | None]:
-    """Descarga el binario de la foto o sticker y su tipo MIME usando el token de Meta."""
-    headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
+    """Descarga el binario de la foto o sticker y su tipo MIME usando el token de Meta o sin token si es local."""
+    headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"} if "graph.facebook.com" in media_url or "whatsapp.net" in media_url else {}
     try:
         async with httpx.AsyncClient() as client:
             res = await client.get(media_url, headers=headers, timeout=15)

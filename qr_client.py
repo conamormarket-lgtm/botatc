@@ -124,10 +124,19 @@ def enviar_media_qr(
     url_o_bytes: una URL pública o base64 str.
     Retorna el msg_id si tuvo éxito.
     """
+    # Resolver URLs relativas locales (ej. stickers de la DB) a la ruta HTTP local de FastAPI
+    parsed_url = url_o_bytes
+    if isinstance(parsed_url, str) and not parsed_url.startswith("http"):
+        if tipo_media == "sticker":
+            parsed_url = f"http://127.0.0.1:8000/api/admin/stickers/file/{parsed_url}"
+        else:
+            # Fallback for other local files if added in the future
+            parsed_url = f"http://127.0.0.1:8000/api/admin/media/{parsed_url}"
+
     payload = {
         "to": numero_destino,
         "type": tipo_media,
-        "url": url_o_bytes if isinstance(url_o_bytes, str) else None,
+        "url": parsed_url if isinstance(parsed_url, str) else None,
     }
     if caption:
         payload["caption"] = caption
