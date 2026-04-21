@@ -244,6 +244,45 @@ async function connectToWhatsApp() {
     sock.ev.on('messages.update', async (updates) => {
         console.log(`[DEBUG] messages.update: ${updates.length} actualizaciones`);
         for (let { key, update } of updates) {
+            
+            // Procesamiento de Recibos de Entrega y Lectura para mensajes propios
+            if (key.fromMe && update.status) {
+                const real_jid = resolveRealJid(key, update);
+                if (!real_jid) continue;
+                const wa_id = real_jid.split('@')[0].split(':')[0];
+                
+                let metaStatus = '';
+                if (update.status === 3) metaStatus = 'sent';
+                else if (update.status === 4) metaStatus = 'delivered';
+                else if (update.status === 5 || update.status === 6) metaStatus = 'read';
+                
+                if (metaStatus) {
+                    const metaPayload = {
+                        "object": "whatsapp_business_account",
+                        "entry": [{
+                            "id": "BAILEYS_MOCK",
+                            "changes": [{
+                                "value": {
+                                    "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                    "statuses": [{
+                                        "id": key.id,
+                                        "status": metaStatus,
+                                        "recipient_id": wa_id
+                                    }]
+                                }
+                            }]
+                        }]
+                    };
+                    try {
+                        await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 3000 });
+                        console.log(`[STATUS] Estado '${metaStatus}' de msg_id=${key.id} reenviado a webhook`);
+                    } catch (e) {
+                        console.log(`[STATUS ERROR] HTTP al reenviar estado: ${e.message}`);
+                    }
+                }
+                continue;
+            }
+
             if (!update.message) continue;
             if (key.fromMe || key.remoteJid === 'status@broadcast') continue;
 
