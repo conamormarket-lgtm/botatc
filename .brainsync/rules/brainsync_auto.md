@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5218 notes | Score threshold: >40
+> 5227 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,30 +20,29 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Optimized 
+- **⚠️ GOTCHA: Optimized Score** — - > 5218 notes | Score threshold: >40
++ > 5223 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score** — - > 5216 notes | Score threshold: >40
++ > 5218 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Browsers — prevents null/undefined runtime cra
 - **⚠️ GOTCHA: Fixed null crash in Badge — parallelizes async operations for speed** — -         
 + 
 -         load_all = request.query_params.get("history
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5199 notes | Score threshold: >40
 + > 5201 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5188 notes | Score threshold: >40
-+ > 5191 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5187 notes | Score threshold: >40
-+ > 5188 notes | Score threshold
 
 ## Project Standards
 
+- Optimized GOTCHA — confirmed 3x
+- Optimized Score — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - problem-fix in shared-context.json — confirmed 3x
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 

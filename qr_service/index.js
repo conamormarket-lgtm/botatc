@@ -45,9 +45,18 @@ async function connectToWhatsApp() {
         if (connection === 'close') {
             isConnected = false;
             const statusCode = lastDisconnect?.error?.output?.statusCode;
-            const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
             console.log('❌ Conexión cerrada. Código:', statusCode, '-', lastDisconnect?.error?.message);
-            if (shouldReconnect) {
+            
+            if (statusCode === DisconnectReason.loggedOut) {
+                // 401: Dispositivo desvinculado → limpiar sesión y generar QR fresco
+                console.log('🔄 Dispositivo desvinculado. Limpiando sesión para generar nuevo QR...');
+                const fs = require('fs');
+                const path = require('path');
+                const authDir = path.join(__dirname, 'auth_info_baileys');
+                try { fs.rmSync(authDir, { recursive: true, force: true }); } catch(e) {}
+                setTimeout(connectToWhatsApp, 2000);
+            } else {
+                // Otros errores (515 restart, red, etc.) → reconectar sin borrar sesión
                 setTimeout(connectToWhatsApp, 3000);
             }
         } else if (connection === 'open') {
