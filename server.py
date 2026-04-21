@@ -2236,7 +2236,7 @@ async def enviar_manual_endpoint(request: Request):
         sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
         s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name, "quick_reply_title": quick_reply_title})
         s["ultima_actividad"] = datetime.utcnow()
-        print(f"  [👤 Humano -> {numero_envio} ({line_id})]: {texto}")
+        print(f"  [[OK] Humano -> {numero_envio} ({line_id})]: {texto}")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
         except: pass
         return {"ok": True}

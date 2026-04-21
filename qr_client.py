@@ -11,7 +11,7 @@ import urllib.request
 import urllib.error
 
 QR_SERVICE_URL = "http://localhost:3000"
-QR_TIMEOUT = 6.0
+QR_TIMEOUT = 60.0
 
 # ────────────────────────────────────────────────────────────
 # Helpers internos
