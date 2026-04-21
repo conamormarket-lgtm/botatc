@@ -80,7 +80,7 @@ async function connectToWhatsApp() {
 
             // 1. Manejo exclusivo del CIPHERTEXT (mensaje no desencriptable por llaves perdidas)
             if (m.messageStubType === 2 && m.key.senderPn) {
-                const wa_id = m.key.senderPn.split('@')[0];
+                const wa_id = m.key.senderPn.split('@')[0].split(':')[0];
                 const pushName = m.pushName || "Cliente";
                 
                 // Solo mandar placeholder si no es nuestro
@@ -114,7 +114,7 @@ async function connectToWhatsApp() {
             // 2. Procesamiento de mensajes desencriptados
             try {
                 const real_jid = m.key.senderPn || m.key.remoteJid;
-                const wa_id = real_jid.split('@')[0];
+                const wa_id = real_jid.split('@')[0].split(':')[0];
                 const msg_id = m.key.id;
                 const timestamp = m.messageTimestamp || Math.floor(Date.now() / 1000);
                 const pushName = m.pushName || "Usuario";
@@ -205,7 +205,7 @@ async function connectToWhatsApp() {
 
             try {
                 const real_jid = key.senderPn || key.remoteJid;
-                const wa_id = real_jid.split('@')[0];
+                const wa_id = real_jid.split('@')[0].split(':')[0];
                 const msgTypeKey = Object.keys(update.message || {})[0];
 
                 let msgType = 'unknown';
@@ -306,8 +306,8 @@ app.post('/api/qr/send', async (req, res) => {
         const { to, text } = req.body;
         if (!to || !text) return res.status(400).json({ error: "Faltan datos 'to' y 'text'" });
         
-        // Limpiar el número: eliminar todo lo que no sea dígito
-        const cleanNumber = to.replace(/[^0-9]/g, '');
+        // Limpiar el número: descartar sufijos de dispositivo y eliminar lo que no sea dígito
+        const cleanNumber = to.split(':')[0].replace(/[^0-9]/g, '');
         // LIDs de Meta tienen 15 dígitos. Números telefónicos reales tienen 10-13.
         const isLid = cleanNumber.length >= 14;
         const jid = isLid ? `${cleanNumber}@lid` : `${cleanNumber}@s.whatsapp.net`;

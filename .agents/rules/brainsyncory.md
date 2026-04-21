@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5251 notes | Score threshold: >40
+> 5254 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,10 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: Updated schema Score** — - > 5248 notes | Score threshold: >40
++ > 5251 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
 - **⚠️ GOTCHA: Updated schema Fixed** — - - Fixed null crash in Browsers — prevents null/undefined runtime cra
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5230 notes | Score threshold: >40
@@ -28,8 +30,6 @@
 + > 5230 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5223 notes | Score threshold: >40
 + > 5227 notes | Score threshold
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
-+ - ⚠️ GOTCHA: Optimized 
 
 ## Project Standards
 
