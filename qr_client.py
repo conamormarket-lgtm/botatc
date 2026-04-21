@@ -87,7 +87,8 @@ def enviar_mensaje_qr(
     if result and result.get("status") == "ok":
         msg_id = result.get("id")
         print(f"[QR_CLIENT] ✅ Texto enviado a {numero_destino} (id: {msg_id})")
-        return msg_id
+        import uuid
+        return msg_id if msg_id else f"qr_text_sent_{uuid.uuid4().hex[:8]}"
     print(f"[QR_CLIENT] ❌ Fallo enviando texto a {numero_destino}: {result}")
     return None
 
@@ -128,7 +129,7 @@ def enviar_media_qr(
     parsed_url = url_o_bytes
     if isinstance(parsed_url, str) and not parsed_url.startswith("http"):
         if tipo_media == "sticker":
-            parsed_url = f"http://127.0.0.1:8000/api/admin/stickers/file/{parsed_url}"
+            parsed_url = f"http://127.0.0.1:8000/api/media/sticker/{parsed_url}"
         else:
             # Fallback for other local files if added in the future
             parsed_url = f"http://127.0.0.1:8000/api/media/{parsed_url}"
@@ -145,7 +146,8 @@ def enviar_media_qr(
     if result and result.get("status") == "ok":
         msg_id = result.get("id")
         print(f"[QR_CLIENT] ✅ Media ({tipo_media}) enviada a {numero_destino}")
-        return msg_id
+        import uuid
+        return msg_id if msg_id else f"qr_media_sent_{uuid.uuid4().hex[:8]}"
     print(f"[QR_CLIENT] ❌ Fallo enviando media ({tipo_media}) a {numero_destino}: {result}")
     return None
 

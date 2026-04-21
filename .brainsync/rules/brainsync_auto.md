@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5282 notes | Score threshold: >40
+> 5298 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,9 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5282 notes | Score threshold: >40
++ > 5294 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Sube — reduces excessive function call frequen
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -33,21 +36,17 @@
 + > 5274 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5265 notes | Score threshold: >40
 + > 5269 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5261 notes | Score threshold: >40
-+ > 5265 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5258 notes | Score threshold: >40
-+ > 5261 notes | Score threshold
 
 ## Project Standards
 
+- trade-off in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in agent-rules.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
-- Optimized Optimized — confirmed 3x
-- what-changed in shared-context.json — confirmed 8x
-- decision in task.md — confirmed 3x
 
 ## Known Fixes
 
