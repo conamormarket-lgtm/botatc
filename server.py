@@ -2882,11 +2882,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
         # ── Badge de línea para el header del chat activo ────────────────
         badge_line_header = ""
+        _active_line_str = s.get("lineId", "principal") or "principal"
+        if _active_line_str.isdigit(): _active_line_str = "principal"
+        
         if _has_multiple_lines:
-            _active_line = s.get("lineId", "principal") or "principal"
-            if _active_line.isdigit(): _active_line = "principal"
-            _ali = parsed_aliases_rich.get(_active_line, {"name": _active_line, "color": "#94a3b8", "icon": "📞"})
-            badge_line_header = f'<span style="font-size:0.65rem; background:{_ali.get("color", "#94a3b8")}15; padding:2px 8px; border-radius:4px; border:1px solid {_ali.get("color", "#94a3b8")}44; color:{_ali.get("color", "#94a3b8")}; font-weight:600; white-space:nowrap;">{_ali.get("icon", "📞")} {_ali.get("name", _active_line)}</span>'
+            _ali = parsed_aliases_rich.get(_active_line_str, {"name": _active_line_str, "color": "#94a3b8", "icon": "📞"})
+            badge_line_header = f'<span style="font-size:0.65rem; background:{_ali.get("color", "#94a3b8")}15; padding:2px 8px; border-radius:4px; border:1px solid {_ali.get("color", "#94a3b8")}44; color:{_ali.get("color", "#94a3b8")}; font-weight:600; white-space:nowrap;">{_ali.get("icon", "📞")} {_ali.get("name", _active_line_str)}</span>'
         
         load_all = request.query_params.get("history") == "all" or bool(request.query_params.get("msg_id"))
         MAX_MENSAJES = 70
@@ -3412,7 +3413,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 </div>
 
                 <!-- Plantillas Subsection -->
-                <div style="padding:1rem 1.5rem; border-top:1px solid var(--accent-border); background:var(--accent-bg); display:flex; flex-direction:column; max-height:220px; flex-shrink:0;">
+                <div id="plantillasSubsection" style="padding:1rem 1.5rem; border-top:1px solid var(--accent-border); background:var(--accent-bg); display:flex; flex-direction:column; max-height:220px; flex-shrink:0;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
                         <h4 style="margin:0; font-size:0.85rem; color:var(--text-main); font-weight:600;">Plantillas (Meta)</h4>
                         <button onclick="if(window.crearPlantilla) window.crearPlantilla()" style="background:var(--primary-color); color:white; border:none; border-radius:4px; padding:0.2rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:bold;" title="Añadir Plantilla">AÑADIR</button>
@@ -3474,8 +3475,16 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <!-- END RIGHT SIDEBAR -->
         </div>
         <script>
-            window.isSendingSequence = false; window.isSendingSequence = false;
-            let isSendingSequence = false; window.isSendingSequence = false;
+            window.ACTIVE_CHAT_LINE = "{_active_line_str}";
+            window.IS_QR_LINE = {'true' if _active_line_str.lower().startswith('qr_') else 'false'};
+            
+            if(window.IS_QR_LINE) {{
+                const pSub = document.getElementById('plantillasSubsection');
+                if(pSub) pSub.style.display = 'none';
+            }}
+
+            window.isSendingSequence = false;
+            let isSendingSequence = false;
             
             async function aplicarQuickReply(qrId) {{
                 if(isSendingSequence) return alert("Hay una secuencia enviándose, por favor espera.");
@@ -3773,7 +3782,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     const res = await fetch("/api/quick-replies", {{
                         method: "POST",
                         headers: {{ "Content-Type": "application/json" }},
-                        body: JSON.stringify({{ id, title, mensajes, delay_ms: delay, category: cat, type: "text", etiquetas, line_id: new URLSearchParams(window.location.search).get("line") || "principal" }})
+                        body: JSON.stringify({{ id, title, mensajes, delay_ms: delay, category: cat, type: "text", etiquetas, line_id: window.ACTIVE_CHAT_LINE || "principal" }})
                     }});
                     if(res.ok) {{
                         document.getElementById('qrCreateModal').style.display = 'none';
@@ -3805,8 +3814,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
                 try {{
                     // Load labels first so cards can render label badges
+                    const activeLine = window.ACTIVE_CHAT_LINE || "principal";
                     const [resQr, resLbl] = await Promise.all([
-                        fetch("/api/quick-replies?line=" + (new URLSearchParams(window.location.search).get("line") || "principal")),
+                        fetch("/api/quick-replies?line=" + activeLine),
                         fetch("/api/admin/labels/list")
                     ]);
                     if (!resQr.ok) throw new Error("HTTP " + resQr.status);
@@ -4051,6 +4061,101 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     c.scrollTop = c.scrollHeight;
                 }}
             }}
+        // ================= PLANTILLAS LOGIC =================
+        async function cargarPlantillas() {{
+            const list = document.getElementById("templateList");
+            if (!list) return;
+            list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
+            try {{
+                const activeLine = window.ACTIVE_CHAT_LINE || "principal";
+                const res = await fetch("/api/admin/templates/list?line=" + activeLine);
+                const data = await res.json();
+                if (data.ok) {{
+                    list.innerHTML = "";
+                    if (data.plantillas.length === 0) {{
+                        list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
+                    }} else {{
+                        data.plantillas.forEach(p => {{
+                            const btn = document.createElement("div");
+                            btn.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:0.5rem; background:var(--bg-main); border-radius:6px; font-size:0.85rem;";
+
+                            const sendBtn = document.createElement("button");
+                            sendBtn.type = "button";
+                            sendBtn.innerText = p.name;
+                            sendBtn.style.cssText = "background:none; border:none; text-align:left; cursor:pointer; color:var(--text-main); font-weight:500; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
+                            sendBtn.onclick = () => enviarPlantillaLoc(p.name, p.language);
+
+                            const delBtn = document.createElement("button");
+                            delBtn.type = "button";
+                            delBtn.innerText = "×";
+                            delBtn.style.cssText = "background:none; border:none; cursor:pointer; color:#ef4444; font-size:1.1rem; padding:0 0.2rem;";
+                            delBtn.onclick = () => eliminarPlantilla(p.name);
+
+                            btn.appendChild(sendBtn);
+                            btn.appendChild(delBtn);
+                            list.appendChild(btn);
+                        }});
+                    }}
+                }}
+            }} catch (e) {{
+                list.innerHTML = `<div style="font-size:0.8rem; color:red; padding:0.5rem; text-align:center;">Error al cargar</div>`;
+            }}
+        }}
+
+        async function crearPlantilla() {{
+            const name = prompt("Escribe el NOMBRE EXACTO de la plantilla en Meta (ej: hola_cliente)");
+            if (!name) return;
+            const lang = prompt("Escribe el código de idioma (ej: es, es_PE). Si no sabes, pon 'es'") || "es";
+            try {{
+                const res = await fetch("/api/admin/templates/save", {{
+                    method: "POST",
+                    headers: {{ "Content-Type": "application/json" }},
+                    body: JSON.stringify({{ name: name.trim(), language: lang.trim(), line_id: window.ACTIVE_CHAT_LINE || "principal" }})
+                }});
+                if (res.ok) cargarPlantillas();
+            }} catch (e) {{
+                alert("Error guardando plantilla");
+            }}
+        }}
+
+        async function eliminarPlantilla(name) {{
+            if (!confirm(`¿Borrar la plantilla '${{name}}' de tu lista local?`)) return;
+            try {{
+                const res = await fetch("/api/admin/templates/delete", {{
+                    method: "POST",
+                    headers: {{ "Content-Type": "application/json" }},
+                    body: JSON.stringify({{ name: name }})
+                }});
+                if (res.ok) cargarPlantillas();
+            }} catch (e) {{
+                alert("Error eliminando plantilla");
+            }}
+        }}
+
+        async function enviarPlantillaLoc(name, lang) {{
+            const wa_id = "{wa_id}";
+            if (!wa_id || isNaN(wa_id)) return alert("No hay un chat válido seleccionado.");
+
+            if (!confirm(`Se le enviará la plantilla '${{name}}' al número +${{wa_id}}. ¿Deseas continuar?`)) return;
+            const tMenu = document.getElementById("templateMenu");
+            if(tMenu) tMenu.style.display = "none";
+
+            try {{
+                const res = await fetch("/api/admin/enviar_plantilla", {{
+                    method: "POST",
+                    headers: {{ "Content-Type": "application/json" }},
+                    body: JSON.stringify({{ wa_id: wa_id, template_name: name, language_code: lang }})
+                }});
+                const data = await res.json();
+                if (data.ok) {{
+                    window.location.reload();
+                }} else {{
+                    alert("❌ Error: " + data.error);
+                }}
+            }} catch (e) {{
+                alert("Falla de conectividad");
+            }}
+        }}
         </script>
         """
 

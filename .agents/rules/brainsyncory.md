@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5227 notes | Score threshold: >40
+> 5251 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,29 +20,27 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
+- **⚠️ GOTCHA: Updated schema Fixed** — - - Fixed null crash in Browsers — prevents null/undefined runtime cra
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5230 notes | Score threshold: >40
++ > 5232 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score** — - > 5227 notes | Score threshold: >40
++ > 5230 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5223 notes | Score threshold: >40
++ > 5227 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
 + - ⚠️ GOTCHA: Optimized 
-- **⚠️ GOTCHA: Optimized Score** — - > 5218 notes | Score threshold: >40
-+ > 5223 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score** — - > 5216 notes | Score threshold: >40
-+ > 5218 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Browsers — prevents null/undefined runtime cra
-- **⚠️ GOTCHA: Fixed null crash in Badge — parallelizes async operations for speed** — -         
-+ 
--         load_all = request.query_params.get("history
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5199 notes | Score threshold: >40
-+ > 5201 notes | Score threshold
 
 ## Project Standards
 
+- Optimized Optimized — confirmed 3x
+- what-changed in shared-context.json — confirmed 8x
+- decision in task.md — confirmed 3x
+- Updated schema Fixed — confirmed 3x
+- problem-fix in server.py — confirmed 3x
+- Fixed null crash in PLANTILLAS — evolves the database schema to support new r... — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
 - Optimized GOTCHA — confirmed 3x
-- Optimized Score — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
-- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 
 ## Known Fixes
 
