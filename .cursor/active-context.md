@@ -219,257 +219,62 @@
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Patched security issue Webhook — protects against XSS and CSRF token theft**: -     ses = obtener_o_crear_sesion(numero_wa)
-+     session_key = get_session_key(numero_wa, phone_number_id)
--     ses["ultima_actividad"] = datetime.utcnow()
-+     ses = obtener_o_crear_sesion(numero_wa, phone_number_id)
--     ses["nombre_cliente"]   = nombre
-+     ses["ultima_actividad"] = datetime.utcnow()
--     ses["lineId"]           = phone_number_id
-+     ses["nombre_cliente"]   = nombre
--     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
-+     ses["lineId"]           = phone_number_id
--         import time
-+     ses["numero_real"]      = numero_wa
--         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
-+     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
--         cur_unread = ses.get("unread_count", 0)
-+         import time
--         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
-+         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
--         try: 
-+         cur_unread = ses.get("unread_count", 0)
--             from firebase_client import guardar_sesion_chat
-+         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
--             guardar_sesion_chat(numero_wa, ses)
-+         try: 
--         except: 
-+             from firebase_client import guardar_sesion_chat
--             pass
-+             guardar_sesion_chat(session_key, ses)
--     # -----------------------------------------------------------------------------------------
-+         except: 
-- 
-+             pass
--     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
-+     # -----------------------------------------------------------------------------------------
--     if numero_wa not in mensajes_pendientes:
-+ 
--         mensajes_pendientes[numero_wa] = [dict_msg]
-+     dict_msg = {"texto": texto_cliente, "id": mensaje_i
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...**: -     from bot_manager import get_bot_for_line
-+     try:
--     lines_rich = {}
-+         from server import get_qr_status
--     for lid, linfo in aliases.items():
-+         qr_status = get_qr_status()
--         if isinstance(linfo, str):
-+         if qr_status.get("connected"):
--             linfo = {"name": linfo}  # Migration from old string format
-+             qr_line_id = qr_status.get("lineId", "qr_ventas_1")
--             
-+             if qr_line_id not in aliases:
--         lname = linfo.get("name", "undefined")
-+                 aliases[qr_line_id] = {"name": "Bot Ventas (Baileys Web)", "provider": "baileys"}
--         provider = linfo.get("provider", "meta" if lid == "principal" else "")
-+     except Exception as e:
--         meta_phone_id = linfo.get("meta_phone_id", "")
-+         pass
--         meta_token_has_value = bool(linfo.get("meta_token"))
-+         
--         
-+     from bot_manager import get_bot_for_line
--         lines_rich[lid] = {
-+     lines_rich = {}
--             "name": lname,
-+     for lid, linfo in aliases.items():
--             "provider": provider,
-+         if isinstance(linfo, str):
--             "meta_phone_id": meta_phone_id,
-+             linfo = {"name": linfo}  # Migration from old string format
--             "has_meta_token": meta_token_has_value, # Nunca devolver el token crudo a la UI por seguridad
-+             
--             "bot_id": get_bot_for_line(lid)
-+         lname = linfo.get("name", "undefined")
--         }
-+         provider = linfo.get("provider", "meta" if lid == "principal" else "")
--         
-+         meta_phone_id = linfo.get("meta_phone_id", "")
--     return {"ok": True, "lines": lines_rich}
-+         meta_token_has_value = bool(linfo.get("meta_token"))
-- 
-+         
-- @app.post("/api/admin/lines")
-+         lines_rich[lid] = {
-- async def api_save_line(payload: LineAliasPayload, request: Request):
-+             "name": lname,
--     if not verificar_sesion(r
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...**: - 
-+     line_id: str = "principal"
-- @app.post("/api/admin/templates/save")
-+ 
-- async def api_save_template(payload: TemplatePayload, request: Request):
-+ @app.post("/api/admin/templates/save")
--     if not verificar_sesion(request):
-+ async def api_save_template(payload: TemplatePayload, request: Request):
--         raise HTTPException(status_code=403, detail="No autorizado")
-+     if not verificar_sesion(request):
--     from firebase_client import guardar_plantilla_bd
-+         raise HTTPException(status_code=403, detail="No autorizado")
--     guardar_plantilla_bd(payload.name, payload.language)
-+     from firebase_client import guardar_plantilla_bd
--     return {"ok": True}
-+     guardar_plantilla_bd(payload.name, payload.language, payload.line_id)
-- 
-+     return {"ok": True}
-- @app.post("/api/admin/templates/delete")
-+ 
-- async def api_delete_template(payload: TemplatePayload, request: Request):
-+ @app.post("/api/admin/templates/delete")
--     if not verificar_sesion(request):
-+ async def api_delete_template(payload: TemplatePayload, request: Request):
--         raise HTTPException(status_code=403, detail="No autorizado")
-+     if not verificar_sesion(request):
--     from firebase_client import eliminar_plantilla_bd
-+         raise HTTPException(status_code=403, detail="No autorizado")
--     eliminar_plantilla_bd(payload.name)
-+     from firebase_client import eliminar_plantilla_bd
--     return {"ok": True}
-+     eliminar_plantilla_bd(payload.name)
-- 
-+     return {"ok": True}
-- @app.get("/api/admin/templates/list")
-+ 
-- async def api_list_templates(request: Request):
-+ @app.get("/api/admin/templates/list")
--     if not verificar_sesion(request):
-+ async def api_list_templates(request: Request):
--         raise HTTPException(status_code=403, detail="No autorizado")
-+     if not verificar_sesion(request):
--     from firebase_client import cargar_plantillas_bd
-+         raise HTTPException(status_code=403, detail="No a
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[problem-fix] Fixed null crash in False — evolves the database schema to support new requir...**: -             "pedido_id": s.get("datos_pedido", {}).get("id") if s.get("datos_pedido") else None,
-+             "lineId": s.get("lineId"),
--             "estado_pedido": s.get("datos_pedido", {}).get("estadoGeneral") if s.get("datos_pedido") else None,
-+             "numero_real": s.get("numero_real"),
--             "mensajes": historial_resumido,
-+             "is_archived": s.get("is_archived", False),
--         }
-+             "pedido_id": s.get("datos_pedido", {}).get("id") if s.get("datos_pedido") else None,
--     return resultado
-+         }
-- 
-+     return resultado
-- # ─────────────────────────────────────────────
+- **[what-changed] Replaced auth JSON**: - const axios = require("axios");
++ const http = require("http");
+- axios.post("http://127.0.0.1:3000/api/qr/pair", { telefono: telefono })
++ const data = JSON.stringify({ telefono: telefono });
+-     .then(res => {
 + 
-- #  Simulador Web de Chat
-+ # ─────────────────────────────────────────────
-- # ─────────────────────────────────────────────
-+ #  Simulador Web de Chat
+-         console.log(`
++ const options = {
+- ===========[REDACTED]
++     hostname: '127.0.0.1',
+- 🔥🔥 TU CÓDIGO DE WHATSAPP ES:  ${res.data.code}  🔥🔥
++     port: 3000,
+- ===========[REDACTED]
++     path: '/api/qr/pair',
 - 
-+ # ─────────────────────────────────────────────
-- @app.get("/simulador", response_class=HTMLResponse)
++     method: 'POST',
+- 1. Abre WhatsApp en tu celular.
++     headers: {
+- 2. Toca los tres puntos (Menú) -> Dispositivos vinculados.
++         'Content-Type': 'application/json',
+- 3. Toca "Vincular dispositivo".
++         'Content-Length': data.length
+- 4. En la parte de abajo de la cámara, toca "Vincular con el número de teléfono".
++     }
+- 5. ¡Ingresa este código!
++ };
+-         `);
 + 
-- async def pagina_simulador(request: Request):
-+ @app.get("/simulador", response_class=HTMLResponse)
--     """Interfaz web para probar el comportamiento del bot."""
-+ async def pagina_simulador(request: Request):
--     if not verificar_sesion(request):
-+     """Interfaz web para probar el comportamiento del bot."""
--         return RedirectResponse(url=f"/admin", status_code=302)
-+     if not verificar_sesion(request):
--     return HTMLResponse("""
-+         return RedirectResponse(url=f"/admin", status_code=302)
--     <html>
-+     return HTMLResponse("""
--     <head>
-+     <html>
--       <title>Simulador de WhatsApp</title>
-+     <head>
--       <meta name="viewport" content="width=device-width,initial-scale=1">
-+       <title>Simulador de WhatsApp</title>
--       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-+       <meta name="viewport" content="width=device-width,initial-scale=1">
--       <style>
-+       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[problem-fix] problem-fix in server.py**: -         if qr_status.get("connected"):
-+         if qr_status.get("status") == "connected":
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[what-changed] what-changed in inbox.html**: -                     body: JSON.stringify({ name: name.trim(), language: lang.trim() })
-+                     body: JSON.stringify({ name: name.trim(), language: lang.trim(), line_id: new URLSearchParams(window.location.search).get("line") || "principal" })
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[discovery] discovery in server.py**: - async def api_list_templates(request: Request):
-+ async def api_list_templates(request: Request, line_id: str = None):
--     plantillas = cargar_plantillas_bd()
-+     plantillas = cargar_plantillas_bd(line_id)
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[convention] problem-fix in server.py — confirmed 4x**: - def get_quick_replies(request: Request):
-+ def get_quick_replies(request: Request, line: str = None):
--     return cargar_quick_replies_bd()
-+     return cargar_quick_replies_bd(line)
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[what-changed] what-changed in server_bad2.py**: File updated (external): server_bad2.py
-
-Content summary (5030 lines):
-��#
-- **[convention] Fixed null crash in POST — prevents null/undefined runtime crashes — confirmed 3x**: -                 const urlParams = new URLSearchParams(window.location.search);
-+                 const res = await fetch("/api/admin/templates/save", {
--                 const currentLine = urlParams.get("line") || "principal";
-+                     method: "POST",
--                 const res = await fetch("/api/admin/templates/save", {
-+                     headers: { "Content-Type": "application/json" },
--                     method: "POST",
-+                     body: JSON.stringify({ name: name.trim(), language: lang.trim() })
--                     headers: { "Content-Type": "application/json" },
-+                 });
--                     body: JSON.stringify({ name: name.trim(), language: lang.trim(), line_id: currentLine })
-+                 if (res.ok) cargarPlantillas();
--                 });
-+             } catch (e) {
--                 if (res.ok) cargarPlantillas();
-+                 alert("Error guardando plantilla");
--             } catch (e) {
-+             }
--                 alert("Error guardando plantilla");
-+         }
+-     })
++ const req = http.request(options, res => {
+-     .catch(err => {
++     let responseBody = '';
+-         if (err.response) {
++     res.on('data', chunk => { responseBody += chunk; });
+-             console.log(`❌ Error del servidor: ${err.response.data.error || JSON.stringify(err.response.data)}`);
++     
+-             if (err.response.data.error && err.response.data.error.includes("Ya estás conectado")) {
++     res.on('end', () => {
+-                 console.log("\n⚠️ Tienes que borrar la sesión actual. Ejecuta:");
++         try {
+-                 console.log("pm2 stop bot-qr");
++             const parsed = JSON.parse(responseBody);
+-                 console.log("rm -rf qr_service/auth_info_baileys");
++             if (res.statusCode >= 400) {
+-                 console.log("pm2 start bot-qr\n");
++                 console.log(`❌ Error del servidor: ${parsed.error || responseBody}`);
 -             }
-+ 
--         }
-+         async function eliminarPlantilla(name) {
-- 
-+             if (!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
--         async function eliminarPlantilla(name) {
-+             try {
--             if (!confirm(`¿Borrar la plantilla '${name}' de tu lista local?`)) return;
-+                 const res = await fetch("/api/admin/templates/delete", {
--             try {
-+                     method: "POST",
--                 const res = await fetch("/api/admin/templates/delete", {
-+                     headers: { "Content-Type": "application/json" },
--                     method: "POST",
-+                     body: JSON.stringify({ name: name })
--                     headers: { "Content-Type": "application/json" },
-+                 });
--                     body: JSON.stringify({ name: name })
-+                 if (res.ok) cargarPlanti
++                 if (parsed.error && parsed.error.includes("Ya estás conectado")) {
+-         } else {
++                     console.log("\n⚠️ Tienes que borrar la sesión actua
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [html]
+📌 IDE AST Context: Modified symbols likely include [http, telefono, data, options, req]
+- **[problem-fix] problem-fix in server.py**: -             model="gemini-2.5-flash-lite",
++             model="gemini-2.0-flash",
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]

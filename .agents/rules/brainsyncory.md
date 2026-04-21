@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5194 notes | Score threshold: >40
+> 5218 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,34 +20,30 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Browsers — prevents null/undefined runtime cra
+- **⚠️ GOTCHA: Fixed null crash in Badge — parallelizes async operations for speed** — -         
++ 
+-         load_all = request.query_params.get("history
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5199 notes | Score threshold: >40
++ > 5201 notes | Score threshold
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5188 notes | Score threshold: >40
 + > 5191 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5187 notes | Score threshold: >40
 + > 5188 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5175 notes | Score threshold: >40
-+ > 5182 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Added JWT tokens auth
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5158 notes | Score threshold: >40
-+ > 5175 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "c038486d142b9d7d",
-+
 
 ## Project Standards
 
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 5x
-- problem-fix in agent-rules.md — confirmed 4x
+- problem-fix in shared-context.json — confirmed 3x
+- Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 7x
-- problem-fix in agent-rules.md — confirmed 6x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
@@ -60,8 +56,8 @@
 ## Recent Decisions
 
 - Optimized Score — evolves the database schema to support new requirements
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized Project — evolves the database schema to support new requirements
-- Optimized None — ensures atomic multi-step database operations
 - Optimized None — ensures atomic multi-step database operations
 
 ## Learned Patterns

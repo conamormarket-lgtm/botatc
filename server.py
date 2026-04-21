@@ -2623,12 +2623,20 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
     
     # Parsear aliases que pueden ser strings (antiguos) u objetos (nuevos meta options)
-    parsed_aliases = {}
+    parsed_aliases = {}      # id → nombre (para dropdown de filtro)
+    parsed_aliases_rich = {} # id → {name, color, icon, provider} (para badges)
     for k, v in aliases.items():
         if isinstance(v, dict):
             parsed_aliases[k] = v.get("name", k)
+            parsed_aliases_rich[k] = v
         else:
             parsed_aliases[k] = v
+            parsed_aliases_rich[k] = {"name": v}
+    # Asegurar que 'principal' siempre tenga defaults
+    if "principal" not in parsed_aliases_rich:
+        parsed_aliases_rich["principal"] = {"name": "Línea Principal", "color": "#3b82f6", "icon": "📞"}
+    # Contar líneas distintas activas para decidir si mostrar badges
+    _has_multiple_lines = len(parsed_aliases_rich) > 1
 
     active_line_name = "Todas las Líneas"
     if line_filter != "all":
@@ -2734,8 +2742,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if line_filter != "all" and ch_line != line_filter:
             continue
             
-        line_alias = parsed_aliases.get(ch_line, "Línea Secundaria" if ch_line != "principal" else "")
-        badge_line = f'<span style="font-size:0.65rem; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:0.5rem; border:1px solid rgba(255,255,255,0.1); color:var(--text-muted);">{line_alias}</span>' if ch_line != "principal" else ""
+        # ── Badge de línea (solo si hay >1 línea configurada) ────────────
+        badge_line = ""
+        if _has_multiple_lines:
+            _line_info = parsed_aliases_rich.get(ch_line, {"name": ch_line, "color": "#94a3b8", "icon": "📞"})
+            _line_name = _line_info.get("name", ch_line)
+            _line_color = _line_info.get("color", "#94a3b8")
+            _line_icon = _line_info.get("icon", "📞")
+            badge_line = f'<span style="font-size:0.6rem; background:{_line_color}15; padding:2px 6px; border-radius:4px; margin-left:0.4rem; border:1px solid {_line_color}44; color:{_line_color}; font-weight:600; white-space:nowrap;">{_line_icon} {_line_name}</span>'
 
 
         # Para claves compuestas (line_id_numero), extraer el número real para mostrar
@@ -2865,6 +2879,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         numero_chat_display = s.get("numero_real", wa_id)  # número real sin prefijo de línea
         activo_chat = s.get("bot_activo", True)
         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
+
+        # ── Badge de línea para el header del chat activo ────────────────
+        badge_line_header = ""
+        if _has_multiple_lines:
+            _active_line = s.get("lineId", "principal") or "principal"
+            if _active_line.isdigit(): _active_line = "principal"
+            _ali = parsed_aliases_rich.get(_active_line, {"name": _active_line, "color": "#94a3b8", "icon": "📞"})
+            badge_line_header = f'<span style="font-size:0.65rem; background:{_ali.get("color", "#94a3b8")}15; padding:2px 8px; border-radius:4px; border:1px solid {_ali.get("color", "#94a3b8")}44; color:{_ali.get("color", "#94a3b8")}; font-weight:600; white-space:nowrap;">{_ali.get("icon", "📞")} {_ali.get("name", _active_line)}</span>'
         
         load_all = request.query_params.get("history") == "all" or bool(request.query_params.get("msg_id"))
         MAX_MENSAJES = 70
@@ -3335,9 +3357,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
                     <div style="min-width:0; flex:1;">
                         <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;cursor:context-menu;" title="Click derecho para ver mensajes destacados" oncontextmenu="document.getElementById('modalDestacados').style.display='flex'; return false;">
-                            {nombre_chat} {tags_bar}
+                            {nombre_chat} {badge_line_header} {tags_bar}
                         </h3>
-                        <small style="color:var(--text-muted)">+{wa_id}</small>
+                        <small style="color:var(--text-muted)">+{numero_chat_display}</small>
                     </div>
 
                     <!-- Botón Ver Pedido ERP -->
