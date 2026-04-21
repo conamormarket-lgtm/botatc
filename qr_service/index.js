@@ -348,6 +348,46 @@ async function connectToWhatsApp() {
             }
         }
     });
+    sock.ev.on('message-receipt.update', async (events) => {
+        console.log(`[DEBUG] message-receipt.update: ${events.length} recibos`);
+        for (let ev of events) {
+            if (!ev.key.fromMe) continue;
+            
+            const real_jid = resolveRealJid(ev.key, null);
+            if (!real_jid) continue;
+            const wa_id = real_jid.split('@')[0].split(':')[0];
+            
+            let metaStatus = '';
+            // Si hay timestamp de lectura, es leído. Si solo hay de recepción, es entregado.
+            if (ev.receipt?.readTimestamp) metaStatus = 'read';
+            else if (ev.receipt?.receiptTimestamp) metaStatus = 'delivered';
+            
+            if (metaStatus) {
+                const metaPayload = {
+                    "object": "whatsapp_business_account",
+                    "entry": [{
+                        "id": "BAILEYS_MOCK",
+                        "changes": [{
+                            "value": {
+                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "statuses": [{
+                                    "id": ev.key.id,
+                                    "status": metaStatus,
+                                    "recipient_id": wa_id
+                                }]
+                            }
+                        }]
+                    }]
+                };
+                try {
+                    await axios.post('http://127.0.0.1:8000/webhook', metaPayload, { timeout: 3000 });
+                    console.log(`[STATUS] Receipt '${metaStatus}' msg_id=${ev.key.id} reenviado a webhook`);
+                } catch (e) {
+                    console.log(`[STATUS ERROR] HTTP reenviando receipt al webhook: ${e.message}`);
+                }
+            }
+        }
+    });
 
 }
 
