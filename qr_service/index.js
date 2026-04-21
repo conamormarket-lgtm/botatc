@@ -79,8 +79,9 @@ async function connectToWhatsApp() {
             if (m.key.remoteJid === 'status@broadcast') continue;
 
             // 1. Manejo exclusivo del CIPHERTEXT (mensaje no desencriptable por llaves perdidas)
-            if (m.messageStubType === 2 && m.key.senderPn) {
-                const wa_id = m.key.senderPn.split('@')[0].split(':')[0];
+            if (m.messageStubType === 2) {
+                const real_jid_ciph = resolveRealJid(m.key, m);
+                const wa_id = real_jid_ciph.split('@')[0].split(':')[0];
                 const pushName = m.pushName || "Cliente";
                 
                 // Solo mandar placeholder si no es nuestro
@@ -113,7 +114,7 @@ async function connectToWhatsApp() {
             
             // 2. Procesamiento de mensajes desencriptados
             try {
-                const real_jid = m.key.senderPn || m.key.remoteJid;
+                const real_jid = resolveRealJid(m.key, m);
                 const wa_id = real_jid.split('@')[0].split(':')[0];
                 const msg_id = m.key.id;
                 const timestamp = m.messageTimestamp || Math.floor(Date.now() / 1000);
@@ -204,7 +205,7 @@ async function connectToWhatsApp() {
             // Removed buggy store
 
             try {
-                const real_jid = key.senderPn || key.remoteJid;
+                const real_jid = resolveRealJid(key, update);
                 const wa_id = real_jid.split('@')[0].split(':')[0];
                 const msgTypeKey = Object.keys(update.message || {})[0];
 
@@ -263,6 +264,19 @@ async function connectToWhatsApp() {
     });
 
 }
+
+// --- Helper: Resolución de LID a JID real ---
+function resolveRealJid(key, msg) {
+    let jid = key.remoteJid;
+    if (key.remoteJidAlt && String(key.remoteJidAlt).includes('@s.whatsapp.net')) jid = key.remoteJidAlt;
+    else if (key.participantAlt && String(key.participantAlt).includes('@s.whatsapp.net')) jid = key.participantAlt;
+    else if (key.senderPn && String(key.senderPn).includes('@s.whatsapp.net')) jid = key.senderPn;
+    else if (msg && msg.participant && String(msg.participant).includes('@s.whatsapp.net')) jid = msg.participant;
+    else if (msg && msg.key && msg.key.participant && String(msg.key.participant).includes('@s.whatsapp.net')) jid = msg.key.participant;
+    return jid;
+}
+
+// -----------------------------------------------------
 
 // ----------------------------------------
 // ENDPOINTS PARA EL PANEL ADMINISTRATIVO

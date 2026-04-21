@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5254 notes | Score threshold: >40
+> 5261 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Updated schema Score** — - > 5254 notes | Score threshold: >40
++ > 5258 notes | Score threshold
 - **⚠️ GOTCHA: Updated schema Score** — - > 5248 notes | Score threshold: >40
 + > 5251 notes | Score threshold
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Added JWT tokens authentication — evolves the database 
@@ -28,19 +30,17 @@
 + > 5232 notes | Score threshold
 - **⚠️ GOTCHA: Optimized Score** — - > 5227 notes | Score threshold: >40
 + > 5230 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5223 notes | Score threshold: >40
-+ > 5227 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
 - Optimized Optimized — confirmed 3x
 - what-changed in shared-context.json — confirmed 8x
 - decision in task.md — confirmed 3x
 - Updated schema Fixed — confirmed 3x
 - problem-fix in server.py — confirmed 3x
 - Fixed null crash in PLANTILLAS — evolves the database schema to support new r... — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Optimized GOTCHA — confirmed 3x
 
 ## Known Fixes
 
@@ -52,10 +52,10 @@
 
 ## Recent Decisions
 
+- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Project — evolves the database schema to support new requirements
-- Optimized None — ensures atomic multi-step database operations
 
 ## Learned Patterns
 
