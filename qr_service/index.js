@@ -38,6 +38,7 @@ async function connectToWhatsApp() {
         logger: pino({ level: "silent" }),
         browser: Browsers.macOS('Desktop'),
         markOnlineOnConnect: true,
+        emitOwnReceipts: true,
         generateHighQualityLinkPreview: true,
         msgRetryCounterCache, // CRÍTICO para reintentos automáticos
         retryRequestDelayMs: 2000 // Darle tiempo al Signal channel
