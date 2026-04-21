@@ -1375,7 +1375,13 @@ async def get_media_endpoint(media_id: str, request: Request):
     
     data = None
     mime = None
-    if media_id in media_cache:
+
+    # ── ROUTER QR: media recibida por Baileys (id empieza con "qr_") ──────────
+    if media_id.startswith("qr_"):                                  # ← ROUTER QR
+        from qr_client import obtener_media_qr                      # ← ROUTER QR
+        data, mime = obtener_media_qr(media_id)                     # ← ROUTER QR
+    # ── META CLOUD API: descarga normal desde Graph API ───────────────────────
+    elif media_id in media_cache:
         data, mime = media_cache[media_id]
     else:
         try:

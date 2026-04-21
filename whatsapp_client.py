@@ -1,5 +1,9 @@
 # ============================================================
-#  whatsapp_client.py — Envía mensajes a WhatsApp via Meta API
+#  whatsapp_client.py — Envía mensajes a WhatsApp via Meta Cloud API
+# ============================================================
+#  ⚠️  IMPORTANTE: Este módulo es EXCLUSIVAMENTE para Meta Cloud API.
+#  Para líneas QR/Baileys, usar qr_client.py.
+#  El único punto donde se toca QR aquí es el ROUTER (if line_id.startswith).
 # ============================================================
 import httpx
 from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
@@ -42,29 +46,12 @@ def _get_meta_credentials(line_id: str) -> tuple[str, str, str]:
 
 def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, line_id: str = "principal") -> bool:
     """
-    Envía un mensaje de texto al número de WhatsApp indicado, ruteando
-    por el servicio correspondiente según la línea (Meta Oficial o QR Node.js).
+    Envía un mensaje de texto. Ruteador: QR → qr_client | Meta → Graph API.
     """
     line_id = _get_line_id(numero_destino, line_id)
-    if line_id.startswith("qr_"):
-        # Ruteo al microservicio Node.js (Fase 2)
-        import urllib.request
-        import urllib.error
-        import json
-        proxy_handler = urllib.request.ProxyHandler({})
-        opener = urllib.request.build_opener(proxy_handler)
-        req = urllib.request.Request("http://localhost:3000/api/qr/send", 
-                                  data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
-                                  headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
-        try:
-            with opener.open(req, timeout=5.0) as res:
-                if res.status == 200:
-                    print(f"[OK] Mensaje (vía QR) enrutado localmente a {numero_destino}")
-                    return True
-                return False
-        except Exception as e:
-            print("ERROR enviando via QR local:", e)
-            return False
+    if line_id.startswith("qr_"):                                   # ← ROUTER QR
+        from qr_client import enviar_mensaje_qr                     # ← ROUTER QR
+        return enviar_mensaje_qr(numero_destino, texto, reply_to_wamid, line_id)
 
     meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
 
@@ -98,15 +85,13 @@ def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, 
 
 def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, reply_to_wamid: str = None, caption: str = None, line_id: str = "principal") -> bool:
     """
-    Envía media (sticker, imagen, video, documento) a un número.
+    Envía media. Ruteador: QR → qr_client | Meta → Graph API.
     tipo_media: 'sticker', 'image', 'video', 'audio', 'document'
     """
     line_id = _get_line_id(numero_destino, line_id)
-    if line_id.startswith("qr_"):
-        # TODO: Implementar envío de Media en Node.js, por ahora fallback silencioso o texto
-        print(f"[WARN] Envío de media ({tipo_media}) por línea QR aún no implementado en microservicio.")
-        # Fallback a texto temporal
-        return enviar_mensaje(numero_destino, f"[Archivo adjunto no soportado aún por esta línea: {tipo_media}]", None, line_id)
+    if line_id.startswith("qr_"):                                   # ← ROUTER QR
+        from qr_client import enviar_media_qr                       # ← ROUTER QR
+        return enviar_media_qr(numero_destino, tipo_media, media_id_o_url, reply_to_wamid, caption, line_id)
 
     meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
 
@@ -151,29 +136,12 @@ def enviar_media(numero_destino: str, tipo_media: str, media_id_o_url: str, repl
 
 async def enviar_mensaje_texto(numero_destino: str, texto: str, line_id: str = "principal") -> bool:
     """
-    Versión async de enviar_mensaje para usar desde endpoints FastAPI.
-    Usa httpx.AsyncClient para no bloquear el event loop.
+    Versión async de enviar_mensaje. Ruteador: QR → qr_client | Meta → Graph API.
     """
     line_id = _get_line_id(numero_destino, line_id)
-    if line_id.startswith("qr_"):
-        # Ruteo asíncrono al microservicio Node.js
-        import urllib.request
-        import urllib.error
-        import json
-        proxy_handler = urllib.request.ProxyHandler({})
-        opener = urllib.request.build_opener(proxy_handler)
-        req = urllib.request.Request("http://localhost:3000/api/qr/send", 
-                                  data=json.dumps({"to": numero_destino, "text": texto}).encode('utf-8'),
-                                  headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'})
-        try:
-            with opener.open(req, timeout=5.0) as res:
-                if res.status == 200:
-                    print(f"[OK] Mensaje (vía QR async) enrutado localmente a {numero_destino}")
-                    return True
-                return False
-        except Exception as e:
-            print("ERROR enviando via QR local asincrono:", e)
-            return False
+    if line_id.startswith("qr_"):                                   # ← ROUTER QR
+        from qr_client import enviar_mensaje_qr_async               # ← ROUTER QR
+        return await enviar_mensaje_qr_async(numero_destino, texto, None, line_id)
 
     meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
 
@@ -249,11 +217,11 @@ async def subir_media(file_bytes: bytes, mime_type: str, filename: str = "upload
         return f"ERROR_META:{str(e)}"
 
 async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str, line_id: str = "principal") -> bool:
-    """Envía una reacción a un mensaje específico."""
+    """Envía una reacción. Ruteador: QR → qr_client | Meta → Graph API."""
     line_id = _get_line_id(numero_destino, line_id)
-    if line_id.startswith("qr_"):
-        # TODO: Implementar en Node.js, por ahora silent ignore para no romper UX
-        return True
+    if line_id.startswith("qr_"):                                   # ← ROUTER QR
+        from qr_client import enviar_reaccion_qr                    # ← ROUTER QR
+        return await enviar_reaccion_qr(numero_destino, message_id, emoji, line_id)
     meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
 
     headers = {
@@ -284,13 +252,13 @@ async def enviar_reaccion_async(numero_destino: str, message_id: str, emoji: str
 
 
 async def enviar_plantilla(numero_destino: str, template_name: str, language_code: str = "es", components: list = None, line_id: str = "principal") -> str | None:
-    """Envía un Message Template preaprobado por Meta, soportando variables dinámicas."""
+    """Envía un Message Template preaprobado por Meta. QR no soporta plantillas."""
     line_id = _get_line_id(numero_destino, line_id)
-    if line_id.startswith("qr_"):
-        # QR Web Scraping no soporta plantillas oficiales de Meta. 
-        # Fallback de texto plano para evitar caidas.
-        res_txt = f"[Plantilla '{template_name}' solicitada, pero este canal utiliza número temporal no oficial Meta.]"
-        return await enviar_mensaje_texto(numero_destino, res_txt, line_id)
+    if line_id.startswith("qr_"):                                   # ← ROUTER QR
+        # Las plantillas de Meta no aplican a líneas QR — texto de aviso
+        txt = f"[Plantilla '{template_name}' solicitada — no compatible con canal QR.]"
+        from qr_client import enviar_mensaje_qr_async               # ← ROUTER QR
+        return await enviar_mensaje_qr_async(numero_destino, txt, None, line_id)
 
     meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
 

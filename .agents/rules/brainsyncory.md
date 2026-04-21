@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5182 notes | Score threshold: >40
+> 5194 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,14 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5188 notes | Score threshold: >40
++ > 5191 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5187 notes | Score threshold: >40
++ > 5188 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5175 notes | Score threshold: >40
++ > 5182 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
 + - ⚠️ GOTCHA: Added JWT tokens auth
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5158 notes | Score threshold: >40
@@ -31,28 +37,17 @@
 - }
 +       "id": "c038486d142b9d7d",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5153 notes | Score threshold: >40
-+ > 5158 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "37c9cf6fb853c675",
-+
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5112 notes | Score threshold: >40
-+ > 5116 notes | Score threshold
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 5x
 - problem-fix in agent-rules.md — confirmed 4x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
 - problem-fix in agent-rules.md — confirmed 6x
-- Fixed null crash in Removed — prevents null/undefined runtime crashes — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
 
 ## Known Fixes
 
