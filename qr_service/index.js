@@ -370,14 +370,25 @@ async function connectToWhatsApp() {
         for (let ev of events) {
             if (!ev.key.fromMe) continue;
             
-            const real_jid = resolveRealJid(ev.key, null);
-            if (!real_jid) continue;
-            const wa_id = real_jid.split('@')[0].split(':')[0];
-            
             let metaStatus = '';
             // Si hay timestamp de lectura, es leído. Si solo hay de recepción, es entregado.
             if (ev.receipt?.readTimestamp) metaStatus = 'read';
             else if (ev.receipt?.receiptTimestamp) metaStatus = 'delivered';
+            
+            if (!metaStatus) continue;
+            
+            // CRÍTICO: Resolver el número real desde el mapa msgId->phone (mismo fix que messages.update)
+            // porque Baileys puede usar el LID (152286...) en lugar del número de teléfono real
+            let wa_id = sentMsgPhoneMap.get(ev.key.id);
+            if (!wa_id) {
+                const real_jid = resolveRealJid(ev.key, ev);
+                if (real_jid) wa_id = real_jid.split('@')[0].split(':')[0];
+            }
+            if (!wa_id) {
+                console.log(`[RECEIPT WARN] No se pudo resolver wa_id para msg_id=${ev.key.id}`);
+                continue;
+            }
+            console.log(`[RECEIPT] ${metaStatus} para ${ev.key.id} -> resuelto a ${wa_id}`);
             
             if (metaStatus) {
                 const metaPayload = {
