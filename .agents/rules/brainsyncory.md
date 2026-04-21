@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5360 notes | Score threshold: >40
+> 5364 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,7 +18,7 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
 - **⚠️ GOTCHA: Fixed null crash in TICO — prevents null/undefined runtime crashes** — -         generateHighQualityLinkPreview: true,
 +         emitOwnRecei
@@ -37,14 +37,14 @@
 
 ## Project Standards
 
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 4x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 
 ## Known Fixes
 
@@ -56,10 +56,10 @@
 
 ## Recent Decisions
 
+- Optimized Score — evolves the database schema to support new requirements
 - decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
-- Optimized Project — evolves the database schema to support new requirements
 
 ## Learned Patterns
 

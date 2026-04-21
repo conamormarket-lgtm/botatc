@@ -484,17 +484,24 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
 
         # Manejar estados de entrega (palomitas)
         if "statuses" in changes:
+            meta_line = changes.get("metadata", {}).get("display_phone_number", "principal")
             for st in changes["statuses"]:
                 msg_wamid = st.get("id")
                 status_val = st.get("status")
                 num_wa = st.get("recipient_id")
                 
+                # CORRECCIÓN: Si es una línea QR, la clave de sesión en Firebase y en memoria es 'qr_ventas_1_519...'
+                if meta_line.startswith("qr_") and f"{meta_line}_{num_wa}" in sesiones:
+                    num_wa_key = f"{meta_line}_{num_wa}"
+                else:
+                    num_wa_key = num_wa
+
                 with open("webhook.log", "a", encoding="utf-8") as f:
-                    f.write(f"\\n--- WEBHOOK STATUS ---\\nID: {msg_wamid}\\nStatus: {status_val}\\nRecipient: {num_wa}\\n")
+                    f.write(f"\\n--- WEBHOOK STATUS ---\\nID: {msg_wamid}\\nStatus: {status_val}\\nRecipient: {num_wa_key}\\n")
                     
-                print(f"[WEBHOOK] Recibido status: {status_val} para WAMID: {msg_wamid} de {num_wa}")
-                if num_wa and num_wa in sesiones:
-                    se = sesiones[num_wa]
+                print(f"[WEBHOOK] Recibido status: {status_val} para WAMID: {msg_wamid} de {num_wa_key}")
+                if num_wa_key and num_wa_key in sesiones:
+                    se = sesiones[num_wa_key]
                     found = False
                     for it in reversed(se.get("historial", [])):
                         if it.get("msg_id") == msg_wamid:
