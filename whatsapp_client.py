@@ -189,7 +189,7 @@ async def obtener_media_url(media_id: str) -> str | None:
 
 async def descargar_media(media_url: str) -> tuple[bytes | None, str | None]:
     """Descarga el binario de la foto o sticker y su tipo MIME usando el token de Meta o sin token si es local."""
-    headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"} if "graph.facebook.com" in media_url or "whatsapp.net" in media_url else {}
+    headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
     try:
         async with httpx.AsyncClient() as client:
             res = await client.get(media_url, headers=headers, timeout=15)
