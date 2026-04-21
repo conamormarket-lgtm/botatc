@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5315 notes | Score threshold: >40
+> 5332 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,10 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5315 notes | Score threshold: >40
++ > 5319 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5306 notes | Score threshold: >40
++ > 5315 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Kevin
 + - problem-fix in server.py
 - - Fixe
@@ -29,20 +33,17 @@
 + > 5303 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5294 notes | Score threshold: >40
 + > 5298 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5282 notes | Score threshold: >40
-+ > 5294 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Sube — reduces excessive function call frequen
 
 ## Project Standards
 
 - Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 5x
+- Added JWT tokens authentication — confirmed 3x
 - Strengthened types Fallo
-- Added JWT tokens authentication — confirmed 4x
-- trade-off in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- problem-fix in agent-rules.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- Added JWT tokens authentication — confirmed 4x
 
 ## Known Fixes
 

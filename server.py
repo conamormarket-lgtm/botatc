@@ -2172,6 +2172,14 @@ async def enviar_manual_endpoint(request: Request):
 
     async def process_and_send():
         from whatsapp_client import enviar_media, enviar_mensaje, subir_media
+        import asyncio
+        loop = asyncio.get_event_loop()
+        
+        async def call_enviar_media(*args, **kwargs):
+            return await loop.run_in_executor(None, lambda: enviar_media(*args, **kwargs))
+            
+        async def call_enviar_mensaje(*args, **kwargs):
+            return await loop.run_in_executor(None, lambda: enviar_mensaje(*args, **kwargs))
         partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
         last_wamid = None
         exito_alguna_parte = False
@@ -2190,23 +2198,23 @@ async def enviar_manual_endpoint(request: Request):
             w_id_current = None
             import urllib.parse
             if match_sticker: 
-                w_id_current = enviar_media(numero_envio, "sticker", match_sticker.group(1), reply_to_wamid, line_id=line_id)
+                w_id_current = await call_enviar_media(numero_envio, "sticker", match_sticker.group(1), reply_to_wamid, line_id=line_id)
             elif match_img:
                 cap = urllib.parse.unquote(match_img.group(2)) if match_img.group(2) else None
-                w_id_current = enviar_media(numero_envio, "image", match_img.group(1), reply_to_wamid, caption=cap, line_id=line_id)
+                w_id_current = await call_enviar_media(numero_envio, "image", match_img.group(1), reply_to_wamid, caption=cap, line_id=line_id)
             elif match_video:
                 cap = urllib.parse.unquote(match_video.group(2)) if match_video.group(2) else None
-                w_id_current = enviar_media(numero_envio, "video", match_video.group(1), reply_to_wamid, caption=cap, line_id=line_id)
+                w_id_current = await call_enviar_media(numero_envio, "video", match_video.group(1), reply_to_wamid, caption=cap, line_id=line_id)
             elif match_doc:
                 cap = urllib.parse.unquote(match_doc.group(2)) if match_doc.group(2) else None
-                w_id_current = enviar_media(numero_envio, "document", match_doc.group(1), reply_to_wamid, caption=cap, line_id=line_id)
+                w_id_current = await call_enviar_media(numero_envio, "document", match_doc.group(1), reply_to_wamid, caption=cap, line_id=line_id)
             elif match_audio:
-                w_id_current = enviar_media(numero_envio, "audio", match_audio.group(1), reply_to_wamid, line_id=line_id)
+                w_id_current = await call_enviar_media(numero_envio, "audio", match_audio.group(1), reply_to_wamid, line_id=line_id)
             elif match_sticker_local:
                 filename = match_sticker_local.group(1)
                 if line_id.startswith("qr_"):
                     # Evitar la subida a Meta si es línea QR, enviar filename puro para resolución local en qr_client
-                    w_id_current = enviar_media(numero_envio, "sticker", filename, reply_to_wamid, line_id=line_id)
+                    w_id_current = await call_enviar_media(numero_envio, "sticker", filename, reply_to_wamid, line_id=line_id)
                 else:
                     from firebase_client import obtener_sticker_de_bd
                     file_bytes = obtener_sticker_de_bd(filename)
@@ -2215,9 +2223,9 @@ async def enviar_manual_endpoint(request: Request):
                         w_id_meta = await subir_media(file_bytes, mime, filename)
                         if w_id_meta:
                             tipo = "sticker" if mime == "image/webp" else "image"
-                            w_id_current = enviar_media(numero_envio, tipo, w_id_meta, reply_to_wamid, line_id=line_id)
+                            w_id_current = await call_enviar_media(numero_envio, tipo, w_id_meta, reply_to_wamid, line_id=line_id)
             else: 
-                w_id_current = enviar_mensaje(numero_envio, p, reply_to_wamid, line_id=line_id)
+                w_id_current = await call_enviar_mensaje(numero_envio, p, reply_to_wamid, line_id=line_id)
             
             if w_id_current:
                 last_wamid = w_id_current
