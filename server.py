@@ -176,6 +176,51 @@ if os.path.exists("static"):
 
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
+def get_auto_reactivate_minutes(bot_id: str) -> int:
+    """Devuelve los minutos de inactividad configurados para auto-reactivar el bot. 0 = desactivado."""
+    try:
+        from bot_manager import load_bots_config
+        cfg = load_bots_config()
+        return int(cfg.get("bots", {}).get(bot_id, {}).get("auto_reactivate_minutes", 0) or 0)
+    except:
+        return 0
+
+async def loop_auto_reactivar_bots():
+    """Tarea periódica: revisa sesiones cada 60s y reactiva bots si el timeout de inactividad se cumplió."""
+    import asyncio
+    while True:
+        await asyncio.sleep(60)
+        try:
+            ahora = datetime.utcnow()
+            from bot_manager import get_bot_for_line
+            for session_key, ses in list(sesiones.items()):
+                # Solo sesiones con bot pausado y con mensajes pendientes del cliente
+                if ses.get("bot_activo", True):
+                    continue
+                primer_ts = ses.get("primer_msg_sin_respuesta")
+                if not primer_ts:
+                    continue
+                line_id = ses.get("lineId", "principal")
+                bot_id  = get_bot_for_line(line_id)
+                if not bot_id:
+                    continue
+                minutos = get_auto_reactivate_minutes(bot_id)
+                if minutos <= 0:
+                    continue
+                elapsed = (ahora - primer_ts).total_seconds() / 60
+                if elapsed >= minutos:
+                    ses["bot_activo"] = True
+                    ses["primer_msg_sin_respuesta"] = None
+                    ses["escalado_en"] = None
+                    ses["motivo_escalacion"] = None
+                    print(f"[🔄 AUTO-REACTIVAR] Bot reactivado para {session_key} tras {elapsed:.0f} min de inactividad")
+                    try:
+                        from firebase_client import guardar_sesion_chat
+                        guardar_sesion_chat(session_key, ses)
+                    except: pass
+        except Exception as e:
+            print(f"[AUTO-REACTIVAR] Error en loop: {e}")
+
 @app.on_event("startup")
 def startup_event():
     # ── Restaurar toda la memoria y stickers desde Firebase ──
@@ -205,6 +250,10 @@ def startup_event():
         t = threading.Thread(target=iniciar_observador_pedidos, daemon=True)
         t.start()
     except: pass
+
+    # Lanzar la tarea periódica de auto-reactivación de bots
+    import asyncio
+    asyncio.get_event_loop().create_task(loop_auto_reactivar_bots())
 
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"
@@ -858,6 +907,9 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
     if not sesion.get("bot_activo", True):
         sesion["ultima_actividad"] = datetime.utcnow()
+        # Registrar el momento del PRIMER mensaje sin respuesta (para auto-reactivación)
+        if not sesion.get("primer_msg_sin_respuesta"):
+            sesion["primer_msg_sin_respuesta"] = datetime.utcnow()
         print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
         except: pass
@@ -2339,6 +2391,7 @@ async def enviar_manual_endpoint(request: Request):
         sent_by_name = (usuario_sesion.get("nombre") or usuario_sesion.get("username", "Agente")) if usuario_sesion else "Agente"
         s["historial"].append({"role": "assistant", "content": texto, "msg_id": msg_wamid, "status": "sent", "timestamp": ts, "sent_by": sent_by_name, "quick_reply_title": quick_reply_title})
         s["ultima_actividad"] = datetime.utcnow()
+        s["primer_msg_sin_respuesta"] = None  # Asesor respondió → limpiar timer de auto-reactivación
         print(f"  [[OK] Humano -> {numero_envio} ({line_id})]: {texto}")
         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(wa_id, s)
         except: pass

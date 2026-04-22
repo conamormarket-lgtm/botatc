@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5589 notes | Score threshold: >40
+> 5647 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,38 +20,33 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "a738f83453aa3b2e",
-+
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5581 notes | Score threshold: >40
-+ > 5586 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Added JW
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5579 notes | Score threshold: >40
-+ > 5581 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5577 notes | Score threshold: >40
-+ > 5579 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5573 notes | Score threshold: >40
-+ > 5577 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5632 notes | Score threshold: >40
++ > 5639 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - Patched security issue Kevi
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5626 notes | Score threshold: >40
++ > 5628 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5615 notes | Score threshold: >40
++ > 5626 notes | Score threshold
+- **⚠️ GOTCHA: Patched security issue Devuelve — protects against XSS and CSRF token theft** — - @app.on_event("startup")
++ def get_auto_reactivate_minutes(bot_id: 
+- **⚠️ GOTCHA: Patched security issue Lanzar — protects against XSS and CSRF token theft** — - # Sesiones en memoria: {numero_wa: SesionDict}
++     # Lanzar la ta
 
 ## Project Standards
 
+- Replaced auth Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
+- Optimized Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- discovery in shared-context.json — confirmed 3x
+- Optimized GOTCHA — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 7x
-- problem-fix in shared-context.json — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 3x
-- what-changed in settings.html — confirmed 4x
+- what-changed in shared-context.json — confirmed 5x
+- Added JWT tokens authentication — confirmed 5x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue False — protects against XSS and CSRF token theft
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Nivel — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
