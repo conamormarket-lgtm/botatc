@@ -767,19 +767,15 @@ async def procesador_agregado(numero_wa: str, nombre: str):
         
         # Ejecutar el proceso pesado sincrónico en un hilo separado
         await anyio.to_thread.run_sync(
-            procesar_mensaje_interno, numero_wa, nombre, texto_unido, False, last_id, numero_wa  # numero_wa aqui ES el session_key
+            procesar_mensaje_interno, numero_wa, nombre, texto_unido, False, last_id
         )
 
 
-def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None, session_key: str = None) -> str | None:
+def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None) -> str | None:
     """Procesa un mensaje y devuelve la respuesta del bot (si la hay) sin enviarla si es simulación."""
-    
-    # Usar session_key si fue pasado (para chats QR o multilínea con clave compuesta)
-    # Si no, usar numero_wa como clave (comportamiento API clásico)
-    _skey = session_key or numero_wa
 
     # ── Obtener/crear sesión ──────────────────────────────
-    sesion = obtener_o_crear_sesion(_skey)
+    sesion = obtener_o_crear_sesion(numero_wa)
     sesion["ultima_actividad"] = datetime.utcnow()
     sesion["nombre_cliente"]   = nombre
 
@@ -792,7 +788,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
             
             try: 
                 from firebase_client import guardar_sesion_chat
-                guardar_sesion_chat(_skey, sesion)
+                guardar_sesion_chat(numero_wa, sesion)
             except Exception as e:
                 pass
 
@@ -808,7 +804,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     if not sesion.get("bot_activo", True):
         sesion["ultima_actividad"] = datetime.utcnow()
         print(f"  [👤 Bot pausado → mensaje guardado en historial, humano atiende]")
-        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(_skey, sesion)
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
         except: pass
         return None
 
@@ -944,7 +940,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         if not is_simulacion:
             enviar_mensaje(numero_wa, msg)
             
-        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(_skey, sesion)
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
         except: pass
         
         return msg
@@ -993,7 +989,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     sesion["historial"].append({"role": "assistant", "content": respuesta_final, "msg_id": wamid_out, "status": "sent", "timestamp": ts, "sent_by": "IA Bot"})
 
     
-    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(_skey, sesion)
+    try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
     except: pass
     
     return respuesta_final

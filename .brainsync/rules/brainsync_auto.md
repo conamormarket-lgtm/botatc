@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5418 notes | Score threshold: >40
+> 5421 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -34,6 +34,7 @@
 
 ## Project Standards
 
+- what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - what-changed in shared-context.json — confirmed 3x
@@ -41,7 +42,6 @@
 - Optimized Score — evolves the database schema to support new requirements — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 7x
-- problem-fix in agent-rules.md — confirmed 3x
 
 ## Known Fixes
 
