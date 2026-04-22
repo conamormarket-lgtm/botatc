@@ -1758,6 +1758,31 @@ async def panel_admin(request: Request):
 
 
 
+@app.get("/api/admin/debug_sessions")
+async def debug_sessions(request: Request):
+    """TEMPORAL: Muestra los lineId en memoria para diagnosticar el filtro."""
+    if not verificar_sesion(request):
+        return JSONResponse({"ok": False, "error": "No autorizado"}, status_code=401)
+    resultado = []
+    for wa_id, s in list(sesiones.items())[:50]:  # máx 50 para no saturar
+        s_line = s.get("lineId", "") or ""
+        if s_line and str(s_line).isdigit():
+            s_line = "principal (normalizado)"
+        if not s_line:
+            parts = wa_id.rsplit("_", 1)
+            if len(parts) == 2 and parts[1].isdigit() and len(parts[1]) >= 8:
+                s_line = f"{parts[0]} (inferido)"
+            else:
+                s_line = "principal (default)"
+        resultado.append({
+            "session_key": wa_id,
+            "lineId_stored": s.get("lineId", "⚠️ VACÍO"),
+            "lineId_effective": s_line,
+            "unread": s.get("unread_count", 0),
+            "bot_activo": s.get("bot_activo", False)
+        })
+    return JSONResponse({"total": len(sesiones), "muestra": resultado})
+
 @app.get("/api/admin/stats")
 async def get_admin_stats(request: Request, line_id: str = "all"):
     """Devuelve las estadísticas de chats según la línea solicitada."""

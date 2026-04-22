@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5647 notes | Score threshold: >40
+> 5661 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,9 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Borrar — wraps unsafe operation in error bound
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5632 notes | Score threshold: >40
 + > 5639 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
@@ -30,11 +31,10 @@
 + > 5626 notes | Score threshold
 - **⚠️ GOTCHA: Patched security issue Devuelve — protects against XSS and CSRF token theft** — - @app.on_event("startup")
 + def get_auto_reactivate_minutes(bot_id: 
-- **⚠️ GOTCHA: Patched security issue Lanzar — protects against XSS and CSRF token theft** — - # Sesiones en memoria: {numero_wa: SesionDict}
-+     # Lanzar la ta
 
 ## Project Standards
 
+- Replaced auth Score — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - Optimized Score — confirmed 3x
@@ -42,7 +42,6 @@
 - Optimized GOTCHA — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - what-changed in shared-context.json — confirmed 5x
-- Added JWT tokens authentication — confirmed 5x
 
 ## Known Fixes
 
