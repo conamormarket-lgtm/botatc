@@ -784,7 +784,9 @@
                 });
                 if(res.ok) {
                     if (action === 'unread' && ctxChatNum === curWaId) {
-                        window.location.href = '/inbox';
+                        // Preservar el filtro de línea al volver al inbox
+                        const lineParam = new URLSearchParams(window.location.search).get('line') || sessionStorage.getItem('inboxLineFilter') || 'all';
+                        window.location.href = '/inbox?line=' + lineParam;
                     } else {
                         window.location.reload();
                     }
@@ -2032,7 +2034,10 @@
             val = val.replace(/\D/g, ''); // purgar caracteres no numéricos
             if (val.length < 9) return alert("Número muy corto");
             if (!val.startsWith("51")) val = "51" + val;
-            window.location.href = `/inbox/${val}`;
+            // Guardar el filtro de línea antes de navegar al chat
+            const currentLine = new URLSearchParams(window.location.search).get('line') || sessionStorage.getItem('inboxLineFilter') || 'all';
+            sessionStorage.setItem('inboxLineFilter', currentLine);
+            window.location.href = `/inbox/${val}?line=${currentLine}`;
         }
 
         // EMOJI PICKER HOOK - Global event delegation

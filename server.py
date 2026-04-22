@@ -2817,12 +2817,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             {active_label_name}
         </button>
         
-        <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={'false' if is_unread else 'true'}" style="background:{unread_btn_bg}; border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:{unread_btn_text}; font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; text-decoration:none;">
+        <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={'false' if is_unread else 'true'}&line={line_filter}" style="background:{unread_btn_bg}; border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:{unread_btn_text}; font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; text-decoration:none;">
             No leídos
         </a>
         
         <div id="inboxFilterMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
-            <a href="{base_url}?tab={tab}&unread={unread or ''}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
+            <a href="{base_url}?tab={tab}&unread={unread or ''}&line={line_filter}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
     """
     
     for l in global_labels:
@@ -2832,7 +2832,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         is_active = (label_filter == lid)
         bg = f"{lcolor}33" if is_active else "transparent"
         labels_filter_html += f"""
-            <a href="{base_url}?tab={tab}&label={lid}&unread={unread or ''}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{bg};">
+            <a href="{base_url}?tab={tab}&label={lid}&unread={unread or ''}&line={line_filter}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{bg};">
                 <span style="width:12px; height:12px; border-radius:50%; background:{lcolor};"></span> {lnombre}
             </a>
         """
@@ -3504,7 +3504,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 {status_bar}
                 {pinned_html}
             <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
-                    <a href="/inbox?tab={tab}" class="btn-responsive-back" title="Volver a la lista">
+                    <a href="/inbox?tab={tab}&line={line_filter}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
                     <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
