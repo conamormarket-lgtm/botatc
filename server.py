@@ -1693,26 +1693,71 @@ async def panel_admin(request: Request):
     with open("admin.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    ahora       = datetime.utcnow()
-    total       = len(sesiones)
-    escalados   = [(n, s) for n, s in sesiones.items() if not s["bot_activo"] and s.get("escalado_en")]
-    escalados.sort(key=lambda x: x[1]["escalado_en"], reverse=True)
-    n_escalados = len(escalados)
-    n_activos   = sum(1 for s in sesiones.values() if s["bot_activo"])
-
-    # removed ──────────────────────────
-
     # Reemplazos
     html = html.replace("{pwd}", "")
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
     html = html.replace("{class_btn_toggle}", "danger" if BOT_GLOBAL_ACTIVO else "")
     html = html.replace("{txt_btn_toggle}", "Apagar IA Global" if BOT_GLOBAL_ACTIVO else "Activar IA Global")
-    html = html.replace("{total_sesiones}", str(total))
-    html = html.replace("{bots_activos}", str(n_activos))
-    html = html.replace("{humanos_requeridos}", str(n_escalados))
-    # replaced
     
     return HTMLResponse(inyectar_tema_global(request, html))
+
+
+@app.get("/api/admin/lines")
+async def get_admin_lines(request: Request):
+    """Devuelve las líneas disponibles desde line_aliases.json."""
+    if not verificar_sesion(request):
+        return JSONResponse({"ok": False, "error": "No autorizado"}, status_code=401)
+    
+    lines = []
+    try:
+        import os, json
+        if os.path.exists("line_aliases.json"):
+            with open("line_aliases.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for k, v in data.items():
+                    lines.append({"id": k, "name": v.get("name", k), "icon": v.get("icon", "📱")})
+    except Exception as e:
+        pass
+    
+    return JSONResponse({"ok": True, "lines": lines})
+
+
+@app.get("/api/admin/stats")
+async def get_admin_stats(request: Request, line_id: str = "all"):
+    """Devuelve las estadísticas de chats según la línea solicitada."""
+    if not verificar_sesion(request):
+        return JSONResponse({"ok": False, "error": "No autorizado"}, status_code=401)
+        
+    respondidos = 0
+    por_responder = 0
+    pendientes_bot = 0
+    pendientes_asesor = 0
+    
+    for wa_id, s in sesiones.items():
+        s_line = s.get("lineId", "principal")
+        if line_id != "all" and s_line != line_id:
+            continue
+            
+        unread = s.get("unread_count", 0)
+        
+        if unread == 0:
+            respondidos += 1
+        else:
+            por_responder += 1
+            if s.get("bot_activo", False):
+                pendientes_bot += 1
+            else:
+                pendientes_asesor += 1
+                
+    return JSONResponse({
+        "ok": True,
+        "stats": {
+            "respondidos": respondidos,
+            "por_responder": por_responder,
+            "pendientes_bot": pendientes_bot,
+            "pendientes_asesor": pendientes_asesor
+        }
+    })
 
 
 @app.post("/admin/reactivar/{numero_wa}")

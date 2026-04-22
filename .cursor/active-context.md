@@ -2,279 +2,221 @@
 > Dynamically loaded for active file: `document_loader.py` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
-- **⚠️ GOTCHA: Patched security issue Buscar — protects against XSS and CSRF token theft**: -     if not ses["historial"] or ses["historial"][-1].get("msg_id") != mensaje_id:
-+     
--         import time
-+     # Buscar si el mensaje ya existe (ej: placeholder CIPHERTEXT que luego se descifra)
--         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
-+     msg_existente = next((m for m in reversed(ses["historial"][-20:]) if m.get("msg_id") == mensaje_id), None)
--         cur_unread = ses.get("unread_count", 0)
-+     
--         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
-+     import time
--         try: 
-+     if msg_existente:
--             from firebase_client import guardar_sesion_chat
-+         # Si ya existe con este ID, actualizamos el contenido con el texto real
--             guardar_sesion_chat(session_key, ses)
-+         msg_existente["content"] = texto_cliente
--         except: 
-+     else:
--             pass
-+         ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
--     # -----------------------------------------------------------------------------------------
-+         cur_unread = ses.get("unread_count", 0)
+- **⚠️ GOTCHA: Fixed null crash in Prevenir — reduces excessive function call frequency**: -             try {
++             if (window.isSending) return;
+-                 // Prevenir caché del navegador
++             try {
+-                 const url = window.location.href;
++                 // Prevenir caché del navegador
+-                 let fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
++                 const url = window.location.href;
+-                 // Si se cargó el historial completo (búsqueda de mensaje antiguo), mantenerlo en el polling
++                 let fetchUrl = url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime() + '&ajax=1';
+-                 if (window._viewingAllHistory) fetchUrl += '&history=all';
++                 // Si se cargó el historial completo (búsqueda de mensaje antiguo), mantenerlo en el polling
 - 
-+         ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
--     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
-+         
--     if session_key not in mensajes_pendientes:
-+     try: 
--         mensajes_pendientes[session_key] = [dict_msg]
-+         from firebase_client import guardar_sesion_chat
--         background_tasks.add_task(procesador_agregado, session_key, nombre)
-+         guardar_sesion_chat(session_key, ses)
--     else:
-+     except: 
--         mensajes_pendientes[session_key].append(dict_msg)
-+         pass
-- 
-+     # -----------------------------------------------------------------------------------------
--     return {"status": "ok"}
++                 if (window._viewingAllHistory) fetchUrl += '&history=all';
+-                 const res = await fetch(fetchUrl, {
 + 
+-                     cache: 'no-store',
++                 const res = await fetch(fetchUrl, {
+-                     headers: { 'Cache-Control': 'no-cache' }
++                     cache: 'no-store',
+-                 });
++                     headers: { 'Cache-Control': 'no-cache' }
 - 
-+     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
++                 });
+-                 const text = await res.text();
++ 
+-                 const doc = new DOMParser().parseFromString(text, 'text/html');
++                 const text = await res.text();
+- 
++                 const doc = new DOMParser().parseFromString(text, 'text/html');
+-                 // Actualizar Lista de Conversaciones
++ 
+-                 const newChats = doc.querySelector('.chats-container');
++                 // Actualizar Lista de Conversaciones
+-                 const oldChats = document.querySelector('.chats-container');
++                 const newChats = doc.querySelector('.chats-container');
+-                 if (newChats && oldChats && oldChats.innerHTML !== newChats.innerHTML) {
++
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Fixed null crash in Conjunto — parallelizes async operations for speed**: -     for num, s in todas:
-+     # Conjunto para deduplicar por (linea_normalizada, numero_real) — evita mostrar
--         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
-+     # sesiones corruptas con phone_number_id numérico de Meta junto a las correctas
--         activo = s.get("bot_activo", True)
-+     _shown_combos = set()
--         is_archived = s.get("is_archived", False)
-+ 
--         
-+     for num, s in todas:
--         # Filtro de Tab
-+         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
--         if tab == "archived":
-+         activo = s.get("bot_activo", True)
--             if not is_archived: continue
-+         is_archived = s.get("is_archived", False)
--         else:
+📌 IDE AST Context: Modified symbols likely include [html]
+- **⚠️ GOTCHA: Patched security issue None — parallelizes async operations for speed**: -         import asyncio
++         from starlette.concurrency import run_in_threadpool
+-         loop = asyncio.get_event_loop()
 +         
--             if is_archived: continue
-+         # Filtro de Tab
--             if tab == "human" and activo:
-+         if tab == "archived":
--                 continue
-+             if not is_archived: continue
+-         
++         async def call_enviar_media(*args, **kwargs):
+-         async def call_enviar_media(*args, **kwargs):
++             from functools import partial
+-             return await loop.run_in_executor(None, lambda: enviar_media(*args, **kwargs))
++             return await run_in_threadpool(partial(enviar_media, *args, **kwargs))
+-             return await loop.run_in_executor(None, lambda: enviar_mensaje(*args, **kwargs))
++             from functools import partial
+-         partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
++             return await run_in_threadpool(partial(enviar_mensaje, *args, **kwargs))
+-         last_wamid = None
++         partes = re.split(r'(\[(?:sticker|imagen|video|audio|sticker-local|documento):[^\]]+\])', texto)
+-         exito_alguna_parte = False
++         last_wamid = None
+-         
++         exito_alguna_parte = False
+-         for p in partes:
++         
+-             p = p.strip()
++         for p in partes:
+-             if not p: continue
++             p = p.strip()
 -             
-+         else:
--         session_tags = s.get("etiquetas", [])
-+             if is_archived: continue
--         if session_tags is None: session_tags = []
-+             if tab == "human" and activo:
--         
-+                 continue
--         # Filtro de Etiqueta (Label)
++             if not p: continue
+-             match_sticker = re.match(r"^\[sticker:([^\|\]]+)\]$", p)
 +             
--         if label_filter and label_filter not in session_tags:
-+         session_tags = s.get("etiquetas", [])
--             continue
-+         if session_tags is None: session_tags = []
--             
-+         
--         # Filtro de No leídos (Verifica si el último mensaje lo envió el usuario)
-+         # Filtro de Etiqueta (Label)
--         if is_unread:
-+         if label_filter and label_filter not in session_tags:
--             hist_sin_sys = [m for m in s.get("historial", []) if m["role"] != "system"]
-+             continue
--             if not hist_sin_sys or hist_sin_sys[-1]["role"] != "user":
-+             
--                 continue
-+         # Filtro de No l
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Patched security issue Para — protects against XSS and CSRF token theft**: -     Para la línea principal usamos solo el número (retrocompatible).
-+     - Para la línea principal usamos solo el número (retrocompatible).
--     Para otras líneas usamos '{line_id}_{numero_wa}' para aislar conversaciones
-+     - Para líneas QR (prefijo 'qr_') usamos '{line_id}_{numero_wa}'.
--     del mismo cliente en líneas distintas.
-+     - Los phone_number_id numéricos de Meta son la línea principal.
--     return f"{line_id}_{numero_wa}"
-+     # IDs numéricos son el phone_number_id real de Meta → línea principal
-- 
-+     if line_id.isdigit():
-- 
-+         return numero_wa
-- def obtener_o_crear_sesion(numero_wa: str, line_id: str = "principal") -> dict:
-+     # Solo las líneas con prefijo no-numérico (ej: qr_ventas_1) usan clave compuesta
--     """
-+     return f"{line_id}_{numero_wa}"
--     Retorna la sesión existente si está dentro del tiempo válido,
-+ 
--     la recupera de Firestore si el bot se reinició, o crea una nueva.
-+ 
--     Usa clave compuesta line_id+numero para separar conversaciones por línea.
-+ def obtener_o_crear_sesion(numero_wa: str, line_id: str = "principal") -> dict:
--     ahora = datetime.utcnow()
-+     Retorna la sesión existente si está dentro del tiempo válido,
--     session_key = get_session_key(numero_wa, line_id)
-+     la recupera de Firestore si el bot se reinició, o crea una nueva.
--     sesion = sesiones.get(session_key)
-+     Usa clave compuesta line_id+numero para separar conversaciones por línea.
-- 
-+     """
--     if not sesion:
-+     ahora = datetime.utcnow()
--         # 1. Intentar cargar desde Firebase si el servidor se reinició
-+     session_key = get_session_key(numero_wa, line_id)
--         try:
-+     sesion = sesiones.get(session_key)
--             from firebase_client import cargar_sesion_chat
-+ 
--             sesion_db = cargar_sesion_chat(session_key)
-+     if not sesion:
--             if sesion_db:
-+         # 1. Intentar cargar desde Firebase si el servidor se reinició
-- 
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Fixed null crash in True — parallelizes async operations for speed**: -         nombre_chat = s.get("nombre_cliente", wa_id)
-+         nombre_chat = s.get("nombre_cliente", s.get("numero_real", wa_id))
--         activo_chat = s.get("bot_activo", True)
-+         numero_chat_display = s.get("numero_real", wa_id)  # número real sin prefijo de línea
--         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
-+         activo_chat = s.get("bot_activo", True)
--         
-+         all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
--         load_all = request.query_params.get("history") == "all" or bool(request.query_params.get("msg_id"))
-+         
--         MAX_MENSAJES = 70
-+         load_all = request.query_params.get("history") == "all" or bool(request.query_params.get("msg_id"))
--         msgs = all_msgs if load_all else all_msgs[-MAX_MENSAJES:]
-+         MAX_MENSAJES = 70
--         
-+         msgs = all_msgs if load_all else all_msgs[-MAX_MENSAJES:]
--         import re
-+         
--         burbujas = ""
-+         import re
--         pinned_messages = []
-+         burbujas = ""
--         starred_messages = []
-+         pinned_messages = []
--         if len(all_msgs) > MAX_MENSAJES and not load_all:
-+         starred_messages = []
--             burbujas = f'<div style="text-align:center; opacity:0.8; margin: 1rem 0; font-size:0.8rem; background:var(--accent-bg); padding:0.6rem; border-radius:8px; border:1px solid var(--accent-border);">Mostrando últimos {MAX_MENSAJES} de {len(all_msgs)} mensajes.<br><button type="button" onclick="window.location.href = window.location.href + (window.location.href.includes(\'?\') ? \'&\' : \'?\') + \'history=all\';" style="background:var(--primary-color);color:white;border:none;padding:0.3rem 0.8rem;border-radius:6px;font-weight:600;cursor:pointer;margin-top:0.4rem;transition:background 0.2s;">📥 Cargar historial completo ([WARN] Más lento)</button></div>'
-+         if len(all_msgs) > MAX_MENSAJES and not load_all:
--         last_date
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **⚠️ GOTCHA: Fixed null crash in Para — parallelizes async operations for speed**: -         nombre   = s.get("nombre_cliente", num)
-+         # Para claves compuestas (line_id_numero), extraer el número real para mostrar
--         if not nombre: nombre = num
-+         numero_display = s.get("numero_real", num)
--         preview  = ultimo_msg(s)
-+         nombre   = s.get("nombre_cliente", numero_display)
--         time_str = tiempo_relativo(s["ultima_actividad"])
-+         if not nombre: nombre = numero_display
--         
-+         preview  = ultimo_msg(s)
--         is_vg = s.get("is_virtual_group", False)
-+         time_str = tiempo_relativo(s["ultima_actividad"])
--         if is_vg:
-+         
--             badge_html = '<span class="badge" style="background:rgba(168, 85, 247, 0.15); color:#a855f7; border: 1px solid rgba(168, 85, 247, 0.3);">👥 GRUPO VIRTUAL</span>'
-+         is_vg = s.get("is_virtual_group", False)
--         else:
-+         if is_vg:
--             badge_html = '<span class="badge">🟢 Bot Activo</span>'
-+             badge_html = '<span class="badge" style="background:rgba(168, 85, 247, 0.15); color:#a855f7; border: 1px solid rgba(168, 85, 247, 0.3);">👥 GRUPO VIRTUAL</span>'
--             if not activo:
-+         else:
--                 badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
-+             badge_html = '<span class="badge">🟢 Bot Activo</span>'
--             
-+             if not activo:
--         active_class = "active-row" if wa_id == num else ""
-+                 badge_html = '<span class="badge badge-alert">🔴 Esperando</span>'
--         tags_html = ""
-+         active_class = "active-row" if wa_id == num else ""
--         if session_tags:
-+             
--             tags_html = '<div style="display:flex; gap:0.3rem; margin-top:0.3rem; flex-wrap:wrap;">'
-+         tags_html = ""
--             for tid in session_tags:
-+         if session_tags:
--                 lbl = next((l for l in global_labels if l.get("id") == tid), None)
-+             tags_html = '<div 
+-             match_img = re.match(r"^\[imagen:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
++             match_sticker = re.match(r"^\[sticker:([^\|\]]+)\]$", p)
+-             match_video = re.match(r"^\[video:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
++             match_img = re.match(r"^\[imagen:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+-             match_audio = re.match(r"^\[audio:([^\|\]]+)\]$", p)
++             match_video = re.match(r"^\[video:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
+-             match_doc = re.match(r"^\[documento:([^\|\]]+)(?:\|caption:(.*?))?\]$", p)
++             match_audio = re.match
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] Replaced auth JSON**: - const axios = require("axios");
-+ const http = require("http");
-- axios.post("http://127.0.0.1:3000/api/qr/pair", { telefono: telefono })
-+ const data = JSON.stringify({ telefono: telefono });
--     .then(res => {
+- **[convention] Patched security issue False — protects against XSS and CSRF token theft — confirmed 3x**: -             procesar_mensaje_interno, numero_wa, nombre, texto_unido, False, last_id, numero_wa  # numero_wa aqui ES el session_key
++             procesar_mensaje_interno, numero_wa, nombre, texto_unido, False, last_id
+- def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None, session_key: str = None) -> str | None:
++ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None) -> str | None:
+-     
 + 
--         console.log(`
-+ const options = {
-- ===========[REDACTED]
-+     hostname: '127.0.0.1',
-- 🔥🔥 TU CÓDIGO DE WHATSAPP ES:  ${res.data.code}  🔥🔥
-+     port: 3000,
-- ===========[REDACTED]
-+     path: '/api/qr/pair',
+-     # Usar session_key si fue pasado (para chats QR o multilínea con clave compuesta)
++     # ── Obtener/crear sesión ──────────────────────────────
+-     # Si no, usar numero_wa como clave (comportamiento API clásico)
++     sesion = obtener_o_crear_sesion(numero_wa)
+-     _skey = session_key or numero_wa
++     sesion["ultima_actividad"] = datetime.utcnow()
 - 
-+     method: 'POST',
-- 1. Abre WhatsApp en tu celular.
-+     headers: {
-- 2. Toca los tres puntos (Menú) -> Dispositivos vinculados.
-+         'Content-Type': 'application/json',
-- 3. Toca "Vincular dispositivo".
-+         'Content-Length': data.length
-- 4. En la parte de abajo de la cámara, toca "Vincular con el número de teléfono".
-+     }
-- 5. ¡Ingresa este código!
-+ };
--         `);
++     sesion["nombre_cliente"]   = nombre
+-     # ── Obtener/crear sesión ──────────────────────────────
 + 
--     })
-+ const req = http.request(options, res => {
--     .catch(err => {
-+     let responseBody = '';
--         if (err.response) {
-+     res.on('data', chunk => { responseBody += chunk; });
--             console.log(`❌ Error del servidor: ${err.response.data.error || JSON.stringify(err.response.data)}`);
-+     
--             if (err.response.data.error && err.response.data.error.includes("Ya estás conectado")) {
-+     res.on('end', () => {
--                 console.log("\n⚠️ Tienes que borrar la sesión actual. Ejecuta:");
-+         try {
--                 console.log("pm2 stop bot-qr");
-+             const parsed = JSON.parse(responseBody);
--                 console.log("rm -rf qr_service/auth_info_baileys");
-+             if (res.statusCode >= 400) {
--                 console.log("pm2 start bot-qr\n");
-+                 console.log(`❌ Error del servidor: ${parsed.error || responseBody}`);
--             }
-+                 if (parsed.error && parsed.error.includes("Ya estás conectado")) {
--         } else {
-+                     console.log("\n⚠️ Tienes que borrar la sesión actua
+-     sesion = obtener_o_crear_sesion(_skey)
++     # 1) Para simulaciones, guardamos el mensaje aquí. Para en vivo, recibir_mensaje ya lo guarda al instante.
+-     sesion["ultima_actividad"] = datetime.utcnow()
++     if is_simulacion:
+-     sesion["nombre_cliente"]   = nombre
++         if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
+- 
++             import time
+-     # 1) Para simulaciones, guardamos el mensaje aquí. Para en vivo, recibir_mensaje ya lo guarda al instante.
++             ts = int(time.time()) # fallback
+-     if is_simulacion:
++             sesion["historial"].append({"role": "user", "content": texto_cliente, "msg_id": msg_id, "timestamp": ts})
+-         if not sesion["historial"] or sesion["historial"][-1].get("msg_id") != msg_id:
++             
+-             import time
++             try: 
+-             ts = int(time.time()) # fallback
++                 from firebase_client import guardar_
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [http, telefono, data, options, req]
-- **[problem-fix] problem-fix in server.py**: -             model="gemini-2.5-flash-lite",
-+             model="gemini-2.0-flash",
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[what-changed] Replaced dependency server**: -         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
++         try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(_skey, sesion)
+-     try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
++     try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(_skey, sesion)
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[problem-fix] problem-fix in server.py**: -         print(f"  [👤 Humano -> {numero_envio} ({line_id})]: {texto}")
++         print(f"  [[OK] Humano -> {numero_envio} ({line_id})]: {texto}")
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[problem-fix] Fixed null crash in Sube — reduces excessive function call frequency**: - 
++             if (wa_id && wa_id !== "inbox") {
+-             try {
++                 formData.append("wa_id", wa_id);
+-                 // Sube el archivo de forma completamente asíncrona a nuestro servidor
++             }
+-                 const uploadRes = await fetch('/api/admin/upload_media', {
++ 
+-                     method: 'POST',
++             try {
+-                     body: formData
++                 // Sube el archivo de forma completamente asíncrona a nuestro servidor
+-                 });
++                 const uploadRes = await fetch('/api/admin/upload_media', {
+- 
++                     method: 'POST',
+-                 const uploadData = await uploadRes.json();
++                     body: formData
+-                 if (!uploadData.ok) {
++                 });
+-                     upObj.error = uploadData.error || 'Error subiendo';
++ 
+-                     window.renderPendingMediaUI();
++                 const uploadData = await uploadRes.json();
+-                     return;
++                 if (!uploadData.ok) {
+-                 }
++                     upObj.error = uploadData.error || 'Error subiendo';
+- 
++                     window.renderPendingMediaUI();
+-                 upObj.media_id = uploadData.media_id;
++                     return;
+-                 window.renderPendingMediaUI();
++                 }
+-                 // Siempre queda en la cola — el usuario decide si agrega pie de imagen y presiona Enviar
++ 
+- 
++                 upObj.media_id = uploadData.media_id;
+-             } catch (e) {
++                 window.renderPendingMediaUI();
+-                 console.error("Fallo de red al enviar media:", e);
++                 // Siempre queda en la cola — el usuario decide si agrega pie de imagen y presiona Enviar
+-                 upObj.error = "Error red";
++ 
+-                 window.renderPendingMediaUI();
++             } catch (e) {
+-             }
++                 console.error
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[convention] problem-fix in server.py — confirmed 3x**: -                         body: JSON.stringify({{ id, title, mensajes, delay_ms: delay, category: cat, type: "text", etiquetas, line_id: new URLSearchParams(window.location.search).get("line") || "principal" }})
++                         body: JSON.stringify({{ id, title, mensajes, delay_ms: delay, category: cat, type: "text", etiquetas, line_id: window.ACTIVE_CHAT_LINE || "principal" }})
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **[convention] Fixed null crash in PLANTILLAS — evolves the database schema to support new r... — confirmed 3x**: -             window.IS_QR_LINE = {_active_line_str.lower().startswith("qr_") | to_json};
++             window.IS_QR_LINE = {'true' if _active_line_str.lower().startswith('qr_') else 'false'};
+-         </script>
++         // ================= PLANTILLAS LOGIC =================
+-         """
++         async function cargarPlantillas() {{
+- 
++             const list = document.getElementById("templateList");
+-         chat_view_css = """
++             if (!list) return;
+-         .bubble { max-width:85%; padding:0.8rem 1rem; border-radius:12px; font-size:0.95rem; line-height:1.4; position:relative; word-wrap:break-word; overflow-wrap:anywhere; box-sizing:border-box; }
++             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
+-         .lado-izq { align-self:flex-start; }
++             try {{
+-         .lado-der { align-self:flex-end; }
++                 const activeLine = window.ACTIVE_CHAT_LINE || "principal";
+-         .bubble-bot { background:var(--primary-color); color:var(--text-main); border-bottom-right-radius:4px; }
++                 const res = await fetch("/api/admin/templates/list?line=" + activeLine);
+-         .bubble-user { background:var(--accent-bg); color:var(--text-main); border-bottom-left-radius:4px; border:1px solid var(--accent-border); }
++                 const data = await res.json();
+-         .bubble-sticker { background:transparent !important; border:none !important; padding:0 !important; box-shadow:none !important; }
++                 if (data.ok) {{
+-         """
++                     list.innerHTML = "";
+- 
++                     if (data.plantillas.length === 0) {{
+-     # Reemplazos finales en la plantilla
++                         list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin plantillas. Apreta (+) para añadir.</div>`;
+-     es_chat_valido = bool(wa_id and wa
+… [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]

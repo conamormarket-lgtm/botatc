@@ -277,19 +277,48 @@
 
         <div class="container">
             
+            <!-- FILTRO DE LÍNEA -->
+            <div style="margin-bottom: 2rem; display: flex; align-items: center; justify-content: flex-end; gap: 1rem;">
+                <label for="statsLineFilter" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Filtrar estadísticas por línea:</label>
+                <select id="statsLineFilter" style="
+                    padding: 0.7rem 2.5rem 0.7rem 1.2rem;
+                    border-radius: 8px;
+                    border: 1px solid var(--accent-border);
+                    background: var(--accent-bg);
+                    color: var(--text-main);
+                    font-family: var(--font-main);
+                    font-size: 0.95rem;
+                    outline: none;
+                    cursor: pointer;
+                    min-width: 250px;
+                    appearance: none;
+                    -webkit-appearance: none;
+                    background-image: url('data:image/svg+xml;utf8,<svg fill=\"%2394a3b8\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>');
+                    background-repeat: no-repeat;
+                    background-position: right 10px top 50%;
+                    transition: border-color 0.2s, box-shadow 0.2s;
+                " onchange="cargarEstadisticas()">
+                    <option value="all">Todas las líneas (Global)</option>
+                </select>
+            </div>
+
             <!-- TARJETAS DE MÉTRICAS -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-num">{total_sesiones}</div>
-                    <div class="stat-lbl">Sesiones Totales (Hoy)</div>
+                    <div class="stat-num" id="statRespondidos">0</div>
+                    <div class="stat-lbl">Chats Respondidos</div>
+                </div>
+                <div class="stat-card" style="border-left: 3px solid var(--primary-hover);">
+                    <div class="stat-num" id="statPorResponder" style="color: var(--primary-hover);">0</div>
+                    <div class="stat-lbl">Chats por Responder</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-num">{bots_activos}</div>
-                    <div class="stat-lbl">Atendidas por IA</div>
+                    <div class="stat-num" id="statPendientesBot">0</div>
+                    <div class="stat-lbl">Bot Activo (Pendiente)</div>
                 </div>
-                <div class="stat-card" style="border-left: 3px solid var(--danger-color)">
-                    <div class="stat-num danger">{humanos_requeridos}</div>
-                    <div class="stat-lbl" style="color: var(--danger-color)">Esperando Humano</div>
+                <div class="stat-card" style="border-left: 3px solid var(--danger-color);">
+                    <div class="stat-num danger" id="statPendientesAsesor">0</div>
+                    <div class="stat-lbl" style="color: var(--danger-color)">Esperando Asesor</div>
                 </div>
             </div>
 
@@ -460,7 +489,64 @@
             } catch(e) {}
         }
 
+        async function cargarLineasFiltro() {
+            try {
+                const res = await fetch('/api/admin/lines');
+                if(!res.ok) return;
+                const data = await res.json();
+                if(data.lines && data.lines.length > 0) {
+                    const select = document.getElementById('statsLineFilter');
+                    data.lines.forEach(l => {
+                        const opt = document.createElement('option');
+                        opt.value = l.id;
+                        opt.textContent = `${l.icon} ${l.name}`;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch(e) {}
+        }
+
+        function animarContador(elementId, targetValue) {
+            const el = document.getElementById(elementId);
+            if(!el) return;
+            const startValue = parseInt(el.innerText) || 0;
+            const duration = 800; // ms
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease out
+                const ease = 1 - Math.pow(1 - progress, 4);
+                const current = Math.floor(startValue + (targetValue - startValue) * ease);
+                el.innerText = current;
+                
+                if(progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.innerText = targetValue;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        async function cargarEstadisticas() {
+            const lineId = document.getElementById('statsLineFilter').value;
+            try {
+                const res = await fetch(`/api/admin/stats?line_id=${lineId}`);
+                if(!res.ok) return;
+                const data = await res.json();
+                if(data.stats) {
+                    animarContador('statRespondidos', data.stats.respondidos);
+                    animarContador('statPorResponder', data.stats.por_responder);
+                    animarContador('statPendientesBot', data.stats.pendientes_bot);
+                    animarContador('statPendientesAsesor', data.stats.pendientes_asesor);
+                }
+            } catch(e) {}
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            cargarLineasFiltro().then(() => cargarEstadisticas());
             cargarGruposVirtuales();
         });
     </script>
