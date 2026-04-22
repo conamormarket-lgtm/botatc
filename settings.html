@@ -631,23 +631,23 @@
         </script>
         <!-- FIN GUÍA META -->
                 style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
-                <h3 style="margin-bottom:0.5rem;color:var(--text-main);font-family:var(--font-heading)">Vincular WhatsApp Secundario (Generador QR)</h3>
-                <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Conecta una línea alternativa escaneando este código con WhatsApp. Esta línea funcionará en modo "Web Scraping" alojada en el servidor.</p>
+                <h3 style="margin-bottom:0.5rem;color:var(--text-main);font-family:var(--font-heading)">Vincular WhatsApps (Generador QR)</h3>
+                <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Abre una nueva sesión escribiendo un Alias para la línea y haciendo clic en Generar. Puedes vincular múltiples líneas repitiendo este proceso.</p>
                 
+                <div style="display:flex; gap:1rem; align-items:center; margin-bottom: 1rem; flex-wrap:wrap;">
+                    <input type="text" id="qrAliasInput" placeholder="Alias (Ej: Ventas Lima, Soporte...)" class="prompt-input" style="flex:1; max-width:300px; padding:0.6rem; background:var(--bg-main); color:var(--text-main); border:1px solid var(--accent-border); border-radius:4px;">
+                    <button type="button" onclick="startNewQR()" class="btn-save" style="background:#10b981; padding:0.6rem 1.2rem; font-size:0.85rem;">
+                        Generar Código QR
+                    </button>
+                    <span id="qrTimestamp" style="color:var(--text-muted); font-size:0.8rem; align-self:center;"></span>
+                </div>
+
                 <div style="display:flex; gap:1.5rem; align-items:center;">
                    <img id="qrImage" src="" alt="" style="width: 200px; height: 200px; border-radius:8px; display:none; border:2px solid var(--accent-border); background:white; padding:5px; object-fit:contain;" />
                    
-                   <div id="qrStatusBox" style="flex:1; padding:1.5rem; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid var(--accent-border);">
-                      <p id="qrStatusText" style="font-family:var(--font-mono); color:var(--text-main); font-size: 0.9rem;">Cargando estado local de la línea secundaria...</p>
+                   <div id="qrStatusBox" style="flex:1; padding:1.5rem; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid var(--accent-border); display:none;">
+                      <p id="qrStatusText" style="font-family:var(--font-mono); color:var(--text-main); font-size: 0.9rem; margin:0;">Esperando acción...</p>
                    </div>
-                </div>
-                
-                <div style="margin-top: 1.5rem; display:flex; gap:1rem;">
-                    <button type="button" onclick="loadQR()" class="btn-save" style="background:#10b981; padding:0.6rem 1.2rem; font-size:0.85rem;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.13 15.57a9 9 0 1 0 12.87 5.88"/><path d="M2.5 22v-6h6M21.87 8.43a9 9 0 1 0-12.87-5.88"/></svg>
-                        Generar / Refrescar Código QR
-                    </button>
-                    <span id="qrTimestamp" style="color:var(--text-muted); font-size:0.8rem; align-self:center;"></span>
                 </div>
             </div>
 
@@ -886,7 +886,7 @@
                                         ${id !== 'principal' ? `
                                         <button type="button" onclick="deleteLine('${id}', '${val.name}')" style="padding:0.4rem 0.8rem; font-size:0.85rem; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:0.3rem;">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4h6v2"></path></svg>
-                                            Quitar
+                                            Quitar y Desconectar
                                         </button>` : ''}
                                     </div>
                                 `;
@@ -922,7 +922,7 @@
                 }
                 
                 async function deleteLine(id, name) {
-                    if(!confirm(`¿Eliminar la línea "${name}" (${id}) del panel?\n\nEsto no desconecta ni cierra sesión en WhatsApp.`)) return;
+                    if(!confirm(`¿Eliminar la línea "${name}" (${id}) del panel?\n\n¡ATENCIÓN! Si es una línea QR, esto desvinculará el dispositivo y se cerrará la sesión de WhatsApp en el servidor.`)) return;
                     try {
                         const res = await fetch(`/api/admin/lines/${encodeURIComponent(id)}`, { method: 'DELETE' });
                         const data = await res.json();
@@ -1001,49 +1001,83 @@
             reader.readAsText(file);
         }
 
-        // Lógica Baileys / QR 
-        async function loadQR() {
+        // Lógica Baileys / QR MULTI-SESION
+        let activeQRInterval = null;
+        let activeQRLineId = null;
+        let activeQRAlias = null;
+
+        async function startNewQR() {
+            const alias = document.getElementById('qrAliasInput').value.trim();
+            if(!alias) return alert("Por favor ingresa un nombre o alias para identificar esta línea.");
+            
+            // Create a unique ID
+            activeQRAlias = alias;
+            activeQRLineId = "qr_" + Date.now().toString(36) + "_" + Math.random().toString(36).substr(2, 4);
+            
+            document.getElementById('qrImage').style.display = "none";
+            document.getElementById('qrStatusBox').style.display = "block";
+            document.getElementById('qrStatusText').style.color = "var(--text-main)";
+            document.getElementById('qrStatusText').innerText = "Solicitando inicialización al servidor (Puede tomar 15s)...";
+            
+            if(activeQRInterval) clearInterval(activeQRInterval);
+            pollQR();
+            activeQRInterval = setInterval(pollQR, 3000);
+        }
+
+        async function pollQR() {
+            if(!activeQRLineId) return;
             const statusBox = document.getElementById('qrStatusText');
             const qrImg = document.getElementById('qrImage');
-            const timestamp = document.getElementById('qrTimestamp');
-            
-            statusBox.style.color = "var(--text-main)";
-            statusBox.innerText = "Consultando servicio de fondo...";
             
             try {
-                const res = await fetch("/api/settings/qr_status");
+                const res = await fetch(`/api/settings/qr_status?lineId=${activeQRLineId}`);
                 const data = await res.json();
                 
                 if (data.status === 'error') {
                     statusBox.style.color = "#ef4444";
                     statusBox.innerText = "⚠️ " + data.message;
-                    qrImg.style.display = "none";
+                    if(activeQRInterval) clearInterval(activeQRInterval);
                 } else if (data.status === 'connected') {
                     statusBox.style.color = "#10b981";
-                    statusBox.innerText = "✅ Un dispositivo ya está conectado de forma estable a este canal secundario.";
+                    statusBox.innerText = "✅ ¡Dispositivo vinculado exitosamente! Registrando en el CRM...";
                     qrImg.style.display = "none";
+                    if(activeQRInterval) clearInterval(activeQRInterval);
+                    
+                    // Register line automatically
+                    await registerQRLine(activeQRLineId, activeQRAlias);
+                    activeQRLineId = null;
                 } else if (data.status === 'loading') {
                     statusBox.style.color = "#eab308";
-                    statusBox.innerText = "⏳ " + data.message + " (Suele tomar unos segundos tras iniciar el servicio)";
+                    statusBox.innerText = "⏳ " + data.message;
                     qrImg.style.display = "none";
                 } else if (data.status === 'qr_ready') {
                     statusBox.style.color = "#3b82f6";
-                    statusBox.innerText = "📲 ¡QR Listo! Abre WhatsApp en tu celular (o de la empresa), ve a 'Dispositivos Vinculados' y escanea esta imagen.";
+                    statusBox.innerText = "📲 ¡QR Listo! Abre WhatsApp en tu celular y escanea esta imagen.";
                     qrImg.src = data.base64;
                     qrImg.style.display = "block";
-                    const now = new Date();
-                    timestamp.innerText = `Última actualización: ${now.toLocaleTimeString()}`;
+                    document.getElementById('qrTimestamp').innerText = `Última actualización: ${new Date().toLocaleTimeString()}`;
                 }
             } catch(e) {
                 statusBox.style.color = "#ef4444";
-                statusBox.innerText = "Error crítico de conexión con el backend de Python.";
-                qrImg.style.display = "none";
+                statusBox.innerText = "Error crítico de conexión con Python.";
             }
         }
         
-        // Hacer una primera carga silenciosa del estado al abrir
-        setTimeout(loadQR, 1000);
-
+        async function registerQRLine(id, alias) {
+            try {
+                await fetch('/api/admin/lines', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id: id, name: alias, provider: 'baileys', bot_id: null})
+                });
+                const toast = document.getElementById('saveToast');
+                toast.innerText = "¡Línea QR registrada con éxito!";
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 4000);
+                document.getElementById('qrAliasInput').value = "";
+                await loadLines();
+            } catch(e) {}
+        }
     </script>
 </body>
 

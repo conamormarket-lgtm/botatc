@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5452 notes | Score threshold: >40
+> 5545 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,17 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — -     try:
++     # Se eliminó la creación automática para permitir mú
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "37bbd8cef977316d",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5495 notes | Score threshold: >40
++ > 5515 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
 + - Fixed null crash in Math
 - 
@@ -28,33 +39,17 @@
 - **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
 
 Content summary (8
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "a776e555706521da",
-+
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "b16dc873cade9afb",
-+
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Patched security issue Patched
-+ - ⚠️ GOTCHA: Added JWT
 
 ## Project Standards
 
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json
-- Patched security issue False — protects against XSS and CSRF token theft — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 8x
+- problem-fix in agent-rules.md — confirmed 9x
+- convention in shared-context.json
+- what-changed in shared-context.json — confirmed 6x
 
 ## Known Fixes
 
@@ -66,9 +61,9 @@ Content summary (8
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
 - decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
+- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns

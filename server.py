@@ -722,18 +722,39 @@ async def recibir_mensaje_qr(request: Request, background_tasks: BackgroundTasks
     return {"status": "ok"}
 
 @app.get("/api/settings/qr_status")
-def get_qr_status():
+def get_qr_status(lineId: str = "qr_ventas_1"):
     """Proxy local para consultar el estado del microservicio Baileys Node.js"""
     try:
         import urllib.request
         import json
-        req = urllib.request.Request("http://localhost:3000/api/qr/link", headers={'User-Agent': 'Mozilla/5.0'})
+        req = urllib.request.Request(f"http://localhost:3000/api/qr/link?lineId={lineId}", headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=3.0) as response:
             return json.loads(response.read().decode())
     except Exception as e:
         err_msg = f"Exception: {type(e).__name__} - {str(e)}"
         print("ERROR IN GET_QR_STATUS:", err_msg)
         return {"status": "error", "message": f"Falla urllib: {err_msg}"}
+
+async def reintentar_gemini(numero_wa: str, nombre: str, texto_cliente: str, last_id: str):
+    import asyncio
+    print(f"  [⏳] Reintento automático agendado para {numero_wa} en 120 segundos...")
+    await asyncio.sleep(120)
+    print(f"  [🔄] Ejecutando reintento para {numero_wa}...")
+    import anyio
+    respuesta = await anyio.to_thread.run_sync(
+        procesar_mensaje_interno, numero_wa, nombre, texto_cliente, False, last_id
+    )
+    if respuesta == "__API_ERROR__":
+        print(f"  [❌] Segundo intento fallido para {numero_wa}. Escalando a humano...")
+        sesion = obtener_o_crear_sesion(numero_wa)
+        sesion["bot_activo"] = False
+        sesion["escalado_en"] = datetime.utcnow()
+        sesion["motivo_escalacion"] = "Fallo en API de Gemini tras reintento"
+        try: 
+            from firebase_client import guardar_sesion_chat
+            guardar_sesion_chat(numero_wa, sesion)
+        except Exception:
+            pass
 
 async def procesador_agregado(numero_wa: str, nombre: str):
     """
@@ -766,9 +787,12 @@ async def procesador_agregado(numero_wa: str, nombre: str):
             last_id = textos_dicts[-1]["id"]
         
         # Ejecutar el proceso pesado sincrónico en un hilo separado
-        await anyio.to_thread.run_sync(
+        respuesta = await anyio.to_thread.run_sync(
             procesar_mensaje_interno, numero_wa, nombre, texto_unido, False, last_id
         )
+        
+        if respuesta == "__API_ERROR__":
+            asyncio.create_task(reintentar_gemini(numero_wa, nombre, texto_unido, last_id))
 
 
 def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is_simulacion: bool = False, msg_id: str = None) -> str | None:
@@ -960,8 +984,8 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     
     if not respuesta_bot.strip():
         # Falla silenciosamente si Gemini no genera respuesta útil o tira error
-        print("  [[ERROR] Respuesta vacía de Gemini. Ignorando...]")
-        return None
+        print("  [[ERROR] Respuesta vacía de Gemini. Reportando error a procesador...]")
+        return "__API_ERROR__"
 
     # ── Procesar escalación si el modelo la detectó ───────
     respuesta_final = procesar_escalacion(numero_wa, sesion, respuesta_bot)
@@ -4764,16 +4788,7 @@ async def api_list_lines(request: Request):
     if "principal" not in aliases:
         aliases["principal"] = {"name": "Línea Principal Meta"}
         
-    try:
-        from server import get_qr_status
-        qr_status = get_qr_status()
-        if qr_status.get("status") == "connected":
-            qr_line_id = qr_status.get("lineId", "qr_ventas_1")
-            if qr_line_id not in aliases:
-                aliases[qr_line_id] = {"name": "Bot Ventas (Baileys Web)", "provider": "baileys"}
-    except Exception as e:
-        pass
-        
+    # Se eliminó la creación automática para permitir múltiples QRs controlados por UI
     from bot_manager import get_bot_for_line
     lines_rich = {}
     for lid, linfo in aliases.items():
@@ -4862,6 +4877,15 @@ async def api_delete_line(line_id: str, request: Request):
                 aliases = json.load(f)
     except: pass
     if line_id in aliases:
+        provider = aliases[line_id].get("provider", "")
+        if provider == "baileys" or line_id.startswith("qr_"):
+            try:
+                import urllib.request
+                req = urllib.request.Request(f"http://localhost:3000/api/qr/logout?lineId={line_id}", method="DELETE")
+                urllib.request.urlopen(req, timeout=3.0)
+            except Exception as e:
+                print("Error logging out from Node Baileys:", e)
+                
         del aliases[line_id]
         with open("line_aliases.json", "w") as f:
             json.dump(aliases, f, ensure_ascii=False, indent=2)

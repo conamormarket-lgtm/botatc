@@ -25,14 +25,13 @@ app.use('/media', express.static(mediaPath));
 app.use('/api/qr/media', express.static(mediaPath));
 
 const PORT = 3000;
-const LINE_ID = "qr_ventas_1";
 
-let sock;
-let currentQR = "";
-let isConnected = false;
 
-async function connectToWhatsApp() {
-    const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
+const sessions = new Map(); // map: lineId -> {sock, currentQR, isConnected}
+
+
+async function connectToWhatsApp(lineId) {
+    const { state, saveCreds } = await useMultiFileAuthState(`auth_info_baileys_${lineId}`);
     const { version, isLatest } = await fetchLatestBaileysVersion();
     console.log(`🌐 WhatsApp Web v${version.join('.')} (Última: ${isLatest})`);
 
@@ -54,28 +53,28 @@ async function connectToWhatsApp() {
         const { connection, lastDisconnect, qr } = update;
 
         if (qr) {
-            currentQR = qr;
+            session.currentQR = qr;
             console.log('📱 Nuevo QR generado — listo para escanear.');
         }
 
         if (connection === 'close') {
-            isConnected = false;
+            session.isConnected = false;
             const statusCode = lastDisconnect?.error?.output?.statusCode;
             console.log('❌ Conexión cerrada. Código:', statusCode, '-', lastDisconnect?.error?.message);
             
             if (statusCode === DisconnectReason.loggedOut) {
                 // 401: Dispositivo desvinculado → limpiar sesión y generar QR fresco
                 console.log('🔄 Dispositivo desvinculado. Limpiando sesión para generar nuevo QR...');
-                const authDir = path.join(__dirname, 'auth_info_baileys');
+                const authDir = path.join(__dirname, `auth_info_baileys_${lineId}`);
                 try { fs.rmSync(authDir, { recursive: true, force: true }); } catch(e) {}
-                setTimeout(connectToWhatsApp, 2000);
+                setTimeout(() => connectToWhatsApp(lineId), 2000);
             } else {
                 // Otros errores (515 restart, red, etc.) → reconectar sin borrar sesión
-                setTimeout(connectToWhatsApp, 3000);
+                setTimeout(() => connectToWhatsApp(lineId), 3000);
             }
         } else if (connection === 'open') {
-            isConnected = true;
-            currentQR = "";
+            session.isConnected = true;
+            session.currentQR = "";
             console.log('✅ Dispositivo conectado con éxito!');
         }
     });
@@ -108,7 +107,7 @@ async function connectToWhatsApp() {
                         const metaPayload = {
                             "object": "whatsapp_business_account",
                             "entry": [{ "id": "BAILEYS_MOCK", "changes": [{ "value": {
-                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "metadata": { "display_phone_number": lineId, "phone_number_id": lineId },
                                 "contacts": [{ "profile": { "name": pushName }, "wa_id": wa_id }],
                                 "messages": [{
                                     "from": wa_id,
@@ -223,7 +222,7 @@ async function connectToWhatsApp() {
                         "id": "BAILEYS_MOCK",
                         "changes": [{
                             "value": {
-                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "metadata": { "display_phone_number": lineId, "phone_number_id": lineId },
                                 "contacts": [{ "profile": { "name": pushName }, "wa_id": wa_id }],
                                 "messages": [metaMessage]
                             }
@@ -280,7 +279,7 @@ async function connectToWhatsApp() {
                             "id": "BAILEYS_MOCK",
                             "changes": [{
                                 "value": {
-                                    "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                    "metadata": { "display_phone_number": lineId, "phone_number_id": lineId },
                                     "statuses": [{
                                         "id": key.id,
                                         "status": metaStatus,
@@ -342,7 +341,7 @@ async function connectToWhatsApp() {
                         "id": "BAILEYS_MOCK",
                         "changes": [{
                             "value": {
-                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "metadata": { "display_phone_number": lineId, "phone_number_id": lineId },
                                 "contacts": [{ "profile": { "name": "" }, "wa_id": wa_id }],
                                 "messages": [{
                                     "from": wa_id,
@@ -397,7 +396,7 @@ async function connectToWhatsApp() {
                         "id": "BAILEYS_MOCK",
                         "changes": [{
                             "value": {
-                                "metadata": { "display_phone_number": LINE_ID, "phone_number_id": LINE_ID },
+                                "metadata": { "display_phone_number": lineId, "phone_number_id": lineId },
                                 "statuses": [{
                                     "id": ev.key.id,
                                     "status": metaStatus,
@@ -439,22 +438,23 @@ function resolveRealJid(key, msg) {
 // ----------------------------------------
 
 app.post('/api/qr/pair', async (req, res) => {
-    let { telefono } = req.body;
+    let { telefono, lineId = 'qr_ventas_1' } = req.body;
     if (!telefono) return res.status(400).json({error: "Falta telefono (ej: 51984...)"});
     telefono = telefono.replace(/[^0-9]/g, '');
     
     try {
-        if (!sock) return res.status(500).json({error: "Módulo Baileys no iniciado aún."});
-        if (isConnected) return res.status(400).json({error: "Ya estás conectado. Desvincula primero."});
+        const session = sessions.get(lineId);
+        if (!session || !session.sock) return res.status(500).json({error: "Módulo Baileys no iniciado aún."});
+        if (session.isConnected) return res.status(400).json({error: "Ya estás conectado. Desvincula primero."});
         
         // CRÍTICO: Meta exige que el WebSocket esté 100% abierto antes de pedir el Pairing Code (sino da Error 428)
         let attempts = 0;
-        while (!currentQR && attempts < 10) {
+        while (!session.currentQR && attempts < 10) {
             await new Promise(r => setTimeout(r, 1000));
             attempts++;
         }
         
-        let code = await sock.requestPairingCode(telefono);
+        let code = await session.sock.requestPairingCode(telefono);
         console.log(`\n\n======================================\n🔥 CÓDIGO DE EMPAREJAMIENTO: ${code}\n======================================\n\n`);
         return res.json({ message: "Éxito", code: code });
     } catch (e) {
@@ -465,14 +465,18 @@ app.post('/api/qr/pair', async (req, res) => {
 
 // Estado de conexión de la línea QR
 app.get('/api/qr/status', (req, res) => {
-    res.json({ connected: isConnected, lineId: LINE_ID });
+    const lineId = req.query.lineId || "qr_ventas_1";
+    const session = sessions.get(lineId);
+    res.json({ connected: session ? session.isConnected : false, lineId });
 });
 
 
 
 // Endpoint principal para envío de media
 app.post('/api/qr/send-media', async (req, res) => {
-    if (!isConnected || !sock) {
+    const lineId = req.body.lineId || "qr_ventas_1";
+    const session = sessions.get(lineId);
+    if (!session || !session.isConnected || !session.sock) {
         return res.status(503).json({ error: "El servicio QR no está conectado" });
     }
     try {
@@ -499,7 +503,7 @@ app.post('/api/qr/send-media', async (req, res) => {
             mediaPayload.ptt = true;
         }
 
-        const sentMsg = await sock.sendMessage(jid, mediaPayload);
+        const sentMsg = await session.sock.sendMessage(jid, mediaPayload);
         console.log(`[SEND_MEDIA] ✉️ ✅ ${type} mandado a ${jid}`);
         
         // Guardar mapeo msgId -> número real para resolver LIDs después
@@ -517,7 +521,9 @@ app.post('/api/qr/send-media', async (req, res) => {
 });
 
 app.post('/api/qr/send', async (req, res) => {
-    if (!isConnected || !sock) {
+    const lineId = req.body.lineId || "qr_ventas_1";
+    const session = sessions.get(lineId);
+    if (!session || !session.isConnected || !session.sock) {
         return res.status(500).json({ error: "No conectado a WhatsApp" });
     }
     try {
@@ -533,7 +539,7 @@ app.post('/api/qr/send', async (req, res) => {
         console.log(`[SEND] Intentando enviar a JID: ${jid}`);
         console.log(`[SEND] Texto: "${text}"`);
         
-        const sentMsg = await sock.sendMessage(jid, { text: text });
+        const sentMsg = await session.sock.sendMessage(jid, { text: text });
         console.log(`[SEND] ✅ Enviado con éxito. msg_id: ${sentMsg?.key?.id}`);
         
         // Guardar mapeo msgId -> número real para resolver LIDs después
@@ -552,21 +558,33 @@ app.post('/api/qr/send', async (req, res) => {
 
 // Generación / obtención del código QR para escanear desde el panel
 app.get('/api/qr/link', async (req, res) => {
-    if (isConnected) {
+    if (session.isConnected) {
         return res.json({ status: 'connected', message: 'Ya hay un dispositivo vinculado.' });
     }
-    if (!currentQR) {
+    if (!session.currentQR) {
         return res.json({ status: 'loading', message: 'Generando QR, intente en 3 segundos.' });
     }
     try {
-        const qrImage = await QRCode.toDataURL(currentQR);
+        const qrImage = await QRCode.toDataURL(session.currentQR);
         res.json({ status: 'qr_ready', base64: qrImage });
     } catch (err) {
         res.status(500).json({ error: 'Fallo generando imagen QR' });
     }
 });
 
+
+app.delete('/api/qr/logout', (req, res) => {
+    const lineId = req.query.lineId || "qr_ventas_1";
+    if (sessions.has(lineId)) {
+        const session = sessions.get(lineId);
+        try { session.sock.logout(); } catch(e){}
+        sessions.delete(lineId);
+    }
+    try { fs.rmSync(path.join(__dirname, `auth_info_baileys_${lineId}`), { recursive: true, force: true }); } catch(e){}
+    res.json({ ok: true });
+});
+
 app.listen(PORT, '127.0.0.1', () => {
     console.log(`✅ Servicio QR v2 escuchando en puerto ${PORT} — Interceptor de mensajes ACTIVO`);
-    connectToWhatsApp();
+    // QRs are started on-demand via /api/qr/link
 });

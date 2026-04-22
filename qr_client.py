@@ -83,6 +83,7 @@ def enviar_mensaje_qr(
     result = _post("/api/qr/send", {
         "to": numero_destino,
         "text": texto,
+        "lineId": line_id
     })
     if result and result.get("status") == "ok":
         msg_id = result.get("id")
@@ -138,6 +139,7 @@ def enviar_media_qr(
         "to": numero_destino,
         "type": tipo_media,
         "url": parsed_url if isinstance(parsed_url, str) else None,
+        "lineId": line_id
     }
     if caption:
         payload["caption"] = caption
