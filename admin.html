@@ -533,19 +533,21 @@
 
         async function cargarEstadisticas() {
             const lineId = document.getElementById('statsLineFilter').value;
+            console.log('[STATS] ▶ Cargando para lineId:', lineId);
             // Resetear contadores inmediatamente para que el cambio sea visible
             ['statRespondidos','statPorResponder','statPendientesBot','statPendientesAsesor']
                 .forEach(id => { const el = document.getElementById(id); if(el) el.innerText = '...'; });
             try {
-                // Cache-bust para evitar que el navegador sirva respuesta vieja
-                const res = await fetch(`/api/admin/stats?line_id=${lineId}&_t=${Date.now()}`, {
+                const url = `/api/admin/stats?line_id=${lineId}&_t=${Date.now()}`;
+                console.log('[STATS] Fetching:', url);
+                const res = await fetch(url, {
                     cache: 'no-store',
                     headers: { 'Cache-Control': 'no-cache' }
                 });
-                if(!res.ok) return;
+                if(!res.ok) { console.log('[STATS] ❌ res.ok=false, status:', res.status); return; }
                 const data = await res.json();
+                console.log('[STATS] ✅ Respuesta:', JSON.stringify(data));
                 if(data.stats) {
-                    // Partir desde 0 para que la animación siempre sea visible
                     ['statRespondidos','statPorResponder','statPendientesBot','statPendientesAsesor']
                         .forEach(id => { const el = document.getElementById(id); if(el) el.innerText = '0'; });
                     animarContador('statRespondidos', data.stats.respondidos);
@@ -554,6 +556,7 @@
                     animarContador('statPendientesAsesor', data.stats.pendientes_asesor);
                 }
             } catch(e) {
+                console.log('[STATS] ❌ Error:', e.message);
                 ['statRespondidos','statPorResponder','statPendientesBot','statPendientesAsesor']
                     .forEach(id => { const el = document.getElementById(id); if(el) el.innerText = '—'; });
             }
