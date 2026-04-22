@@ -33,9 +33,13 @@ const sessions = new Map(); // map: lineId -> {sock, currentQR, isConnected}
 async function connectToWhatsApp(lineId) {
     const { state, saveCreds } = await useMultiFileAuthState(`auth_info_baileys_${lineId}`);
     const { version, isLatest } = await fetchLatestBaileysVersion();
-    console.log(`🌐 WhatsApp Web v${version.join('.')} (Última: ${isLatest})`);
+    console.log(`🌐 [${lineId}] WhatsApp Web v${version.join('.')} (Última: ${isLatest})`);
 
-    sock = makeWASocket({
+    // Crear/obtener el objeto de sesión ANTES de makeWASocket para que los callbacks puedan cerrarlo
+    let session = sessions.get(lineId) || { sock: null, currentQR: "", isConnected: false };
+    sessions.set(lineId, session);
+
+    const sock = makeWASocket({
         version,
         auth: state,
         logger: pino({ level: "silent" }),
@@ -46,6 +50,7 @@ async function connectToWhatsApp(lineId) {
         msgRetryCounterCache, // CRÍTICO para reintentos automáticos
         retryRequestDelayMs: 2000 // Darle tiempo al Signal channel
     });
+    session.sock = sock; // Guardar referencia en la sesión para que los endpoints puedan usarla
 
     sock.ev.on('creds.update', saveCreds);
 
@@ -558,15 +563,26 @@ app.post('/api/qr/send', async (req, res) => {
 
 // Generación / obtención del código QR para escanear desde el panel
 app.get('/api/qr/link', async (req, res) => {
+    const lineId = req.query.lineId || "qr_ventas_1";
+    
+    // Si no hay sesión para este lineId, iniciarla
+    if (!sessions.has(lineId)) {
+        console.log(`[QR] Iniciando nueva sesión para lineId=${lineId}`);
+        connectToWhatsApp(lineId).catch(err => console.error(`[QR] Error iniciando ${lineId}:`, err.message));
+        return res.json({ status: 'loading', message: `Iniciando sesión para ${lineId}, intente en 5 segundos.` });
+    }
+    
+    const session = sessions.get(lineId);
+    
     if (session.isConnected) {
-        return res.json({ status: 'connected', message: 'Ya hay un dispositivo vinculado.' });
+        return res.json({ status: 'connected', lineId, message: 'Ya hay un dispositivo vinculado.' });
     }
     if (!session.currentQR) {
         return res.json({ status: 'loading', message: 'Generando QR, intente en 3 segundos.' });
     }
     try {
         const qrImage = await QRCode.toDataURL(session.currentQR);
-        res.json({ status: 'qr_ready', base64: qrImage });
+        res.json({ status: 'qr_ready', lineId, base64: qrImage });
     } catch (err) {
         res.status(500).json({ error: 'Fallo generando imagen QR' });
     }

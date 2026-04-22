@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5545 notes | Score threshold: >40
+> 5550 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,10 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5533 notes | Score threshold: >40
++ > 5545 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — -     try:
 +     # Se eliminó la creación automática para permitir mú
 - **gotcha in shared-context.json** — -     }
@@ -36,20 +38,17 @@
 - 
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5439 notes | Score threshold: >40
 + > 5440 notes | Score threshold
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
 
 ## Project Standards
 
+- what-changed in settings.html — confirmed 4x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Patched security issue Kevin — confirmed 4x
+- decision in index.js — confirmed 3x
 - Added JWT tokens authentication — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in brainsync_auto.md — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 8x
-- problem-fix in agent-rules.md — confirmed 9x
-- convention in shared-context.json
-- what-changed in shared-context.json — confirmed 6x
 
 ## Known Fixes
 
@@ -61,9 +60,9 @@ Content summary (8
 
 ## Recent Decisions
 
-- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 - decision in index.js
+- Optimized Score — evolves the database schema to support new requirements
 - Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
