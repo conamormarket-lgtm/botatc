@@ -2935,6 +2935,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         extra_params = f"?tab={tab}"
         if label_filter: extra_params += f"&label={label_filter}"
         if unread: extra_params += f"&unread={unread}"
+        if line_filter and line_filter != "all": extra_params += f"&line={line_filter}"
         
         is_pinned = s.get("is_pinned", False)
         pin_html = '<svg width="12" height="12" viewBox="0 0 24 24" fill="var(--primary-color)" style="margin-right:4px;"><path d="M16 3H8a1 1 0 0 0-1 1v5.586a1 1 0 0 1-.293.707l-2.414 2.414A1 1 0 0 0 5 13.414V19a1 1 0 0 0 1 1h5v3l1 2 1-2v-3h5a1 1 0 0 0 1-1v-5.586a1 1 0 0 0-.293-.707l-2.414-2.414A1 1 0 0 1 16 9.586V4a1 1 0 0 0-1-1z"/></svg>' if is_pinned else ''
