@@ -297,7 +297,7 @@
                     background-repeat: no-repeat;
                     background-position: right 10px top 50%;
                     transition: border-color 0.2s, box-shadow 0.2s;
-                " onchange="cargarEstadisticas()">
+                ">
                     <option value="all">Todas las líneas (Global)</option>
                 </select>
             </div>
@@ -563,7 +563,17 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            cargarLineasFiltro().then(() => cargarEstadisticas());
+            cargarLineasFiltro().then(() => {
+                cargarEstadisticas();
+                // Registrar el listener DESPUÉS de poblar el select
+                const sel = document.getElementById('statsLineFilter');
+                if(sel) {
+                    sel.addEventListener('change', function() {
+                        console.log('[SELECT] change event disparado, valor:', this.value);
+                        cargarEstadisticas();
+                    });
+                }
+            });
             cargarGruposVirtuales();
         });
     </script>
