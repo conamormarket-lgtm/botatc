@@ -533,17 +533,30 @@
 
         async function cargarEstadisticas() {
             const lineId = document.getElementById('statsLineFilter').value;
+            // Resetear contadores inmediatamente para que el cambio sea visible
+            ['statRespondidos','statPorResponder','statPendientesBot','statPendientesAsesor']
+                .forEach(id => { const el = document.getElementById(id); if(el) el.innerText = '...'; });
             try {
-                const res = await fetch(`/api/admin/stats?line_id=${lineId}`);
+                // Cache-bust para evitar que el navegador sirva respuesta vieja
+                const res = await fetch(`/api/admin/stats?line_id=${lineId}&_t=${Date.now()}`, {
+                    cache: 'no-store',
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
                 if(!res.ok) return;
                 const data = await res.json();
                 if(data.stats) {
+                    // Partir desde 0 para que la animación siempre sea visible
+                    ['statRespondidos','statPorResponder','statPendientesBot','statPendientesAsesor']
+                        .forEach(id => { const el = document.getElementById(id); if(el) el.innerText = '0'; });
                     animarContador('statRespondidos', data.stats.respondidos);
                     animarContador('statPorResponder', data.stats.por_responder);
                     animarContador('statPendientesBot', data.stats.pendientes_bot);
                     animarContador('statPendientesAsesor', data.stats.pendientes_asesor);
                 }
-            } catch(e) {}
+            } catch(e) {
+                ['statRespondidos','statPorResponder','statPendientesBot','statPendientesAsesor']
+                    .forEach(id => { const el = document.getElementById(id); if(el) el.innerText = '—'; });
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
