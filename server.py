@@ -1829,6 +1829,7 @@ async def get_admin_stats(request: Request, line_id: str = "all"):
                 
     return JSONResponse({
         "ok": True,
+        "line_id_received": line_id,   # DEBUG: confirmar que llega el parámetro
         "stats": {
             "respondidos": respondidos,
             "por_responder": por_responder,

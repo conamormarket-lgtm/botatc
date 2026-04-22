@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5661 notes | Score threshold: >40
+> 5677 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,34 +18,33 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized Patched
++ - ⚠️ GOTCHA: Optimized Score — evol
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5661 notes | Score threshold: >40
++ > 5672 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Patched** — - - Patched security issue Request — parallelizes async operations for
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5647 notes | Score threshold: >40
++ > 5661 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Borrar — wraps unsafe operation in error bound
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5632 notes | Score threshold: >40
 + > 5639 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - Patched security issue Kevi
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5626 notes | Score threshold: >40
-+ > 5628 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5615 notes | Score threshold: >40
-+ > 5626 notes | Score threshold
-- **⚠️ GOTCHA: Patched security issue Devuelve — protects against XSS and CSRF token theft** — - @app.on_event("startup")
-+ def get_auto_reactivate_minutes(bot_id: 
 
 ## Project Standards
 
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Patched security issue Request — parallelizes async operations for speed — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- problem-fix in agent-rules.md — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - Replaced auth Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Optimized Score — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Optimized GOTCHA — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 5x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ problem-fix in server.py
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue Request — parallelizes async operations for speed
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Nivel — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
