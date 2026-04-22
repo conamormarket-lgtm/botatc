@@ -1726,25 +1726,6 @@ async def panel_admin(request: Request):
     return HTMLResponse(inyectar_tema_global(request, html))
 
 
-@app.get("/api/admin/lines")
-async def get_admin_lines(request: Request):
-    """Devuelve las líneas disponibles desde line_aliases.json."""
-    if not verificar_sesion(request):
-        return JSONResponse({"ok": False, "error": "No autorizado"}, status_code=401)
-    
-    lines = []
-    try:
-        import os, json
-        if os.path.exists("line_aliases.json"):
-            with open("line_aliases.json", "r", encoding="utf-8") as f:
-                data = json.load(f)
-                for k, v in data.items():
-                    lines.append({"id": k, "name": v.get("name", k), "icon": v.get("icon", "📱")})
-    except Exception as e:
-        pass
-    
-    return JSONResponse({"ok": True, "lines": lines})
-
 
 @app.get("/api/admin/stats")
 async def get_admin_stats(request: Request, line_id: str = "all"):

@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5550 notes | Score threshold: >40
+> 5568 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,13 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Iniciando — wraps unsafe operation in error bo
+- **⚠️ GOTCHA: Fixed null crash in Guardar — prevents null/undefined runtime crashes** — -     sock = makeWASocket({
++     const sock = makeWASocket({
+- 
++ 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5545 notes | Score threshold: >40
++ > 5550 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5533 notes | Score threshold: >40
 + > 5545 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — -     try:
@@ -31,13 +38,6 @@
 - }
 +       "id": "37bbd8cef977316d",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5495 notes | Score threshold: >40
-+ > 5515 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - Fixed null crash in Math
-- 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5439 notes | Score threshold: >40
-+ > 5440 notes | Score threshold
 
 ## Project Standards
 
