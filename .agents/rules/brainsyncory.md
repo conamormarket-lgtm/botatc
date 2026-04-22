@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5581 notes | Score threshold: >40
+> 5589 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,20 +20,27 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "a738f83453aa3b2e",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5581 notes | Score threshold: >40
++ > 5586 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: Added JW
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5579 notes | Score threshold: >40
++ > 5581 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5577 notes | Score threshold: >40
 + > 5579 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5573 notes | Score threshold: >40
 + > 5577 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - ⚠️ GOTCHA: Added JW
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5568 notes | Score threshold: >40
-+ > 5573 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5550 notes | Score threshold: >40
-+ > 5568 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Iniciando — wraps unsafe operation in error bo
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
 - discovery in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
@@ -41,7 +48,6 @@
 - problem-fix in shared-context.json — confirmed 3x
 - problem-fix in agent-rules.md — confirmed 3x
 - what-changed in settings.html — confirmed 4x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
