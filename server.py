@@ -1770,13 +1770,30 @@ async def get_admin_stats(request: Request, line_id: str = "all"):
     pendientes_asesor = 0
     
     for wa_id, s in sesiones.items():
-        s_line = s.get("lineId", "principal")
+        # Intentar obtener lineId desde el campo guardado
+        s_line = s.get("lineId", "") or ""
+        
+        # Normalizar IDs numéricos de Meta → siempre son la línea principal
+        if s_line and str(s_line).isdigit():
+            s_line = "principal"
+        
+        # Si no tiene lineId, intentar inferirlo desde la session key compuesta (ej: "qr_ventas_1_519...")
+        if not s_line:
+            parts = wa_id.rsplit("_", 1)
+            # Las claves compuestas tienen formato "lineId_numeroWA"
+            # Si la parte derecha es numérica larga → es el número de teléfono
+            if len(parts) == 2 and parts[1].isdigit() and len(parts[1]) >= 8:
+                inferred = parts[0]
+                s_line = inferred if inferred else "principal"
+            else:
+                s_line = "principal"
+        
         if line_id != "all" and s_line != line_id:
             continue
             
         unread = s.get("unread_count", 0)
         
-        if unread == 0:
+        if unread == 0 or unread == -1:  # -1 = respondido por asesor
             respondidos += 1
         else:
             por_responder += 1
