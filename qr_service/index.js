@@ -602,5 +602,30 @@ app.delete('/api/qr/logout', (req, res) => {
 
 app.listen(PORT, '127.0.0.1', () => {
     console.log(`✅ Servicio QR v2 escuchando en puerto ${PORT} — Interceptor de mensajes ACTIVO`);
-    // QRs are started on-demand via /api/qr/link
+    
+    // Auto-reconectar todas las líneas que tengan credenciales guardadas
+    try {
+        const entries = fs.readdirSync(__dirname);
+        const authDirs = entries.filter(e => e.startsWith('auth_info_baileys_') && fs.statSync(path.join(__dirname, e)).isDirectory());
+        if (authDirs.length > 0) {
+            console.log(`[AUTO-RECONNECT] Encontradas ${authDirs.length} sesiones guardadas. Reconectando...`);
+            for (const dir of authDirs) {
+                const lineId = dir.replace('auth_info_baileys_', '');
+                console.log(`[AUTO-RECONNECT] Iniciando sesión para lineId=${lineId}`);
+                connectToWhatsApp(lineId).catch(err => console.error(`[AUTO-RECONNECT] Error en ${lineId}:`, err.message));
+            }
+        } else {
+            console.log('[AUTO-RECONNECT] No hay sesiones guardadas. Esperando vinculación desde el panel.');
+        }
+    } catch(e) {
+        console.error('[AUTO-RECONNECT] Error escaneando sesiones:', e.message);
+    }
+});
+
+// Capturar errores no manejados para que un mensaje malo no mate el servidor
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('[ERROR] Promesa rechazada no manejada:', reason?.message || reason);
+});
+process.on('uncaughtException', (err) => {
+    console.error('[ERROR] Excepción no capturada (el servidor sigue vivo):', err.message);
 });

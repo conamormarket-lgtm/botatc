@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5568 notes | Score threshold: >40
+> 5581 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,35 +20,28 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5577 notes | Score threshold: >40
++ > 5579 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5573 notes | Score threshold: >40
++ > 5577 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - ⚠️ GOTCHA: Added JW
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5568 notes | Score threshold: >40
++ > 5573 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5550 notes | Score threshold: >40
++ > 5568 notes | Score threshold
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Iniciando — wraps unsafe operation in error bo
-- **⚠️ GOTCHA: Fixed null crash in Guardar — prevents null/undefined runtime crashes** — -     sock = makeWASocket({
-+     const sock = makeWASocket({
-- 
-+ 
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5545 notes | Score threshold: >40
-+ > 5550 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5533 notes | Score threshold: >40
-+ > 5545 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — -     try:
-+     # Se eliminó la creación automática para permitir mú
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "37bbd8cef977316d",
-+
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- discovery in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 7x
+- problem-fix in shared-context.json — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 3x
 - what-changed in settings.html — confirmed 4x
 - Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Patched security issue Kevin — confirmed 4x
-- decision in index.js — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
 
 ## Known Fixes
 
