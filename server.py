@@ -81,6 +81,18 @@ def inyectar_tema_global(request, html: str) -> str:
         }}
     '''
     
+    if not wp:
+        c_bg_hex_tmp = c_bg.lstrip('#')
+        is_light = False
+        if len(c_bg_hex_tmp) == 6:
+            r_tmp, g_tmp, b_tmp = tuple(int(c_bg_hex_tmp[i:i+2], 16) for i in (0, 2, 4))
+            if ((r_tmp * 299 + g_tmp * 587 + b_tmp * 114) / 1000) > 128:
+                is_light = True
+                
+        wp = "/static/chat_bg_light.png" if is_light else "/static/chat_bg_dark.jpg"
+        if "wallpaper_opacity" not in prefs:
+            wp_opacity = 0.5 if is_light else 0.25
+
     if wp:
         c_bg_hex = c_bg.lstrip('#')
         if len(c_bg_hex) == 6:
