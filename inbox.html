@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Inbox - IA-ATC</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%232563EB'/></svg>">
     <!-- Fuentes de Google: Inter para lectura, Outfit para acentos audaces -->
@@ -57,6 +57,8 @@
             display: flex;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
+            /* PWA standalone: reservar espacio para barra de navegación del sistema */
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         a {
