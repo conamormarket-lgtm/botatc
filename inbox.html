@@ -2430,12 +2430,17 @@
             if (event.key === 'Escape') {
                 if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
                     const urlParams = new URLSearchParams(window.location.search);
-                    const tab = urlParams.get('tab') || 'all';
-                    const line = urlParams.get('line') || sessionStorage.getItem('inboxLineFilter') || 'all';
-                    
-                    // Soft Virtual Exit to instantly clear chat UI without reloading
-                    const lineParam = line !== 'all' ? `&line=${line}` : '';
-                    window.history.replaceState(null, '', `/inbox?tab=${tab}${lineParam}`);
+                    const tab    = urlParams.get('tab')   || 'all';
+                    const line   = urlParams.get('line')  || sessionStorage.getItem('inboxLineFilter') || 'all';
+                    const label  = urlParams.get('label') || '';
+                    const unread = urlParams.get('unread') || '';
+
+                    // Soft Virtual Exit — preservar todos los filtros activos
+                    let backUrl = `/inbox?tab=${tab}`;
+                    if (line  && line  !== 'all') backUrl += `&line=${line}`;
+                    if (label)                    backUrl += `&label=${label}`;
+                    if (unread)                   backUrl += `&unread=${unread}`;
+                    window.history.replaceState(null, '', backUrl);
                     
                     document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
                     
