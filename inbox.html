@@ -53,7 +53,7 @@
             font-family: var(--font-main);
             background-color: var(--bg-main);
             color: var(--text-main);
-            height: 100dvh;
+            height: var(--real-vh, 100dvh);
             display: flex;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
@@ -507,6 +507,14 @@
     </style>
 </head>
 <body class="{body_class}">
+    <script>
+        // PWA fix: window.innerHeight es el viewport real, dvh puede incluir la barra de navegación del sistema
+        function _setRealVH() {
+            document.documentElement.style.setProperty('--real-vh', window.innerHeight + 'px');
+        }
+        _setRealVH();
+        window.addEventListener('resize', _setRealVH);
+    </script>
     <div id="chatListMenu" style="display:none; position:fixed; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); z-index:9999; flex-direction:column; overflow:visible; min-width:180px;">
         <div id="btnArchivar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('archive'); return false;">Archivar chat</div>
         <div id="btnFijar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('pin'); return false;">Fijar chat</div>
