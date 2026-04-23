@@ -492,57 +492,117 @@
         }
         .chip-remove:hover { color: #ef4444; }
 
-        /* ---------- LABEL FILTER BAR ---------- */
-        .label-filter-bar {
-            display: none; /* se muestra solo si hay etiquetas */
+        /* ---------- LABEL DROPDOWN ---------- */
+        .lf-dropdown {
+            position: relative;
+        }
+        .lf-btn {
+            background-color: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.6rem 1.5rem;
-            border-bottom: 1px solid var(--accent-border);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .lf-btn:hover { background-color: var(--accent-hover-soft); }
+        .lf-btn.active {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .lf-badge {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            padding: 0.05rem 0.45rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+        .lf-panel {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 220px;
+            max-height: 320px;
+            overflow-y: auto;
             background: var(--bg-main);
-            overflow-x: auto;
-            flex-shrink: 0;
+            border: 1px solid var(--accent-border);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+            z-index: 500;
+            padding: 0.5rem 0;
         }
-        .label-filter-bar::-webkit-scrollbar { height: 0; }
-        .label-filter-bar.has-labels { display: flex; }
-        .lf-title {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-        .lf-pill {
-            display: inline-flex;
+        .lf-panel.open { display: block; }
+        .lf-panel::-webkit-scrollbar { width: 4px; }
+        .lf-panel::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 4px; }
+        .lf-item {
+            display: flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.25rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            border: 1.5px solid transparent;
+            gap: 0.6rem;
+            padding: 0.55rem 1rem;
             cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.15s;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            transition: background 0.15s;
             user-select: none;
+        }
+        .lf-item:hover { background: var(--accent-hover-soft); }
+        .lf-item .lf-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
             flex-shrink: 0;
         }
-        .lf-pill:hover { opacity: 0.85; }
-        .lf-pill.active {
-            /* override inline styles when active */
-            box-shadow: 0 0 0 2px var(--text-main);
+        .lf-item .lf-check {
+            margin-left: auto;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1.5px solid var(--accent-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.15s;
         }
-        .lf-clear {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+        .lf-item.active .lf-check {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .lf-item.active .lf-check::after {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 7px;
+            border: 2px solid white;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+        .lf-divider {
+            height: 1px;
+            background: var(--accent-border);
+            margin: 0.4rem 0;
+        }
+        .lf-clear-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
             cursor: pointer;
-            padding: 0.2rem 0.5rem;
-            border-radius: 6px;
-            flex-shrink: 0;
+            font-size: 0.82rem;
+            color: var(--text-muted);
             transition: color 0.15s;
-            white-space: nowrap;
         }
-        .lf-clear:hover { color: var(--text-main); }
+        .lf-clear-item:hover { color: #ef4444; }
 
     </style>
 </head>
@@ -594,7 +654,19 @@
             </h2>
             <div class="pipeline-actions">
                 <input type="text" id="searchInput" class="search-bar" placeholder="Buscar cliente por nombre o télefono..." onkeyup="filterCards()">
-                
+
+                <!-- Dropdown de filtro por etiquetas -->
+                <div class="lf-dropdown" id="lfDropdown">
+                    <button class="lf-btn" id="lfBtn" onclick="toggleLabelDropdown()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        Etiquetas
+                        <span class="lf-badge" id="lfBadge" style="display:none;">0</span>
+                    </button>
+                    <div class="lf-panel" id="lfPanel">
+                        <!-- JS-rendered -->
+                    </div>
+                </div>
+
                 <label class="toggle-final">
                     <input type="checkbox" id="showFinalToggle" onchange="toggleFinalColumns()">
                     Mostrar finalizados
@@ -616,10 +688,7 @@
             </div>
         </div>
 
-        <!-- Barra de filtro por etiquetas: generada por JS con PIPELINE_LABELS -->
-        <div class="label-filter-bar" id="labelFilterBar">
-            <!-- JS-rendered -->
-        </div>
+
 
         <div class="pipeline-board">
             <!-- PIPELINE_COLUMNS -->
@@ -728,63 +797,96 @@
         setRealVh();
 
         // =============================================
-        // LABEL FILTER BAR
+        // =============================================
+        // LABEL DROPDOWN FILTER
         // =============================================
         let activeLabelIds = new Set();
 
-
-        function buildLabelFilterBar() {
-            const bar = document.getElementById('labelFilterBar');
+        function buildLabelDropdown() {
+            const panel = document.getElementById('lfPanel');
+            const btn   = document.getElementById('lfBtn');
             if (!PIPELINE_LABELS || PIPELINE_LABELS.length === 0) {
-                bar.style.display = 'none';
+                if (btn) btn.style.display = 'none';
                 return;
             }
-            bar.classList.add('has-labels');
-            bar.innerHTML = '<span class="lf-title">Etiqueta:</span>';
+            panel.innerHTML = '';
 
             PIPELINE_LABELS.forEach(lbl => {
-                const pill = document.createElement('span');
-                pill.className = 'lf-pill';
-                pill.dataset.labelId = lbl.id;
-                pill.style.cssText = `background:${lbl.color}22;color:${lbl.color};border-color:${lbl.color}66;`;
-                pill.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:${lbl.color};display:inline-block;"></span>${lbl.name}`;
-                pill.onclick = () => toggleLabelFilter(lbl.id);
-                bar.appendChild(pill);
+                const item = document.createElement('div');
+                item.className = 'lf-item';
+                item.dataset.labelId = lbl.id;
+                item.innerHTML = `
+                    <span class="lf-dot" style="background:${lbl.color};"></span>
+                    <span>${lbl.name}</span>
+                    <span class="lf-check"></span>
+                `;
+                item.onclick = () => toggleLabelFilter(lbl.id);
+                panel.appendChild(item);
             });
 
-            const clearBtn = document.createElement('span');
-            clearBtn.id = 'lf-clear-btn';
-            clearBtn.className = 'lf-clear';
-            clearBtn.textContent = '✕ Limpiar';
-            clearBtn.style.display = 'none';
-            clearBtn.onclick = clearLabelFilter;
-            bar.appendChild(clearBtn);
+            // Divider + Limpiar
+            const divider = document.createElement('div');
+            divider.className = 'lf-divider';
+            panel.appendChild(divider);
+
+            const clearItem = document.createElement('div');
+            clearItem.className = 'lf-clear-item';
+            clearItem.id = 'lf-clear-item';
+            clearItem.style.display = 'none';
+            clearItem.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Limpiar filtros`;
+            clearItem.onclick = (e) => { e.stopPropagation(); clearLabelFilter(); };
+            panel.appendChild(clearItem);
+        }
+
+        function toggleLabelDropdown() {
+            document.getElementById('lfPanel').classList.toggle('open');
         }
 
         function toggleLabelFilter(labelId) {
-            const pill = document.querySelector(`.lf-pill[data-label-id="${labelId}"]`);
+            const item = document.querySelector(`.lf-item[data-label-id="${labelId}"]`);
             if (activeLabelIds.has(labelId)) {
                 activeLabelIds.delete(labelId);
-                if (pill) pill.classList.remove('active');
+                if (item) item.classList.remove('active');
             } else {
                 activeLabelIds.add(labelId);
-                if (pill) pill.classList.add('active');
+                if (item) item.classList.add('active');
             }
-            const clearBtn = document.getElementById('lf-clear-btn');
-            if (clearBtn) clearBtn.style.display = activeLabelIds.size > 0 ? 'inline' : 'none';
+            // Actualizar badge y estado del botón
+            const badge = document.getElementById('lfBadge');
+            const btn   = document.getElementById('lfBtn');
+            const clearItem = document.getElementById('lf-clear-item');
+            if (badge) {
+                badge.textContent = activeLabelIds.size;
+                badge.style.display = activeLabelIds.size > 0 ? 'inline' : 'none';
+            }
+            if (btn) btn.classList.toggle('active', activeLabelIds.size > 0);
+            if (clearItem) clearItem.style.display = activeLabelIds.size > 0 ? 'flex' : 'none';
             filterCards();
         }
 
         function clearLabelFilter() {
             activeLabelIds.clear();
-            document.querySelectorAll('.lf-pill').forEach(p => p.classList.remove('active'));
-            const clearBtn = document.getElementById('lf-clear-btn');
-            if (clearBtn) clearBtn.style.display = 'none';
+            document.querySelectorAll('.lf-item').forEach(i => i.classList.remove('active'));
+            const badge = document.getElementById('lfBadge');
+            const btn   = document.getElementById('lfBtn');
+            const clearItem = document.getElementById('lf-clear-item');
+            if (badge) badge.style.display = 'none';
+            if (btn) btn.classList.remove('active');
+            if (clearItem) clearItem.style.display = 'none';
             filterCards();
         }
 
-        // Build label bar on load
-        buildLabelFilterBar();
+        // Cerrar dropdown al hacer click fuera
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('lfDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                document.getElementById('lfPanel')?.classList.remove('open');
+            }
+        });
+
+        // Build dropdown on load
+        buildLabelDropdown();
+
 
         function filterCards() {
             const query = document.getElementById('searchInput').value.toLowerCase();
