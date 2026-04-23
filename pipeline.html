@@ -484,13 +484,6 @@
             border: 2px solid transparent; transition: transform 0.2s;
         }
         .color-circle:hover { transform: scale(1.1); }
-        .color-circle.selected { border-color: var(--text-main); }
-        
-        .chips-container {
-            display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;
-        }
-        .chip {
-            background: var(--accent-bg); border: 1px solid var(--accent-border);
             padding: 0.2rem 0.6rem; border-radius: 16px; font-size: 0.8rem;
             display: flex; align-items: center; gap: 0.4rem;
         }
@@ -498,6 +491,58 @@
             cursor: pointer; color: var(--text-muted);
         }
         .chip-remove:hover { color: #ef4444; }
+
+        /* ---------- LABEL FILTER BAR ---------- */
+        .label-filter-bar {
+            display: none; /* se muestra solo si hay etiquetas */
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.5rem;
+            border-bottom: 1px solid var(--accent-border);
+            background: var(--bg-main);
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+        .label-filter-bar::-webkit-scrollbar { height: 0; }
+        .label-filter-bar.has-labels { display: flex; }
+        .lf-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .lf-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1.5px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .lf-pill:hover { opacity: 0.85; }
+        .lf-pill.active {
+            /* override inline styles when active */
+            box-shadow: 0 0 0 2px var(--text-main);
+        }
+        .lf-clear {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            flex-shrink: 0;
+            transition: color 0.15s;
+            white-space: nowrap;
+        }
+        .lf-clear:hover { color: var(--text-main); }
 
     </style>
 </head>
@@ -514,16 +559,16 @@
                 <rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/>
             </svg>
         </a>
-        <!-- Agent Settings Icon -->
-        <a href="/settings" class="nav-item" title="Personalizar Agente IA">
+        <!-- Agent Settings Icon (solo admin) -->
+        <a href="/settings" class="nav-item nav-admin-only" title="Personalizar Agente IA">
             <svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
         </a>
-        <!-- Admin Users Icon -->
-        <a href="/usuarios" class="nav-item" title="Panel de Usuarios">
+        <!-- Admin Users Icon (solo admin) -->
+        <a href="/usuarios" class="nav-item nav-admin-only" title="Panel de Usuarios">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         </a>
-        <!-- System Settings Icon -->
-        <a href="/admin" class="nav-item" title="Panel Clásico Anterior">
+        <!-- System Settings Icon (solo admin) -->
+        <a href="/admin" class="nav-item nav-admin-only" title="Panel Clásico Anterior">
             <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
         </a>
         
@@ -569,6 +614,11 @@
                     Configurar
                 </button>
             </div>
+        </div>
+
+        <!-- Barra de filtro por etiquetas: generada por JS con PIPELINE_LABELS -->
+        <div class="label-filter-bar" id="labelFilterBar">
+            <!-- JS-rendered -->
         </div>
 
         <div class="pipeline-board">
@@ -667,6 +717,7 @@
     <script>
         const STAGES = <!-- STAGES_JSON -->;
         const ES_ADMIN = <!-- ES_ADMIN -->;
+        const PIPELINE_LABELS = <!-- PIPELINE_LABELS_JSON -->;
         let currentMatchValues = [];
 
         // Fix viewport height for mobile
@@ -676,22 +727,85 @@
         window.addEventListener('resize', setRealVh);
         setRealVh();
 
+        // =============================================
+        // LABEL FILTER BAR
+        // =============================================
+        let activeLabelIds = new Set();
+
+
+        function buildLabelFilterBar() {
+            const bar = document.getElementById('labelFilterBar');
+            if (!PIPELINE_LABELS || PIPELINE_LABELS.length === 0) {
+                bar.style.display = 'none';
+                return;
+            }
+            bar.classList.add('has-labels');
+            bar.innerHTML = '<span class="lf-title">Etiqueta:</span>';
+
+            PIPELINE_LABELS.forEach(lbl => {
+                const pill = document.createElement('span');
+                pill.className = 'lf-pill';
+                pill.dataset.labelId = lbl.id;
+                pill.style.cssText = `background:${lbl.color}22;color:${lbl.color};border-color:${lbl.color}66;`;
+                pill.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:${lbl.color};display:inline-block;"></span>${lbl.name}`;
+                pill.onclick = () => toggleLabelFilter(lbl.id);
+                bar.appendChild(pill);
+            });
+
+            const clearBtn = document.createElement('span');
+            clearBtn.id = 'lf-clear-btn';
+            clearBtn.className = 'lf-clear';
+            clearBtn.textContent = '✕ Limpiar';
+            clearBtn.style.display = 'none';
+            clearBtn.onclick = clearLabelFilter;
+            bar.appendChild(clearBtn);
+        }
+
+        function toggleLabelFilter(labelId) {
+            const pill = document.querySelector(`.lf-pill[data-label-id="${labelId}"]`);
+            if (activeLabelIds.has(labelId)) {
+                activeLabelIds.delete(labelId);
+                if (pill) pill.classList.remove('active');
+            } else {
+                activeLabelIds.add(labelId);
+                if (pill) pill.classList.add('active');
+            }
+            const clearBtn = document.getElementById('lf-clear-btn');
+            if (clearBtn) clearBtn.style.display = activeLabelIds.size > 0 ? 'inline' : 'none';
+            filterCards();
+        }
+
+        function clearLabelFilter() {
+            activeLabelIds.clear();
+            document.querySelectorAll('.lf-pill').forEach(p => p.classList.remove('active'));
+            const clearBtn = document.getElementById('lf-clear-btn');
+            if (clearBtn) clearBtn.style.display = 'none';
+            filterCards();
+        }
+
+        // Build label bar on load
+        buildLabelFilterBar();
+
         function filterCards() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.pipeline-card');
             
             cards.forEach(card => {
-                const text = card.innerText.toLowerCase();
-                if (text.includes(query)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
+                const textMatch = !query || card.innerText.toLowerCase().includes(query);
+
+                // Label filter: la card debe tener TODAS las etiquetas activas
+                let labelMatch = true;
+                if (activeLabelIds.size > 0) {
+                    const cardLabels = (card.dataset.labels || '').split(',').filter(Boolean);
+                    labelMatch = [...activeLabelIds].every(lid => cardLabels.includes(lid));
                 }
+
+                card.style.display = (textMatch && labelMatch) ? 'flex' : 'none';
             });
 
             // Update counts
             document.querySelectorAll('.pipeline-column').forEach(col => {
-                const visible = col.querySelectorAll('.pipeline-card[style*="display: flex"], .pipeline-card:not([style*="display: none"])').length;
+                const visible = col.querySelectorAll('.pipeline-card:not([style*="display: none"])').length;
                 col.querySelector('.pipeline-column-count').innerText = visible;
             });
         }
@@ -707,6 +821,8 @@
 
         if (!ES_ADMIN) {
             document.getElementById('btnConfig').style.display = 'none';
+            // Ocultar pestañas del sidebar exclusivas de admins
+            document.querySelectorAll('.nav-admin-only').forEach(el => el.style.display = 'none');
         } else {
             // Show drag & drop toggle for admins
             document.getElementById('dndToggleWrap').classList.add('visible');

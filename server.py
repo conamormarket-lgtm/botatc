@@ -4617,6 +4617,7 @@ async def pipeline_view(request: Request):
             "labels_badges": labels_badges,
             "bot_dot_color": bot_dot_color,
             "estado_pedido": (s.get("datos_pedido") or {}).get("estadoGeneral", ""),
+            "label_ids": etiquetas_chat,  # lista de IDs para filtrado en frontend
         }
         if stage_id:
             columnas.setdefault(stage_id, []).append(card)
@@ -4625,7 +4626,8 @@ async def pipeline_view(request: Request):
 
     # Generar HTML de columnas
     def render_card(card):
-        return f"""<a href="/inbox/{card['wa_id']}" class="pipeline-card" style="text-decoration:none;" data-wa-id="{card['wa_id']}">
+        labels_data = ','.join(card.get('label_ids', []))
+        return f"""<a href="/inbox/{card['wa_id']}" class="pipeline-card" style="text-decoration:none;" data-wa-id="{card['wa_id']}" data-labels="{labels_data}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem;">
                 <span class="pipeline-card-name">{card['nombre']}</span>
                 <span style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;margin-left:0.5rem;">{card['tiempo']}</span>
@@ -4682,10 +4684,19 @@ async def pipeline_view(request: Request):
     es_admin_str = "true" if es_admin(request) else "false"
     stages_json = _json.dumps(global_pipeline_stages, default=str)
 
+    # Etiquetas de la línea principal (las únicas visibles en el pipeline)
+    pipeline_labels = [
+        {"id": l["id"], "name": l["name"], "color": l["color"]}
+        for l in global_labels
+        if l.get("line_id", "principal") in ("principal", "all", "", None)
+    ]
+    pipeline_labels_json = _json.dumps(pipeline_labels, default=str)
+
     html = html.replace("<!-- PIPELINE_COLUMNS -->", cols_html)
     html = html.replace("<!-- PIPELINE_FINAL_COLUMNS -->", final_cols_html)
     html = html.replace("<!-- STAGES_JSON -->", stages_json)
     html = html.replace("<!-- ES_ADMIN -->", es_admin_str)
+    html = html.replace("<!-- PIPELINE_LABELS_JSON -->", pipeline_labels_json)
     html = html.replace("{color_global}", "var(--primary-color)")
 
     # Inyectar ES_ADMIN para el JS del pipeline
