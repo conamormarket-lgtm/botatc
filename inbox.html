@@ -2431,9 +2431,11 @@
                 if (window.location.pathname !== '/inbox' && window.location.pathname.startsWith('/inbox/')) {
                     const urlParams = new URLSearchParams(window.location.search);
                     const tab = urlParams.get('tab') || 'all';
+                    const line = urlParams.get('line') || sessionStorage.getItem('inboxLineFilter') || 'all';
                     
                     // Soft Virtual Exit to instantly clear chat UI without reloading
-                    window.history.replaceState(null, '', `/inbox?tab=${tab}`);
+                    const lineParam = line !== 'all' ? `&line=${line}` : '';
+                    window.history.replaceState(null, '', `/inbox?tab=${tab}${lineParam}`);
                     
                     document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
                     
