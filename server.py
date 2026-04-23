@@ -2789,35 +2789,39 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if not hist: return "—"
         return hist[-1]["content"][:50] + ("…" if len(hist[-1]["content"]) > 50 else "")
 
+    # Check if we are in viewer only mode (e.g., from pipeline split view)
+    viewer_only = request.query_params.get("viewer_only") == "1"
+
     # Procesar Lista de Chats
     grupos_sesiones = []
-    for vg in global_groups:
-        miembros = vg.get("members", [])
-        sesiones_miembros = [sesiones.get(m) for m in miembros if m in sesiones]
-        if not sesiones_miembros: continue
-        vg_ultima_actividad = max((s.get("ultima_actividad", datetime.utcnow()) for s in sesiones_miembros))
-        
-        hist_total = []
-        for s in sesiones_miembros:
-            hist_total.extend(s.get("historial", []))
-        hist_total.sort(key=lambda x: str(x.get("timestamp", "")))
-        
-        s_fake = {
-            "ultima_actividad": vg_ultima_actividad,
-            "nombre_cliente": f"{vg.get('name')}",
-            "bot_activo": True,
-            "historial": hist_total[-50:],
-            "is_virtual_group": True,
-            "vg_id": vg.get("id"),
-            "etiquetas": [],
-            "is_pinned": vg.get("is_pinned", False),
-            "is_archived": vg.get("is_archived", False)
-        }
-        grupos_sesiones.append((vg.get("id"), s_fake))
+    todas = []
+    
+    if not viewer_only:
+        for vg in global_groups:
+            miembros = vg.get("members", [])
+            sesiones_miembros = [sesiones.get(m) for m in miembros if m in sesiones]
+            if not sesiones_miembros: continue
+            vg_ultima_actividad = max((s.get("ultima_actividad", datetime.utcnow()) for s in sesiones_miembros))
+            
+            hist_total = []
+            for s in sesiones_miembros:
+                hist_total.extend(s.get("historial", []))
+            hist_total.sort(key=lambda x: str(x.get("timestamp", "")))
+            
+            s_fake = {
+                "ultima_actividad": vg_ultima_actividad,
+                "nombre_cliente": f"{vg.get('name')}",
+                "bot_activo": True,
+                "historial": hist_total[-50:],
+                "is_virtual_group": True,
+                "vg_id": vg.get("id"),
+                "etiquetas": [],
+                "is_pinned": vg.get("is_pinned", False),
+                "is_archived": vg.get("is_archived", False)
+            }
+            grupos_sesiones.append((vg.get("id"), s_fake))
 
     # Reset unread count for active chat ONLY IF it's not an AJAX poll.
-    # When the user clicks a chat, the browser navigates to `/inbox/{wa_id}` (not ajax).
-    # When the sidebar updates in the background, it appends `?ajax=1`.
     is_ajax = request.query_params.get("ajax") == "1"
     if wa_id and wa_id in sesiones and not is_ajax:
         if sesiones[wa_id].get("unread_count", 0) != 0:
@@ -2827,7 +2831,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 guardar_sesion_chat(wa_id, sesiones[wa_id])
             except: pass
 
-    todas = sorted(list(sesiones.items()) + grupos_sesiones, key=lambda x: (x[1].get("is_pinned", False), x[1].get("ultima_actividad", datetime.min)), reverse=True)
+    if not viewer_only:
+        todas = sorted(list(sesiones.items()) + grupos_sesiones, key=lambda x: (x[1].get("is_pinned", False), x[1].get("ultima_actividad", datetime.min)), reverse=True)
+    
     lista_chats_html = ""
     
     # ------------------ Generador de Filtro de Etiquetas HTML ------------------
