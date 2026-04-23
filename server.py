@@ -2949,7 +2949,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     </div>
     """
     
+    viewer_only = request.query_params.get("viewer_only") == "1"
+    
     for num, s in todas:
+        if viewer_only: break
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
         activo = s.get("bot_activo", True)
         is_archived = s.get("is_archived", False)
