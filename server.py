@@ -2633,6 +2633,59 @@ async def ver_chat(request: Request, numero_wa: str):
                  transition:background .2s}}
       .back-btn:hover{{background:rgba(255,255,255,.25)}}
       .chat-area{{flex:1;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem;max-width:850px;
+                  width:100%;margin:0 auto}}
+      .mensaje{{display:flex;flex-direction:column;max-width:80%;position:relative}}
+      .bot-lado{{align-self:flex-end}}
+      .user-lado{{align-self:flex-start}}
+      .remitente{{font-size:.75rem;color:var(--text-gray);margin-bottom:.25rem;font-weight:600}}
+      .bot-lado .remitente{{text-align:right}}
+      .burbuja-bot{{background:var(--wa-bot);border-radius:12px 0 12px 12px;padding:.75rem 1rem;
+                   font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
+                   color:var(--text-dark);position:relative}}
+      .burbuja-user{{background:var(--wa-me);border-radius:0 12px 12px 12px;padding:.75rem 1rem;
+                    font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
+                    color:var(--text-dark);position:relative}}
+      /* Colitas de las burbujas */
+      .burbuja-bot::before{{content:"";position:absolute;top:0;right:-8px;
+                            border-left:8px solid var(--wa-bot);border-bottom:8px solid transparent}}
+      .burbuja-user::before{{content:"";position:absolute;top:0;left:-8px;
+                             border-right:8px solid var(--wa-me);border-bottom:8px solid transparent}}
+                             
+      .info-bar{{background:white;margin:1.5rem auto 0;border-radius:12px;padding:1rem 1.5rem;
+                 display:flex;gap:2rem;font-size:.9rem;color:var(--text-gray);flex-wrap:wrap;
+                 box-shadow:0 2px 5px rgba(0,0,0,.05);max-width:850px;width:calc(100% - 3rem);
+                 border:1px solid rgba(0,0,0,0.02)}}
+      .info-bar span{{display:flex;align-items:center;gap:.5rem}}
+      .info-bar b{{color:var(--text-dark);font-weight:600}}
+    </style></head>
+    <body>
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2>{nombre}</h2>
+        <small>+{numero_wa} &middot; Pedido #{pedido} &middot; {estado}</small>
+      </div>
+      <div class="topbar-right">
+        <span class="estado-chip">{estado_badge}</span>
+        {btn_reactivar.replace('<button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;\\n                     border-radius:8px;cursor:pointer;font-weight:600"', '<button class="btn-reactivar"')}
+        <a href="/admin" class="back-btn">← Volver al Panel</a>
+      </div>
+    </div>
+    <div class="info-bar">
+      <span>👤 <b>{nombre}</b></span>
+      <span>📦 Pedido <b>#{pedido}</b></span>
+      <span>📌 Estado <b>{estado}</b></span>
+      <span>💬 <b>{len(msgs)}</b> mensajes</span>
+    </div>
+    <div class="chat-area">
+      {burbujas}
+    </div>
+    </body></html>
+    """)
+
+# ==========================================
+# INBOX MODERNO (Tipo Respond.io / SPA)
+# ==========================================
+
 def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all", stage: str = "all"):
     import json
     aliases = {}

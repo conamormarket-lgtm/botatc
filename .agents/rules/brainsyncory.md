@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5934 notes | Score threshold: >40
+> 5938 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,8 +18,10 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
+## Important Warnings
 
+- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5918 notes | Score threshold: >40
++ > 5934 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
 + - gotcha in shared-co
 - **gotcha in shared-context.json** — -     }
@@ -40,19 +42,17 @@
 - }
 +       "id": "2ece099369ded0bc",
 +
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5915 notes | Score threshold: >40
-+ > 5918 notes | Score threshold
 
 ## Project Standards
 
+- discovery in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 5x
 - what-changed in shared-context.json — confirmed 5x
 - Patched security issue Patched — confirmed 4x
 - problem-fix in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
