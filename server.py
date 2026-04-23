@@ -592,14 +592,6 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         mensaje_id    = mensaje_data.get("id", "")
         mensaje_ts    = mensaje_data.get("timestamp", "")
         
-        # DEBUGGING: Guardar payload en un archivo para depurar si agent_message está llegando bien
-        try:
-            with open("debug_webhook.txt", "a", encoding="utf-8") as _df:
-                import json
-                _df.write(f"\n[{datetime.utcnow()}] fromMe={mensaje_data.get('agent_message', 'NO_PRESENTE')} type={mensaje_data.get('type')} data={json.dumps(mensaje_data)}\n")
-        except:
-            pass
-
         # Se ha eliminado el short-circuit de agent_message aquí para que
         # los mensajes enviados por el asesor desde el celular pasen por el parseo
         # multimedia (imágenes, audios, documentos) y se formatee correctamente.
@@ -766,10 +758,6 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     if msg_existente:
         # Si ya existe con este ID, actualizamos el contenido con el texto real
         msg_existente["content"] = texto_cliente
-        if is_agent:
-            msg_existente["role"] = "assistant"
-            msg_existente["sent_by"] = "agent_phone"
-            ses["unread_count"] = -1
     else:
         new_msg = {
             "role": "assistant" if is_agent else "user", 
