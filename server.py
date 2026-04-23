@@ -90,8 +90,9 @@ def inyectar_tema_global(request, html: str) -> str:
                 is_light = True
                 
         wp = "/static/chat_bg_light.png" if is_light else "/static/chat_bg_dark.jpg"
-        if "wallpaper_opacity" not in prefs:
-            wp_opacity = 0.5 if is_light else 0.25
+        # Ignorar la opacidad guardada en 'prefs' (que por defecto es 0.15) 
+        # para asegurar que estas imágenes por defecto sí se vean bien.
+        wp_opacity = 0.8 if is_light else 0.85
 
     if wp:
         c_bg_hex = c_bg.lstrip('#')
