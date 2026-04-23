@@ -139,6 +139,7 @@ async function connectToWhatsApp(lineId) {
                 const pushName = m.pushName || "Usuario";
                 const isFromMe = m.key.fromMe;
 
+                let isAgentMsg = false;
                 // CRÍTICO: Diferenciar eco del bot vs mensaje enviado por operador desde el celular
                 if (isFromMe) {
                     if (sentMsgPhoneMap.has(msg_id)) {
@@ -146,36 +147,9 @@ async function connectToWhatsApp(lineId) {
                         console.log(`[DEBUG] Eco del bot (fromMe=true, ID conocido) ignorado.`);
                         continue;
                     }
-                    // El operador escribió desde el celular → reenviar al CRM como mensaje saliente
-                    console.log(`[DEBUG] Mensaje del operador desde el celular (fromMe=true, ID desconocido). Reenviando al CRM.`);
-                    const msgTypeKey2 = Object.keys(m.message || {})[0];
-                    let agentText = '';
-                    if (msgTypeKey2 === 'conversation') agentText = m.message.conversation;
-                    else if (msgTypeKey2 === 'extendedTextMessage') agentText = m.message.extendedTextMessage?.text || '';
-                    else agentText = `[${msgTypeKey2 || 'media'}]`;
-
-                    const agentPayload = {
-                        "object": "whatsapp_business_account",
-                        "entry": [{ "id": "BAILEYS_MOCK", "changes": [{ "value": {
-                            "metadata": { "display_phone_number": lineId, "phone_number_id": lineId },
-                            "contacts": [{ "profile": { "name": "Asesor" }, "wa_id": wa_id }],
-                            "messages": [{
-                                "from": wa_id,
-                                "id": msg_id,
-                                "timestamp": timestamp,
-                                "type": "text",
-                                "text": { "body": agentText },
-                                "agent_message": true   // Flag especial: Python lo registrará como mensaje saliente
-                            }]
-                        }}]}]
-                    };
-                    try {
-                        await axios.post('http://127.0.0.1:8000/webhook', agentPayload, { timeout: 4000 });
-                        console.log(`[AGENT_MSG] ✅ Mensaje del operador reenviado al CRM para ${wa_id}: "${agentText}"`);
-                    } catch(e) {
-                        console.log(`[AGENT_MSG] ❌ Error enviando mensaje del operador: ${e.message}`);
-                    }
-                    continue;
+                    // El operador escribió desde el celular → lo pasaremos al CRM como agent_message
+                    console.log(`[DEBUG] Mensaje del operador desde el celular (fromMe=true, ID desconocido). Se procesará multimedia y se enviará al CRM.`);
+                    isAgentMsg = true;
                 }
                 
                 let msgType = "unknown";
@@ -238,6 +212,10 @@ async function connectToWhatsApp(lineId) {
                     "timestamp": timestamp,
                     "type": msgType
                 };
+                
+                if (isAgentMsg) {
+                    metaMessage["agent_message"] = true;
+                }
                 
                 if (msgType === 'text') {
                     metaMessage[msgType] = { "body": textBody };

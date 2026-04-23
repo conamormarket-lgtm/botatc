@@ -592,36 +592,9 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
         mensaje_id    = mensaje_data.get("id", "")
         mensaje_ts    = mensaje_data.get("timestamp", "")
         
-        # ── MENSAJE DEL OPERADOR ENVIADO DESDE EL CELULAR (via Baileys fromMe) ──────────────
-        # Node nos manda agent_message=True cuando el operador escribe directamente desde el celular
-        if mensaje_data.get("agent_message"):
-            phone_number_id_ag = changes.get("metadata", {}).get("phone_number_id", "principal")
-            if phone_number_id_ag and str(phone_number_id_ag).isdigit():
-                phone_number_id_ag = "principal"
-            numero_wa_ag = mensaje_data.get("from", "")
-            texto_ag = mensaje_data.get("text", {}).get("body", "")
-            session_key_ag = get_session_key(numero_wa_ag, phone_number_id_ag)
-            ses_ag = obtener_o_crear_sesion(numero_wa_ag, phone_number_id_ag)
-            ses_ag["lineId"] = phone_number_id_ag
-            ses_ag["numero_real"] = numero_wa_ag
-            import time as _time
-            # Solo agregar si no es duplicado
-            if not any(m.get("msg_id") == mensaje_id for m in ses_ag["historial"][-20:]):
-                ses_ag["historial"].append({
-                    "role": "assistant",
-                    "content": texto_ag,
-                    "msg_id": mensaje_id,
-                    "timestamp": int(_time.time()),
-                    "sent_by": "agent_phone"   # Marca visual en el CRM
-                })
-                ses_ag["unread_count"] = -1   # Marcar como respondido (asesor ya contestó)
-            try:
-                from firebase_client import guardar_sesion_chat
-                guardar_sesion_chat(session_key_ag, ses_ag)
-            except: pass
-            print(f"📤 [AGENT_MSG] Asesor → {numero_wa_ag} [{phone_number_id_ag}]: {texto_ag[:60]}")
-            return {"status": "ok"}
-        # ─────────────────────────────────────────────────────────────────────────────────────
+        # Se ha eliminado el short-circuit de agent_message aquí para que
+        # los mensajes enviados por el asesor desde el celular pasen por el parseo
+        # multimedia (imágenes, audios, documentos) y se formatee correctamente.
 
         # Ignorar mensajes duplicados enviados repetidamente por el webhook de Meta (sesión actual)
         if mensaje_id in mensajes_procesados_ids:
@@ -780,13 +753,27 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     msg_existente = next((m for m in reversed(ses["historial"][-20:]) if m.get("msg_id") == mensaje_id), None)
     
     import time
+    is_agent = mensaje_data.get("agent_message", False)
+    
     if msg_existente:
         # Si ya existe con este ID, actualizamos el contenido con el texto real
         msg_existente["content"] = texto_cliente
     else:
-        ses["historial"].append({"role": "user", "content": texto_cliente, "msg_id": mensaje_id, "timestamp": int(time.time())})
-        cur_unread = ses.get("unread_count", 0)
-        ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
+        new_msg = {
+            "role": "assistant" if is_agent else "user", 
+            "content": texto_cliente, 
+            "msg_id": mensaje_id, 
+            "timestamp": int(time.time())
+        }
+        if is_agent:
+            new_msg["sent_by"] = "agent_phone"
+        ses["historial"].append(new_msg)
+        
+        if is_agent:
+            ses["unread_count"] = -1  # Asesor ya contestó
+        else:
+            cur_unread = ses.get("unread_count", 0)
+            ses["unread_count"] = 1 if cur_unread == -1 else cur_unread + 1
         
     try: 
         from firebase_client import guardar_sesion_chat
@@ -794,6 +781,10 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     except: 
         pass
     # -----------------------------------------------------------------------------------------
+
+    if is_agent:
+        print(f"📤 [AGENT_MSG] Asesor → {numero_wa} [{phone_number_id}]: {texto_cliente[:60]}")
+        return {"status": "ok"}
 
     dict_msg = {"texto": texto_cliente, "id": mensaje_id}
     if session_key not in mensajes_pendientes:
