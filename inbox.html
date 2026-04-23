@@ -2220,10 +2220,15 @@
             const id = 'lbl_' + Date.now();
 
             try {
+                // Determinar la l\u00ednea activa: del chat abierto o del filtro de inbox
+                const line_id = window.ACTIVE_CHAT_LINE
+                    || new URLSearchParams(window.location.search).get('line')
+                    || 'principal';
+
                 const res = await fetch("/api/admin/labels/save", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id: id, name: name, color: color })
+                    body: JSON.stringify({ id: id, name: name, color: color, line_id: line_id })
                 });
                 if (res.ok) {
                     document.getElementById("createLabelModal").style.display = "none";
