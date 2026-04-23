@@ -4627,7 +4627,7 @@ async def pipeline_view(request: Request):
     # Generar HTML de columnas
     def render_card(card):
         labels_data = ','.join(card.get('label_ids', []))
-        return f"""<a href="/inbox/{card['wa_id']}" class="pipeline-card" style="text-decoration:none;" data-wa-id="{card['wa_id']}" data-labels="{labels_data}">
+        return f"""<a href="/inbox/{card['wa_id']}" class="pipeline-card" style="text-decoration:none;" data-wa-id="{card['wa_id']}" data-labels="{labels_data}" data-nombre="{card['nombre']}" data-phone="{card['wa_id']}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem;">
                 <span class="pipeline-card-name">{card['nombre']}</span>
                 <span style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;margin-left:0.5rem;">{card['tiempo']}</span>

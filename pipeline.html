@@ -605,6 +605,110 @@
         .lf-clear-item:hover { color: #ef4444; }
 
         /* ===================================================
+           SPLIT VIEW — PANEL LATERAL DE CHAT
+           =================================================== */
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(24px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Cuando el chat está abierto, el pipeline se encoge */
+        body.chat-open .pipeline-main {
+            flex: 0 0 50%;
+            min-width: 0;
+            border-right: 1px solid var(--accent-border);
+        }
+
+        .chat-side-panel {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+            background: var(--bg-main);
+            overflow: hidden;
+            animation: slideInRight 0.22s ease;
+        }
+        body.chat-open .chat-side-panel { display: flex; }
+
+        /* Header del panel */
+        .chat-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--accent-border);
+            background: var(--bg-main);
+            flex-shrink: 0;
+        }
+        .chat-panel-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .chat-panel-info { flex: 1; min-width: 0; }
+        .chat-panel-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-panel-sub { font-size: 0.75rem; color: var(--text-muted); }
+        .chat-panel-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .chat-panel-close:hover { background: rgba(239,68,68,0.12); color: #ef4444; }
+
+        /* Spinner de carga */
+        .chat-panel-loading {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Iframe ocupa todo el espacio restante */
+        .chat-panel-iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+        }
+
+        /* MÓVIL: panel ocupa toda la pantalla como overlay */
+        @media (max-width: 768px) {
+            body.chat-open .pipeline-main { flex: 1; border-right: none; }
+            .chat-side-panel {
+                position: fixed;
+                inset: 0;
+                z-index: 200;
+            }
+        }
+
+        /* ===================================================
            RESPONSIVE DESIGN (MÓVIL / TABLET)
            Patrón del proyecto: sidebar → barra inferior
            =================================================== */
@@ -688,6 +792,7 @@
             .toggle-final { font-size: 0.78rem; }
             .dnd-toggle-wrap { font-size: 0.78rem; }
         }
+
 
     </style>
 </head>
@@ -779,6 +884,30 @@
             <!-- PIPELINE_COLUMNS -->
             <!-- PIPELINE_FINAL_COLUMNS -->
         </div>
+    </div>
+
+    <!-- PANEL LATERAL DEL CHAT (split view) -->
+    <div class="chat-side-panel" id="chatSidePanel">
+        <div class="chat-panel-header">
+            <div class="chat-panel-avatar" id="chatPanelAvatar">?</div>
+            <div class="chat-panel-info">
+                <div class="chat-panel-name" id="chatPanelName">Cargando...</div>
+                <div class="chat-panel-sub" id="chatPanelSub"></div>
+            </div>
+            <a id="chatPanelOpenLink" href="#" target="_blank" title="Abrir en pestaña completa"
+               style="color:var(--text-muted);display:flex;align-items:center;padding:0.4rem;border-radius:8px;transition:all 0.15s;"
+               onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background=''">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+            <button class="chat-panel-close" onclick="closeChatPanel()" title="Cerrar panel">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="chat-panel-loading" id="chatPanelLoading">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-anim" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            Cargando chat...
+        </div>
+        <iframe class="chat-panel-iframe" id="chatIframe" style="display:none;" title="Chat"></iframe>
     </div>
 
     <!-- MODAL DE CONFIGURACIÓN DE PIPELINE -->
@@ -971,6 +1100,85 @@
 
         // Build dropdown on load
         buildLabelDropdown();
+
+        // =============================================
+        // SPLIT VIEW — CHAT PANEL
+        // =============================================
+
+        // CSS que se inyectará en el iframe para ocultar todo excepto el viewer
+        const INBOX_EMBED_CSS = `
+            .sidebar-nav { display: none !important; }
+            .chat-list-panel { display: none !important; }
+            .chat-viewer-panel { flex: 1 !important; border-left: none !important; }
+            body { height: 100vh !important; overflow: hidden !important; }
+            .btn-responsive-back { display: none !important; }
+        `;
+
+        function openChatPanel(waId, nombre, phone) {
+            const panel   = document.getElementById('chatSidePanel');
+            const iframe  = document.getElementById('chatIframe');
+            const loading = document.getElementById('chatPanelLoading');
+            const nameEl  = document.getElementById('chatPanelName');
+            const subEl   = document.getElementById('chatPanelSub');
+            const avatar  = document.getElementById('chatPanelAvatar');
+            const link    = document.getElementById('chatPanelOpenLink');
+
+            // Actualizar header del panel
+            nameEl.textContent  = nombre || waId;
+            subEl.textContent   = phone  || waId;
+            avatar.textContent  = (nombre || waId).charAt(0).toUpperCase();
+            link.href           = `/inbox/${waId}`;
+
+            // Mostrar spinner, ocultar iframe
+            loading.style.display = 'flex';
+            iframe.style.display  = 'none';
+            iframe.src            = '';
+
+            // Abrir panel
+            document.body.classList.add('chat-open');
+
+            // Cargar inbox con el chat
+            iframe.onload = function () {
+                try {
+                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+                    // Inyectar CSS para ocultar sidebar y lista de chats
+                    const styleEl = doc.createElement('style');
+                    styleEl.id = 'pipeline-embed-css';
+                    styleEl.textContent = INBOX_EMBED_CSS;
+                    doc.head.appendChild(styleEl);
+                } catch(e) {
+                    // Si hay error CORS (no debería al ser mismo origen), ignorar
+                }
+                // Mostrar iframe, ocultar spinner
+                loading.style.display = 'none';
+                iframe.style.display  = 'block';
+            };
+
+            iframe.src = `/inbox/${waId}`;
+        }
+
+        function closeChatPanel() {
+            document.body.classList.remove('chat-open');
+            const iframe = document.getElementById('chatIframe');
+            iframe.src   = '';
+            iframe.style.display = 'none';
+            document.getElementById('chatPanelLoading').style.display = 'flex';
+        }
+
+        // Interceptar clicks en las tarjetas del pipeline
+        document.getElementById('chatSidePanel'); // referencia temprana
+        document.addEventListener('click', function(e) {
+            const card = e.target.closest('.pipeline-card');
+            if (!card) return;
+            // Si D&D está activo y se está arrastrando, no abrir
+            if (document.body.classList.contains('dnd-active') && dragCard) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const waId  = card.dataset.waId  || '';
+            const nombre = card.dataset.nombre || '';
+            const phone  = card.dataset.phone  || waId;
+            if (waId) openChatPanel(waId, nombre, phone);
+        }, true); // capture=true para interceptar antes del navegador
 
 
         function filterCards() {
