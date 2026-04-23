@@ -209,20 +209,40 @@ def startup_event():
         print(f"[OK] Se cargaron {len(global_pipeline_stages)} etapas de pipeline.")
 
         # Batch sync: asignar pipeline_stage a sesiones de la línea principal
+        # También busca pedidos para sesiones sin datos_pedido (evita tener que usar el botón Sincronizar)
         _synced = 0
+        _fetched = 0
+        from firebase_client import buscar_pedido_por_telefono, guardar_sesion_chat
         for _wa_id, _s in sesiones.items():
-            if _s.get("lineId", "principal") == "principal" and _s.get("datos_pedido"):
-                _eg = _s["datos_pedido"].get("estadoGeneral", "")
-                _stage_id = next(
-                    (st["id"] for st in global_pipeline_stages
-                     if _eg in st.get("match_values", [])),
-                    None
-                )
-                if _s.get("pipeline_stage") != _stage_id:
-                    _s["pipeline_stage"] = _stage_id
-                    _synced += 1
-        if _synced:
-            print(f"[OK] Pipeline: {_synced} sesiones sincronizadas al arranque.")
+            if _s.get("lineId", "principal") != "principal":
+                continue
+            # Si no tiene pedido vinculado, intentar buscarlo por teléfono
+            if not _s.get("datos_pedido"):
+                try:
+                    _pedidos = buscar_pedido_por_telefono(_wa_id)
+                    if _pedidos:
+                        _s["datos_pedido"] = _pedidos[0]
+                        _s["pedidos_multiples"] = _pedidos
+                        _fetched += 1
+                except Exception as _fe:
+                    pass  # No bloquear el arranque si falla una búsqueda
+            # Asignar etapa según estadoGeneral
+            _eg = (_s.get("datos_pedido") or {}).get("estadoGeneral", "")
+            _stage_id = next(
+                (st["id"] for st in global_pipeline_stages
+                 if _eg in st.get("match_values", [])),
+                None
+            )
+            if _s.get("pipeline_stage") != _stage_id:
+                _s["pipeline_stage"] = _stage_id
+                _synced += 1
+                # Persistir cambio en Firestore
+                try:
+                    guardar_sesion_chat(_wa_id, _s)
+                except Exception:
+                    pass
+        if _fetched or _synced:
+            print(f"[OK] Pipeline al arranque: {_synced} etapas asignadas, {_fetched} pedidos recuperados.")
     except Exception as e:
         print(f"[ERROR] Error al restaurar datos desde Firebase: {e}")
 
@@ -4668,17 +4688,14 @@ async def pipeline_view(request: Request):
     html = html.replace("<!-- ES_ADMIN -->", es_admin_str)
     html = html.replace("{color_global}", "var(--primary-color)")
 
-    # Inyectar custom theme igual que en inbox
-    try:
-        from firebase_client import cargar_configuracion_tema
-        cfg = cargar_configuracion_tema()
-        if cfg:
-            import json as _j2
-            custom_css = cfg.get("custom_css", "")
-            html = html.replace('<style id="custom-theme-css">', f'<script>window.ES_ADMIN = {es_admin_str};</script><style id="custom-theme-css">{custom_css}')
-    except: pass
+    # Inyectar ES_ADMIN para el JS del pipeline
+    html = html.replace('<style id="custom-theme-css">', f'<script>window.ES_ADMIN = {es_admin_str};</script><style id="custom-theme-css">')
+
+    # Inyectar tema del usuario (colores configurados en Mi Perfil)
+    html = inyectar_tema_global(request, html)
 
     return HTMLResponse(html)
+
 
 from typing import List
 

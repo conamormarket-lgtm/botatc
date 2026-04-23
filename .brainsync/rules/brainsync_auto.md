@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5958 notes | Score threshold: >40
+> 5988 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,33 +20,32 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5943 notes | Score threshold: >40
-+ > 5948 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Reload — prevents null/undefined runtime crash
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "8faa11c380d902a1",
++       "id": "a958297714794ecf",
 +
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5938 notes | Score threshold: >40
-+ > 5943 notes | Score threshold
-- **⚠️ GOTCHA: Patched security issue Colitas — parallelizes async operations for speed** — - def renderizar_inbox(request: Request, wa_id: str = None, tab: str =
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5918 notes | Score threshold: >40
-+ > 5934 notes | Score threshold
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - gotcha in shared-co
+- **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...** — -     # Inyectar tema del usuario (colores configurados en Mi Perfil)
+- **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...** — -     # Inyectar custom theme igual que en inbox
++     # Inyectar tem
+- **⚠️ GOTCHA: Patched security issue Tambi — protects against XSS and CSRF token theft** — -         _synced = 0
++         # También busca pedidos para sesiones
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5943 notes | Score threshold: >40
++ > 5948 notes | Score threshold
 
 ## Project Standards
 
+- Patched security issue Kevin — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - what-changed in shared-context.json — confirmed 4x
 - Optimized GOTCHA — confirmed 3x
 - Added JWT tokens authentication — confirmed 4x
 - discovery in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
-- what-changed in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 5x
 
 ## Known Fixes
 
