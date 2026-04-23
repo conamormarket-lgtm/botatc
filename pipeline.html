@@ -604,6 +604,91 @@
         }
         .lf-clear-item:hover { color: #ef4444; }
 
+        /* ===================================================
+           RESPONSIVE DESIGN (MÓVIL / TABLET)
+           Patrón del proyecto: sidebar → barra inferior
+           =================================================== */
+
+        /* TABLET (≤1024px): columnas más compactas */
+        @media (max-width: 1024px) {
+            .pipeline-column { flex: 0 0 270px; }
+            .search-bar { width: 180px; }
+        }
+
+        /* MÓVIL (≤768px): patrón completo del proyecto */
+        @media (max-width: 768px) {
+            /* 1. Layout raíz: columna vertical */
+            body { flex-direction: column; }
+
+            /* 2. Sidebar → barra de navegación inferior */
+            .sidebar-nav {
+                flex-direction: row;
+                width: 100%;
+                height: 65px;
+                padding: 0;
+                border-right: none;
+                border-top: 1px solid var(--accent-border);
+                order: 3;
+                justify-content: space-around;
+                flex-shrink: 0;
+            }
+            .nav-item { margin-bottom: 0; }
+
+            /* 3. Área principal ocupa el espacio disponible */
+            .pipeline-main {
+                order: 1;
+                flex: 1;
+                min-height: 0;
+            }
+
+            /* 4. Header: apilado en columna */
+            .pipeline-header {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: stretch;
+                padding: 1rem;
+            }
+            .pipeline-header h2 { font-size: 1.1rem; }
+
+            /* 5. Acciones del header: se reorganizan en wrap */
+            .pipeline-actions {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            /* 6. Search bar ocupa todo el ancho disponible */
+            .search-bar { width: 100%; flex: 1 1 100%; }
+
+            /* 7. Board: scroll vertical en lugar de horizontal
+                  Las columnas se apilan y ocupan todo el ancho */
+            .pipeline-board {
+                flex-direction: column;
+                overflow-x: hidden;
+                overflow-y: auto;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .pipeline-column {
+                flex: 0 0 auto;
+                width: 100%;
+                max-height: 320px;
+            }
+
+            /* 8. Dropdown de etiquetas: panel anclado a la izquierda en móvil */
+            .lf-panel {
+                right: auto;
+                left: 0;
+            }
+
+            /* 9. Modal ocupa más ancho en pantallas pequeñas */
+            .modal-content { width: 96%; max-height: 95vh; }
+            .modal-body { padding: 1rem; }
+
+            /* 10. Ocultar textos de los toggles para ahorrar espacio */
+            .toggle-final { font-size: 0.78rem; }
+            .dnd-toggle-wrap { font-size: 0.78rem; }
+        }
+
     </style>
 </head>
 <body>
