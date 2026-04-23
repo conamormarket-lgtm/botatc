@@ -565,31 +565,35 @@
     <div class="chat-list-panel">
         <div class="list-header">
             <h2>Bandeja de Entrada</h2>
-            <div class="list-tabs">
+            
+            <!-- BUSCADOR / NUEVO CHAT (PILL STYLE) -->
+            <div style="margin-top: 1.25rem; margin-bottom: 0.75rem; position: relative;">
+                <input type="text" id="chatSearchInput" placeholder="Buscar o iniciar número (51...)"
+                    style="width:100%; padding: 0.75rem 1rem 0.75rem 2.8rem; border-radius: 24px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.95rem; outline:none; transition: all 0.2s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"
+                    autocomplete="off"
+                    onfocus="this.style.borderColor='var(--primary-color)'; this.style.backgroundColor='rgba(255,255,255,0.08)';"
+                    onblur="this.style.borderColor='var(--accent-border)'; this.style.backgroundColor='var(--accent-bg)';"
+                    onmouseover="if(document.activeElement !== this) this.style.backgroundColor='var(--accent-hover-soft)';"
+                    onmouseout="if(document.activeElement !== this) this.style.backgroundColor='var(--accent-bg)';"
+                >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5"
+                    style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); opacity: 0.7;">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+
+                <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()"
+                    style="display:none; position:absolute; right:0.5rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:18px; color:white; padding: 0.4rem 0.8rem; font-size: 0.7rem; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:0.05em;"
+                    title="Empezar un chat con este número">NUEVO</button>
+            </div>
+
+            <div class="list-tabs" style="margin-top: 0.5rem; gap: 1rem;">
                 <a href="/inbox?tab=all" class="tab {tab_all_active}">Todos</a>
                 <a href="/inbox?tab=human" class="tab {tab_human_active}">Humanos</a>
                 <a href="/inbox?tab=archived" class="tab {tab_archived_active}">Archivados</a>
             </div>
 
             {labels_filter_html}
-            
-
-
-            <!-- BUSCADOR / NUEVO CHAT -->
-            <div style="margin-top: 1rem; margin-bottom: 1rem; position: relative;">
-                <input type="text" id="chatSearchInput" placeholder="Buscar chats o iniciar número en 51..."
-                    style="width:100%; padding: 0.6rem 2.5rem; border-radius: 8px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text-main); font-size: 0.9rem; outline:none;"
-                    autocomplete="off">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"
-                    style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%);">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-
-                <button type="button" id="btnNewChat" onclick="iniciarNuevoChat()"
-                    style="display:none; position:absolute; right:0.4rem; top:50%; transform:translateY(-50%); background:var(--primary-color); border:none; border-radius:6px; color:white; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight:bold; cursor:pointer;"
-                    title="Empezar un chat con este número">NUEVO</button>
-            </div>
         </div>
 
         <div class="chats-container" id="regularChatsContainer">
