@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5938 notes | Score threshold: >40
+> 5958 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,41 +18,35 @@
 
 **Stack:** JavaScript/Python · Express + FastAPI
 
-## Important Warnings
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5943 notes | Score threshold: >40
++ > 5948 notes | Score threshold
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "8faa11c380d902a1",
++
+- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5938 notes | Score threshold: >40
++ > 5943 notes | Score threshold
+- **⚠️ GOTCHA: Patched security issue Colitas — parallelizes async operations for speed** — - def renderizar_inbox(request: Request, wa_id: str = None, tab: str =
 - **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5918 notes | Score threshold: >40
 + > 5934 notes | Score threshold
 - **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
 + - gotcha in shared-co
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "1a26f5e4c774df93",
-+
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Added JWT tokens auth
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
-+ - gotcha in shared-co
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "2ece099369ded0bc",
-+
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in shared-context.json — confirmed 4x
+- Optimized GOTCHA — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
 - discovery in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - what-changed in shared-context.json — confirmed 3x
 - Added JWT tokens authentication — confirmed 5x
-- what-changed in shared-context.json — confirmed 5x
-- Patched security issue Patched — confirmed 4x
-- problem-fix in shared-context.json — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
 
 ## Known Fixes
 

@@ -5638,10 +5638,25 @@ async def api_pipeline_sync(request: Request):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     global global_pipeline_stages
+    from firebase_client import buscar_pedido_por_telefono, guardar_sesion_chat
     synced = 0
+    fetched = 0
     for wa_id, s in sesiones.items():
         if s.get("lineId", "principal") != "principal":
             continue
+        # Si no tiene datos_pedido, intentar buscar el pedido por teléfono
+        if not s.get("datos_pedido"):
+            # wa_id suele ser el número de teléfono directo (ej: 51913048384)
+            telefono = wa_id
+            try:
+                pedidos_encontrados = buscar_pedido_por_telefono(telefono)
+                if pedidos_encontrados:
+                    s["datos_pedido"] = pedidos_encontrados[0]
+                    s["pedidos_multiples"] = pedidos_encontrados
+                    fetched += 1
+            except Exception as _e:
+                print(f"[SYNC] Error buscando pedido para {wa_id}: {_e}")
+        
         eg = (s.get("datos_pedido") or {}).get("estadoGeneral", "")
         new_stage = next(
             (st["id"] for st in global_pipeline_stages if eg in st.get("match_values", [])),
@@ -5650,7 +5665,13 @@ async def api_pipeline_sync(request: Request):
         if s.get("pipeline_stage") != new_stage:
             s["pipeline_stage"] = new_stage
             synced += 1
-    return {"ok": True, "synced": synced}
+            # Persistir en Firestore para que sobreviva reinicios
+            try:
+                guardar_sesion_chat(wa_id, s)
+            except Exception as _e:
+                print(f"[SYNC] Error guardando sesión {wa_id}: {_e}")
+    return {"ok": True, "synced": synced, "fetched_orders": fetched}
+
 
 @app.get("/api/pipeline/scan-orders")
 async def api_pipeline_scan_orders(request: Request):

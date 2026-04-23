@@ -497,6 +497,11 @@
                     Mostrar finalizados
                 </label>
 
+                <button class="btn-config" id="btnSync" onclick="syncPipeline()" title="Busca pedidos faltantes y re-sincroniza todas las etapas">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    Sincronizar
+                </button>
+
                 <button class="btn-config" id="btnConfig">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     Configurar
@@ -640,12 +645,56 @@
 
         if (!ES_ADMIN) {
             document.getElementById('btnConfig').style.display = 'none';
+            document.getElementById('btnSync').style.display = 'none';
         } else {
             document.getElementById('btnConfig').onclick = () => {
                 renderStagesList();
                 document.getElementById('configModal').style.display = 'flex';
             };
         }
+
+        async function syncPipeline() {
+            const btn = document.getElementById('btnSync');
+            const origText = btn.innerHTML;
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Sincronizando...`;
+            try {
+                const res = await fetch('/api/pipeline/sync', {method: 'POST'});
+                const data = await res.json();
+                if (data.ok) {
+                    showToast(`Sincronización completa: ${data.synced} sesiones actualizadas, ${data.fetched_orders} pedidos recuperados.`);
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    showToast('Error al sincronizar.', true);
+                }
+            } catch(e) {
+                showToast('Error de conexión.', true);
+            }
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.innerHTML = origText;
+        }
+
+        function showToast(msg, isError = false) {
+            let t = document.getElementById('pipelineToast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'pipelineToast';
+                t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--bg-main);border:1px solid var(--accent-border);color:var(--text-main);padding:0.75rem 1.5rem;border-radius:12px;font-size:0.85rem;box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:99999;transition:opacity 0.3s;font-family:var(--font-main);';
+                document.body.appendChild(t);
+            }
+            t.style.borderColor = isError ? '#ef4444' : 'var(--primary-color)';
+            t.textContent = msg;
+            t.style.opacity = '1';
+            t.style.display = 'block';
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.style.display='none', 300); }, 3500);
+        }
+
+        // Spin animation for sync button
+        const style = document.createElement('style');
+        style.textContent = '@keyframes spin { from {transform:rotate(0deg)} to {transform:rotate(360deg)} }';
+        document.head.appendChild(style);
 
         function closeConfigModal() {
             document.getElementById('configModal').style.display = 'none';
