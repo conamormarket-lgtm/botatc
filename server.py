@@ -2837,7 +2837,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <a href="{base_url}?tab={tab}&unread={unread or ''}&line={line_filter}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
     """
     
-    for l in global_labels:
+    for l in labels_for_line:
         lid = l.get("id")
         lnombre = l.get("name", "Etiqueta")
         lcolor = l.get("color", "#94a3b8")
