@@ -139,7 +139,8 @@ def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
             "is_pinned": sesion_dict.get("is_pinned", False),
             "is_archived": sesion_dict.get("is_archived", False),
             "unread_count": sesion_dict.get("unread_count", 0),
-            "lineId": sesion_dict.get("lineId", "principal")
+            "lineId": sesion_dict.get("lineId", "principal"),
+            "pipeline_stage": sesion_dict.get("pipeline_stage", None),
         }
         
         # Firestore maneja datetimes nativamente
@@ -356,6 +357,71 @@ def reordenar_etiquetas_bd(lista_ids: list):
         doc_ref = db.collection("bot_labels").document(doc_id)
         batch.update(doc_ref, {"orden": idx})
     batch.commit()
+
+
+# ============================================================
+#  PIPELINE DE ETAPAS (bot_pipeline_stages)
+# ============================================================
+
+def cargar_pipeline_stages_bd() -> list:
+    """Carga todas las etapas del pipeline ordenadas por 'order'."""
+    db = inicializar_firebase()
+    docs = db.collection("bot_pipeline_stages").stream()
+    stages = []
+    for doc in docs:
+        data = doc.to_dict()
+        if "id" in data:
+            stages.append(data)
+    stages.sort(key=lambda x: x.get("order", 999))
+    return stages
+
+def guardar_pipeline_stage_bd(stage: dict):
+    """Crea o actualiza una etapa del pipeline en Firestore."""
+    db = inicializar_firebase()
+    doc_id = stage.get("id")
+    if not doc_id:
+        return
+    db.collection("bot_pipeline_stages").document(doc_id).set({
+        "id": doc_id,
+        "name": stage.get("name", ""),
+        "color": stage.get("color", "#94a3b8"),
+        "order": stage.get("order", 999),
+        "is_final": stage.get("is_final", False),
+        "match_values": stage.get("match_values", []),
+        "updatedAt": firestore.SERVER_TIMESTAMP
+    }, merge=True)
+
+def eliminar_pipeline_stage_bd(stage_id: str):
+    """Elimina una etapa del pipeline de Firestore."""
+    db = inicializar_firebase()
+    db.collection("bot_pipeline_stages").document(stage_id).delete()
+
+def reordenar_pipeline_stages_bd(lista_ids: list):
+    """Actualiza el campo 'order' de cada etapa según su posición en lista_ids."""
+    db = inicializar_firebase()
+    batch = db.batch()
+    for idx, doc_id in enumerate(lista_ids):
+        doc_ref = db.collection("bot_pipeline_stages").document(doc_id)
+        batch.update(doc_ref, {"order": idx})
+    batch.commit()
+
+def scan_estadosgenerales_bd(limit: int = 500) -> list:
+    """
+    Lee los últimos N pedidos y extrae todos los valores únicos de 'estadoGeneral'.
+    Usado para el auto-descubrimiento de etapas.
+    """
+    db = inicializar_firebase()
+    from config import COLECCION_PEDIDOS
+    docs = db.collection(COLECCION_PEDIDOS).order_by(
+        "createdAt", direction="DESCENDING"
+    ).limit(limit).stream()
+    valores = set()
+    for doc in docs:
+        data = doc.to_dict()
+        eg = data.get("estadoGeneral", "")
+        if eg and isinstance(eg, str) and eg.strip():
+            valores.add(eg.strip())
+    return sorted(list(valores))
 
 
 # ============================================================

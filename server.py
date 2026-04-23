@@ -201,6 +201,28 @@ def startup_event():
         print(f"[OK] Se restauraron {len(global_labels)} etiquetas globales.")
         global_groups = cargar_grupos_bd()
         print(f"[OK] Se restauraron {len(global_groups)} grupos virtuales.")
+
+        # Cargar etapas del pipeline
+        from firebase_client import cargar_pipeline_stages_bd
+        global global_pipeline_stages
+        global_pipeline_stages = cargar_pipeline_stages_bd()
+        print(f"[OK] Se cargaron {len(global_pipeline_stages)} etapas de pipeline.")
+
+        # Batch sync: asignar pipeline_stage a sesiones de la línea principal
+        _synced = 0
+        for _wa_id, _s in sesiones.items():
+            if _s.get("lineId", "principal") == "principal" and _s.get("datos_pedido"):
+                _eg = _s["datos_pedido"].get("estadoGeneral", "")
+                _stage_id = next(
+                    (st["id"] for st in global_pipeline_stages
+                     if _eg in st.get("match_values", [])),
+                    None
+                )
+                if _s.get("pipeline_stage") != _stage_id:
+                    _s["pipeline_stage"] = _stage_id
+                    _synced += 1
+        if _synced:
+            print(f"[OK] Pipeline: {_synced} sesiones sincronizadas al arranque.")
     except Exception as e:
         print(f"[ERROR] Error al restaurar datos desde Firebase: {e}")
 
@@ -216,6 +238,7 @@ def startup_event():
 sesiones: dict[str, dict] = {}
 global_labels: list = []
 global_groups: list = []
+global_pipeline_stages: list = []  # Etapas del pipeline — cargadas al inicio
 
 # Interruptor global — False = bot completamente apagado
 BOT_GLOBAL_ACTIVO: bool = True
@@ -940,6 +963,12 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 
                 sesion["datos_pedido"] = pedidos_no_diseno[0]  # Backward compatibility for inbox
                 sesion["pedidos_multiples"] = pedidos_no_diseno
+                # Sincronizar etapa del pipeline
+                _eg = pedidos_no_diseno[0].get("estadoGeneral", "")
+                sesion["pipeline_stage"] = next(
+                    (st["id"] for st in global_pipeline_stages if _eg in st.get("match_values", [])),
+                    None
+                )
                 
                 sesion["historial"][0] = {
                     "role": "system",
@@ -962,6 +991,12 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 if pedidos_no_diseno:
                     sesion["datos_pedido"] = pedidos_no_diseno[0]
                     sesion["pedidos_multiples"] = pedidos_no_diseno
+                    # Sincronizar etapa del pipeline
+                    _eg2 = pedidos_no_diseno[0].get("estadoGeneral", "")
+                    sesion["pipeline_stage"] = next(
+                        (st["id"] for st in global_pipeline_stages if _eg2 in st.get("match_values", [])),
+                        None
+                    )
                     if sesion["historial"] and sesion["historial"][0]["role"] == "system":
                         sesion["historial"][0]["content"] = get_system_prompt(pedidos_no_diseno, bot_id)
         else:
@@ -2598,60 +2633,7 @@ async def ver_chat(request: Request, numero_wa: str):
                  transition:background .2s}}
       .back-btn:hover{{background:rgba(255,255,255,.25)}}
       .chat-area{{flex:1;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem;max-width:850px;
-                  width:100%;margin:0 auto}}
-      .mensaje{{display:flex;flex-direction:column;max-width:80%;position:relative}}
-      .bot-lado{{align-self:flex-end}}
-      .user-lado{{align-self:flex-start}}
-      .remitente{{font-size:.75rem;color:var(--text-gray);margin-bottom:.25rem;font-weight:600}}
-      .bot-lado .remitente{{text-align:right}}
-      .burbuja-bot{{background:var(--wa-bot);border-radius:12px 0 12px 12px;padding:.75rem 1rem;
-                   font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
-                   color:var(--text-dark);position:relative}}
-      .burbuja-user{{background:var(--wa-me);border-radius:0 12px 12px 12px;padding:.75rem 1rem;
-                    font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
-                    color:var(--text-dark);position:relative}}
-      /* Colitas de las burbujas */
-      .burbuja-bot::before{{content:"";position:absolute;top:0;right:-8px;
-                            border-left:8px solid var(--wa-bot);border-bottom:8px solid transparent}}
-      .burbuja-user::before{{content:"";position:absolute;top:0;left:-8px;
-                             border-right:8px solid var(--wa-me);border-bottom:8px solid transparent}}
-                             
-      .info-bar{{background:white;margin:1.5rem auto 0;border-radius:12px;padding:1rem 1.5rem;
-                 display:flex;gap:2rem;font-size:.9rem;color:var(--text-gray);flex-wrap:wrap;
-                 box-shadow:0 2px 5px rgba(0,0,0,.05);max-width:850px;width:calc(100% - 3rem);
-                 border:1px solid rgba(0,0,0,0.02)}}
-      .info-bar span{{display:flex;align-items:center;gap:.5rem}}
-      .info-bar b{{color:var(--text-dark);font-weight:600}}
-    </style></head>
-    <body>
-    <div class="topbar">
-      <div class="topbar-left">
-        <h2>{nombre}</h2>
-        <small>+{numero_wa} &middot; Pedido #{pedido} &middot; {estado}</small>
-      </div>
-      <div class="topbar-right">
-        <span class="estado-chip">{estado_badge}</span>
-        {btn_reactivar.replace('button style="background:#25d366;color:white;border:none;padding:.5rem 1rem;\\n                     border-radius:8px;cursor:pointer;font-weight:600"', 'button class="btn-reactivar"')}
-        <a href="/admin" class="back-btn">← Volver al Panel</a>
-      </div>
-    </div>
-    <div class="info-bar">
-      <span>👤 <b>{nombre}</b></span>
-      <span>📦 Pedido <b>#{pedido}</b></span>
-      <span>📌 Estado <b>{estado}</b></span>
-      <span>💬 <b>{len(msgs)}</b> mensajes</span>
-    </div>
-    <div class="chat-area">
-      {burbujas}
-    </div>
-    </body></html>
-    """)
-
-# ==========================================
-# INBOX MODERNO (Tipo Respond.io / SPA)
-# ==========================================
-
-def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all"):
+def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all", stage: str = "all"):
     import json
     aliases = {}
     try:
@@ -2682,6 +2664,13 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         try:
             from firebase_client import cargar_grupos_bd
             global_groups = cargar_grupos_bd()
+        except: pass
+    
+    global global_pipeline_stages
+    if not global_pipeline_stages:
+        try:
+            from firebase_client import cargar_pipeline_stages
+            global_pipeline_stages = cargar_pipeline_stages()
         except: pass
 
     if not verificar_sesion(request):
@@ -2815,11 +2804,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         </button>
 
         <div id="inboxLineMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
-            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=all" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'all' else 'transparent'};">Todas las Líneas</a>
-            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=principal" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'principal' else 'transparent'};">Línea Principal</a>
+            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=all&stage={stage}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'all' else 'transparent'};">Todas las Líneas</a>
+            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line=principal&stage={stage}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if line_filter == 'principal' else 'transparent'};">Línea Principal</a>
 """
     for q_id, q_name in parsed_aliases.items():
-        labels_filter_html += f'<a href="{base_url}?tab={tab}&label={label_filter or ""}&unread={unread or ""}&line={q_id}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
+        labels_filter_html += f'<a href="{base_url}?tab={tab}&label={label_filter or ""}&unread={unread or ""}&line={q_id}&stage={stage}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{"var(--primary-color)" if line_filter == q_id else "transparent"};">{q_name}</a>'
         
     labels_filter_html += "</div>"
 
@@ -2829,12 +2818,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             {active_label_name}
         </button>
         
-        <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={'false' if is_unread else 'true'}&line={line_filter}" style="background:{unread_btn_bg}; border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:{unread_btn_text}; font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; text-decoration:none;">
-            No leídos
-        </a>
-        
         <div id="inboxFilterMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
-            <a href="{base_url}?tab={tab}&unread={unread or ''}&line={line_filter}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
+            <a href="{base_url}?tab={tab}&unread={unread or ''}&line={line_filter}&stage={stage}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if not label_filter else 'transparent'};">Todas (Sin filtro)</a>
     """
     
     for l in labels_for_line:
@@ -2844,12 +2829,52 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         is_active = (label_filter == lid)
         bg = f"{lcolor}33" if is_active else "transparent"
         labels_filter_html += f"""
-            <a href="{base_url}?tab={tab}&label={lid}&unread={unread or ''}&line={line_filter}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{bg};">
+            <a href="{base_url}?tab={tab}&label={lid}&unread={unread or ''}&line={line_filter}&stage={stage}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{bg};">
                 <span style="width:12px; height:12px; border-radius:50%; background:{lcolor};"></span> {lnombre}
             </a>
         """
         
-    labels_filter_html += '</div></div>'
+    labels_filter_html += '</div>'
+
+    # ──────────────── PIPELINE STAGE FILTER (Solo si line_filter == "principal") ────────────────
+    if line_filter == "principal":
+        active_stage_name = "Etapa: Todas"
+        if stage == "__unclassified__":
+            active_stage_name = "Sin clasificar"
+        elif stage != "all":
+            st_obj = next((s for s in global_pipeline_stages if s.get("id") == stage), None)
+            active_stage_name = st_obj.get("name") if st_obj else "Etapa Desconocida"
+            
+        labels_filter_html += f"""
+        <button type="button" onclick="const m = document.getElementById('inboxStageMenu'); m.style.display = m.style.display==='none'?'flex':'none';" style="background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:var(--text-main); font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+            {active_stage_name}
+        </button>
+        <div id="inboxStageMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); left:0; width:100%; max-width:250px; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; z-index:100; overflow:hidden;">
+            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line={line_filter}&stage=all" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if stage == 'all' else 'transparent'};">Todas</a>
+            <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line={line_filter}&stage=__unclassified__" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; border-bottom:1px solid var(--accent-border); font-size:0.85rem; background:{'var(--primary-color)' if stage == '__unclassified__' else 'transparent'};">Sin clasificar</a>
+        """
+        for st in global_pipeline_stages:
+            st_id = st.get("id")
+            st_name = st.get("name")
+            st_color = st.get("color", "#94a3b8")
+            st_bg = f"{st_color}33" if stage == st_id else "transparent"
+            is_final = st.get("is_final", False)
+            border_top = "border-top:1px dashed var(--accent-border);" if is_final and global_pipeline_stages.index(st) > 0 and not global_pipeline_stages[global_pipeline_stages.index(st)-1].get("is_final") else ""
+            
+            labels_filter_html += f"""
+                <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={unread or ''}&line={line_filter}&stage={st_id}" style="padding:0.6rem 1rem; color:var(--text-main); text-decoration:none; display:flex; align-items:center; gap:0.6rem; border-bottom:1px solid var(--accent-border); {border_top} font-size:0.85rem; background:{st_bg};">
+                    <span style="width:12px; height:12px; border-radius:50%; background:{st_color};"></span> {st_name}
+                </a>
+            """
+        labels_filter_html += "</div>"
+
+    labels_filter_html += f"""
+        <a href="{base_url}?tab={tab}&label={label_filter or ''}&unread={'false' if is_unread else 'true'}&line={line_filter}&stage={stage}" style="background:{unread_btn_bg}; border:1px solid var(--accent-border); border-radius:16px; padding:0.4rem 1rem; color:{unread_btn_text}; font-size:0.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; text-decoration:none;">
+            No leídos
+        </a>
+    </div>
+    """
     
     for num, s in todas:
         inactivo_horas = (ahora - s["ultima_actividad"]).total_seconds() / 3600
@@ -2857,9 +2882,6 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         is_archived = s.get("is_archived", False)
         
         # ── Lógica de línea ──────────────────────────────────────────────────
-        # 1. Si la CLAVE tiene formato numérico_número (ej: "984944321377299_51913048384"),
-        #    es una sesión corrupta del bug breve → saltar.
-        #    Estas NO son las sesiones normales; son duplicados innecesarios.
         _key_parts = num.split("_", 1)
         if len(_key_parts) == 2 and _key_parts[0].isdigit() and _key_parts[1].isdigit():
             continue  # Sesión corrupta compuesta por phone_number_id numérico — ignorar
@@ -4450,8 +4472,160 @@ async def update_user_theme(
     return {"ok": True}
 
 @app.get("/inbox", response_class=HTMLResponse)
-async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
-    return renderizar_inbox(request, None, tab, label, unread, line)
+async def inbox_main(request: Request, tab: str = "all", label: str = None, unread: str = None, line: str = "all", stage: str = "all"):
+    return renderizar_inbox(request, None, tab, label, unread, line, stage)
+
+@app.get("/pipeline", response_class=HTMLResponse)
+async def pipeline_view(request: Request):
+    if not verificar_sesion(request):
+        return HTMLResponse(obtener_login_html(), status_code=401)
+    import os, json as _json
+    if not os.path.exists("pipeline.html"):
+        return HTMLResponse("<h2 style='font-family:sans-serif;padding:2rem'>pipeline.html no encontrado.</h2>")
+    with open("pipeline.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    global global_pipeline_stages
+    if not global_pipeline_stages:
+        try:
+            from firebase_client import cargar_pipeline_stages_bd
+            global_pipeline_stages = cargar_pipeline_stages_bd()
+        except: pass
+
+    # Construir columnas del pipeline: chats de línea principal agrupados por etapa
+    from datetime import datetime, timezone
+    ahora = datetime.now(timezone.utc).replace(tzinfo=None)
+
+    # Sesiones de la línea principal, no archivadas
+    chats_principal = [
+        (wa_id, s) for wa_id, s in sesiones.items()
+        if s.get("lineId", "principal") == "principal"
+        and not s.get("is_archived", False)
+    ]
+
+    # Agrupar por pipeline_stage
+    columnas = {}  # stage_id -> list of chat dicts
+    sin_clasificar = []
+    for wa_id, s in chats_principal:
+        stage_id = s.get("pipeline_stage")
+        # re-sync en caliente por si cambiaron los stages
+        if not stage_id and s.get("datos_pedido"):
+            eg = s["datos_pedido"].get("estadoGeneral", "")
+            stage_id = next(
+                (st["id"] for st in global_pipeline_stages if eg in st.get("match_values", [])),
+                None
+            )
+            if stage_id:
+                s["pipeline_stage"] = stage_id
+
+        ultima = s.get("ultima_actividad", datetime.min)
+        if isinstance(ultima, str):
+            try: ultima = datetime.fromisoformat(ultima)
+            except: ultima = datetime.min
+        if hasattr(ultima, 'tzinfo') and ultima.tzinfo:
+            ultima = ultima.replace(tzinfo=None)
+        diff_min = int((ahora - ultima).total_seconds() / 60) if ultima != datetime.min else 9999
+        if diff_min < 60: tiempo = f"hace {diff_min}m"
+        elif diff_min < 1440: tiempo = f"hace {diff_min//60}h"
+        else: tiempo = f"hace {diff_min//1440}d"
+
+        etiquetas_chat = s.get("etiquetas", [])
+        labels_badges = ""
+        for lid in etiquetas_chat[:3]:
+            lbl = next((l for l in global_labels if l.get("id") == lid), None)
+            if lbl:
+                labels_badges += f'<span style="background:{lbl["color"]}22;color:{lbl["color"]};border:1px solid {lbl["color"]}44;font-size:0.65rem;padding:0.1rem 0.4rem;border-radius:3px;font-weight:600;">{lbl["name"]}</span>'
+
+        bot_dot_color = "var(--primary-color)" if s.get("bot_activo", True) else "#ef4444"
+        card = {
+            "wa_id": wa_id,
+            "nombre": s.get("nombre_cliente", wa_id),
+            "tiempo": tiempo,
+            "labels_badges": labels_badges,
+            "bot_dot_color": bot_dot_color,
+            "estado_pedido": (s.get("datos_pedido") or {}).get("estadoGeneral", ""),
+        }
+        if stage_id:
+            columnas.setdefault(stage_id, []).append(card)
+        else:
+            sin_clasificar.append(card)
+
+    # Generar HTML de columnas
+    def render_card(card):
+        return f"""<a href="/inbox/{card['wa_id']}" class="pipeline-card" style="text-decoration:none;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem;">
+                <span class="pipeline-card-name">{card['nombre']}</span>
+                <span style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;margin-left:0.5rem;">{card['tiempo']}</span>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;font-family:monospace;">{card['wa_id'][:20]}...</div>
+            <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+                <span style="width:7px;height:7px;border-radius:50%;background:{card['bot_dot_color']};flex-shrink:0;"></span>
+                {card['labels_badges']}
+            </div>
+        </a>"""
+
+    cols_html = ""
+    all_stages = [s for s in global_pipeline_stages if not s.get("is_final", False)]
+    final_stages = [s for s in global_pipeline_stages if s.get("is_final", False)]
+
+    # Columna Sin clasificar
+    if sin_clasificar:
+        cols_html += f"""<div class="pipeline-column" data-stage-id="__unclassified__">
+            <div class="pipeline-column-header" style="--stage-color:var(--text-muted);">
+                <span>Sin clasificar</span>
+                <span class="pipeline-column-count">{len(sin_clasificar)}</span>
+            </div>
+            <div class="pipeline-cards-list">{''.join(render_card(c) for c in sin_clasificar)}</div>
+        </div>"""
+
+    for st in all_stages:
+        cards = columnas.get(st["id"], [])
+        cols_html += f"""<div class="pipeline-column" data-stage-id="{st['id']}">
+            <div class="pipeline-column-header" style="--stage-color:{st['color']};">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <span style="width:10px;height:10px;border-radius:50%;background:{st['color']};flex-shrink:0;"></span>
+                    <span>{st['name']}</span>
+                </div>
+                <span class="pipeline-column-count">{len(cards)}</span>
+            </div>
+            <div class="pipeline-cards-list">{''.join(render_card(c) for c in cards)}</div>
+        </div>"""
+
+    final_cols_html = ""
+    for st in final_stages:
+        cards = columnas.get(st["id"], [])
+        final_cols_html += f"""<div class="pipeline-column pipeline-column-final" data-stage-id="{st['id']}">
+            <div class="pipeline-column-header" style="--stage-color:{st['color']};">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <span style="width:10px;height:10px;border-radius:50%;background:{st['color']};flex-shrink:0;"></span>
+                    <span>{st['name']}</span>
+                    <span style="font-size:0.65rem;color:var(--text-muted);background:var(--accent-bg);padding:0.1rem 0.4rem;border-radius:4px;">FINAL</span>
+                </div>
+                <span class="pipeline-column-count">{len(cards)}</span>
+            </div>
+            <div class="pipeline-cards-list">{''.join(render_card(c) for c in cards)}</div>
+        </div>"""
+
+    es_admin_str = "true" if es_admin(request) else "false"
+    stages_json = _json.dumps(global_pipeline_stages, default=str)
+
+    html = html.replace("<!-- PIPELINE_COLUMNS -->", cols_html)
+    html = html.replace("<!-- PIPELINE_FINAL_COLUMNS -->", final_cols_html)
+    html = html.replace("<!-- STAGES_JSON -->", stages_json)
+    html = html.replace("<!-- ES_ADMIN -->", es_admin_str)
+    html = html.replace("{color_global}", "var(--primary-color)")
+
+    # Inyectar custom theme igual que en inbox
+    try:
+        from firebase_client import cargar_configuracion_tema
+        cfg = cargar_configuracion_tema()
+        if cfg:
+            import json as _j2
+            custom_css = cfg.get("custom_css", "")
+            html = html.replace('<style id="custom-theme-css">', f'<script>window.ES_ADMIN = {es_admin_str};</script><style id="custom-theme-css">{custom_css}')
+    except: pass
+
+    return HTMLResponse(html)
 
 from typing import List
 
@@ -4585,8 +4759,8 @@ def get_wallpaper_image(filename: str):
 
 
 @app.get("/inbox/{wa_id}", response_class=HTMLResponse)
-async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None, line: str = "all"):
-    return renderizar_inbox(request, wa_id, tab, label, unread, line)
+async def inbox_chat(request: Request, wa_id: str, tab: str = "all", label: str = None, unread: str = None, line: str = "all", stage: str = "all"):
+    return renderizar_inbox(request, wa_id, tab, label, unread, line, stage)
 
 @app.get("/debug")
 async def debug_sesiones():
@@ -5324,6 +5498,123 @@ async def api_toggle_chat_label(payload: ToggleLabelPayload, request: Request):
         return {"ok": True}
         
     return {"ok": False, "error": "Chat no existe en memoria ni BD"}
+
+# ─────────────────────────────────────────────
+#  PIPELINE API ENDPOINTS
+# ─────────────────────────────────────────────
+
+class PipelineStagePayload(BaseModel):
+    id: Optional[str] = None
+    name: str
+    color: str = "#94a3b8"
+    order: int = 999
+    is_final: bool = False
+    match_values: list = []
+
+class PipelineReorderPayload(BaseModel):
+    ids: list
+
+@app.get("/api/pipeline/stages")
+async def api_pipeline_list_stages(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    global global_pipeline_stages
+    if not global_pipeline_stages:
+        try:
+            from firebase_client import cargar_pipeline_stages_bd
+            global_pipeline_stages = cargar_pipeline_stages_bd()
+        except Exception as e:
+            print(f"Error cargando stages: {e}")
+    return {"ok": True, "stages": global_pipeline_stages}
+
+@app.post("/api/pipeline/stages/save")
+async def api_pipeline_save_stage(payload: PipelineStagePayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
+    from firebase_client import guardar_pipeline_stage_bd
+    import time as _time
+    stage_id = payload.id or f"stg_{int(_time.time() * 1000)}"
+    stage = {
+        "id": stage_id, "name": payload.name, "color": payload.color,
+        "order": payload.order, "is_final": payload.is_final, "match_values": payload.match_values,
+    }
+    guardar_pipeline_stage_bd(stage)
+    global global_pipeline_stages
+    global_pipeline_stages = [s for s in global_pipeline_stages if s.get("id") != stage_id]
+    global_pipeline_stages.append(stage)
+    global_pipeline_stages.sort(key=lambda x: x.get("order", 999))
+    return {"ok": True, "stage": stage}
+
+@app.post("/api/pipeline/stages/delete")
+async def api_pipeline_delete_stage(payload: dict, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
+    stage_id = payload.get("id")
+    if not stage_id:
+        raise HTTPException(status_code=400, detail="Falta id")
+    from firebase_client import eliminar_pipeline_stage_bd
+    eliminar_pipeline_stage_bd(stage_id)
+    global global_pipeline_stages
+    global_pipeline_stages = [s for s in global_pipeline_stages if s.get("id") != stage_id]
+    for s in sesiones.values():
+        if s.get("pipeline_stage") == stage_id:
+            s["pipeline_stage"] = None
+    return {"ok": True}
+
+@app.post("/api/pipeline/stages/reorder")
+async def api_pipeline_reorder_stages(payload: PipelineReorderPayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
+    from firebase_client import reordenar_pipeline_stages_bd
+    reordenar_pipeline_stages_bd(payload.ids)
+    global global_pipeline_stages
+    id_order = {sid: idx for idx, sid in enumerate(payload.ids)}
+    for s in global_pipeline_stages:
+        s["order"] = id_order.get(s.get("id"), 999)
+    global_pipeline_stages.sort(key=lambda x: x.get("order", 999))
+    return {"ok": True}
+
+@app.post("/api/pipeline/sync")
+async def api_pipeline_sync(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    global global_pipeline_stages
+    synced = 0
+    for wa_id, s in sesiones.items():
+        if s.get("lineId", "principal") != "principal":
+            continue
+        eg = (s.get("datos_pedido") or {}).get("estadoGeneral", "")
+        new_stage = next(
+            (st["id"] for st in global_pipeline_stages if eg in st.get("match_values", [])),
+            None
+        )
+        if s.get("pipeline_stage") != new_stage:
+            s["pipeline_stage"] = new_stage
+            synced += 1
+    return {"ok": True, "synced": synced}
+
+@app.get("/api/pipeline/scan-orders")
+async def api_pipeline_scan_orders(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
+    try:
+        from firebase_client import scan_estadosgenerales_bd
+        valores = scan_estadosgenerales_bd(limit=500)
+        ya_configurados = set()
+        for st in global_pipeline_stages:
+            ya_configurados.update(st.get("match_values", []))
+        result = [{"value": v, "already_configured": v in ya_configurados} for v in valores]
+        return {"ok": True, "valores": result}
+    except Exception as e:
+        return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
 
 class ChatActionPayload(BaseModel):
     wa_id: str

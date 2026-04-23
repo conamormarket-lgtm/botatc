@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5677 notes | Score threshold: >40
+> 5934 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,43 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Optimized Patched
-+ - ⚠️ GOTCHA: Optimized Score — evol
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5661 notes | Score threshold: >40
-+ > 5672 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Patched** — - - Patched security issue Request — parallelizes async operations for
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5647 notes | Score threshold: >40
-+ > 5661 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Borrar — wraps unsafe operation in error bound
-- **⚠️ GOTCHA: Added JWT tokens authentication — evolves the database schema to support new ...** — - > 5632 notes | Score threshold: >40
-+ > 5639 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - gotcha in shared-co
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "1a26f5e4c774df93",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Added JWT tokens auth
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - - ⚠️ GOTCHA: Added JWT tokens authentication
++ - gotcha in shared-co
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "2ece099369ded0bc",
++
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 5915 notes | Score threshold: >40
++ > 5918 notes | Score threshold
 
 ## Project Standards
 
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- Patched security issue Request — parallelizes async operations for speed — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- problem-fix in agent-rules.md — confirmed 3x
-- Replaced auth Score — confirmed 3x
-- Replaced auth Score — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 5x
+- what-changed in shared-context.json — confirmed 5x
+- Patched security issue Patched — confirmed 4x
+- problem-fix in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 4x
+- what-changed in shared-context.json — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
-- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue Request — parallelizes async operations for speed
+- ❌ 📌 IDE AST Context: Modified symbols likely include [app, custom_exception_handler, gemini_client, s → ✅ Patched security issue Sincronizar — protects against XSS and CSRF token theft
 - ❌ - - Fixed null crash in HTMLResponse — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Nivel — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ - - Fixed null crash in Inbox — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
@@ -53,8 +65,8 @@
 ## Recent Decisions
 
 - Optimized Score — evolves the database schema to support new requirements
-- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
+- decision in index.js
 - Optimized Score — evolves the database schema to support new requirements
 
 ## Learned Patterns
