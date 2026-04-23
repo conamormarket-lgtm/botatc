@@ -2,6 +2,280 @@
 > Dynamically loaded for active file: `server.py` (Domain: **Generic Logic**)
 
 ### 🔴 Generic Logic Gotchas
+- **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...**: -     # Inyectar tema del usuario (colores configurados en Mi Perfil)
++     # Inyectar ES_ADMIN para el JS del pipeline
+-     html = inyectar_tema_global(request, html)
++     html = html.replace('<style id="custom-theme-css">', f'<script>window.ES_ADMIN = {es_admin_str};</script><style id="custom-theme-css">')
+-     return HTMLResponse(html)
++     # Inyectar tema del usuario (colores configurados en Mi Perfil)
+- 
++     html = inyectar_tema_global(request, html)
+- from typing import List
++     return HTMLResponse(html)
+- @app.post("/api/admin/stickers/upload")
++ 
+- async def upload_stickers(files: List[UploadFile] = File(...)):
++ from typing import List
+-     """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
++ 
+-     try:
++ @app.post("/api/admin/stickers/upload")
+-         import os
++ async def upload_stickers(files: List[UploadFile] = File(...)):
+-         from firebase_client import guardar_sticker_en_bd
++     """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
+-         count = 0
++     try:
+-         for file in files:
++         import os
+-             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
++         from firebase_client import guardar_sticker_en_bd
+-                 # Extraemos solo el nombre del archivo, ignorando subcarpetas
++         count = 0
+-                 basename = os.path.basename(file.filename)
++         for file in files:
+-                 content = await file.read()
++             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
+-                 
++                 # Extraemos solo el nombre del archivo, ignorando subcarpetas
+-                 # Guardar en Base de Datos (Persistente)
++                 basename = os.path.basename(file.filename)
+-                 guardar_sticker_en_bd(basename, content)
++                 content = await file.read()
+-                 count += 1
++                 # Guardar
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...**: -     # Inyectar custom theme igual que en inbox
++     # Inyectar tema del usuario (colores configurados en Mi Perfil)
+-     try:
++     html = inyectar_tema_global(request, html)
+-         from firebase_client import cargar_configuracion_tema
++ 
+-         cfg = cargar_configuracion_tema()
++     return HTMLResponse(html)
+-         if cfg:
++ 
+-             import json as _j2
++ 
+-             custom_css = cfg.get("custom_css", "")
++ from typing import List
+-             html = html.replace('<style id="custom-theme-css">', f'<script>window.ES_ADMIN = {es_admin_str};</script><style id="custom-theme-css">{custom_css}')
++ 
+-     except: pass
++ @app.post("/api/admin/stickers/upload")
+- 
++ async def upload_stickers(files: List[UploadFile] = File(...)):
+-     return HTMLResponse(html)
++     """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
+- 
++     try:
+- from typing import List
++         import os
+- 
++         from firebase_client import guardar_sticker_en_bd
+- @app.post("/api/admin/stickers/upload")
++         count = 0
+- async def upload_stickers(files: List[UploadFile] = File(...)):
++         for file in files:
+-     """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
++             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
+-     try:
++                 # Extraemos solo el nombre del archivo, ignorando subcarpetas
+-         import os
++                 basename = os.path.basename(file.filename)
+-         from firebase_client import guardar_sticker_en_bd
++                 content = await file.read()
+-         count = 0
++                 
+-         for file in files:
++                 # Guardar en Base de Datos (Persistente)
+-             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
++                 guardar_sticker_en_bd(basename, content)
+-                 # Extraemos solo el nombre del archivo, ignorando subcarpetas
++  
+… [diff truncated]
+- **⚠️ GOTCHA: Patched security issue Tambi — protects against XSS and CSRF token theft**: -         _synced = 0
++         # También busca pedidos para sesiones sin datos_pedido (evita tener que usar el botón Sincronizar)
+-         for _wa_id, _s in sesiones.items():
++         _synced = 0
+-             if _s.get("lineId", "principal") == "principal" and _s.get("datos_pedido"):
++         _fetched = 0
+-                 _eg = _s["datos_pedido"].get("estadoGeneral", "")
++         from firebase_client import buscar_pedido_por_telefono, guardar_sesion_chat
+-                 _stage_id = next(
++         for _wa_id, _s in sesiones.items():
+-                     (st["id"] for st in global_pipeline_stages
++             if _s.get("lineId", "principal") != "principal":
+-                      if _eg in st.get("match_values", [])),
++                 continue
+-                     None
++             # Si no tiene pedido vinculado, intentar buscarlo por teléfono
+-                 )
++             if not _s.get("datos_pedido"):
+-                 if _s.get("pipeline_stage") != _stage_id:
++                 try:
+-                     _s["pipeline_stage"] = _stage_id
++                     _pedidos = buscar_pedido_por_telefono(_wa_id)
+-                     _synced += 1
++                     if _pedidos:
+-         if _synced:
++                         _s["datos_pedido"] = _pedidos[0]
+-             print(f"[OK] Pipeline: {_synced} sesiones sincronizadas al arranque.")
++                         _s["pedidos_multiples"] = _pedidos
+-     except Exception as e:
++                         _fetched += 1
+-         print(f"[ERROR] Error al restaurar datos desde Firebase: {e}")
++                 except Exception as _fe:
+- 
++                     pass  # No bloquear el arranque si falla una búsqueda
+-     try:
++             # Asignar etapa según estadoGeneral
+-         from pedidos_observer import iniciar_observador_pedidos
++             _eg = (_s.get("datos_pedido") or {}).get("estadoGeneral", "")
+-         import threading
++             _stage_id = next
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Patched security issue Colitas — parallelizes async operations for speed**: - def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", label_filter: str = None, unread: str = None, line_filter: str = "all", stage: str = "all"):
++                   width:100%;margin:0 auto}}
+-     import json
++       .mensaje{{display:flex;flex-direction:column;max-width:80%;position:relative}}
+-     aliases = {}
++       .bot-lado{{align-self:flex-end}}
+-     try:
++       .user-lado{{align-self:flex-start}}
+-         with open("line_aliases.json", "r", encoding="utf-8") as f:
++       .remitente{{font-size:.75rem;color:var(--text-gray);margin-bottom:.25rem;font-weight:600}}
+-             aliases = json.load(f)
++       .bot-lado .remitente{{text-align:right}}
+-     except: pass
++       .burbuja-bot{{background:var(--wa-bot);border-radius:12px 0 12px 12px;padding:.75rem 1rem;
+-     
++                    font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
+-     import os
++                    color:var(--text-dark);position:relative}}
+-     # Si estamos en Vercel (servidor sin estado fraccionado), forzamos lectura de BD para el chat activo actual
++       .burbuja-user{{background:var(--wa-me);border-radius:0 12px 12px 12px;padding:.75rem 1rem;
+-     if wa_id and os.environ.get("VERCEL"):
++                     font-size:.95rem;line-height:1.45;box-shadow:0 1px 2px rgba(0,0,0,.1);
+-         try:
++                     color:var(--text-dark);position:relative}}
+-             from firebase_client import cargar_sesion_chat
++       /* Colitas de las burbujas */
+-             s_db = cargar_sesion_chat(wa_id)
++       .burbuja-bot::before{{content:"";position:absolute;top:0;right:-8px;
+-             if s_db:
++                             border-left:8px solid var(--wa-bot);border-bottom:8px solid transparent}}
+-                 sesiones[wa_id] = s_db
++       .burbuja-user::before{{content:"";position:absolute;top:0;left:-8px;
+-         except Exception:
++                              border-right:8px so
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse — evolves the database schema to support new...**: - from typing import List
++ @app.get("/pipeline", response_class=HTMLResponse)
+- 
++ async def pipeline_view(request: Request):
+- @app.post("/api/admin/stickers/upload")
++     if not verificar_sesion(request):
+- async def upload_stickers(files: List[UploadFile] = File(...)):
++         return HTMLResponse(obtener_login_html(), status_code=401)
+-     """Recibe múltiples archivos webp/png y los guarda directamente a Firestore."""
++     import os, json as _json
+-     try:
++     if not os.path.exists("pipeline.html"):
+-         import os
++         return HTMLResponse("<h2 style='font-family:sans-serif;padding:2rem'>pipeline.html no encontrado.</h2>")
+-         from firebase_client import guardar_sticker_en_bd
++     with open("pipeline.html", "r", encoding="utf-8") as f:
+-         count = 0
++         html = f.read()
+-         for file in files:
++ 
+-             if file.filename.endswith(".webp") or file.filename.endswith(".png"):
++     global global_pipeline_stages
+-                 # Extraemos solo el nombre del archivo, ignorando subcarpetas
++     if not global_pipeline_stages:
+-                 basename = os.path.basename(file.filename)
++         try:
+-                 content = await file.read()
++             from firebase_client import cargar_pipeline_stages_bd
+-                 
++             global_pipeline_stages = cargar_pipeline_stages_bd()
+-                 # Guardar en Base de Datos (Persistente)
++         except: pass
+-                 guardar_sticker_en_bd(basename, content)
++ 
+-                 
++     # Construir columnas del pipeline: chats de línea principal agrupados por etapa
+-                 count += 1
++     from datetime import datetime, timezone
+-         return {"ok": True, "count": count}
++     ahora = datetime.now(timezone.utc).replace(tzinfo=None)
+-     except Exception as e:
++ 
+-         return {"ok": False, "error": str(e)}
++     # Sesiones de la línea principal, no archivadas
+- 
++     chats_principa
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+- **⚠️ GOTCHA: Updated firebase_client database schema**: - class ChatActionPayload(BaseModel):
++ # ─────────────────────────────────────────────
+-     wa_id: str
++ #  PIPELINE API ENDPOINTS
+-     action: str
++ # ─────────────────────────────────────────────
+- @app.post("/api/admin/chat/action")
++ class PipelineStagePayload(BaseModel):
+- async def api_chat_action(payload: ChatActionPayload, request: Request):
++     id: Optional[str] = None
+-     if not verificar_sesion(request):
++     name: str
+-         raise HTTPException(status_code=403, detail="No autorizado")
++     color: str = "#94a3b8"
+-         
++     order: int = 999
+-     from firebase_client import cargar_sesion_chat, guardar_sesion_chat, inicializar_firebase, guardar_grupo_bd, eliminar_grupo_bd
++     is_final: bool = False
+-     wa_id = payload.wa_id
++     match_values: list = []
+-     action = payload.action
++ 
+-     global global_groups
++ class PipelineReorderPayload(BaseModel):
+-     
++     ids: list
+-     if wa_id.startswith("vg_"):
++ 
+-         found_g = next((g for g in global_groups if g.get("id") == wa_id), None)
++ @app.get("/api/pipeline/stages")
+-         if not found_g and action != "delete": return {"ok": False, "error": "Grupo no existe"}
++ async def api_pipeline_list_stages(request: Request):
+-         
++     if not verificar_sesion(request):
+-         if action == "archive":
++         raise HTTPException(status_code=403, detail="No autorizado")
+-             found_g["is_archived"] = not found_g.get("is_archived", False)
++     global global_pipeline_stages
+-             try: guardar_grupo_bd(found_g)
++     if not global_pipeline_stages:
+-             except: pass
++         try:
+-             return {"ok": True, "state": found_g["is_archived"]}
++             from firebase_client import cargar_pipeline_stages_bd
+-         elif action == "pin":
++             global_pipeline_stages = cargar_pipeline_stages_bd()
+-             found_g["is_pinned"] = not found_g.get("is_pinned", False)
++         except Excep
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
 - **⚠️ GOTCHA: Patched security issue Cargar — protects against XSS and CSRF token theft**: -     except Exception as e:
 + 
 -         print(f"[ERROR] Error al restaurar datos desde Firebase: {e}")
@@ -105,134 +379,191 @@
 📌 IDE AST Context: Modified symbols likely include [inicializar_firebase, _buscar, buscar_pedido_por_telefono, buscar_pedido_por_id, guardar_sesion_chat]
 
 ### 📐 Generic Logic Conventions & Fixes
-- **[problem-fix] problem-fix in server.py**: -     for l in global_labels:
-+     for l in labels_for_line:
-
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
-- **[convention] Patched security issue Request — parallelizes async operations for speed — confirmed 3x**: - @app.get("/api/admin/stats")
-+ @app.get("/api/admin/debug_sessions")
-- async def get_admin_stats(request: Request, line_id: str = "all"):
-+ async def debug_sessions(request: Request):
--     """Devuelve las estadísticas de chats según la línea solicitada."""
-+     """TEMPORAL: Muestra los lineId en memoria para diagnosticar el filtro."""
--         
-+     resultado = []
--     respondidos = 0
-+     for wa_id, s in list(sesiones.items())[:50]:  # máx 50 para no saturar
--     por_responder = 0
-+         s_line = s.get("lineId", "") or ""
--     pendientes_bot = 0
-+         if s_line and str(s_line).isdigit():
--     pendientes_asesor = 0
-+             s_line = "principal (normalizado)"
--     
-+         if not s_line:
+- **[what-changed] Updated firebase_client database schema**: -     synced = 0
++     from firebase_client import buscar_pedido_por_telefono, guardar_sesion_chat
 -     for wa_id, s in sesiones.items():
-+             parts = wa_id.rsplit("_", 1)
--         # Intentar obtener lineId desde el campo guardado
-+             if len(parts) == 2 and parts[1].isdigit() and len(parts[1]) >= 8:
--         s_line = s.get("lineId", "") or ""
-+                 s_line = f"{parts[0]} (inferido)"
--         
-+             else:
--         # Normalizar IDs numéricos de Meta → siempre son la línea principal
-+                 s_line = "principal (default)"
--         if s_line and str(s_line).isdigit():
-+         resultado.append({
--             s_line = "principal"
-+             "session_key": wa_id,
--         
-+             "lineId_stored": s.get("lineId", "⚠️ VACÍO"),
--         # Si no tiene lineId, intentar inferirlo desde la session key compuesta (ej: "qr_ventas_1_519...")
-+             "lineId_effective": s_line,
--         if not s_line:
-+             "unread": s.get("unread_count", 0),
--             parts = wa_id.rsplit("_", 1)
-+             "bot_activo": s.get("bot_activo", False)
--             # Las claves compuestas tienen formato "lineId_numeroWA"
-+         })
--             # Si la parte derecha es numérica larga → es el número de teléfono
-+     return JSONResponse({"total": len(sesiones),
++     synced = 0
+-         if s.get("lineId", "principal") != "principal":
++     fetched = 0
+-             continue
++     for wa_id, s in sesiones.items():
+-         eg = (s.get("datos_pedido") or {}).get("estadoGeneral", "")
++         if s.get("lineId", "principal") != "principal":
+-         new_stage = next(
++             continue
+-             (st["id"] for st in global_pipeline_stages if eg in st.get("match_values", [])),
++         # Si no tiene datos_pedido, intentar buscar el pedido por teléfono
+-             None
++         if not s.get("datos_pedido"):
+-         )
++             # wa_id suele ser el número de teléfono directo (ej: 51913048384)
+-         if s.get("pipeline_stage") != new_stage:
++             telefono = wa_id
+-             s["pipeline_stage"] = new_stage
++             try:
+-             synced += 1
++                 pedidos_encontrados = buscar_pedido_por_telefono(telefono)
+-     return {"ok": True, "synced": synced}
++                 if pedidos_encontrados:
+- 
++                     s["datos_pedido"] = pedidos_encontrados[0]
+- @app.get("/api/pipeline/scan-orders")
++                     s["pedidos_multiples"] = pedidos_encontrados
+- async def api_pipeline_scan_orders(request: Request):
++                     fetched += 1
+-     if not verificar_sesion(request):
++             except Exception as _e:
+-         raise HTTPException(status_code=403, detail="No autorizado")
++                 print(f"[SYNC] Error buscando pedido para {wa_id}: {_e}")
+-     if not es_admin(request):
++         
+-         raise HTTPException(status_code=403, detail="Solo administradores")
++         eg = (s.get("datos_pedido") or {}).get("estadoGeneral", "")
+-     try:
++         new_stage = next(
+-         from firebase_client import scan_estadosgenerales_bd
++             (st["id"] for st in global
+… [diff truncated]
+- **[problem-fix] Fixed null crash in Config — prevents null/undefined runtime crashes**: -         // --- Config Modal ---
++         // --- Config Modal + Drag & Drop Setup ---
+-             document.getElementById('btnConfig').onclick = () => {
++             // Show drag & drop toggle for admins
+-                 renderStagesList();
++             document.getElementById('dndToggleWrap').classList.add('visible');
+-                 document.getElementById('configModal').style.display = 'flex';
++ 
+-             };
++             document.getElementById('btnConfig').onclick = () => {
+-         }
++                 renderStagesList();
+- 
++                 document.getElementById('configModal').style.display = 'flex';
+-         function closeConfigModal() {
++             };
+-             document.getElementById('configModal').style.display = 'none';
++         }
+-             window.location.reload(); // Reload to see changes
++ 
+-         }
++         // =====[REDACTED]
+- 
++         // DRAG & DROP (admin only, off by default)
+-         function renderStagesList() {
++         // =====[REDACTED]
+-             const list = document.getElementById('stagesList');
++         let dndEnabled = false;
+-             list.innerHTML = '';
++         let dragCard = null;        // the card element being dragged
+-             STAGES.sort((a,b) => (a.order||0) - (b.order||0));
++         let dragWaId = null;        // wa_id of the card
+- 
++         let dropToast = null;
+-             STAGES.forEach((st, idx) => {
++ 
+-                 const div = document.createElement('div');
++         function toggleDnd() {
+-                 div.className = 'stage-item';
++             dndEnabled = document.getElementById('dndToggle').checked;
+-                 div.draggable = true;
++             document.body.classList.toggle('dnd-active', dndEnabled);
+-                 div.dataset.id = st.id;
++             // Re-bind draggable attribute on all cards
+-                 
++             document.querySelectorAll('.pipeline-card').forEach(ca
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [app, inyectar_tema_global, custom_exception_handler, gemini_client, startup_event]
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in settings.html**: - </html>
++ </html>
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[what-changed] what-changed in perfil.html**: - 
++ 
+- 
++ 
+
+📌 IDE AST Context: Modified symbols likely include [html]
+- **[problem-fix] Fixed null crash in Reload — prevents null/undefined runtime crashes**: -             document.getElementById('btnSync').style.display = 'none';
++         } else {
+-         } else {
++             document.getElementById('btnConfig').onclick = () => {
+-             document.getElementById('btnConfig').onclick = () => {
++                 renderStagesList();
+-                 renderStagesList();
++                 document.getElementById('configModal').style.display = 'flex';
+-                 document.getElementById('configModal').style.display = 'flex';
++             };
+-             };
++         }
+-         }
++ 
+- 
++         function closeConfigModal() {
+-         async function syncPipeline() {
++             document.getElementById('configModal').style.display = 'none';
+-             const btn = document.getElementById('btnSync');
++             window.location.reload(); // Reload to see changes
+-             const origText = btn.innerHTML;
++         }
+-             btn.disabled = true;
++ 
+-             btn.style.opacity = '0.6';
++         function renderStagesList() {
+-             btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Sincronizando...`;
++             const list = document.getElementById('stagesList');
+-             try {
++             list.innerHTML = '';
+-                 const res = await fetch('/api/pipeline/sync', {method: 'POST'});
++             STAGES.sort((a,b) => (a.order||0) - (b.order||0));
+-                 const data = await res.json();
++ 
+-                 if (data.ok) {
++             STAGES.forEach((st, idx) => {
+-                     showToast(`Sincronización completa: ${data.synced} sesiones actualizadas, ${data.fetched_orders} pedidos recuperados.`);
++                 cons
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html, deleteStage]
+- **[problem-fix] Fixed null crash in Sincronizando — prevents null/undefined runtime crashes**: -         } else {
++             document.getElementById('btnSync').style.display = 'none';
+-             document.getElementById('btnConfig').onclick = () => {
++         } else {
+-                 renderStagesList();
++             document.getElementById('btnConfig').onclick = () => {
+-                 document.getElementById('configModal').style.display = 'flex';
++                 renderStagesList();
+-             };
++                 document.getElementById('configModal').style.display = 'flex';
+-         }
++             };
+- 
++         }
+-         function closeConfigModal() {
++ 
+-             document.getElementById('configModal').style.display = 'none';
++         async function syncPipeline() {
+-             window.location.reload(); // Reload to see changes
++             const btn = document.getElementById('btnSync');
+-         }
++             const origText = btn.innerHTML;
+- 
++             btn.disabled = true;
+-         function renderStagesList() {
++             btn.style.opacity = '0.6';
+-             const list = document.getElementById('stagesList');
++             btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Sincronizando...`;
+-             list.innerHTML = '';
++             try {
+-             STAGES.sort((a,b) => (a.order||0) - (b.order||0));
++                 const res = await fetch('/api/pipeline/sync', {method: 'POST'});
+- 
++                 const data = await res.json();
+-             STAGES.forEach((st, idx) => {
++                 if (data.ok) {
+-                 const div = document.createElement('div');
++                     showToast(`Sincronización completa: ${data.synced} sesiones actualizadas, ${data.f
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [html]
 - **[what-changed] 🟢 Edited document_loader.py (5 changes, 221min)**: Active editing session on document_loader.py.
 5 content changes over 221 minutes.
-- **[convention] Fixed null crash in Determinar — prevents null/undefined runtime crashes — confirmed 3x**: -                 // Determinar la l\u00ednea activa: del chat abierto o del filtro de inbox
-+             try {
--                 const line_id = window.ACTIVE_CHAT_LINE
-+                 // Determinar la l\u00ednea activa: del chat abierto o del filtro de inbox
--                     || new URLSearchParams(window.location.search).get('line')
-+                 const line_id = window.ACTIVE_CHAT_LINE
--                     || 'principal';
-+                     || new URLSearchParams(window.location.search).get('line')
-- 
-+                     || 'principal';
--                 const res = await fetch("/api/admin/labels/save", {
-+ 
--                     method: "POST",
-+                 const res = await fetch("/api/admin/labels/save", {
--                     headers: { "Content-Type": "application/json" },
-+                     method: "POST",
--                     body: JSON.stringify({ id: id, name: name, color: color, line_id: line_id })
-+                     headers: { "Content-Type": "application/json" },
--                 });
-+                     body: JSON.stringify({ id: id, name: name, color: color, line_id: line_id })
--                 if (res.ok) {
-+                 });
--                     document.getElementById("createLabelModal").style.display = "none";
-+                 if (res.ok) {
--                     window.location.reload();
-+                     document.getElementById("createLabelModal").style.display = "none";
--                 } else {
-+                     window.location.reload();
--                     alert("Error guardando etiqueta (Respuesta del servidor).");
-+                 } else {
--                 }
-+                     alert("Error guardando etiqueta (Respuesta del servidor).");
--             } catch (e) {
-+                 }
--                 alert("Error guardando etiqueta (Conectividad).");
-+             } catch (e) {
--             }
-+                 alert("Error guardando etiqueta (Conec
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[what-changed] what-changed in inbox.html**: -             width: clamp(280px, 30vw, 510px);
-+             width: clamp(280px, 30vw, 650px);
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] what-changed in inbox.html — confirmed 4x**: -             width: clamp(280px, 30vw, 460px);
-+             width: clamp(280px, 30vw, 510px);
-
-📌 IDE AST Context: Modified symbols likely include [html]
-- **[convention] Fixed null crash in Soft — prevents null/undefined runtime crashes — confirmed 3x**: -                     
-+                     const line = urlParams.get('line') || sessionStorage.getItem('inboxLineFilter') || 'all';
--                     // Soft Virtual Exit to instantly clear chat UI without reloading
-+                     
--                     window.history.replaceState(null, '', `/inbox?tab=${tab}`);
-+                     // Soft Virtual Exit to instantly clear chat UI without reloading
--                     
-+                     const lineParam = line !== 'all' ? `&line=${line}` : '';
--                     document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
-+                     window.history.replaceState(null, '', `/inbox?tab=${tab}${lineParam}`);
--                     const viewer = document.querySelector('.chat-viewer-panel');
-+                     document.querySelectorAll('.chat-row').forEach(row => row.classList.remove('active-row'));
--                     if (viewer) {
-+                     
--                         viewer.innerHTML = `
-+                     const viewer = document.querySelector('.chat-viewer-panel');
--                         <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
-+                     if (viewer) {
--                             <h3>Bandeja de Entrada</h3>
-+                         viewer.innerHTML = `
--                             <p style="font-size:0.9rem; max-width:400px; text-align:center;">Selecciona una conversación para empezar o continuar chateando.</p>
-+                         <div class="empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--text-muted);">
--                         </div>`;
-+                             <h3>Bandeja de Entrada</h3>
--                     }
-+                             <p style="font-size:0.9rem; max-width:400px; text-align:
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [html]

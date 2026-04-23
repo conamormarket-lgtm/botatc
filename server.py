@@ -4625,7 +4625,7 @@ async def pipeline_view(request: Request):
 
     # Generar HTML de columnas
     def render_card(card):
-        return f"""<a href="/inbox/{card['wa_id']}" class="pipeline-card" style="text-decoration:none;">
+        return f"""<a href="/inbox/{card['wa_id']}" class="pipeline-card" style="text-decoration:none;" data-wa-id="{card['wa_id']}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem;">
                 <span class="pipeline-card-name">{card['nombre']}</span>
                 <span style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;margin-left:0.5rem;">{card['tiempo']}</span>
@@ -5706,6 +5706,75 @@ async def api_pipeline_scan_orders(request: Request):
         return {"ok": True, "valores": result}
     except Exception as e:
         return JSONResponse({"ok": False, "error": str(e)}, status_code=500)
+
+
+class MoveCardPayload(BaseModel):
+    wa_id: str
+    stage_id: str
+
+@app.post("/api/pipeline/move-card")
+async def api_pipeline_move_card(payload: MoveCardPayload, request: Request):
+    """
+    Mueve una tarjeta Kanban a una nueva etapa.
+    - Actualiza pipeline_stage en memoria y en Firestore (chats_atc).
+    - Actualiza estadoGeneral del pedido mas reciente del cliente en la
+      coleccion de pedidos (usa el primer match_value de la etapa destino).
+    Solo disponible para administradores.
+    """
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    if not es_admin(request):
+        raise HTTPException(status_code=403, detail="Solo administradores")
+
+    wa_id = payload.wa_id
+    new_stage_id = payload.stage_id
+
+    # Buscar la etapa destino
+    new_stage = next((s for s in global_pipeline_stages if s.get("id") == new_stage_id), None)
+    if not new_stage:
+        return JSONResponse({"ok": False, "error": f"Etapa '{new_stage_id}' no encontrada."}, status_code=404)
+
+    # Obtener el primer match_value como nuevo estadoGeneral
+    match_values = new_stage.get("match_values", [])
+    nuevo_estado = match_values[0] if match_values else new_stage.get("name", "")
+
+    # Actualizar sesion en memoria
+    s = sesiones.get(wa_id)
+    if not s:
+        return JSONResponse({"ok": False, "error": "Chat no encontrado en memoria."}, status_code=404)
+
+    s["pipeline_stage"] = new_stage_id
+
+    # Actualizar datos_pedido en memoria (para que el pipeline los muestre correctamente)
+    if s.get("datos_pedido") and nuevo_estado:
+        s["datos_pedido"]["estadoGeneral"] = nuevo_estado
+
+    # Persistir sesion en Firestore (chats_atc)
+    try:
+        from firebase_client import guardar_sesion_chat
+        guardar_sesion_chat(wa_id, s)
+    except Exception as e:
+        print(f"[PIPELINE MOVE] Error guardando sesion {wa_id}: {e}")
+
+    # Actualizar estadoGeneral del pedido mas reciente en la coleccion de pedidos
+    pedido_actualizado = None
+    if nuevo_estado:
+        try:
+            from firebase_client import actualizar_estado_pedido_mas_reciente_bd
+            pedido_actualizado = actualizar_estado_pedido_mas_reciente_bd(wa_id, nuevo_estado)
+            if pedido_actualizado:
+                print(f"[PIPELINE MOVE] Pedido {pedido_actualizado.get('id')} estadoGeneral='{nuevo_estado}'")
+            else:
+                print(f"[PIPELINE MOVE] No se encontro pedido para {wa_id} — solo se movio la tarjeta.")
+        except Exception as e:
+            print(f"[PIPELINE MOVE] Error actualizando pedido de {wa_id}: {e}")
+
+    return {
+        "ok": True,
+        "stage_name": new_stage.get("name"),
+        "nuevo_estado": nuevo_estado,
+        "pedido_actualizado": pedido_actualizado.get("id") if pedido_actualizado else None,
+    }
 
 class ChatActionPayload(BaseModel):
     wa_id: str

@@ -154,6 +154,64 @@
             cursor: pointer;
         }
 
+        /* ---------- DRAG & DROP ---------- */
+        body.dnd-active .pipeline-card {
+            cursor: grab;
+        }
+        body.dnd-active .pipeline-card:active {
+            cursor: grabbing;
+        }
+        .pipeline-card.dragging {
+            opacity: 0.4;
+            transform: scale(0.97);
+            border: 2px dashed var(--primary-color) !important;
+        }
+        .pipeline-cards-list.drag-over {
+            background: rgba(59,130,246,0.07);
+            border-radius: 8px;
+            outline: 2px dashed var(--primary-color);
+            outline-offset: -4px;
+        }
+
+        /* ---------- TOGGLE SWITCH (drag mode) ---------- */
+        .dnd-toggle-wrap {
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            user-select: none;
+        }
+        .dnd-toggle-wrap.visible { display: flex; }
+        .dnd-switch {
+            position: relative;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .dnd-switch input { opacity:0; width:0; height:0; }
+        .dnd-switch .slider {
+            position: absolute; inset: 0;
+            background: var(--accent-border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .dnd-switch .slider::before {
+            content: '';
+            position: absolute;
+            width: 14px; height: 14px;
+            left: 3px; bottom: 3px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .dnd-switch input:checked + .slider { background: var(--primary-color); }
+        .dnd-switch input:checked + .slider::before {
+            transform: translateX(16px);
+            background: white;
+        }
+
         /* ---------------- KANBAN BOARD ---------------- */
         .pipeline-board {
             flex: 1;
@@ -497,6 +555,14 @@
                     Mostrar finalizados
                 </label>
 
+                <!-- Drag & Drop toggle — solo admins -->
+                <label id="dndToggleWrap" class="dnd-toggle-wrap">
+                    <label class="dnd-switch">
+                        <input type="checkbox" id="dndToggle" onchange="toggleDnd()">
+                        <span class="slider"></span>
+                    </label>
+                    Mover tarjetas
+                </label>
 
                 <button class="btn-config" id="btnConfig">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -637,15 +703,132 @@
             });
         }
 
-        // --- Config Modal ---
+        // --- Config Modal + Drag & Drop Setup ---
 
         if (!ES_ADMIN) {
             document.getElementById('btnConfig').style.display = 'none';
         } else {
+            // Show drag & drop toggle for admins
+            document.getElementById('dndToggleWrap').classList.add('visible');
+
             document.getElementById('btnConfig').onclick = () => {
                 renderStagesList();
                 document.getElementById('configModal').style.display = 'flex';
             };
+        }
+
+        // =============================================
+        // DRAG & DROP (admin only, off by default)
+        // =============================================
+        let dndEnabled = false;
+        let dragCard = null;        // the card element being dragged
+        let dragWaId = null;        // wa_id of the card
+        let dropToast = null;
+
+        function toggleDnd() {
+            dndEnabled = document.getElementById('dndToggle').checked;
+            document.body.classList.toggle('dnd-active', dndEnabled);
+            // Re-bind draggable attribute on all cards
+            document.querySelectorAll('.pipeline-card').forEach(card => {
+                card.draggable = dndEnabled;
+            });
+        }
+
+        function initCardDnd(card) {
+            card.addEventListener('dragstart', e => {
+                if (!dndEnabled) { e.preventDefault(); return; }
+                dragCard = card;
+                dragWaId = card.dataset.waId;
+                card.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', dragWaId);
+            });
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+                document.querySelectorAll('.pipeline-cards-list').forEach(l => l.classList.remove('drag-over'));
+            });
+        }
+
+        // Bind DnD on all existing cards
+        document.querySelectorAll('.pipeline-card').forEach(card => initCardDnd(card));
+
+        // Set up drop zones on each cards-list
+        document.querySelectorAll('.pipeline-cards-list').forEach(list => {
+            list.addEventListener('dragover', e => {
+                if (!dndEnabled) return;
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                document.querySelectorAll('.pipeline-cards-list').forEach(l => l.classList.remove('drag-over'));
+                list.classList.add('drag-over');
+            });
+            list.addEventListener('dragleave', e => {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
+                    list.classList.remove('drag-over');
+                }
+            });
+            list.addEventListener('drop', async e => {
+                e.preventDefault();
+                list.classList.remove('drag-over');
+                if (!dndEnabled || !dragCard) return;
+
+                const newStageId = list.closest('.pipeline-column').dataset.stageId;
+                const oldList = dragCard.closest('.pipeline-cards-list');
+
+                if (oldList === list) return; // same column, nothing to do
+
+                // Optimistic UI move
+                list.prepend(dragCard);
+                updateColumnCounts();
+
+                // Call backend
+                try {
+                    const res = await fetch('/api/pipeline/move-card', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ wa_id: dragWaId, stage_id: newStageId })
+                    });
+                    const data = await res.json();
+                    if (!data.ok) {
+                        // Revert on failure
+                        oldList.prepend(dragCard);
+                        updateColumnCounts();
+                        showDndToast(data.error || 'No se pudo mover la tarjeta.', true);
+                    } else {
+                        showDndToast(`Movido a "${data.stage_name}" — pedido actualizado.`);
+                    }
+                } catch(err) {
+                    oldList.prepend(dragCard);
+                    updateColumnCounts();
+                    showDndToast('Error de conexión.', true);
+                }
+
+                dragCard = null;
+                dragWaId = null;
+            });
+        });
+
+        function updateColumnCounts() {
+            document.querySelectorAll('.pipeline-column').forEach(col => {
+                const count = col.querySelectorAll('.pipeline-card').length;
+                col.querySelector('.pipeline-column-count').innerText = count;
+            });
+        }
+
+        function showDndToast(msg, isError = false) {
+            if (!dropToast) {
+                dropToast = document.createElement('div');
+                dropToast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--bg-main);border:1px solid var(--accent-border);color:var(--text-main);padding:0.75rem 1.5rem;border-radius:12px;font-size:0.85rem;box-shadow:0 8px 24px rgba(0,0,0,0.4);z-index:99999;transition:opacity 0.3s;font-family:var(--font-main);white-space:nowrap;';
+                document.body.appendChild(dropToast);
+            }
+            dropToast.style.borderColor = isError ? '#ef4444' : 'var(--primary-color)';
+            dropToast.textContent = msg;
+            dropToast.style.opacity = '1';
+            dropToast.style.display = 'block';
+            clearTimeout(dropToast._timer);
+            dropToast._timer = setTimeout(() => {
+                dropToast.style.opacity = '0';
+                setTimeout(() => dropToast.style.display = 'none', 300);
+            }, 3000);
         }
 
         function closeConfigModal() {

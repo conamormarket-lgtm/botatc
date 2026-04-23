@@ -405,6 +405,42 @@ def reordenar_pipeline_stages_bd(lista_ids: list):
         batch.update(doc_ref, {"order": idx})
     batch.commit()
 
+def actualizar_estado_pedido_mas_reciente_bd(telefono: str, nuevo_estado: str) -> dict | None:
+    """
+    Busca el pedido más reciente del cliente (por clienteContacto) y actualiza
+    su campo 'estadoGeneral' en Firestore.
+    Devuelve el dict actualizado del pedido, o None si no se encontró ninguno.
+    """
+    # Reusar la lógica de búsqueda por teléfono
+    pedidos = buscar_pedido_por_telefono(telefono)
+    if not pedidos:
+        return None
+
+    # El primer resultado ya es el más reciente (ordenados por id desc)
+    pedido = pedidos[0]
+    pedido_id_field = pedido.get("id")  # ej: "007053"
+    if not pedido_id_field:
+        return None
+
+    db = inicializar_firebase()
+    from config import COLECCION_PEDIDOS
+    from google.cloud.firestore_v1.base_query import FieldFilter
+
+    # Buscar el documento por id
+    docs = (
+        db.collection(COLECCION_PEDIDOS)
+          .where(filter=FieldFilter("id", "==", pedido_id_field))
+          .limit(1)
+          .get()
+    )
+    for doc in docs:
+        doc.reference.update({"estadoGeneral": nuevo_estado})
+        pedido["estadoGeneral"] = nuevo_estado
+        return pedido
+
+    return None
+
+
 def scan_estadosgenerales_bd(limit: int = 500) -> list:
     """
     Lee los últimos N pedidos y extrae todos los valores únicos de 'estadoGeneral'.

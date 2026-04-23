@@ -1,7 +1,7 @@
 
 
 # Project Memory — botatc
-> 5988 notes | Score threshold: >40
+> 6016 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,32 +20,35 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Reload — prevents null/undefined runtime crash
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "a958297714794ecf",
-+
 - **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...** — -     # Inyectar tema del usuario (colores configurados en Mi Perfil)
 - **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...** — -     # Inyectar custom theme igual que en inbox
 +     # Inyectar tem
 - **⚠️ GOTCHA: Patched security issue Tambi — protects against XSS and CSRF token theft** — -         _synced = 0
 +         # También busca pedidos para sesiones
-- **⚠️ GOTCHA: Optimized Score — evolves the database schema to support new requirements** — - > 5943 notes | Score threshold: >40
-+ > 5948 notes | Score threshold
+- **⚠️ GOTCHA: Patched security issue Colitas — parallelizes async operations for speed** — - def renderizar_inbox(request: Request, wa_id: str = None, tab: str =
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse — evolves the database schema to support new...** — - from typing import List
++ @app.get("/pipeline", response_class=HTML
+- **⚠️ GOTCHA: Updated firebase_client database schema** — - class ChatActionPayload(BaseModel):
++ # ───────────────────────────
+
+## Active: `.`
+
+- **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...**
+- **⚠️ GOTCHA: Fixed null crash in Inyectar — evolves the database schema to support new req...**
+- **⚠️ GOTCHA: Patched security issue Tambi — protects against XSS and CSRF token theft**
+- **⚠️ GOTCHA: Patched security issue Colitas — parallelizes async operations for speed**
+- **⚠️ GOTCHA: Fixed null crash in HTMLResponse — evolves the database schema to support new...**
 
 ## Project Standards
 
-- Patched security issue Kevin — confirmed 3x
-- what-changed in brainsync_auto.md — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in shared-context.json — confirmed 4x
-- Optimized GOTCHA — confirmed 3x
-- Added JWT tokens authentication — confirmed 4x
-- discovery in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
+- Patched security issue Request — parallelizes async operations for speed — confirmed 3x
+- problem-fix in server.py — confirmed 4x
+- Patched security issue False — protects against XSS and CSRF token theft — confirmed 3x
+- problem-fix in server.py — confirmed 3x
+- Fixed null crash in PLANTILLAS — evolves the database schema to support new r... — confirmed 3x
+- Fixed null crash in Determinar — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in inbox.html — confirmed 4x
+- Fixed null crash in Soft — prevents null/undefined runtime crashes — confirmed 3x
 
 ## Known Fixes
 
@@ -57,10 +60,10 @@
 
 ## Recent Decisions
 
-- Optimized Score — evolves the database schema to support new requirements
-- Optimized Score — evolves the database schema to support new requirements
-- decision in index.js
-- Optimized Score — evolves the database schema to support new requirements
+- Optimized Client — prevents null/undefined runtime crashes
+- Optimized Client — prevents null/undefined runtime crashes
+- Optimized Client — prevents null/undefined runtime crashes
+- Optimized Client — prevents null/undefined runtime crashes
 
 ## Learned Patterns
 
@@ -108,8 +111,8 @@ Guidance for using the `tinybird-sdk` package to define Tinybird resources in Py
 - Build: `tinybird build` (builds against configured dev target)
 - Deploy: `tinybird deploy` (deploys to main/production)
 - Preview in CI: `tinybird preview`
-- Migrate: `tinybird migrate` (convert .datasource/.pipe files to Python)
-- Server-side only; never expose tokens in browsers
+- Migrate: `tinybird migra...
+(truncated)
 
 
 ### 📚 Core Framework Rules: [czlonkowski/n8n-expression-syntax]
@@ -213,295 +216,7 @@ Code nodes use **direct JavaScript access**, NOT expressions!
 
 ---
 
-## Validation Rules
-
-### 1. Always Use {{}}
-
-Expressions **must** be wrapped in double curly braces.
-
-
-
-### 2. Use Quotes for Spaces
-
-Field or node names with spaces require **bracket notation**:
-
-
-
-### 3. Match Exact Node Names
-
-Node references are **case-sensitive**:
-
-
-
-### 4. No Nested {{}}
-
-Don't double-wrap expressions:
-
-
-
----
-
-## Common Mistakes
-
-For complete error catalog with fixes, see [COMMON_MISTAKES.md](COMMON_MISTAKES.md)
-
-### Quick Fixes
-
-| Mistake | Fix |
-|---------|-----|
-| `$json.field` | `{{$json.field}}` |
-| `{{$json.field name}}` | `{{$json['field name']}}` |
-| `{{$node.HTTP Request}}` | `{{$node["HTTP Request"]}}` |
-| `{{{$json.field}}}` | `{{$json.field}}` |
-| `{{$json.name}}` (webhook) | `{{$json.body.name}}` |
-| `'={{$json.email}}'` (Code node) | `$json.email` |
-
----
-
-## Working Examples
-
-For real workflow examples, see [EXAMPLES.md](EXAMPLES.md)
-
-### Example 1: Webhook to Slack
-
-**Webhook receives**:
-
-
-**In Slack node text field**:
-
-
-### Example 2: HTTP Request to Email
-
-**HTTP Request returns**:
-
-
-**In Email node** (reference HTTP Request):
-
-
-### Example 3: Format Timestamp
-
-
-
----
-
-## Data Type Handling
-
-### Arrays
-
-
-
-### Objects
-
-
-
-### Strings
-
-
-
-### Numbers
-
-
-
----
-
-## Advanced Patterns
-
-### Conditional Content
-
-
-
-### Date Manipulation
-
-
-
-### String Manipul...
-(truncated)
-
-
-### 📚 Core Framework Rules: [czlonkowski/n8n-code-python]
-# Python Code Node (Beta)
-
-Expert guidance for writing Python code in n8n Code nodes.
-
----
-
-## ⚠️ Important: JavaScript First
-
-**Recommendation**: Use **JavaScript for 95% of use cases**. Only use Python when:
-- You need specific Python standard library functions
-- You're significantly more comfortable with Python syntax
-- You're doing data transformations better suited to Python
-
-**Why JavaScript is preferred:**
-- Full n8n helper functions ($helpers.httpRequest, etc.)
-- Luxon DateTime library for advanced date/time operations
-- No external library limitations
-- Better n8n documentation and community support
-
----
-
-## Quick Start
-
-
-
-### Essential Rules
-
-1. **Consider JavaScript first** - Use Python only when necessary
-2. **Access data**: `_input.all()`, `_input.first()`, or `_input.item`
-3. **CRITICAL**: Must return `[{"json": {...}}]` format
-4. **CRITICAL**: Webhook data is under `_json["body"]` (not `_json` directly)
-5. **CRITICAL LIMITATION**: **No external libraries** (no requests, pandas, numpy)
-6. **Standard library only**: json, datetime, re, base64, hashlib, urllib.parse, math, random, statistics
-
----
-
-## Mode Selection Guide
-
-Same as JavaScript - choose based on your use case:
-
-### Run Once for All Items (Recommended - Default)
-
-**Use this mode for:** 95% of use cases
-
-- **How it works**: Code executes **once** regardless of input count
-- **Data access**: `_input.all()` or `_items` array (Native mode)
-- **Best for**: Aggregation, filtering, batch processing, transformations
-- **Performance**: Faster for multiple items (single execution)
-
-
-
-### Run Once for Each Item
-
-**Use this mode for:** Specialized cases only
-
-- **How it works**: Code executes **separately** for each input item
-- **Data access**: `_input.item` or `_item` (Native mode)
-- **Best for**: Item-specific logic, independent operations, per-item validation
-- **Performance**: Slower for large datasets (multiple executions)
-
-
-
----
-
-## Python Modes: Beta vs Native
-
-n8n offers two Python execution modes:
-
-### Python (Beta) - Recommended
-- **Use**: `_input`, `_json`, `_node` helper syntax
-- **Best for**: Most Python use cases
-- **Helpers available**: `_now`, `_today`, `_jmespath()`
-- **Import**: `from datetime import datetime`
-
-
-
-### Python (Native) (Beta)
-- **Use**: `_items`, `_item` variables only
-- **No helpers**: No `_input`, `_now`, etc.
-- **More limited**: Standard Python only
-- **Use when**: Need pure Python without n8n helpers
-
-
-
-**Recommendation**: Use **Python (Beta)** for better n8...
-(truncated)
-
-
-### 📚 Core Framework Rules: [czlonkowski/n8n-code-javascript]
-# JavaScript Code Node
-
-Expert guidance for writing JavaScript code in n8n Code nodes.
-
----
-
-## Quick Start
-
-
-
-### Essential Rules
-
-1. **Choose "Run Once for All Items" mode** (recommended for most use cases)
-2. **Access data**: `$input.all()`, `$input.first()`, or `$input.item`
-3. **CRITICAL**: Must return `[{json: {...}}]` format
-4. **CRITICAL**: Webhook data is under `$json.body` (not `$json` directly)
-5. **Built-ins available**: $helpers.httpRequest(), DateTime (Luxon), $jmespath()
-
----
-
-## Mode Selection Guide
-
-The Code node offers two execution modes. Choose based on your use case:
-
-### Run Once for All Items (Recommended - Default)
-
-**Use this mode for:** 95% of use cases
-
-- **How it works**: Code executes **once** regardless of input count
-- **Data access**: `$input.all()` or `items` array
-- **Best for**: Aggregation, filtering, batch processing, transformations, API calls with all data
-- **Performance**: Faster for multiple items (single execution)
-
-
-
-**When to use:**
-- ✅ Comparing items across the dataset
-- ✅ Calculating totals, averages, or statistics
-- ✅ Sorting or ranking items
-- ✅ Deduplication
-- ✅ Building aggregated reports
-- ✅ Combining data from multiple items
-
-### Run Once for Each Item
-
-**Use this mode for:** Specialized cases only
-
-- **How it works**: Code executes **separately** for each input item
-- **Data access**: `$input.item` or `$item`
-- **Best for**: Item-specific logic, independent operations, per-item validation
-- **Performance**: Slower for large datasets (multiple executions)
-
-
-
-**When to use:**
-- ✅ Each item needs independent API call
-- ✅ Per-item validation with different error handling
-- ✅ Item-specific transformations based on item properties
-- ✅ When items must be processed separately for business logic
-
-**Decision Shortcut:**
-- **Need to look at multiple items?** → Use "All Items" mode
-- **Each item completely independent?** → Use "Each Item" mode
-- **Not sure?** → Use "All Items" mode (you can always loop inside)
-
----
-
-## Data Access Patterns
-
-### Pattern 1: $input.all() - Most Common
-
-**Use when**: Processing arrays, batch operations, aggregations
-
-
-
-### Pattern 2: $input.first() - Very Common
-
-**Use when**: Working with single objects, API responses, first-in-first-out
-
-
-
-### Pattern 3: $input.item - Each Item Mode Only
-
-**Use when**: In "Run Once for Each Item" mode
-
-
-
-### Pattern 4: $node - Reference Other Nodes
-
-**Use when**: Need data from specific nodes in workflow
-
-
-
-**See**: [DATA_ACCESS.md](DATA_ACCESS.md) ...
+## V...
 (truncated)
 
 
