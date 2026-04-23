@@ -3499,7 +3499,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         '''
 
         chat_viewer_html = f"""
-        <div style="display:flex; flex-direction:row; height:100%; width:100%;">
+        <div style="display:flex; flex-direction:row; flex:1; min-height:0; width:100%;">
             <!-- START CHAT MAIN COLUMN -->
             <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent;">
                 {status_bar}
