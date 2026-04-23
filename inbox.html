@@ -2257,7 +2257,9 @@
             list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Cargando...</div>`;
 
             try {
-                const res = await fetch("/api/admin/labels/list");
+                // Pasar la línea del chat activo para filtrar etiquetas por línea
+                const activeLine = window.ACTIVE_CHAT_LINE || new URLSearchParams(window.location.search).get('line') || 'principal';
+                const res = await fetch(`/api/admin/labels/list?line=${activeLine}`);
                 const data = await res.json();
 
                 if (data.ok) {

@@ -190,9 +190,14 @@ def startup_event():
         # Stickers are now loaded on-demand via Serverless Endpoints.
         
         # Restaurar Etiquetas
-        from firebase_client import cargar_etiquetas_bd, cargar_grupos_bd
+        from firebase_client import cargar_etiquetas_bd, cargar_grupos_bd, migrar_etiquetas_sin_line_id
         global global_labels, global_groups
-        global_labels = cargar_etiquetas_bd()
+        # Migración única: asignar line_id='principal' a etiquetas sin él
+        try:
+            migrar_etiquetas_sin_line_id("principal")
+        except Exception as me:
+            print(f"[WARN] Migración de etiquetas falló (no crítico): {me}")
+        global_labels = cargar_etiquetas_bd()  # Carga TODAS para filtrar en memoria
         print(f"[OK] Se restauraron {len(global_labels)} etiquetas globales.")
         global_groups = cargar_grupos_bd()
         print(f"[OK] Se restauraron {len(global_groups)} grupos virtuales.")
@@ -2699,7 +2704,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     html = html.replace("<style id=\"custom-theme-css\">", f"<script>window.ES_ADMIN = {es_admin_str};</script><style id=\"custom-theme-css\">")
 
     labels_ctx_html = ""
-    for l in global_labels:
+    for l in labels_for_line:
         labels_ctx_html += f'<div style="padding:0.6rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; display:flex; align-items:center; gap:0.5rem; transition:background 0.2s;" onmouseover="this.style.background=\'var(--accent-hover)\'" onmouseout="this.style.background=\'transparent\'" onclick="window.chatActionLabel(\'{l.get("id")}\'); return false;"><div style="width:10px;height:10px;border-radius:50%;background:{l.get("color", "#ccc")};"></div> {l.get("name")}</div>'
     
     if not labels_ctx_html:
@@ -2764,7 +2769,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     lista_chats_html = ""
     
     # ------------------ Generador de Filtro de Etiquetas HTML ------------------
-    active_label_obj = next((l for l in global_labels if l.get("id") == label_filter), None) if label_filter else None
+    # Filtrar etiquetas según la línea activa (en memoria, sin extra DB call)
+    labels_for_line = [
+        l for l in global_labels
+        if line_filter in ("all", None)
+        or l.get("line_id", "principal") == line_filter
+        or l.get("line_id") == "all"
+    ]
+    active_label_obj = next((l for l in labels_for_line if l.get("id") == label_filter), None) if label_filter else None
     active_label_name = active_label_obj.get("name") if active_label_obj else "Filtro: Ninguno"
     if active_label_name.endswith("Ninguno"): active_label_name = "Filtrar Etiquetas: Desactivado"
 
@@ -5125,6 +5137,7 @@ class LabelPayload(BaseModel):
     id: str
     name: Optional[str] = None
     color: Optional[str] = None
+    line_id: Optional[str] = "principal"
 
 @app.post("/api/admin/labels/save")
 async def api_save_label(payload: LabelPayload, request: Request):
@@ -5133,10 +5146,11 @@ async def api_save_label(payload: LabelPayload, request: Request):
     if not es_admin(request):
         raise HTTPException(status_code=403, detail="Solo administradores")
     from firebase_client import guardar_etiqueta_bd
-    guardar_etiqueta_bd(payload.id, payload.name, payload.color)
+    line_id = payload.line_id or "principal"
+    guardar_etiqueta_bd(payload.id, payload.name, payload.color, line_id=line_id)
     global global_labels
     global_labels = [l for l in global_labels if l.get("id") != payload.id]
-    global_labels.append({"id": payload.id, "name": payload.name, "color": payload.color})
+    global_labels.append({"id": payload.id, "name": payload.name, "color": payload.color, "line_id": line_id})
     return {"ok": True}
 
 class GroupPayload(BaseModel):
@@ -5223,7 +5237,7 @@ async def api_delete_label(payload: LabelPayload, request: Request):
     return {"ok": True}
 
 @app.get("/api/admin/labels/list")
-async def api_list_labels(request: Request):
+async def api_list_labels(request: Request, line: str = "all"):
     if not verificar_sesion(request):
         raise HTTPException(status_code=403, detail="No autorizado")
     global global_labels
@@ -5234,7 +5248,12 @@ async def api_list_labels(request: Request):
             print("🔄 Etiquetas recargadas dinámicamente desde Firebase.")
         except Exception as e:
             print(f"Error recargando etiquetas: {e}")
-    return {"ok": True, "labels": global_labels}
+    # Filtrar por línea en memoria
+    if line and line != "all":
+        filtered = [l for l in global_labels if l.get("line_id", "principal") in (line, "all")]
+    else:
+        filtered = global_labels
+    return {"ok": True, "labels": filtered}
 
 class AssignLabelPayload(BaseModel):
     wa_id: str

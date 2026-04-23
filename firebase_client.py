@@ -298,12 +298,13 @@ def cargar_plantillas_bd(line_id: str = None) -> list:
 #  PERSISTENCIA DE ETIQUETAS GLOBALES (LABELS)
 # ============================================================
 
-def guardar_etiqueta_bd(id_etiqueta: str, nombre: str, color: str):
+def guardar_etiqueta_bd(id_etiqueta: str, nombre: str, color: str, line_id: str = "principal"):
     db = inicializar_firebase()
     db.collection("bot_labels").document(id_etiqueta).set({
         "id": id_etiqueta,
         "name": nombre,
         "color": color,
+        "line_id": line_id,
         "createdAt": firestore.SERVER_TIMESTAMP
     })
 
@@ -311,18 +312,42 @@ def eliminar_etiqueta_bd(id_etiqueta: str):
     db = inicializar_firebase()
     db.collection("bot_labels").document(id_etiqueta).delete()
 
-def cargar_etiquetas_bd() -> list:
+def cargar_etiquetas_bd(line_id: str = None) -> list:
     db = inicializar_firebase()
     docs = db.collection("bot_labels").stream()
     etiquetas = []
     for doc in docs:
         data = doc.to_dict()
-        if "id" in data:
-            data['orden'] = data.get('orden', 999)  # Default order 999 if not set
-            etiquetas.append(data)
-    # Sort by 'orden', fallback to 'name' or 'id'
+        if "id" not in data:
+            continue
+        doc_line = data.get("line_id", "principal")
+        if not doc_line:
+            doc_line = "principal"
+        # Filtrar por línea si se especifica (mismo patrón que plantillas)
+        if line_id and line_id != "all":
+            if doc_line != line_id and doc_line != "all":
+                continue
+        data['orden'] = data.get('orden', 999)
+        etiquetas.append(data)
     etiquetas.sort(key=lambda x: (x.get('orden', 999), x.get('createdAt', 0) if type(x.get('createdAt')) in [int, float] else 0))
     return etiquetas
+
+def migrar_etiquetas_sin_line_id(line_id_default: str = "principal"):
+    """Migración única: añade line_id='principal' a todas las etiquetas existentes que no lo tengan."""
+    db = inicializar_firebase()
+    docs = list(db.collection("bot_labels").stream())
+    batch = db.batch()
+    migradas = 0
+    for doc in docs:
+        data = doc.to_dict()
+        if "line_id" not in data:
+            batch.update(doc.reference, {"line_id": line_id_default})
+            migradas += 1
+    if migradas > 0:
+        batch.commit()
+        print(f"[MIGRACIÓN] {migradas} etiqueta(s) actualizadas con line_id='{line_id_default}'.")
+    else:
+        print("[MIGRACIÓN] Todas las etiquetas ya tienen line_id. Nada que migrar.")
 
 def reordenar_etiquetas_bd(lista_ids: list):
     db = inicializar_firebase()
