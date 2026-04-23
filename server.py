@@ -3501,7 +3501,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         chat_viewer_html = f"""
         <div style="display:flex; flex-direction:row; flex:1; min-height:0; width:100%;">
             <!-- START CHAT MAIN COLUMN -->
-            <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:transparent;">
+            <div style="flex:1; display:flex; flex-direction:column; min-width:0; min-height:0; background:transparent;">
                 {status_bar}
                 {pinned_html}
             <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
@@ -3538,7 +3538,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     </div>
                 </div>
                 
-                <div style="flex:1;overflow-y:auto;padding:1.5rem 1.5rem 0.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;" id="chatScroll">
+                <div style="flex:1;overflow-y:auto;padding:1.5rem 1.5rem 0.5rem 1.5rem;display:flex;flex-direction:column;gap:0.5rem;min-height:0;" id="chatScroll">
                     {burbujas}
                 </div>
                 
