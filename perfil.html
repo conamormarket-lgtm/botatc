@@ -164,6 +164,8 @@
                         </div>
                     </div>
 
+                    <!-- FONDO DEL CHAT -->
+                    <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:0.5rem;">
                         <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1; min-width:250px;">
                             <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Imagen de Fondo del Chat</label>
                             <div style="display:flex; gap:0.5rem;">
@@ -480,21 +482,26 @@
             const btn = form.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
             btn.innerText = "Guardando...";
+            btn.disabled = true;
             
             try {
                 const res = await fetch("/api/user/theme", { method: "POST", body: data });
-                if(res.ok) {
+                const json = await res.json().catch(() => ({}));
+                if (res.ok && json.ok !== false) {
                     const statusText = document.getElementById("themeStatus");
                     statusText.style.display = "block";
-                    setTimeout(() => statusText.style.display = "none", 4000);
-                    // Reiniciar el estado cropper para la siguiente vez
-                    finalCroppedBlob = null; 
+                    statusText.textContent = "¡Tema guardado! Aplicando cambios...";
+                    finalCroppedBlob = null;
+                    // Recargar para que el CSS server-side se inyecte con los nuevos valores
+                    setTimeout(() => window.location.reload(), 800);
                 } else {
-                    alert("Error servidor");
+                    alert("Error al guardar: " + (json.error || res.status));
+                    btn.disabled = false;
+                    btn.innerText = originalText;
                 }
             } catch(error) {
-                alert("Error cliente");
-            } finally {
+                alert("Error de conexión: " + error.message);
+                btn.disabled = false;
                 btn.innerText = originalText;
             }
         }
