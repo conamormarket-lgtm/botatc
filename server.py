@@ -4794,7 +4794,7 @@ async def api_transcribe(media_id: str, payload: TranscribePayload, request: Req
         from google.genai import types
         part = types.Part.from_bytes(data=contenido, mime_type="audio/ogg")
         res = gemini_client.models.generate_content(
-            model="gemini-flash-latest",
+            model=GEMINI_MODEL,
             contents=[part, "Transcribe exactamente lo que se dice en este audio. Sin comentarios tuyos, solo la transcripción limpia. Si está ininteligible, escribe '[Audio ininteligible]'. Manten el idioma original del audio."]
         )
         transcripcion = res.text.strip()

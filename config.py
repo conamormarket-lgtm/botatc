@@ -22,7 +22,7 @@ LM_STUDIO_MODEL    = "local-model"
 
 # --- Gemini API (para server.py en producción) ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_MODEL   = "gemini-flash-latest"
+GEMINI_MODEL   = "gemini-1.5-flash-latest"  # 1,500 RPD free tier — alias estable, siempre apunta a 1.5-flash-001
 
 # --- Parámetros del modelo ---
 TEMPERATURE = 0.4  # Balanceado: previene cortes abruptos en respuestas repetitivas
