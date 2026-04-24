@@ -272,6 +272,22 @@ sesiones: dict[str, dict] = {}
 global_labels: list = []
 global_groups: list = []
 global_pipeline_stages: list = []  # Etapas del pipeline — cargadas al inicio
+_pipeline_sse_queues: list = []   # Colas SSE de clientes conectados al pipeline
+
+def broadcast_pipeline_event(event_data: dict):
+    """Empuja un evento de cambio de etapa a todos los clientes SSE del pipeline."""
+    import json
+    msg = json.dumps(event_data, default=str)
+    dead = []
+    for q in _pipeline_sse_queues:
+        try:
+            q.put_nowait(msg)
+        except Exception:
+            dead.append(q)
+    for q in dead:
+        try: _pipeline_sse_queues.remove(q)
+        except Exception: pass
+
 
 # Interruptor global — False = bot completamente apagado
 BOT_GLOBAL_ACTIVO: bool = True
@@ -989,10 +1005,21 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 sesion["pedidos_multiples"] = pedidos_no_diseno
                 # Sincronizar etapa del pipeline
                 _eg = pedidos_no_diseno[0].get("estadoGeneral", "")
-                sesion["pipeline_stage"] = next(
+                _old_stage = sesion.get("pipeline_stage")
+                _new_stage = next(
                     (st["id"] for st in global_pipeline_stages if _eg in st.get("match_values", [])),
                     None
                 )
+                sesion["pipeline_stage"] = _new_stage
+                if _new_stage != _old_stage:
+                    broadcast_pipeline_event({
+                        "type": "stage_change",
+                        "wa_id": numero_wa,
+                        "from_stage": _old_stage,
+                        "to_stage": _new_stage,
+                        "nombre": sesion.get("nombre_cliente", numero_wa),
+                        "bot_activo": sesion.get("bot_activo", True),
+                    })
                 
                 sesion["historial"][0] = {
                     "role": "system",
@@ -1017,10 +1044,21 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                     sesion["pedidos_multiples"] = pedidos_no_diseno
                     # Sincronizar etapa del pipeline
                     _eg2 = pedidos_no_diseno[0].get("estadoGeneral", "")
-                    sesion["pipeline_stage"] = next(
+                    _old_stage2 = sesion.get("pipeline_stage")
+                    _new_stage2 = next(
                         (st["id"] for st in global_pipeline_stages if _eg2 in st.get("match_values", [])),
                         None
                     )
+                    sesion["pipeline_stage"] = _new_stage2
+                    if _new_stage2 != _old_stage2:
+                        broadcast_pipeline_event({
+                            "type": "stage_change",
+                            "wa_id": numero_wa,
+                            "from_stage": _old_stage2,
+                            "to_stage": _new_stage2,
+                            "nombre": sesion.get("nombre_cliente", numero_wa),
+                            "bot_activo": sesion.get("bot_activo", True),
+                        })
                     if sesion["historial"] and sesion["historial"][0]["role"] == "system":
                         sesion["historial"][0]["content"] = get_system_prompt(pedidos_no_diseno, bot_id)
         else:
@@ -4719,6 +4757,44 @@ async def pipeline_view(request: Request):
     html = inyectar_tema_global(request, html)
 
     return HTMLResponse(html)
+
+
+@app.get("/api/pipeline/events")
+async def pipeline_sse(request: Request):
+    """Endpoint SSE: emite eventos de cambio de etapa al pipeline en tiempo real."""
+    if not verificar_sesion(request):
+        from fastapi.responses import JSONResponse
+        return JSONResponse({"error": "no autorizado"}, status_code=401)
+
+    import asyncio
+    q: asyncio.Queue = asyncio.Queue(maxsize=100)
+    _pipeline_sse_queues.append(q)
+
+    async def event_stream():
+        try:
+            yield 'data: {"type":"connected"}\n\n'
+            while True:
+                if await request.is_disconnected():
+                    break
+                try:
+                    msg = await asyncio.wait_for(q.get(), timeout=25.0)
+                    yield f"data: {msg}\n\n"
+                except asyncio.TimeoutError:
+                    yield 'data: {"type":"ping"}\n\n'  # keepalive
+        finally:
+            try: _pipeline_sse_queues.remove(q)
+            except Exception: pass
+
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+            "Connection": "keep-alive",
+        },
+    )
 
 
 from typing import List

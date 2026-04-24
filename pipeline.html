@@ -1593,6 +1593,113 @@
             addMatchValue(val);
         }
 
+        // =============================================
+        // PIPELINE LIVE UPDATES (Server-Sent Events)
+        // =============================================
+        function updateCounter(col, delta) {
+            const counter = col.querySelector('.pipeline-column-count');
+            if (!counter) return;
+            const newVal = Math.max(0, (parseInt(counter.textContent) || 0) + delta);
+            counter.textContent = newVal;
+            // Flash animation
+            counter.style.transition = 'background 0.2s, color 0.2s';
+            counter.style.background = delta > 0 ? 'var(--primary-color)' : '#ef444466';
+            counter.style.color = 'white';
+            setTimeout(() => {
+                counter.style.background = '';
+                counter.style.color = '';
+            }, 1400);
+        }
+
+        function buildLiveCard(waId, nombre, botActivo) {
+            const dotColor = botActivo ? 'var(--primary-color)' : '#ef4444';
+            const shortId  = waId.length > 20 ? waId.slice(0, 20) + '...' : waId;
+            const a = document.createElement('a');
+            a.href = `/inbox/${waId}`;
+            a.className = 'pipeline-card';
+            a.dataset.waId   = waId;
+            a.dataset.nombre = nombre;
+            a.dataset.phone  = waId;
+            a.dataset.labels = '';
+            a.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem;">
+                    <span class="pipeline-card-name">${nombre}</span>
+                    <span style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;margin-left:0.5rem;">ahora</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;font-family:monospace;">${shortId}</div>
+                <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+                    <span style="width:7px;height:7px;border-radius:50%;background:${dotColor};flex-shrink:0;"></span>
+                </div>`;
+            // Abrir en split-view igual que las demás tarjetas
+            a.addEventListener('click', (e) => {
+                if (typeof openChatPanel === 'function') {
+                    e.preventDefault();
+                    openChatPanel(waId, nombre);
+                }
+            });
+            return a;
+        }
+
+        function handleStageChange(data) {
+            const { wa_id, from_stage, to_stage, nombre, bot_activo } = data;
+            if (!to_stage) return; // sin etapa destino, ignorar
+
+            const toCol  = document.querySelector(`.pipeline-column[data-stage-id="${to_stage}"]`);
+            if (!toCol) return;
+            const toList = toCol.querySelector('.pipeline-cards-list');
+
+            // Buscar tarjeta existente
+            let card = document.querySelector(`.pipeline-card[data-wa-id="${wa_id}"]`);
+
+            if (card) {
+                const fromCol = card.closest('.pipeline-column');
+                if (fromCol === toCol) return; // ya está en la columna correcta
+
+                // Sacar de columna origen
+                card.style.transition = 'opacity 0.25s, transform 0.25s';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
+
+                setTimeout(() => {
+                    if (fromCol) updateCounter(fromCol, -1);
+                    toList.prepend(card);
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    requestAnimationFrame(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = '';
+                    });
+                    updateCounter(toCol, +1);
+                }, 260);
+            } else {
+                // Tarjeta nueva (primer mensaje de este chat)
+                const newCard = buildLiveCard(wa_id, nombre || wa_id, bot_activo !== false);
+                toList.prepend(newCard);
+                updateCounter(toCol, +1);
+            }
+        }
+
+        function initPipelineSSE() {
+            const es = new EventSource('/api/pipeline/events');
+
+            es.onmessage = (e) => {
+                try {
+                    const data = JSON.parse(e.data);
+                    if (data.type === 'stage_change') handleStageChange(data);
+                    // ping / connected → ignorar silenciosamente
+                } catch (_) {}
+            };
+
+            es.onerror = () => {
+                // Reconectar automáticamente después de 5s si se corta
+                es.close();
+                setTimeout(initPipelineSSE, 5000);
+            };
+        }
+
+        // Iniciar SSE al cargar la página
+        initPipelineSSE();
+
     </script>
 </body>
 </html>
