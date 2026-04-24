@@ -52,6 +52,7 @@ def inyectar_tema_global(request, html: str) -> str:
     t_muted = prefs.get('text_muted', '#94a3b8')
     f_heading = prefs.get('font_heading', 'Plus Jakarta Sans')
     f_main    = prefs.get('font_main', 'Inter')
+    nav_pos   = prefs.get('nav_position', 'top')
 
     # Inyectar Google Fonts dinámicamente
     _font_families = list(dict.fromkeys([f_heading, f_main]))  # dedupe preservando orden
@@ -76,6 +77,15 @@ def inyectar_tema_global(request, html: str) -> str:
         accent_border_rgba = "rgba(255, 255, 255, 0.1)"
         accent_hover_rgba = "rgba(255, 255, 255, 0.08)"
 
+    # Compute bg RGB para glass effect
+    _c_bg_hex = c_bg.lstrip('#')
+    if len(_c_bg_hex) == 6:
+        _r, _g, _b = tuple(int(_c_bg_hex[i:i+2], 16) for i in (0, 2, 4))
+        _panel_glass = f"rgba({_r}, {_g}, {_b}, 0.65)"
+    else:
+        _r, _g, _b = 15, 23, 42
+        _panel_glass = "rgba(15, 23, 42, 0.65)"
+
     css = f'''
         :root {{
             --bg-main: {c_bg} !important;
@@ -89,6 +99,7 @@ def inyectar_tema_global(request, html: str) -> str:
             --text-muted: {t_muted} !important;
             --font-heading: '{f_heading}', system-ui, -apple-system, sans-serif !important;
             --font-main: '{f_main}', system-ui, -apple-system, sans-serif !important;
+            --panel-glass: {_panel_glass} !important;
         }}
         .nav-item.active {{
             color: {t_main} !important;
@@ -121,33 +132,21 @@ def inyectar_tema_global(request, html: str) -> str:
             
         wp_lower = wp.lower()
         if wp_lower.endswith(".mp4") or wp_lower.endswith(".webm"):
-            # En inyectar video usando background-color semi-transparente
-            css += f'''
-            .chat-viewer-panel {{
-                position: relative;
-                background-color: transparent !important;
-                z-index: 1;
-            }}
-            .chat-list-panel {{
-                background-color: {overlay_rgba} !important; /* Sidebar list keeps background */
-            }}
-            '''
+            # Video: inyectado en body con position:fixed para cubrir toda la interfaz
             video_tag = f'''
-            <video autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position: {wp_offset_x}% {wp_offset_y}%; z-index:-2; pointer-events:none;"><source src="{wp}"></video>
-            <div style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; background-color:{overlay_rgba};"></div>
+            <video autoplay loop muted playsinline style="position:fixed; top:0; left:0; width:100vw; height:100vh; object-fit:cover; object-position: {wp_offset_x}% {wp_offset_y}%; z-index:-2; pointer-events:none;"><source src="{wp}"></video>
+            <div style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none; background-color:{overlay_rgba};"></div>
             '''
-            # Inyectamos el video dentro del panel visor de chat para no superponer listas u otros paneles
-            if '<div class="chat-viewer-panel">' in html:
-                html = html.replace('<div class="chat-viewer-panel">', f'<div class="chat-viewer-panel">\n{video_tag}')
-            elif '<body' in html:
-                import re
-                html = re.sub(r'(<body[^>]*>)', rf'\1\n{video_tag}', html, count=1)
+            import re
+            html = re.sub(r'(<body[^>]*>)', rf'\1\n{video_tag}', html, count=1)
         else:
+            # Imagen: cubre el body completo (toda la interfaz)
             css += f'''
-            .chat-viewer-panel {{
+            body {{
                 background: linear-gradient({overlay_rgba}, {overlay_rgba}), url('{wp}') !important;
                 background-size: cover !important;
                 background-position: {wp_offset_x}% {wp_offset_y}% !important;
+                background-attachment: fixed !important;
             }}
             '''
             
@@ -156,6 +155,31 @@ def inyectar_tema_global(request, html: str) -> str:
             background: var(--accent-bg) !important;
             border: 1px solid var(--accent-border) !important;
         }}
+        '''
+
+    # Sidebar lateral izquierdo (override del CSS grid de inbox)
+    if nav_pos == 'left':
+        css += '''
+        body {
+            grid-template-rows: 1fr !important;
+            grid-template-columns: 55px clamp(280px, 30vw, 650px) 1fr !important;
+            grid-template-areas: "sidebar list viewer" !important;
+        }
+        .sidebar-nav {
+            width: 55px !important;
+            height: auto !important;
+            flex-direction: column !important;
+            padding: 1.5rem 0 !important;
+            gap: 0 !important;
+            align-items: center !important;
+        }
+        .bot-status-indicator {
+            margin-left: 0 !important;
+            margin-top: auto !important;
+        }
+        .nav-item {
+            margin-bottom: 0.75rem !important;
+        }
         '''
 
     # Si la template tiene lugar para {custom_theme_css}, insertalo. 
@@ -177,6 +201,7 @@ def inyectar_tema_global(request, html: str) -> str:
     html = html.replace("{text_muted}", t_muted)
     html = html.replace("{font_heading}", f_heading)
     html = html.replace("{font_main}", f_main)
+    html = html.replace("{nav_position}", nav_pos)
     return html
 
 import traceback
@@ -4565,7 +4590,8 @@ async def update_user_theme(
     wallpaper_opacity: str = Form("0.15"),
     wallpaper_offset_y: str = Form("50"),
     wallpaper_offset_x: str = Form("50"),
-    wallpaper_file: UploadFile = File(None)
+    wallpaper_file: UploadFile = File(None),
+    nav_position: str = Form("top")
 ):
     if not verificar_sesion(request):
         return {"ok": False, "error": "No autorizado"}
@@ -4605,7 +4631,8 @@ async def update_user_theme(
         "wallpaper": wallpaper or "",
         "wallpaper_opacity": wallpaper_opacity or "0.15",
         "wallpaper_offset_y": wallpaper_offset_y or "50",
-        "wallpaper_offset_x": wallpaper_offset_x or "50"
+        "wallpaper_offset_x": wallpaper_offset_x or "50",
+        "nav_position": nav_position or "top"
     }
     
     username = usuario_sesion.get("username")
