@@ -127,8 +127,43 @@
                             <input type="color" id="theme_text_muted" name="text_muted" value="{text_muted}" style="background:transparent; border:none; width:45px; height:45px; cursor:pointer;" onchange="previewTheme()">
                         </div>
                     </div>
-                    
+
+                    <!-- SELECTORES DE FUENTE -->
                     <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:0.5rem;">
+                        <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1; min-width:220px;">
+                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Fuente de Títulos / Encabezados</label>
+                            <select id="theme_font_heading" name="font_heading" onchange="previewFonts()" style="background:var(--bg-main); border:1px solid var(--accent-border); color:var(--text-main); padding:0.75rem 1rem; border-radius:8px; font-size:0.9rem; cursor:pointer; outline:none; font-family:var(--font-main);">
+                                <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                                <option value="Inter">Inter</option>
+                                <option value="Outfit">Outfit</option>
+                                <option value="Space Grotesk">Space Grotesk</option>
+                                <option value="Syne">Syne</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Raleway">Raleway</option>
+                                <option value="Poppins">Poppins</option>
+                                <option value="DM Sans">DM Sans</option>
+                                <option value="Nunito">Nunito</option>
+                            </select>
+                            <span id="preview_font_heading" style="font-size:1.1rem; font-weight:700; color:var(--text-main); padding:0.5rem 0; transition:font-family 0.3s;">Texto de Encabezado</span>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1; min-width:220px;">
+                            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Fuente Principal / Cuerpo de Texto</label>
+                            <select id="theme_font_main" name="font_main" onchange="previewFonts()" style="background:var(--bg-main); border:1px solid var(--accent-border); color:var(--text-main); padding:0.75rem 1rem; border-radius:8px; font-size:0.9rem; cursor:pointer; outline:none; font-family:var(--font-main);">
+                                <option value="Inter">Inter</option>
+                                <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                                <option value="DM Sans">DM Sans</option>
+                                <option value="Outfit">Outfit</option>
+                                <option value="Nunito">Nunito</option>
+                                <option value="Figtree">Figtree</option>
+                                <option value="Mulish">Mulish</option>
+                                <option value="Lato">Lato</option>
+                                <option value="Poppins">Poppins</option>
+                                <option value="Geist">Geist</option>
+                            </select>
+                            <span id="preview_font_main" style="font-size:0.9rem; color:var(--text-muted); padding:0.5rem 0; transition:font-family 0.3s;">El bot respondió a tu cliente correctamente.</span>
+                        </div>
+                    </div>
+
                         <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1; min-width:250px;">
                             <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Imagen de Fondo del Chat</label>
                             <div style="display:flex; gap:0.5rem;">
@@ -340,6 +375,58 @@
             document.documentElement.style.setProperty('--text-main', textMain);
             document.documentElement.style.setProperty('--text-muted', textMuted);
         }
+
+        function loadGoogleFont(fontName) {
+            const id = 'gf-' + fontName.replace(/\s+/g, '-');
+            if (document.getElementById(id)) return; // ya cargada
+            const link = document.createElement('link');
+            link.id = id;
+            link.rel = 'stylesheet';
+            link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:wght@400;500;600;700&display=swap`;
+            document.head.appendChild(link);
+        }
+
+        function previewFonts() {
+            const fHeading = document.getElementById('theme_font_heading').value;
+            const fMain    = document.getElementById('theme_font_main').value;
+
+            loadGoogleFont(fHeading);
+            loadGoogleFont(fMain);
+
+            // Preview text
+            document.getElementById('preview_font_heading').style.fontFamily = `'${fHeading}', system-ui, sans-serif`;
+            document.getElementById('preview_font_main').style.fontFamily    = `'${fMain}', system-ui, sans-serif`;
+
+            // Aplicar al :root en vivo
+            document.documentElement.style.setProperty('--font-heading', `'${fHeading}', system-ui, sans-serif`);
+            document.documentElement.style.setProperty('--font-main',    `'${fMain}', system-ui, sans-serif`);
+        }
+
+        // Inicializar selects con el valor guardado del servidor
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedHeading = '{font_heading}';
+            const savedMain    = '{font_main}';
+
+            const selH = document.getElementById('theme_font_heading');
+            const selM = document.getElementById('theme_font_main');
+
+            if (selH) {
+                // Verificar si la opción existe; si no, agregarla dinámicamente
+                if (![...selH.options].some(o => o.value === savedHeading)) {
+                    const opt = new Option(savedHeading, savedHeading);
+                    selH.add(opt);
+                }
+                selH.value = savedHeading;
+            }
+            if (selM) {
+                if (![...selM.options].some(o => o.value === savedMain)) {
+                    const opt = new Option(savedMain, savedMain);
+                    selM.add(opt);
+                }
+                selM.value = savedMain;
+            }
+            previewFonts();
+        });
 
         async function applyPresetTheme(type) {
             if(!confirm(`¿Aplicar Tema ${type === 'dark' ? 'Oscuro' : 'Claro'}?`)) return;

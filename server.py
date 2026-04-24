@@ -50,6 +50,20 @@ def inyectar_tema_global(request, html: str) -> str:
     wp_offset_x = prefs.get('wallpaper_offset_x', '50')
     t_main = prefs.get('text_main', '#f8fafc')
     t_muted = prefs.get('text_muted', '#94a3b8')
+    f_heading = prefs.get('font_heading', 'Plus Jakarta Sans')
+    f_main    = prefs.get('font_main', 'Inter')
+
+    # Inyectar Google Fonts dinámicamente
+    _font_families = list(dict.fromkeys([f_heading, f_main]))  # dedupe preservando orden
+    _font_params = '&'.join([
+        f"family={fn.replace(' ', '+')}:wght@400;500;600;700"
+        for fn in _font_families
+    ])
+    _font_link = f'<link href="https://fonts.googleapis.com/css2?{_font_params}&display=swap" rel="stylesheet">'
+    if '</head>' in html:
+        html = html.replace('</head>', f'{_font_link}\n</head>', 1)
+    elif '<head>' in html:
+        html = html.replace('<head>', f'<head>\n{_font_link}', 1)
 
     c_acc_hex = c_acc.lstrip('#')
     if len(c_acc_hex) == 6:
@@ -73,6 +87,8 @@ def inyectar_tema_global(request, html: str) -> str:
             --accent-hover-soft: {accent_hover_rgba} !important;
             --text-main: {t_main} !important;
             --text-muted: {t_muted} !important;
+            --font-heading: '{f_heading}', system-ui, -apple-system, sans-serif !important;
+            --font-main: '{f_main}', system-ui, -apple-system, sans-serif !important;
         }}
         .nav-item.active {{
             color: {t_main} !important;
@@ -159,6 +175,8 @@ def inyectar_tema_global(request, html: str) -> str:
     html = html.replace("{wallpaper_offset_x}", str(wp_offset_x))
     html = html.replace("{text_main}", t_main)
     html = html.replace("{text_muted}", t_muted)
+    html = html.replace("{font_heading}", f_heading)
+    html = html.replace("{font_main}", f_main)
     return html
 
 import traceback
@@ -4541,6 +4559,8 @@ async def update_user_theme(
     primary_color: str = Form(None), 
     text_main: str = Form(None),
     text_muted: str = Form(None),
+    font_heading: str = Form(None),
+    font_main: str = Form(None),
     wallpaper: str = Form(None), 
     wallpaper_opacity: str = Form("0.15"),
     wallpaper_offset_y: str = Form("50"),
@@ -4580,6 +4600,8 @@ async def update_user_theme(
         "primary_color": primary_color or "#717f7f",
         "text_main": text_main or "#f8fafc",
         "text_muted": text_muted or "#94a3b8",
+        "font_heading": font_heading or "Plus Jakarta Sans",
+        "font_main": font_main or "Inter",
         "wallpaper": wallpaper or "",
         "wallpaper_opacity": wallpaper_opacity or "0.15",
         "wallpaper_offset_y": wallpaper_offset_y or "50",
