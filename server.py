@@ -3624,7 +3624,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <div style="flex:1; display:flex; flex-direction:column; min-width:0; min-height:0; background:transparent;">
                 {status_bar}
                 {pinned_html}
-            <div style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
+            <div class="chat-view-header" style="padding:1.5rem;border-bottom:1px solid var(--accent-border);display:flex;align-items:center;background:var(--bg-main);">
                     <a href="/inbox?tab={tab}&line={line_filter}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
@@ -3637,9 +3637,9 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     </div>
 
                     <!-- Botón Ver Pedido ERP -->
-                    <button type="button" onclick="abrirModalPedido('{wa_id}')" style="background:linear-gradient(135deg, var(--primary-color), #059669); color:white; border:none; padding:0.4rem 0.8rem; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:0.4rem; margin-right:0.5rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                    <button type="button" class="btn-ver-pedido" onclick="abrirModalPedido('{wa_id}')" style="background:linear-gradient(135deg, var(--primary-color), #059669); color:white; border:none; padding:0.4rem 0.8rem; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:0.4rem; margin-right:0.5rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                        Ver Pedido
+                        <span class="btn-ver-pedido-text">Ver Pedido</span>
                     </button>
 
                     <!-- Botón de gestionar etiquetas -->
