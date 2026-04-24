@@ -1933,6 +1933,11 @@
                             if (file.type.startsWith('image/')) dynamicMode = 'imagen';
                             else if (file.type.startsWith('video/')) dynamicMode = 'video';
                             else if (file.type.startsWith('audio/')) dynamicMode = 'audio';
+                        } else if (reqMode === 'media') {
+                            // Fallback defensivo: 'media' no es un modo válido para el parser del servidor
+                            if (file.type.startsWith('video/')) dynamicMode = 'video';
+                            else if (file.type.startsWith('audio/')) dynamicMode = 'audio';
+                            else dynamicMode = 'imagen'; // default: foto
                         }
                         uploadMedia(file, dynamicMode);
                     });
