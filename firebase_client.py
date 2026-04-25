@@ -196,10 +196,11 @@ def cargar_todas_las_sesiones() -> dict:
     
     for doc in docs:
         data = doc.to_dict()
-        if data.get("ultima_actividad") and isinstance(data["ultima_actividad"], DatetimeWithNanoseconds):
-            data["ultima_actividad"] = datetime.datetime.fromtimestamp(data["ultima_actividad"].timestamp())
+        if data.get("ultima_actividad"):
+            if isinstance(data["ultima_actividad"], DatetimeWithNanoseconds):
+                data["ultima_actividad"] = datetime.datetime.utcfromtimestamp(data["ultima_actividad"].timestamp())
         if data.get("escalado_en") and isinstance(data["escalado_en"], DatetimeWithNanoseconds):
-            data["escalado_en"] = datetime.datetime.fromtimestamp(data["escalado_en"].timestamp())
+            data["escalado_en"] = datetime.datetime.utcfromtimestamp(data["escalado_en"].timestamp())
         sesiones_restauradas[doc.id] = data
         
     return sesiones_restauradas
