@@ -314,8 +314,8 @@ async def cron_seguimiento_inactivos():
     from firebase_client import cargar_followup_rules_bd, guardar_sesion_chat
     import traceback
     
+    await asyncio.sleep(15) # Espera 15 segs al inicio para asegurar carga
     while True:
-        await asyncio.sleep(60 * 15)  # 15 minutos
         try:
             if not BOT_GLOBAL_ACTIVO:
                 continue
@@ -399,6 +399,8 @@ async def cron_seguimiento_inactivos():
         except Exception as e:
             print(f"[ERROR] En cron_seguimiento_inactivos: {e}")
             traceback.print_exc()
+        finally:
+            await asyncio.sleep(60 * 15)  # 15 minutos
 
 @app.on_event("startup")
 async def startup_followup_cron():
