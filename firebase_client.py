@@ -141,6 +141,7 @@ def guardar_sesion_chat(numero_wa: str, sesion_dict: dict):
             "unread_count": sesion_dict.get("unread_count", 0),
             "lineId": sesion_dict.get("lineId", "principal"),
             "pipeline_stage": sesion_dict.get("pipeline_stage", None),
+            "seguimientos_enviados": sesion_dict.get("seguimientos_enviados", []),
         }
         
         # Firestore maneja datetimes nativamente
@@ -597,3 +598,30 @@ def actualizar_preferencias_tema(username: str, preferencias_ui: dict) -> bool:
         doc_ref.update({"preferencias_ui": preferencias_ui})
         return True
     return False
+
+# ============================================================
+#  PERSISTENCIA DE REGLAS DE SEGUIMIENTO (FOLLOW-UP RULES)
+# ============================================================
+
+def guardar_followup_rule_bd(rule: dict):
+    db = inicializar_firebase()
+    rule_id = rule.get("id")
+    if not rule_id:
+        return
+    rule["updatedAt"] = firestore.SERVER_TIMESTAMP
+    db.collection("followup_rules").document(rule_id).set(rule, merge=True)
+
+def eliminar_followup_rule_bd(rule_id: str):
+    db = inicializar_firebase()
+    db.collection("followup_rules").document(rule_id).delete()
+
+def cargar_followup_rules_bd() -> list:
+    db = inicializar_firebase()
+    docs = db.collection("followup_rules").stream()
+    rules = []
+    for doc in docs:
+        data = doc.to_dict()
+        if "id" in data:
+            rules.append(data)
+    rules.sort(key=lambda x: x.get("horas_inactividad", 0))
+    return rules

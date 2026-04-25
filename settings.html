@@ -715,6 +715,45 @@
                 </div>
             </div>
 
+            <!-- SECCIÓN DE AUTOMATIZACIONES DE SEGUIMIENTO -->
+            <div class="qr-card"
+                style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding:1.5rem;margin-top:1.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                    <div>
+                        <h3 style="color:var(--text-main);font-family:var(--font-heading)">Automatizaciones de Seguimiento (Follow-Up)</h3>
+                        <p style="color:var(--text-muted);font-size:0.9rem;margin:0;">Reglas para enviar mensajes automáticos tras horas de inactividad del cliente.</p>
+                    </div>
+                    <button type="button" onclick="createNewFollowupRule()" class="btn-save" style="padding:0.4rem 1rem; font-size:0.85rem;">+ Nueva Regla</button>
+                </div>
+                
+                <div style="display:flex; gap:1rem; margin-bottom:1rem; overflow-x:auto; padding-bottom:0.5rem;" id="followupTabsContainer">
+                    <!-- TABS HERE -->
+                </div>
+
+                <div class="editor-card" id="followupEditorCard" style="display:none; min-height: auto;">
+                    <div class="editor-header" style="justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+                        <input type="text" id="followupNameInput" class="prompt-input" placeholder="Nombre (Ej. Seguimiento 23h)" style="width:200px; padding:0.4rem; font-size:0.9rem; background:var(--bg-main); color:inherit; border:1px solid var(--accent-border); border-radius:4px;" />
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; cursor:pointer;">
+                                Horas inactividad: 
+                                <input type="number" id="followupHoursInput" min="1" max="72" value="23" style="width:60px; padding:0.2rem; background:var(--bg-main); color:inherit; border:1px solid var(--accent-border); border-radius:4px;" />
+                            </label>
+                            <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; cursor:pointer;">
+                                <input type="checkbox" id="followupActiveCheckbox" style="accent-color:var(--accent-color);" /> Activo
+                            </label>
+                            <select id="followupLineSelect" style="padding:0.3rem; background:var(--bg-main); color:var(--text-main); border:1px solid var(--accent-border); border-radius:4px; font-size:0.85rem;">
+                                <option value="todas">-- Todas las líneas --</option>
+                            </select>
+                            <button type="button" onclick="deleteCurrentFollowupRule()" id="btnDeleteFollowup" style="padding:0.4rem 0.8rem; font-size:0.8rem; background:#ef4444; color:white; border:none; border-radius:6px; cursor:pointer;">Borrar</button>
+                        </div>
+                    </div>
+                    <textarea class="code-editor" id="followupPromptInput" spellcheck="false" style="min-height:200px;" placeholder="Instrucción de sistema para Gemini. Ej: Eres un asistente, el cliente no ha respondido en 23 horas, genera un mensaje corto para invitarlo a retomar la compra..."></textarea>
+                    <div style="padding:1rem; border-top:1px solid var(--accent-border); background:var(--bg-main); text-align:right;">
+                        <button type="button" onclick="saveFollowupRule()" class="btn-save">Guardar Regla de Seguimiento</button>
+                    </div>
+                </div>
+            </div>
+
             <script>
                 // Estado global
                 let botsConfig = { bots: {}, lines_mapping: {} };
@@ -861,6 +900,8 @@
                         const res = await fetch('/api/admin/lines');
                         const data = await res.json();
                         if(data.ok) {
+                            window.systemLines = data.lines || {};
+                            if(typeof updateFollowupLineSelect === 'function') updateFollowupLineSelect();
                             const container = document.getElementById('linesContainer');
                             container.innerHTML = '';
                             
@@ -942,7 +983,139 @@
                     }
                 }
 
-                document.addEventListener("DOMContentLoaded", loadConfig);
+                // ==========================================
+                // FOLLOW-UP RULES LOGIC
+                // ==========================================
+                let followupRules = [];
+                let currentFollowupId = null;
+
+                async function loadFollowupRules() {
+                    try {
+                        const res = await fetch('/api/followup/rules');
+                        const data = await res.json();
+                        if(data.ok) {
+                            followupRules = data.rules || [];
+                            renderFollowupTabs();
+                            if(followupRules.length > 0) {
+                                selectFollowupRule(followupRules[0].id);
+                            } else {
+                                document.getElementById('followupEditorCard').style.display = 'none';
+                            }
+                        }
+                    } catch(e) { console.error("Error loading followup rules:", e); }
+                }
+
+                function renderFollowupTabs() {
+                    const container = document.getElementById('followupTabsContainer');
+                    container.innerHTML = '';
+                    followupRules.forEach(rule => {
+                        const tab = document.createElement('button');
+                        tab.className = 'btn-save';
+                        tab.style.background = currentFollowupId === rule.id ? 'var(--accent-color)' : 'var(--accent-bg)';
+                        tab.style.border = '1px solid var(--accent-border)';
+                        tab.style.color = currentFollowupId === rule.id ? '#000' : 'var(--text-main)';
+                        tab.style.padding = '0.5rem 1rem';
+                        tab.innerText = rule.nombre || `Regla ${rule.horas_inactividad}h`;
+                        tab.onclick = () => selectFollowupRule(rule.id);
+                        container.appendChild(tab);
+                    });
+                }
+
+                function selectFollowupRule(ruleId) {
+                    currentFollowupId = ruleId;
+                    renderFollowupTabs();
+                    const rule = followupRules.find(r => r.id === ruleId);
+                    if(!rule) return;
+                    
+                    document.getElementById('followupEditorCard').style.display = 'flex';
+                    document.getElementById('followupNameInput').value = rule.nombre || "";
+                    document.getElementById('followupHoursInput').value = rule.horas_inactividad || 23;
+                    document.getElementById('followupActiveCheckbox').checked = rule.activo !== false;
+                    document.getElementById('followupLineSelect').value = rule.line_id || "todas";
+                    document.getElementById('followupPromptInput').value = rule.prompt || "";
+                }
+
+                function updateFollowupLineSelect() {
+                    const select = document.getElementById('followupLineSelect');
+                    if(!select) return;
+                    const val = select.value;
+                    select.innerHTML = '<option value="todas">-- Todas las líneas --</option>';
+                    if(window.systemLines) {
+                        for(const [id, line] of Object.entries(window.systemLines)) {
+                            select.innerHTML += `<option value="${id}">${line.name} (${id})</option>`;
+                        }
+                    }
+                    select.value = val || "todas";
+                }
+
+                function createNewFollowupRule() {
+                    const ruleId = 'fr_' + Math.random().toString(36).substr(2, 8);
+                    const newRule = {
+                        id: ruleId,
+                        nombre: "Nueva Regla",
+                        horas_inactividad: 23,
+                        activo: true,
+                        prompt: "El cliente ha estado inactivo. Analiza el historial de chat y genera un mensaje natural y amigable para retomar la conversación, ofreciendo ayuda y recordando los beneficios de nuestros productos o servicios. Mantén el tono coherente con el estilo de la empresa y no repitas el mensaje anterior enviado al cliente. Mantén el mensaje conciso y termina con una pregunta abierta."
+                    };
+                    followupRules.push(newRule);
+                    selectFollowupRule(ruleId);
+                }
+
+                async function saveFollowupRule() {
+                    if(!currentFollowupId) return;
+                    const rule = followupRules.find(r => r.id === currentFollowupId);
+                    if(!rule) return;
+
+                    rule.nombre = document.getElementById('followupNameInput').value;
+                    rule.horas_inactividad = parseInt(document.getElementById('followupHoursInput').value) || 23;
+                    rule.activo = document.getElementById('followupActiveCheckbox').checked;
+                    rule.line_id = document.getElementById('followupLineSelect').value;
+                    rule.prompt = document.getElementById('followupPromptInput').value;
+
+                    try {
+                        const res = await fetch('/api/followup/rules', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({rule: rule})
+                        });
+                        const data = await res.json();
+                        if(data.ok) {
+                            const toast = document.getElementById('saveToast');
+                            toast.innerText = "¡Regla de Seguimiento Actualizada!";
+                            toast.classList.add('show');
+                            setTimeout(() => toast.classList.remove('show'), 4000);
+                            renderFollowupTabs();
+                        } else {
+                            alert("Error: " + data.error);
+                        }
+                    } catch(e) { console.error(e); }
+                }
+
+                async function deleteCurrentFollowupRule() {
+                    if(!currentFollowupId || !confirm("¿Borrar esta regla de seguimiento de forma permanente?")) return;
+                    
+                    try {
+                        const res = await fetch(`/api/followup/rules/${currentFollowupId}`, { method: 'DELETE' });
+                        const data = await res.json();
+                        if(data.ok) {
+                            followupRules = followupRules.filter(r => r.id !== currentFollowupId);
+                            currentFollowupId = followupRules.length > 0 ? followupRules[0].id : null;
+                            if(currentFollowupId) {
+                                selectFollowupRule(currentFollowupId);
+                            } else {
+                                document.getElementById('followupEditorCard').style.display = 'none';
+                                renderFollowupTabs();
+                            }
+                        } else {
+                            alert("Error al borrar: " + data.error);
+                        }
+                    } catch(e) { console.error(e); }
+                }
+
+                document.addEventListener("DOMContentLoaded", () => {
+                    loadConfig();
+                    loadFollowupRules();
+                });
             </script>
         </div>
 

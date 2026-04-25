@@ -309,6 +309,101 @@ def startup_event():
         t.start()
     except: pass
 
+async def cron_seguimiento_inactivos():
+    """Loop que revisa cada 15 min si hay clientes inactivos para enviar un seguimiento usando IA."""
+    from firebase_client import cargar_followup_rules_bd, guardar_sesion_chat
+    import traceback
+    
+    while True:
+        await asyncio.sleep(60 * 15)  # 15 minutos
+        try:
+            if not BOT_GLOBAL_ACTIVO:
+                continue
+            
+            rules = cargar_followup_rules_bd()
+            active_rules = [r for r in rules if r.get('activo', False)]
+            if not active_rules:
+                continue
+
+            now = datetime.now()
+
+            # Evitamos mutar el dict mientras iteramos
+            for wa_id, sesion in list(sesiones.items()):
+                # Ignorar si el bot está pausado para el humano o no hay actividad registrada
+                if not sesion.get("bot_activo") or not sesion.get("ultima_actividad"):
+                    continue
+                
+                # Ignorar si la ventana de WhatsApp (24h) ya cerró
+                # Queremos enviar el seguimiento ANTES de las 24 hrs
+                horas_inactivo = (now - sesion["ultima_actividad"]).total_seconds() / 3600
+                if horas_inactivo >= 24:
+                    continue
+
+                seguimientos_enviados = sesion.get("seguimientos_enviados", [])
+
+                for rule in active_rules:
+                    rule_id = rule["id"]
+                    
+                    rule_line = rule.get("line_id", "todas")
+                    sesion_line = sesion.get("lineId", "principal")
+                    if rule_line != "todas" and rule_line != sesion_line:
+                        continue
+
+                    if rule_id in seguimientos_enviados:
+                        continue
+                    
+                    if horas_inactivo >= rule.get("horas_inactividad", 23):
+                        print(f"[*] [FOLLOW-UP] Disparando regla '{rule.get('nombre')}' para {wa_id} ({horas_inactivo:.1f}h inactivo)")
+                        
+                        try:
+                            # Preparar historial usando la misma lógica del bot principal
+                            from prompts import get_system_prompt
+                            historial_base = sesion.get("historial", [])
+                            if not historial_base: continue
+                            
+                            # Conservamos y recortamos para no saturar a Gemini
+                            historial = recortar_historial(historial_base)
+                            line_id = sesion.get("lineId", "principal")
+                            bot_id = sesion.get("bot_id", "atc_1") # Por si acaso
+                            
+                            # Inyectar estado actualizado del pedido en el prompt del sistema
+                            if len(historial) > 0 and historial[0].get("role") == "system":
+                                pedidos = sesion.get("pedidos_multiples") or sesion.get("datos_pedido")
+                                historial[0]["content"] = get_system_prompt(pedidos, bot_id)
+                            
+                            # Inyectar instrucción de seguimiento al modelo
+                            historial.append({
+                                "role": "user",
+                                "content": f"[INSTRUCCIÓN DE SISTEMA: {rule.get('prompt', 'Haz un seguimiento corto y amigable para retomar la compra. No repitas mensajes previos.')}]"
+                            })
+
+                            # Llamar a la IA
+                            respuesta_ia = llamar_gemini(historial)
+                            
+                            if respuesta_ia and respuesta_ia.strip() != "00:00":
+                                # Enviar por WP
+                                enviar_mensaje(wa_id, respuesta_ia, line_id=line_id)
+                                
+                                # Guardar en memoria
+                                sesion["historial"].append({"role": "assistant", "content": respuesta_ia, "timestamp": datetime.now().isoformat()})
+                                sesion["seguimientos_enviados"] = seguimientos_enviados + [rule_id]
+                                
+                                # Persistir en DB
+                                guardar_sesion_chat(wa_id, sesion)
+                        except Exception as inner_e:
+                            print(f"[ERROR] [FOLLOW-UP] Falló la IA o el envío para {wa_id}: {inner_e}")
+                            traceback.print_exc()
+                        
+                        break # Ejecutar solo una regla por iteración para este usuario
+                        
+        except Exception as e:
+            print(f"[ERROR] En cron_seguimiento_inactivos: {e}")
+            traceback.print_exc()
+
+@app.on_event("startup")
+async def startup_followup_cron():
+    asyncio.create_task(cron_seguimiento_inactivos())
+
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"
 sesiones: dict[str, dict] = {}
@@ -458,7 +553,7 @@ def llamar_gemini(historial: list[dict]) -> str:
             # Buscar si el mensaje es un audio (enviado por el cliente)
             match_audio = re.match(r"^\[audio:([^\]]+)\]$", msg["content"].strip())
             
-            part = None
+            parts_to_add = []
             if match_audio:
                 media_id = match_audio.group(1)
                 audio_data = media_cache.get(media_id)
@@ -467,16 +562,30 @@ def llamar_gemini(historial: list[dict]) -> str:
                     # Depurar codecs en mime_type (ej. audio/ogg; codecs=opus -> audio/ogg)
                     if mime_type and ";" in mime_type: mime_type = mime_type.split(";")[0]
                     if not mime_type: mime_type = "audio/ogg" 
-                    part = types.Part.from_bytes(data=contenido_bytes, mime_type=mime_type)
+                    parts_to_add.append(types.Part.from_bytes(data=contenido_bytes, mime_type=mime_type))
+                    parts_to_add.append(types.Part.from_text(text="[Audio del cliente. Escucha y responde. Si el audio está en silencio o es puro ruido, asume que fue un error y dile amablemente que no pudiste escucharlo.]"))
                 else:
-                    part = types.Part.from_text(text="[🎤 Mensaje de voz (Audio expirado o no disponible en caché)]")
+                    parts_to_add.append(types.Part.from_text(text="[🎤 Mensaje de voz (Audio expirado o no disponible en caché)]"))
             else:
-                part = types.Part.from_text(text=msg["content"])
+                raw_text = msg["content"]
+                if role == "model":
+                    import re
+                    # Filtrar botones interactivos
+                    raw_text = re.sub(r"🔘.*?(?=\n|$)", "", raw_text).strip()
+                    # Limpiar prefijo/sufijo de plantilla para evitar sesgo de formato
+                    if raw_text.startswith("[Plantilla enviada:") and raw_text.endswith("]"):
+                        raw_text = raw_text.replace("[Plantilla enviada:", "", 1).rsplit("]", 1)[0].strip()
+                        if "\n" in raw_text:
+                            raw_text = raw_text.split("\n", 1)[1].strip()
+                    if not raw_text:
+                        raw_text = "[Mensaje enviado]"
+                
+                parts_to_add.append(types.Part.from_text(text=raw_text))
                 
             if gemini_contents and gemini_contents[-1].role == role:
-                gemini_contents[-1].parts.append(part)
+                gemini_contents[-1].parts.extend(parts_to_add)
             else:
-                gemini_contents.append(types.Content(role=role, parts=[part]))
+                gemini_contents.append(types.Content(role=role, parts=parts_to_add))
                 
         # Doble verificación final: si por alguna razón no quedó nada
         if not gemini_contents:
@@ -503,7 +612,10 @@ def llamar_gemini(historial: list[dict]) -> str:
                     contents=gemini_contents,
                     config=config,
                 )
-                return response.text.strip()
+                txt = response.text.strip()
+                if "00:00" in txt and txt.count("00:00") > 3:
+                    txt = "Hubo un pequeño error de conexión al procesar tu solicitud. ¿Podrías repetir tu último mensaje por favor? 🙏"
+                return txt
             except Exception as e:
                 err_str = str(e)
                 # Retry on rate limits or temporary unavailability
@@ -804,6 +916,8 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
     session_key = get_session_key(numero_wa, phone_number_id)
     ses = obtener_o_crear_sesion(numero_wa, phone_number_id)
     ses["ultima_actividad"] = datetime.utcnow()
+    # Si el mensaje proviene del cliente, o es un mensaje nuevo, limpiamos los seguimientos para que la IA pueda volver a contactarlo en el futuro
+    ses["seguimientos_enviados"] = []
     ses["nombre_cliente"]   = nombre
     ses["lineId"]           = phone_number_id
     ses["numero_real"]      = numero_wa
@@ -943,6 +1057,7 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Obtener/crear sesión ──────────────────────────────
     sesion = obtener_o_crear_sesion(numero_wa)
     sesion["ultima_actividad"] = datetime.utcnow()
+    sesion["seguimientos_enviados"] = []
     sesion["nombre_cliente"]   = nombre
 
     # 1) Para simulaciones, guardamos el mensaje aquí. Para en vivo, recibir_mensaje ya lo guarda al instante.
@@ -5333,6 +5448,45 @@ async def api_save_bots_config(payload: BotConfigPayload, request: Request):
     from bot_manager import _save_config
     try:
         _save_config(payload.config)
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+# ============================================================
+#  API PARA REGLAS DE SEGUIMIENTO (FOLLOW-UP RULES)
+# ============================================================
+
+from firebase_client import cargar_followup_rules_bd, guardar_followup_rule_bd, eliminar_followup_rule_bd
+
+@app.get("/api/followup/rules")
+async def api_get_followup_rules(request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    try:
+        rules = cargar_followup_rules_bd()
+        return {"ok": True, "rules": rules}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+class FollowupRulePayload(BaseModel):
+    rule: dict
+
+@app.post("/api/followup/rules")
+async def api_save_followup_rule(payload: FollowupRulePayload, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    try:
+        guardar_followup_rule_bd(payload.rule)
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+@app.delete("/api/followup/rules/{rule_id}")
+async def api_delete_followup_rule(rule_id: str, request: Request):
+    if not verificar_sesion(request):
+        raise HTTPException(status_code=403, detail="No autorizado")
+    try:
+        eliminar_followup_rule_bd(rule_id)
         return {"ok": True}
     except Exception as e:
         return {"ok": False, "error": str(e)}
