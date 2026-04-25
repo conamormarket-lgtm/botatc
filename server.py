@@ -336,6 +336,8 @@ async def cron_seguimiento_inactivos():
                 # Ignorar si la ventana de WhatsApp (24h) ya cerró
                 # Queremos enviar el seguimiento ANTES de las 24 hrs
                 horas_inactivo = (now - sesion["ultima_actividad"]).total_seconds() / 3600
+                if wa_id == "51977756262":
+                    print(f"[DEBUG-JULIO] Ultima act: {sesion['ultima_actividad']}, now: {now}, horas inactivo: {horas_inactivo}")
                 if horas_inactivo >= 24:
                     continue
 
@@ -346,10 +348,15 @@ async def cron_seguimiento_inactivos():
                     
                     rule_line = rule.get("line_id", "todas")
                     sesion_line = sesion.get("lineId", "principal")
+                    if wa_id == "51977756262":
+                        print(f"[DEBUG-JULIO] Eval regla {rule_id}: rule_line={rule_line}, sesion_line={sesion_line}, rule_horas={rule.get('horas_inactividad', 23)}")
+                    
                     if rule_line != "todas" and rule_line != sesion_line:
+                        if wa_id == "51977756262": print(f"[DEBUG-JULIO] Saltada por linea")
                         continue
 
                     if rule_id in seguimientos_enviados:
+                        if wa_id == "51977756262": print(f"[DEBUG-JULIO] Saltada por ya enviado")
                         continue
                     
                     if horas_inactivo >= rule.get("horas_inactividad", 23):
@@ -405,6 +412,43 @@ async def cron_seguimiento_inactivos():
 @app.on_event("startup")
 async def startup_followup_cron():
     asyncio.create_task(cron_seguimiento_inactivos())
+
+@app.get("/debug-julio")
+def debug_julio():
+    wa_id = "51977756262"
+    if wa_id not in sesiones: return {"error": "no en sesiones"}
+    sesion = sesiones[wa_id]
+    from firebase_client import cargar_followup_rules_bd
+    rules = cargar_followup_rules_bd()
+    now = datetime.utcnow()
+    horas_inactivo = (now - sesion["ultima_actividad"]).total_seconds() / 3600
+    
+    logs = []
+    for rule in rules:
+        if not rule.get("activo"): continue
+        rule_id = rule["id"]
+        rule_line = rule.get("line_id", "todas")
+        sesion_line = sesion.get("lineId", "principal")
+        status = "OK"
+        if rule_line != "todas" and rule_line != sesion_line: status = "SKIP_LINE"
+        elif rule_id in sesion.get("seguimientos_enviados", []): status = "SKIP_ALREADY_SENT"
+        elif horas_inactivo < rule.get("horas_inactividad", 23): status = "SKIP_NOT_ENOUGH_HOURS"
+        else: status = "WOULD_TRIGGER!"
+        
+        logs.append({
+            "rule": rule.get("nombre"),
+            "rule_line": rule_line,
+            "sesion_line": sesion_line,
+            "rule_horas": rule.get("horas_inactividad"),
+            "status": status
+        })
+        
+    return {
+        "ultima_actividad": str(sesion["ultima_actividad"]),
+        "now_utc": str(now),
+        "horas_inactivo": horas_inactivo,
+        "evaluations": logs
+    }
 
 # Sesiones en memoria: {numero_wa: SesionDict}
 # numero_wa tiene código de país: "51945257117"
