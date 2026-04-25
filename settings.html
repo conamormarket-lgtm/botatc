@@ -736,7 +736,7 @@
                         <div style="display:flex; gap:1rem; align-items:center;">
                             <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; cursor:pointer;">
                                 Horas inactividad: 
-                                <input type="number" id="followupHoursInput" min="1" max="72" value="23" style="width:60px; padding:0.2rem; background:var(--bg-main); color:inherit; border:1px solid var(--accent-border); border-radius:4px;" />
+                                <input type="number" id="followupHoursInput" min="0" max="72" step="0.05" value="23" style="width:60px; padding:0.2rem; background:var(--bg-main); color:inherit; border:1px solid var(--accent-border); border-radius:4px;" />
                             </label>
                             <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; cursor:pointer;">
                                 <input type="checkbox" id="followupActiveCheckbox" style="accent-color:var(--accent-color);" /> Activo
@@ -1067,7 +1067,7 @@
                     if(!rule) return;
 
                     rule.nombre = document.getElementById('followupNameInput').value;
-                    rule.horas_inactividad = parseInt(document.getElementById('followupHoursInput').value) || 23;
+                    rule.horas_inactividad = parseFloat(document.getElementById('followupHoursInput').value) || 23;
                     rule.activo = document.getElementById('followupActiveCheckbox').checked;
                     rule.line_id = document.getElementById('followupLineSelect').value;
                     rule.prompt = document.getElementById('followupPromptInput').value;

@@ -325,7 +325,7 @@ async def cron_seguimiento_inactivos():
             if not active_rules:
                 continue
 
-            now = datetime.now()
+            now = datetime.utcnow()
 
             # Evitamos mutar el dict mientras iteramos
             for wa_id, sesion in list(sesiones.items()):
