@@ -615,7 +615,6 @@ def llamar_gemini(historial: list[dict]) -> str:
             else:
                 raw_text = msg["content"]
                 if role == "model":
-                    import re
                     # Filtrar botones interactivos
                     raw_text = re.sub(r"🔘.*?(?=\n|$)", "", raw_text).strip()
                     # Limpiar prefijo/sufijo de plantilla para evitar sesgo de formato
