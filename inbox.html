@@ -1993,7 +1993,7 @@
 
             rows.forEach(row => {
                 const nameNode = row.querySelector('.chat-name');
-                const name = nameNode ? nameNode.innerText.toLowerCase() : "";
+                const name = nameNode ? nameNode.textContent.toLowerCase() : "";
                 const phone = row.getAttribute('href') || "";
                 if (name.includes(val) || phone.includes(val)) {
                     row.style.display = 'block';
@@ -2061,7 +2061,11 @@
             
             searchInp.addEventListener('input', function(e) {
                 sessionStorage.setItem('chatSearchValue', this.value);
-                if(window.aplicarFiltroChats) window.aplicarFiltroChats();
+                // Debounce: evita recorrer el DOM en cada tecla
+                if(window._searchLocalTimer) clearTimeout(window._searchLocalTimer);
+                window._searchLocalTimer = setTimeout(() => {
+                    if(window.aplicarFiltroChats) window.aplicarFiltroChats();
+                }, 300);
             });
         }
 

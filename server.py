@@ -2841,6 +2841,17 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
     with open("inbox.html", "r", encoding="utf-8") as f:
         html = f.read()
 
+    # Leer primary_color del usuario para calcular contraste del badge de mensajes no leídos
+    _usr_ses = obtener_usuario_sesion(request)
+    _usr_prefs = _usr_ses.get("preferencias_ui", {}) if _usr_ses else {}
+    _primary_color = _usr_prefs.get("primary_color", "#717f7f")
+    try:
+        _pc_hex = _primary_color.lstrip("#")
+        _pcr, _pcg, _pcb = int(_pc_hex[0:2],16), int(_pc_hex[2:4],16), int(_pc_hex[4:6],16)
+        _badge_text_color = "#1e293b" if ((_pcr*299+_pcg*587+_pcb*114)/1000) > 128 else "#f8fafc"
+    except Exception:
+        _badge_text_color = "#f8fafc"
+
     if not es_admin(request):
         import re
         html = re.sub(r'<a href="/settings".*?</a>', '', html, flags=re.DOTALL)
@@ -3146,7 +3157,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         if unread_count == -1: # Indicador sin número (marcado manual)
             unread_html = '<div style="width:10px; height:10px; border-radius:50%; background:var(--primary-color); flex-shrink:0;"></div>'
         elif unread_count > 0:
-            unread_html = f'<div style="min-width:20px; height:20px; border-radius:10px; background:var(--primary-color); color:var(--bg-main); font-size:0.75rem; font-weight:bold; display:flex; align-items:center; justify-content:center; padding:0 6px; flex-shrink:0;">{unread_count}</div>'
+            unread_html = f'<div style="min-width:20px; height:20px; border-radius:10px; background:var(--primary-color); color:{_badge_text_color}; font-size:0.75rem; font-weight:bold; display:flex; align-items:center; justify-content:center; padding:0 6px; flex-shrink:0;">{unread_count}</div>'
             
         lista_chats_html += f"""
         <a href="/inbox/{num}{extra_params}" class="chat-row {active_class}" oncontextmenu="if(window.showChatMenu) window.showChatMenu(event, '{num}', {'true' if is_archived else 'false'}, {'true' if is_pinned else 'false'}, {'true' if activo else 'false'}); return false;">
