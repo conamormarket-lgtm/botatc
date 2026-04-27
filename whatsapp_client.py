@@ -11,8 +11,10 @@ from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
 
 # ── Caché de URLs de media (evita llamadas repetidas a Meta Graph API) ──
 # Meta devuelve URLs temporales válidas ~5 min. Las cacheamos 4 min.
-_MEDIA_URL_CACHE: dict[str, tuple[str, float]] = {}  # media_id → (url, timestamp)
-_MEDIA_URL_TTL = 240  # segundos
+# Los fallos (403, media expirada) se cachean 10 min para evitar retry storm.
+_MEDIA_URL_CACHE: dict[str, tuple[str | None, float]] = {}  # media_id → (url|None, timestamp)
+_MEDIA_URL_TTL = 240        # segundos para éxitos
+_MEDIA_URL_TTL_FAIL = 600   # segundos para fallos (10 min)
 
 def _get_line_id(numero: str, override_line_id: str) -> str:
     """Extrae dinámicamente el lineId del contexto en memoria del servidor."""
@@ -188,12 +190,14 @@ async def obtener_media_url(media_id: str) -> str | None:
     if media_id.startswith("qr_"):
         return f"http://127.0.0.1:3000/api/qr/media/{media_id}"
 
-    # ── Caché: evitar llamada a Meta si ya tenemos la URL vigente ──
+    # ── Caché: evitar llamada a Meta si ya tenemos resultado vigente ──
     cached = _MEDIA_URL_CACHE.get(media_id)
     if cached:
         media_url, ts = cached
-        if time.time() - ts < _MEDIA_URL_TTL:
-            return media_url
+        # None = fallo previo cacheado; usar TTL_FAIL
+        ttl = _MEDIA_URL_TTL if media_url is not None else _MEDIA_URL_TTL_FAIL
+        if time.time() - ts < ttl:
+            return media_url  # puede ser None (fallo cacheado)
 
     url = f"https://graph.facebook.com/{META_API_VERSION}/{media_id}"
     headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
@@ -207,6 +211,8 @@ async def obtener_media_url(media_id: str) -> str | None:
             return media_url
     except Exception as e:
         print(f"[ERROR] Error al obtener URL de media {media_id}: {e}")
+        # Cachear el fallo para no reintentar durante 10 min
+        _MEDIA_URL_CACHE[media_id] = (None, time.time())
         return None
 
 
