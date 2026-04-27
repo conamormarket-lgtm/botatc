@@ -3974,7 +3974,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <!-- Right utilities inside -->
                     <div style="display:flex; flex-shrink:0; align-items:center; margin-bottom: 3px;">
                         <!-- Respuestas Rápidas & Plantillas -->
-                        <button type="button" id="btnRightQR" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){{ side.style.display='flex'; if(window.cargarQuickReplies) window.cargarQuickReplies(); if(window.cargarPlantillas) window.cargarPlantillas(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); }} else {{ side.style.display='none'; }}" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas y Plantillas">
+                        <button type="button" id="btnRightQR" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){{ side.style.display='flex'; localStorage.setItem('qrSidebarOpen','1'); if(window.cargarQuickReplies) window.cargarQuickReplies(); if(window.cargarPlantillas) window.cargarPlantillas(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); }} else {{ side.style.display='none'; localStorage.setItem('qrSidebarOpen','0'); }}" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas y Plantillas">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                         </button>
                         <!-- Clip -->
@@ -4134,7 +4134,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
             <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
-                    <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
+                    <button onclick="document.getElementById('rightSidebar').style.display='none';localStorage.setItem('qrSidebarOpen','0')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
                 </div>
                 <div style="padding:1rem 1.5rem; background:transparent;">
                     <div style="display:flex; gap:0.5rem; justify-content:space-between;">
@@ -4209,6 +4209,14 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <!-- END RIGHT SIDEBAR -->
         </div>
         <script>
+        // Restaurar estado del sidebar desde localStorage
+        (function(){{
+          if(localStorage.getItem('qrSidebarOpen')==='1'){{
+            var s=document.getElementById('rightSidebar');
+            if(s){{s.style.display='flex';if(window.cargarQuickReplies)window.cargarQuickReplies();if(window.cargarPlantillas)window.cargarPlantillas();}}
+          }}
+        }})();
+
             window.ACTIVE_CHAT_LINE = "{_active_line_str}";
             window.IS_QR_LINE = {'true' if _active_line_str.lower().startswith('qr_') else 'false'};
             
