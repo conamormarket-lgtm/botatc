@@ -1361,15 +1361,34 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     system_content = get_system_prompt(pedidos_actuales, bot_id)
     
     if historial_para_gemini and historial_para_gemini[0].get("role") == "system":
-        # Actualizar el system prompt existente con datos frescos
         historial_para_gemini[0]["content"] = system_content
     else:
-        # El historial no tiene system prompt (historial corrupto). Inyectarlo al inicio.
         print(f"  [WARN] Historial sin system prompt para {numero_wa}. Inyectando.")
         historial_para_gemini.insert(0, {"role": "system", "content": system_content})
     
+    # ── Anti context-poisoning: inyectar estado actual justo antes de responder ──
+    # Gemini puede "recordar" un estado incorrecto que dijo antes en el historial.
+    # Inyectamos un mensaje de corrección explícita antes del último mensaje del cliente
+    # para que el estado actual siempre sea lo último que lea antes de responder.
+    if pedidos_actuales:
+        _lista = pedidos_actuales if isinstance(pedidos_actuales, list) else [pedidos_actuales]
+        _estado_actual = _lista[0].get("estadoGeneral", "")
+        _id_pedido = _lista[0].get("id", "")
+        if _estado_actual:
+            ctx_refresh = {
+                "role": "user",
+                "content": (
+                    f"[ACTUALIZACIÓN CRÍTICA DEL SISTEMA — Estado verificado en tiempo real: "
+                    f"El pedido #{_id_pedido} está actualmente en '{_estado_actual}'. "
+                    f"Si en mensajes anteriores de esta conversación mencionaste un estado diferente, "
+                    f"ese dato estaba desactualizado. Usa ÚNICAMENTE este estado para responder.]"
+                )
+            }
+            # Insertar antes del último mensaje (que es el mensaje actual del cliente)
+            if len(historial_para_gemini) >= 2:
+                historial_para_gemini.insert(-1, ctx_refresh)
+
     if historial_para_gemini and historial_para_gemini[-1]["role"] == "user":
-        # Usamos texto_modelo que concatena todo con ' | ' para que la IA entienda el contexto fusionado
         historial_para_gemini[-1]["content"] = texto_modelo
         
     print(f"  [🧠 Enviando {len(historial_para_gemini)} turnos a Gemini]")
