@@ -193,6 +193,12 @@
             margin-top: 1.25rem;
         }
 
+        .inbox-filter-strip > button,
+        .inbox-filter-strip > a {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
         .tab {
             font-size: 0.85rem;
             font-weight: 500;
@@ -356,6 +362,29 @@
                 flex-direction: column;
                 padding: 0;
                 gap: 0;
+            }
+
+            .inbox-filter-strip {
+                flex-wrap: nowrap !important;
+                overflow-x: auto;
+                overflow-y: visible;
+                max-width: 100%;
+                margin-right: -1.5rem;
+                padding-right: 1.5rem;
+                padding-bottom: 0.15rem;
+                scroll-snap-type: x proximity;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .inbox-filter-strip::-webkit-scrollbar {
+                display: none;
+            }
+
+            .inbox-filter-strip > button,
+            .inbox-filter-strip > a {
+                scroll-snap-align: start;
             }
             /* Sidebar → Bottom Navigation Bar */
             .sidebar-nav {
@@ -547,6 +576,55 @@
         }
         _setRealVH();
         window.addEventListener('resize', _setRealVH);
+
+        window.hideInboxMenus = function(exceptId) {
+            ['inboxLineMenu', 'inboxFilterMenu', 'inboxStageMenu'].forEach(function(id) {
+                if (id === exceptId) return;
+                const menu = document.getElementById(id);
+                if (menu) menu.style.display = 'none';
+            });
+        };
+
+        window.toggleInboxMenu = function(event, menuId) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+
+            const isOpen = menu.style.display === 'flex';
+            window.hideInboxMenus(menuId);
+            if (isOpen) {
+                menu.style.display = 'none';
+                return;
+            }
+
+            menu.style.display = 'flex';
+            if (window.matchMedia('(max-width: 768px)').matches && event && event.currentTarget) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const top = Math.min(rect.bottom + 8, Math.max(90, window.innerHeight - 320));
+                menu.style.position = 'fixed';
+                menu.style.top = top + 'px';
+                menu.style.left = '16px';
+                menu.style.right = '16px';
+                menu.style.width = 'auto';
+                menu.style.maxWidth = 'none';
+                menu.style.maxHeight = 'min(320px, calc(100dvh - ' + (top + 12) + 'px))';
+                menu.style.overflowY = 'auto';
+                menu.style.zIndex = '10000';
+            } else {
+                menu.style.position = 'absolute';
+                menu.style.top = 'calc(100% + 0.5rem)';
+                menu.style.left = '0';
+                menu.style.right = 'auto';
+                menu.style.width = '100%';
+                menu.style.maxWidth = '250px';
+                menu.style.maxHeight = '';
+                menu.style.overflowY = '';
+                menu.style.zIndex = '100';
+            }
+        };
     </script>
     <div id="chatListMenu" style="display:none; position:fixed; background:var(--bg-main); border:1px solid var(--accent-border); border-radius:8px; box-shadow:0 8px 16px rgba(0,0,0,0.5); z-index:9999; flex-direction:column; overflow:visible; min-width:180px;">
         <div id="btnArchivar" style="padding:0.8rem 1rem; color:var(--text-main); font-size:0.85rem; cursor:pointer; border-bottom:1px solid var(--accent-border);" onclick="window.chatAction('archive'); return false;">Archivar chat</div>
@@ -2143,9 +2221,8 @@
                 chatLabelMenu.style.display = "none";
             }
 
-            const filterMenu = document.getElementById('inboxFilterMenu');
-            if (filterMenu && !e.target.closest('#inboxFilterMenu') && !e.target.closest('button') && !e.target.closest('svg')) {
-                filterMenu.style.display = 'none';
+            if (!e.target.closest('#inboxLineMenu') && !e.target.closest('#inboxFilterMenu') && !e.target.closest('#inboxStageMenu') && !e.target.closest('button')) {
+                window.hideInboxMenus();
             }
         });
 
