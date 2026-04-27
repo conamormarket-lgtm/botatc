@@ -368,6 +368,17 @@ async def cron_seguimiento_inactivos():
                             historial_base = sesion.get("historial", [])
                             if not historial_base: continue
                             
+                            # Filtro: Solo atender a quienes NO tienen deuda
+                            pedidos = sesion.get("pedidos_multiples") or sesion.get("datos_pedido")
+                            if pedidos:
+                                _pedidos_list = pedidos if isinstance(pedidos, list) else [pedidos]
+                                try:
+                                    deuda_total = float(_pedidos_list[0].get("deudaTotal", 0) or 0)
+                                    if deuda_total > 0:
+                                        print(f"  [FOLLOW-UP] {wa_id} tiene deuda pendiente ({deuda_total}). Omitiendo seguimiento.")
+                                        continue
+                                except: pass
+                            
                             # Conservamos y recortamos para no saturar a Gemini
                             historial = recortar_historial(historial_base)
                             line_id = sesion.get("lineId", "principal")
@@ -381,7 +392,7 @@ async def cron_seguimiento_inactivos():
                             # Inyectar instrucción de seguimiento al modelo
                             historial.append({
                                 "role": "user",
-                                "content": f"[INSTRUCCIÓN DE SISTEMA: {rule.get('prompt', 'Haz un seguimiento corto y amigable para retomar la compra. No repitas mensajes previos.')}]"
+                                "content": f"[INSTRUCCIÓN DE SISTEMA: {rule.get('prompt', 'Haz un seguimiento corto y amigable para retomar la compra. No repitas mensajes previos.')} REGLA ESTRICTA: Tu mensaje DEBE ser extremadamente corto, máximo 2 oraciones. No uses bloques largos de texto.]"
                             })
 
                             # Llamar a la IA
@@ -389,11 +400,14 @@ async def cron_seguimiento_inactivos():
                             
                             if respuesta_ia and respuesta_ia.strip() != "00:00":
                                 # Enviar por WP
-                                enviar_mensaje(wa_id, respuesta_ia, line_id=line_id)
+                                wamid = enviar_mensaje(wa_id, respuesta_ia, line_id=line_id)
                                 
-                                # Guardar en memoria
-                                sesion["historial"].append({"role": "assistant", "content": respuesta_ia, "timestamp": datetime.now().isoformat()})
+                                # Guardar en memoria con formato compatible para el frontend
+                                import time
+                                ts = int(time.time())
+                                sesion["historial"].append({"role": "assistant", "content": respuesta_ia, "timestamp": ts, "msg_id": wamid, "status": "sent", "sent_by": "IA Follow-Up"})
                                 sesion["seguimientos_enviados"] = seguimientos_enviados + [rule_id]
+                                sesion["esperando_respuesta_seguimiento"] = True
                                 
                                 # Persistir en DB
                                 guardar_sesion_chat(wa_id, sesion)
@@ -1126,6 +1140,16 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         print(f"  [⏹ Bot no asignado o inactivo para la línea '{line_id}' → silencio (humano atiende)]")
         return None
 
+    # ── Silenciar bot si el cliente responde a un seguimiento (para que el humano atienda) ──
+    if sesion.get("esperando_respuesta_seguimiento"):
+        sesion["bot_activo"] = False
+        sesion["esperando_respuesta_seguimiento"] = False
+        sesion["ultima_actividad"] = datetime.utcnow()
+        print(f"  [⏹ Cliente respondió a un seguimiento → silenciando bot (bot_activo=False)]")
+        try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+        except: pass
+        return None
+
     # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
     if not sesion.get("bot_activo", True):
         sesion["ultima_actividad"] = datetime.utcnow()
@@ -1191,11 +1215,17 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         else:
             datos_lista = buscar_pedido_por_telefono(numero_local)
             if datos_lista:
-                # Excluir pedidos que están en Diseño
-                pedidos_no_diseno = [d for d in datos_lista if d.get("estadoGeneral", "") not in ESTADOS_DISEÑO]
+                # Excluir pedidos en Diseño o con Deuda (al igual que seguimiento)
+                pedidos_no_diseno = []
+                for d in datos_lista:
+                    if d.get("estadoGeneral", "") in ESTADOS_DISEÑO: continue
+                    try:
+                        if float(d.get("deudaTotal", 0) or 0) > 0: continue
+                    except: pass
+                    pedidos_no_diseno.append(d)
                 
                 if not pedidos_no_diseno:
-                    print(f"  [🎨 Todos en Diseño → silencio]")
+                    print(f"  [🎨 Todos en Diseño o con Deuda → silencio]")
                     return None
                     
                 nombre_cliente = f"{pedidos_no_diseno[0].get('clienteNombre','')} {pedidos_no_diseno[0].get('clienteApellidos','')}".strip()
@@ -1241,7 +1271,13 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         if not es_tester:
             datos_lista_fresca = buscar_pedido_por_telefono(numero_local)
             if datos_lista_fresca:
-                pedidos_no_diseno = [d for d in datos_lista_fresca if d.get("estadoGeneral", "") not in ESTADOS_DISEÑO]
+                pedidos_no_diseno = []
+                for d in datos_lista_fresca:
+                    if d.get("estadoGeneral", "") in ESTADOS_DISEÑO: continue
+                    try:
+                        if float(d.get("deudaTotal", 0) or 0) > 0: continue
+                    except: pass
+                    pedidos_no_diseno.append(d)
                 if pedidos_no_diseno:
                     sesion["datos_pedido"] = pedidos_no_diseno[0]
                     sesion["pedidos_multiples"] = pedidos_no_diseno
