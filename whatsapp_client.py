@@ -6,7 +6,13 @@
 #  El único punto donde se toca QR aquí es el ROUTER (if line_id.startswith).
 # ============================================================
 import httpx
+import time
 from config import META_ACCESS_TOKEN, META_PHONE_NUMBER_ID, META_API_VERSION
+
+# ── Caché de URLs de media (evita llamadas repetidas a Meta Graph API) ──
+# Meta devuelve URLs temporales válidas ~5 min. Las cacheamos 4 min.
+_MEDIA_URL_CACHE: dict[str, tuple[str, float]] = {}  # media_id → (url, timestamp)
+_MEDIA_URL_TTL = 240  # segundos
 
 def _get_line_id(numero: str, override_line_id: str) -> str:
     """Extrae dinámicamente el lineId del contexto en memoria del servidor."""
@@ -182,13 +188,23 @@ async def obtener_media_url(media_id: str) -> str | None:
     if media_id.startswith("qr_"):
         return f"http://127.0.0.1:3000/api/qr/media/{media_id}"
 
+    # ── Caché: evitar llamada a Meta si ya tenemos la URL vigente ──
+    cached = _MEDIA_URL_CACHE.get(media_id)
+    if cached:
+        media_url, ts = cached
+        if time.time() - ts < _MEDIA_URL_TTL:
+            return media_url
+
     url = f"https://graph.facebook.com/{META_API_VERSION}/{media_id}"
     headers = {"Authorization": f"Bearer {META_ACCESS_TOKEN}"}
     try:
         async with httpx.AsyncClient() as client:
             res = await client.get(url, headers=headers, timeout=10)
             res.raise_for_status()
-            return res.json().get("url")
+            media_url = res.json().get("url")
+            if media_url:
+                _MEDIA_URL_CACHE[media_id] = (media_url, time.time())
+            return media_url
     except Exception as e:
         print(f"[ERROR] Error al obtener URL de media {media_id}: {e}")
         return None
