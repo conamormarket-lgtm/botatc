@@ -4131,7 +4131,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             <!-- END CHAT MAIN COLUMN -->
 
             <!-- START RIGHT SIDEBAR (CRM Tools) -->
-            <div id="rightSidebar" class="hide-scrollbar" style="width:340px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
+            <div id="rightSidebar" class="hide-scrollbar" style="width:280px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1);">
             <div style="padding:1.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
                     <button onclick="document.getElementById('rightSidebar').style.display='none';localStorage.setItem('qrSidebarOpen','0')" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
@@ -4139,7 +4139,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <div style="padding:1rem 1.5rem; background:transparent;">
                     <div style="display:flex; gap:0.5rem; justify-content:space-between;">
                         <input type="text" id="qrSearchFilter" placeholder="Buscar... (/)" onkeyup="filtrarQuickReplies(this.value)" style="flex:1; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem;">
-                        <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:6px; padding:0 0.8rem; cursor:pointer;" title="Crear nueva respuesta rápida">NUEVA</button>
+                        <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:50%; width:34px; height:34px; min-width:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.3rem; line-height:1; font-weight:600; padding:0;" title="Crear nueva respuesta rápida">+</button>
                     </div>
                 </div>
                 <div id="quickRepliesList" style="flex:1; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:0.6rem;">
