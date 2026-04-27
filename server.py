@@ -4210,12 +4210,18 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         </div>
         <script>
         // Restaurar estado del sidebar desde localStorage
-        (function(){{
+        window.addEventListener('load', function(){{
           if(localStorage.getItem('qrSidebarOpen')==='1'){{
             var s=document.getElementById('rightSidebar');
-            if(s){{s.style.display='flex';if(window.cargarQuickReplies)window.cargarQuickReplies();if(window.cargarPlantillas)window.cargarPlantillas();}}
+            if(s){{
+              s.style.display='flex';
+              setTimeout(function(){{
+                if(window.cargarQuickReplies) window.cargarQuickReplies();
+                if(window.cargarPlantillas) window.cargarPlantillas();
+              }}, 100);
+            }}
           }}
-        }})();
+        }});
 
             window.ACTIVE_CHAT_LINE = "{_active_line_str}";
             window.IS_QR_LINE = {'true' if _active_line_str.lower().startswith('qr_') else 'false'};

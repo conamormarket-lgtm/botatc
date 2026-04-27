@@ -1,22 +1,49 @@
 with open('server.py', 'r', encoding='utf-8') as f:
     c = f.read()
 
-# El boton X usa comillas simples REGULARES (no backslash-escaped)
-# onclick="document.getElementById('rightSidebar').style.display='none'"
-old_x = "document.getElementById('rightSidebar').style.display='none'"
-new_x = "document.getElementById('rightSidebar').style.display='none';localStorage.setItem('qrSidebarOpen','0')"
+# Buscar el restore script que insertamos antes
+old_restore = (
+    "\n        // Restaurar estado del sidebar desde localStorage\n"
+    "        (function(){{\n"
+    "          if(localStorage.getItem('qrSidebarOpen')==='1'){{\n"
+    "            var s=document.getElementById('rightSidebar');\n"
+    "            if(s){{s.style.display='flex';"
+    "if(window.cargarQuickReplies)window.cargarQuickReplies();"
+    "if(window.cargarPlantillas)window.cargarPlantillas();}}\n"
+    "          }}\n"
+    "        }})();\n"
+)
 
-count = c.count(old_x)
-print(f'Ocurrencias: {count}')
-if count > 0:
-    c = c.replace(old_x, new_x, 1)
-    print('OK: boton X guarda estado en localStorage')
+# Nuevo: esperar al evento load para que las funciones esten definidas
+new_restore = (
+    "\n        // Restaurar estado del sidebar desde localStorage\n"
+    "        window.addEventListener('load', function(){{\n"
+    "          if(localStorage.getItem('qrSidebarOpen')==='1'){{\n"
+    "            var s=document.getElementById('rightSidebar');\n"
+    "            if(s){{\n"
+    "              s.style.display='flex';\n"
+    "              setTimeout(function(){{\n"
+    "                if(window.cargarQuickReplies) window.cargarQuickReplies();\n"
+    "                if(window.cargarPlantillas) window.cargarPlantillas();\n"
+    "              }}, 100);\n"
+    "            }}\n"
+    "          }}\n"
+    "        }});\n"
+)
+
+if old_restore in c:
+    c = c.replace(old_restore, new_restore, 1)
+    print('OK: restore script actualizado para usar window.load')
 else:
-    print('SIGUE SIN MATCH')
+    print('NO MATCH - buscando fragmento...')
+    idx = c.find('Restaurar estado del sidebar')
+    if idx >= 0:
+        print(f'Encontrado en pos {idx}:')
+        print(repr(c[idx:idx+400]))
 
 with open('server.py', 'w', encoding='utf-8') as f:
     f.write(c)
 
 import subprocess
 result = subprocess.run(['python', '-m', 'py_compile', 'server.py'], capture_output=True, text=True)
-print('Compilacion:', 'OK' if result.returncode == 0 else result.stderr[:200])
+print('Compilacion:', 'OK' if result.returncode == 0 else result.stderr[:300])
