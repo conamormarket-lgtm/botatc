@@ -4555,22 +4555,32 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             </script>
             <script>
             let quickRepliesCache = [];
-            async function cargarQuickReplies() {{
+            async function cargarQuickReplies(forceRefresh) {{
                 const list = document.getElementById("quickRepliesList");
                 if(!list) return;
+                const activeLine = window.ACTIVE_CHAT_LINE || "principal";
+                // Usar cache si ya hay datos de la misma linea y no se fuerza refresco
+                if(!forceRefresh && quickRepliesCache && quickRepliesCache.length > 0
+                   && window._qrCacheLine === activeLine) {{
+                    renderQuickReplies(quickRepliesCache);
+                    return;
+                }}
                 list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Cargando respuestas...</div>`;
                 try {{
-                    // Load labels first so cards can render label badges
-                    const activeLine = window.ACTIVE_CHAT_LINE || "principal";
-                    const [resQr, resLbl] = await Promise.all([
-                        fetch("/api/quick-replies?line=" + activeLine),
-                        fetch("/api/admin/labels/list")
-                    ]);
+                    // Cargar labels solo si no tenemos o cambio la linea
+                    const needsLabels = !window._globalLabels || window._qrCacheLine !== activeLine;
+                    const fetches = [fetch("/api/quick-replies?line=" + activeLine)];
+                    if(needsLabels) fetches.push(fetch("/api/admin/labels/list"));
+                    const results = await Promise.all(fetches);
+                    const resQr = results[0];
                     if (!resQr.ok) throw new Error("HTTP " + resQr.status);
                     const data = await resQr.json();
-                    const lblData = resLbl.ok ? await resLbl.json() : [];
-                    window._globalLabels = Array.isArray(lblData) ? lblData : (lblData.labels || []);
+                    if(needsLabels && results[1] && results[1].ok) {{
+                        const lblData = await results[1].json();
+                        window._globalLabels = Array.isArray(lblData) ? lblData : (lblData.labels || []);
+                    }}
                     quickRepliesCache = data;
+                    window._qrCacheLine = activeLine;
                     renderQuickReplies(data);
                 }} catch(e) {{
                     list.innerHTML = `<div style="font-size:0.85rem; color:red; padding:1rem; text-align:center; background:rgba(255,0,0,0.1); border-radius:8px;">Error: ${{e.message}}</div>`;
