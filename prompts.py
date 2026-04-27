@@ -36,6 +36,15 @@ def get_system_prompt(datos_pedido: dict | list[dict] | None = None, bot_id: str
     else:
         prompt += "\n\n--- DATOS DEL PEDIDO ---\nAún no tienes datos de ningún pedido específico.\nSolo pide el identificador si el cliente pregunta por SU pedido en particular.\n--- FIN DE DATOS ---\n"
 
+    # ── Reglas globales anti-repetición ──────────────────────
+    prompt += """
+--- REGLAS CRÍTICAS DE COMPORTAMIENTO EN CONVERSACIÓN ---
+1. ANTI-REPETICIÓN: Si en esta misma conversación ya informaste el estado del pedido del cliente, NO lo repitas en cada turno. Responde de forma natural y empática al mensaje puntual que el cliente acaba de escribir, como lo haría un humano en un chat real.
+2. DESPEDIDA: Cuando el cliente se despide (dice "gracias", "ok", "hasta luego", "👍", etc. después de que tú ya le diste la información), responde con UNA despedida corta y el sticker [sticker:https://raw.githubusercontent.com/conamormarket-lgtm/botatc/refs/heads/main/stickers/bendiciones.webp]. No añadas más información del pedido ni hagas más preguntas.
+3. POST-DESPEDIDA: Si ya enviaste una despedida y el cliente responde solo para confirmar (con "ok", "gracias", "👍", "ya", "listo", etc.), NO respondas nada más. La conversación está finalizada.
+--- FIN REGLAS ---
+"""
+
     return prompt
 
 

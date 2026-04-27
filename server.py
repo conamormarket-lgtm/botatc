@@ -1169,6 +1169,36 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         except: pass
         return None
 
+    # ── Silenciar bot si el cliente confirma una despedida ────────────────────────────────
+    # Si el último mensaje del bot fue una despedida, y el cliente solo confirma con una frase
+    # corta ("ok", "gracias", "👍"...), no respondemos nada más.
+    _CONFIRMACIONES_DESPEDIDA = {"ok", "okey", "okay", "ya", "si", "sí", "dale", "listo",
+                                  "gracias", "grax", "grácias", "thanks", "bye", "chao",
+                                  "adios", "adiós", "hasta luego", "nos vemos", "👍", "🙏", "✅"}
+    _texto_normalizado_despedida = texto_cliente.strip().lower().rstrip("!.").strip()
+    if _texto_normalizado_despedida in _CONFIRMACIONES_DESPEDIDA or len(_texto_normalizado_despedida) <= 4:
+        # Verificar si el último mensaje del bot fue una despedida
+        _ultimo_bot_msg = ""
+        for _m in reversed(sesion.get("historial", [])):
+            if _m.get("role") == "assistant":
+                _ultimo_bot_msg = _m.get("content", "").lower()
+                break
+        _es_despedida_bot = (
+            "bendiciones" in _ultimo_bot_msg or
+            "hasta luego" in _ultimo_bot_msg or
+            "que lo disfrutes" in _ultimo_bot_msg or
+            "que lo estés disfrutando" in _ultimo_bot_msg or
+            "gracias por tu compra" in _ultimo_bot_msg or
+            "espero que lo estés disfrutando" in _ultimo_bot_msg
+        )
+        if _es_despedida_bot:
+            sesion["ultima_actividad"] = datetime.utcnow()
+            print(f"  [🤫 Post-despedida confirmada por cliente → silencio total]")
+            try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+            except: pass
+            return None
+
+
     # ── Si el bot está pausado (modo humano) → guardar el msg y silenciar ───
     if not sesion.get("bot_activo", True):
         sesion["ultima_actividad"] = datetime.utcnow()
