@@ -1447,47 +1447,41 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         print(f"  [WARN] Historial sin system prompt para {numero_wa}. Inyectando.")
         historial_para_gemini.insert(0, {"role": "system", "content": system_content})
     
-    # ── Anti context-poisoning: corregir SOLO si el bot dijo un estado erróneo antes ──
-    # Inyectamos corrección ÚNICAMENTE cuando el último mensaje del bot menciona un estado
-    # diferente al actual. Así evitamos que Gemini repita la plantilla del estado en cada turno.
+    # -- Ancla de estado: previene alucinaciones ---
+    # Inyecta el estado real antes de cada llamada a Gemini.
+    # Modo 1 (estado ya comunicado): recordatorio silencioso - no repetir.
+    # Modo 2 (estado nunca comunicado): correccion critica.
     if pedidos_actuales:
         _lista = pedidos_actuales if isinstance(pedidos_actuales, list) else [pedidos_actuales]
         _estado_actual = _lista[0].get("estadoGeneral", "")
         _id_pedido = _lista[0].get("id", "")
-        
         if _estado_actual:
-            # Buscar el último mensaje del bot en el historial
-            _ultimo_bot = ""
-            for _m in reversed(historial_para_gemini):
-                if _m.get("role") == "assistant":
-                    _ultimo_bot = _m.get("content", "").lower()
-                    break
-            
-            # Palabras clave por estado para detectar si el bot ya lo mencionó correctamente
-            _KEYWORDS_ESTADO = {
+            _KWORDS = {
+                "Preparacion":   ["preparaci"],
                 "Preparación":   ["preparaci"],
                 "En Impresion":  ["impresi"],
                 "Estampado":     ["estampado"],
                 "Empaquetado":   ["empaquetado"],
                 "En Reparto":    ["reparto", "camino", "agencia", "repartidor"],
                 "Entregado":     ["entregado", "recibi"],
-                "Finalizado":    ["finalizado", "cerrado"],
+                "Finalizado":    ["finalizado", "cerrado", "disfrutando", "disfrut"],
             }
-            _keywords = _KEYWORDS_ESTADO.get(_estado_actual, [_estado_actual.lower()[:6]])
-            _bot_ya_menciono_estado_correcto = any(k in _ultimo_bot for k in _keywords)
-            
-            if not _bot_ya_menciono_estado_correcto and _ultimo_bot:
-                # El bot habló de un estado diferente → inyectar corrección
-                historial_para_gemini.insert(-1, {
-                    "role": "user",
-                    "content": (
-                        f"[CORRECCIÓN DEL SISTEMA: En tu último mensaje mencionaste un estado incorrecto. "
-                        f"El estado ACTUAL del pedido #{_id_pedido} es '{_estado_actual}'. "
-                        f"Corrígete brevemente y responde al cliente con el estado real.]"
-                    )
-                })
-                print(f"  [ANTI-POISON] Inyectando corrección de estado: {_estado_actual}")
-
+            _kws = _KWORDS.get(_estado_actual, [_estado_actual.lower()[:6]])
+            _ya_comunicado = any(
+                any(k in m.get("content", "").lower() for k in _kws)
+                for m in historial_para_gemini if m.get("role") == "assistant"
+            )
+            if _ya_comunicado:
+                _ancla = (
+                    f"[SISTEMA - Recordatorio: el pedido #{_id_pedido} sigue en '{_estado_actual}'. "
+                    f"NO repitas el estado. Responde de forma natural al mensaje actual del cliente.]"
+                )
+            else:
+                _ancla = (
+                    f"[CORRECCION CRITICA: El estado REAL del pedido #{_id_pedido} es '{_estado_actual}'. "
+                    f"Usa UNICAMENTE este estado en tu respuesta, no inventes otro.]"
+                )
+            historial_para_gemini.insert(-1, {"role": "user", "content": _ancla})
 
     if historial_para_gemini and historial_para_gemini[-1]["role"] == "user":
         historial_para_gemini[-1]["content"] = texto_modelo
@@ -1903,6 +1897,8 @@ async def settings_panel(request: Request):
     html = html.replace("{proactive_text}", "Desactivar Envíos" if proact_activo else "Activar Sistema Proactivo")
     html = html.replace("{proactive_color}", "#ef4444" if proact_activo else "#10b981")
     
+    html = html.replace("{main_nav_html}", render_nav(request, "settings"))
+
     import glob
     pdfs_html = ""
     for pdf in glob.glob("*.pdf"):
