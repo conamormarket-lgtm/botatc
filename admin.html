@@ -144,13 +144,10 @@
             margin-bottom: 3rem;
         }
         .stat-card {
-            background: rgba(var(--bg-main-rgb, 15, 23, 42), 0.42);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--accent-border);
             padding: 1.75rem;
             border-radius: 16px;
-            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.15);
             transition: transform 0.2s, border-color 0.2s;
         }
         .stat-card:hover { transform: translateY(-3px); border-color: var(--primary-color); }
@@ -170,14 +167,11 @@
         }
         
         .table-card {
-            background: rgba(var(--bg-main-rgb, 15, 23, 42), 0.42);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--accent-border);
             border-radius: 16px;
             overflow: hidden;
             margin-bottom: 3rem;
-            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.15);
         }
         
         .admin-table {
@@ -186,7 +180,7 @@
             text-align: left;
         }
         .admin-table th {
-            background-color: rgba(0,0,0,0.2);
+            background-color: rgba(0, 0, 0, 0.15);
             padding: 1.25rem 1.5rem;
             font-size: 0.75rem;
             font-weight: 600;
@@ -268,6 +262,9 @@
             .admin-table th, .admin-table td { white-space: nowrap; }
         }
     </style>
+    <style id="custom-theme-css">
+{custom_theme_css}
+    </style>
 </head>
 <body class="nav-{nav_position}">
     {main_nav_html}
@@ -302,7 +299,7 @@
                     padding: 0.7rem 2.5rem 0.7rem 1.2rem;
                     border-radius: 8px;
                     border: 1px solid var(--accent-border);
-                    background: rgba(var(--bg-main-rgb, 15, 23, 42), 0.42);
+                    background: var(--accent-bg);
                     color: var(--text-main);
                     font-family: var(--font-main);
                     font-size: 0.95rem;
@@ -322,19 +319,19 @@
 
             <!-- TARJETAS DE MÉTRICAS -->
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;">
                     <div class="stat-num" id="statRespondidos">0</div>
                     <div class="stat-lbl">Chats Respondidos</div>
                 </div>
-                <div class="stat-card" style="border-left: 3px solid var(--primary-hover);">
+                <div class="stat-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;border-left: 3px solid var(--primary-hover);">
                     <div class="stat-num" id="statPorResponder" style="color: var(--primary-hover);">0</div>
                     <div class="stat-lbl">Chats por Responder</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;">
                     <div class="stat-num" id="statPendientesBot">0</div>
                     <div class="stat-lbl">Bot Activo (Pendiente)</div>
                 </div>
-                <div class="stat-card" style="border-left: 3px solid var(--danger-color);">
+                <div class="stat-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;border-left: 3px solid var(--danger-color);">
                     <div class="stat-num danger" id="statPendientesAsesor">0</div>
                     <div class="stat-lbl" style="color: var(--danger-color)">Esperando Asesor</div>
                 </div>
@@ -345,7 +342,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 Gestión de Grupos Virtuales
             </h3>
-            <div class="table-card" style="padding: 2.5rem;">
+            <div class="table-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding: 2.5rem;">
                 <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom: 2rem;">Crea agrupaciones virtuales de números de WhatsApp para ver sus mensajes unificados en un solo "chat" en tu Bandeja de Entrada. Útil para monitorear equipos o proveedores en conjunto.</p>
                 
                 <div style="display:flex; gap:1rem; margin-bottom: 2rem; flex-wrap: wrap;">
@@ -365,7 +362,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 Gestión de Librería de Stickers
             </h3>
-            <div class="table-card" style="padding: 2.5rem; display:flex; flex-direction:column; align-items:center; gap: 1rem; text-align:center;">
+            <div class="table-card" style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:12px;padding: 2.5rem; display:flex; flex-direction:column; align-items:center; gap: 1rem; text-align:center;">
                 <p style="color:var(--text-muted); font-size:0.95rem; max-width:500px;">Sube una carpeta entera que contenga tus stickers (.webp) o imágenes (.png). Al hacerlo, se propagarán automáticamente a la galería "Stickers Extras" de todos los chats, para que cualquier operador los use al instante.</p>
                 <button type="button" class="btn-action btn-primary" onclick="document.getElementById('stickerFolderInput').click()" style="display:flex; align-items:center; gap:0.5rem; font-size:0.95rem; padding: 0.8rem 1.5rem; margin-top:0.5rem;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>

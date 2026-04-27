@@ -190,12 +190,13 @@ def inyectar_tema_global(request, html: str) -> str:
             }}
             '''
             
-        css += f'''
-        .appearance-card, .proactive-card, .pdf-card, .backup-card, .editor-card {{
-            background: var(--accent-bg) !important;
-            border: 1px solid var(--accent-border) !important;
-        }}
-        '''
+    # Transparencia global de todas las tarjetas del sistema (siempre, con o sin wallpaper)
+    css += '''
+    .appearance-card, .proactive-card, .pdf-card, .backup-card, .editor-card {
+        background: var(--accent-bg) !important;
+        border: 1px solid var(--accent-border) !important;
+    }
+    '''
 
     # Sidebar lateral izquierdo (override del CSS grid de inbox)
     if nav_pos == 'left':
