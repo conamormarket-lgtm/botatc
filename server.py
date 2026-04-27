@@ -795,8 +795,19 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
                 else:
                     num_wa_key = num_wa
 
+                # Capturar código de error de Meta cuando el status es "failed"
+                error_info = ""
+                if status_val == "failed":
+                    errors = st.get("errors", [])
+                    if errors:
+                        err = errors[0]
+                        error_code = err.get("code", "?")
+                        error_title = err.get("title", "")
+                        error_message = err.get("message", "")
+                        error_info = f"\\nError Code: {error_code}\\nError: {error_title} - {error_message}"
+                        print(f"[WEBHOOK FAIL] {num_wa_key} → código {error_code}: {error_title}")
                 with open("webhook.log", "a", encoding="utf-8") as f:
-                    f.write(f"\\n--- WEBHOOK STATUS ---\\nID: {msg_wamid}\\nStatus: {status_val}\\nRecipient: {num_wa_key}\\n")
+                    f.write(f"\\n--- WEBHOOK STATUS ---\\nID: {msg_wamid}\\nStatus: {status_val}\\nRecipient: {num_wa_key}{error_info}\\n")
                     
                 print(f"[WEBHOOK] Recibido status: {status_val} para WAMID: {msg_wamid} de {num_wa_key}")
                 if num_wa_key and num_wa_key in sesiones:
@@ -1366,27 +1377,47 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         print(f"  [WARN] Historial sin system prompt para {numero_wa}. Inyectando.")
         historial_para_gemini.insert(0, {"role": "system", "content": system_content})
     
-    # ── Anti context-poisoning: inyectar estado actual justo antes de responder ──
-    # Gemini puede "recordar" un estado incorrecto que dijo antes en el historial.
-    # Inyectamos un mensaje de corrección explícita antes del último mensaje del cliente
-    # para que el estado actual siempre sea lo último que lea antes de responder.
+    # ── Anti context-poisoning: corregir SOLO si el bot dijo un estado erróneo antes ──
+    # Inyectamos corrección ÚNICAMENTE cuando el último mensaje del bot menciona un estado
+    # diferente al actual. Así evitamos que Gemini repita la plantilla del estado en cada turno.
     if pedidos_actuales:
         _lista = pedidos_actuales if isinstance(pedidos_actuales, list) else [pedidos_actuales]
         _estado_actual = _lista[0].get("estadoGeneral", "")
         _id_pedido = _lista[0].get("id", "")
+        
         if _estado_actual:
-            ctx_refresh = {
-                "role": "user",
-                "content": (
-                    f"[ACTUALIZACIÓN CRÍTICA DEL SISTEMA — Estado verificado en tiempo real: "
-                    f"El pedido #{_id_pedido} está actualmente en '{_estado_actual}'. "
-                    f"Si en mensajes anteriores de esta conversación mencionaste un estado diferente, "
-                    f"ese dato estaba desactualizado. Usa ÚNICAMENTE este estado para responder.]"
-                )
+            # Buscar el último mensaje del bot en el historial
+            _ultimo_bot = ""
+            for _m in reversed(historial_para_gemini):
+                if _m.get("role") == "assistant":
+                    _ultimo_bot = _m.get("content", "").lower()
+                    break
+            
+            # Palabras clave por estado para detectar si el bot ya lo mencionó correctamente
+            _KEYWORDS_ESTADO = {
+                "Preparación":   ["preparaci"],
+                "En Impresion":  ["impresi"],
+                "Estampado":     ["estampado"],
+                "Empaquetado":   ["empaquetado"],
+                "En Reparto":    ["reparto", "camino", "agencia", "repartidor"],
+                "Entregado":     ["entregado", "recibi"],
+                "Finalizado":    ["finalizado", "cerrado"],
             }
-            # Insertar antes del último mensaje (que es el mensaje actual del cliente)
-            if len(historial_para_gemini) >= 2:
-                historial_para_gemini.insert(-1, ctx_refresh)
+            _keywords = _KEYWORDS_ESTADO.get(_estado_actual, [_estado_actual.lower()[:6]])
+            _bot_ya_menciono_estado_correcto = any(k in _ultimo_bot for k in _keywords)
+            
+            if not _bot_ya_menciono_estado_correcto and _ultimo_bot:
+                # El bot habló de un estado diferente → inyectar corrección
+                historial_para_gemini.insert(-1, {
+                    "role": "user",
+                    "content": (
+                        f"[CORRECCIÓN DEL SISTEMA: En tu último mensaje mencionaste un estado incorrecto. "
+                        f"El estado ACTUAL del pedido #{_id_pedido} es '{_estado_actual}'. "
+                        f"Corrígete brevemente y responde al cliente con el estado real.]"
+                    )
+                })
+                print(f"  [ANTI-POISON] Inyectando corrección de estado: {_estado_actual}")
+
 
     if historial_para_gemini and historial_para_gemini[-1]["role"] == "user":
         historial_para_gemini[-1]["content"] = texto_modelo
