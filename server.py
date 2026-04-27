@@ -598,12 +598,20 @@ def normalizar_numero(numero_wa: str) -> str:
 def llamar_gemini(historial: list[dict]) -> str:
     """Llama a Gemini con el historial y retorna la respuesta del modelo."""
     try:
-        # El primer mensaje siempre es el sistema
-        system_text = historial[0]["content"]
+        # El primer mensaje DEBE ser el sistema. Si no lo es, usamos un fallback seguro.
+        if historial and historial[0].get("role") == "system":
+            system_text = historial[0]["content"]
+        else:
+            # Historial corrupto: no tiene system prompt. Usamos fallback y partimos desde [0]
+            from prompts import get_system_prompt
+            system_text = get_system_prompt()
+            print("[WARN] llamar_gemini: historial[0] no es 'system'. Usando prompt de fallback.")
         
         # Mapeamos el historial a formato Gemini, uniendo roles consecutivos si los hay
         gemini_contents = []
-        for msg in historial[1:]:
+        # Empezar desde [1] solo si [0] era el system prompt, si no, desde [0]
+        inicio = 1 if (historial and historial[0].get("role") == "system") else 0
+        for msg in historial[inicio:]:
             role = "model" if msg["role"] == "assistant" else "user"
             
             # CRÍTICO: Gemini exige que la conversación inicie obligatoriamente con el usuario.
@@ -1344,9 +1352,22 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
     # ── Preprocesar texto (normalizar + cancelar=pagar) ───
     texto_modelo = preprocesar_mensaje(normalizar_texto(texto_cliente))
 
-    # ── Agregar al historial y llamar al modelo ───────────
-    # Creamos la copia para Gemini SIN alterar el historial persistente para que en el UI sigan las burbujas separadas.
+    # ── Asegurar que el system prompt está actualizado antes de llamar a Gemini ──
+    # Esto previene que sesiones recuperadas de Firebase con historial corrupto
+    # (sin role:system en [0]) envíen respuestas inventadas al cliente.
     historial_para_gemini = recortar_historial(sesion["historial"])
+    
+    pedidos_actuales = sesion.get("pedidos_multiples") or sesion.get("datos_pedido")
+    system_content = get_system_prompt(pedidos_actuales, bot_id)
+    
+    if historial_para_gemini and historial_para_gemini[0].get("role") == "system":
+        # Actualizar el system prompt existente con datos frescos
+        historial_para_gemini[0]["content"] = system_content
+    else:
+        # El historial no tiene system prompt (historial corrupto). Inyectarlo al inicio.
+        print(f"  [WARN] Historial sin system prompt para {numero_wa}. Inyectando.")
+        historial_para_gemini.insert(0, {"role": "system", "content": system_content})
+    
     if historial_para_gemini and historial_para_gemini[-1]["role"] == "user":
         # Usamos texto_modelo que concatena todo con ' | ' para que la IA entienda el contexto fusionado
         historial_para_gemini[-1]["content"] = texto_modelo
