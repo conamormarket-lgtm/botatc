@@ -44,6 +44,11 @@ def _get_meta_credentials(line_id: str) -> tuple[str, str, str]:
     return token, phone_id, url
 
 
+def _normalizar_numero_e164(numero: str) -> str:
+    """Quita +, espacios y guiones para producir un número E.164 puro (solo dígitos)."""
+    return numero.replace("+", "").replace(" ", "").replace("-", "").strip()
+
+
 def enviar_mensaje(numero_destino: str, texto: str, reply_to_wamid: str = None, line_id: str = "principal") -> bool:
     """
     Envía un mensaje de texto. Ruteador: QR → qr_client | Meta → Graph API.
@@ -267,6 +272,11 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
 
     meta_token, meta_phone_id, meta_api_url = _get_meta_credentials(line_id)
 
+    # ── Normalizar número a E.164 (Meta exige solo dígitos, sin +, sin espacios) ──
+    numero_normalizado = _normalizar_numero_e164(numero_destino)
+    if numero_normalizado != numero_destino:
+        print(f"[PLANTILLA] Número normalizado: '{numero_destino}' → '{numero_normalizado}'")
+
     headers = {
         "Authorization": f"Bearer {meta_token}",
         "Content-Type": "application/json",
@@ -276,7 +286,6 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
         "name": template_name,
         "language": {"code": language_code}
     }
-    
     
     if components is not None:
         if len(components) > 0 and isinstance(components[0], str):
@@ -293,7 +302,7 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
     payload = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
-        "to": numero_destino,
+        "to": numero_normalizado,
         "type": "template",
         "template": template_data
     }
@@ -305,8 +314,10 @@ async def enviar_plantilla(numero_destino: str, template_name: str, language_cod
             data = res.json()
             return data.get("messages", [{}])[0].get("id")
     except httpx.HTTPStatusError as e:
-        print(f"[ERROR] Error Meta Plantilla ({e.response.status_code}): {e.response.text}")
-        return None
+        err_body = e.response.text
+        print(f"[ERROR] Error Meta Plantilla ({e.response.status_code}): {err_body}")
+        # Retornar el error con prefijo para que el endpoint lo distinga de un wamid real
+        return f"ERROR_META:{e.response.status_code}:{err_body}"
     except Exception as e:
         print(f"[ERROR] Error enviando plantilla: {e}")
-        return None
+        return f"ERROR_META:0:{str(e)}"

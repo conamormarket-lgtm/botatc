@@ -5624,7 +5624,14 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
     print(f"[PLANTILLA] Enviando '{payload.template_name}' a {payload.wa_id} vía línea '{line_id}'")
     wamid = await enviar_plantilla(payload.wa_id, payload.template_name, payload.language_code, payload.body_params, line_id=line_id)
 
-    
+    # Detectar si enviar_plantilla devolvió un error de Meta en lugar de un wamid real
+    if wamid and isinstance(wamid, str) and wamid.startswith("ERROR_META:"):
+        partes = wamid.split(":", 2)
+        codigo_http = partes[1] if len(partes) > 1 else "?"
+        detalle_error = partes[2] if len(partes) > 2 else wamid
+        print(f"[PLANTILLA] ❌ Error Meta ({codigo_http}) para {payload.wa_id}: {detalle_error}")
+        return {"ok": False, "error": f"Error Meta API ({codigo_http}): {detalle_error}"}
+
     if wamid:
         # PULL FROM MEMORY (not just firestore) so the Dashboard immediately sees the template
         s = obtener_o_crear_sesion(payload.wa_id)
@@ -5663,7 +5670,7 @@ async def api_enviar_plantilla(payload: EnviarPlantillaPayload, request: Request
             print(f"Error guardando sesión en BD tras enviar plantilla: {e}")
             
         return {"ok": True, "wamid": wamid}
-    return {"ok": False, "error": "No se pudo enviar (Verifica que la Plantilla ya haya sido aprobada por Meta)."}
+    return {"ok": False, "error": "No se pudo enviar (sin respuesta de Meta). Verifica que la plantilla esté aprobada."}
 
 
 # ============================================================
