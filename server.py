@@ -37,6 +37,45 @@ from bot_atc import normalizar_texto, preprocesar_mensaje
 # ─────────────────────────────────────────────
 app = FastAPI(title="Bot ATC — IA-ATC")
 
+def render_nav(request: Request, active: str = "inbox") -> str:
+    def active_class(key: str) -> str:
+        return " active" if active == key else ""
+
+    admin_links = ""
+    if es_admin(request):
+        admin_links = f'''
+        <a href="/settings" class="nav-item{active_class('settings')}" title="Personalizar Agente IA">
+            <svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </a>
+        <a href="/usuarios" class="nav-item{active_class('usuarios')}" title="Panel de Usuarios">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </a>
+        <a href="/admin" class="nav-item{active_class('admin')}" title="Panel Clasico Anterior">
+            <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+        </a>
+        '''
+
+    return f'''
+    <nav class="sidebar-nav">
+        <a href="/inbox" class="nav-item{active_class('inbox')}" title="Bandeja de Entrada (Inbox)">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        </a>
+        <a href="/pipeline" class="nav-item{active_class('pipeline')}" title="Pipeline de Pedidos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/>
+            </svg>
+        </a>
+        {admin_links}
+        <div class="sidebar-spacer" style="flex:1;"></div>
+        <a href="/perfil" class="nav-item{active_class('perfil')}" title="Mi Perfil" style="margin-bottom: 5px; color: var(--text-muted); display: flex; justify-content: center; text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
+        <a href="/logout" class="nav-item" title="Cerrar Sesion" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; opacity: 0.8; transition: opacity 0.2s;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </a>
+    </nav>
+    '''
+
 def inyectar_tema_global(request, html: str) -> str:
     from server import obtener_usuario_sesion # ensure available
     usuario_sesion = obtener_usuario_sesion(request)
@@ -99,6 +138,7 @@ def inyectar_tema_global(request, html: str) -> str:
             --text-muted: {t_muted} !important;
             --font-heading: '{f_heading}', system-ui, -apple-system, sans-serif !important;
             --font-main: '{f_main}', system-ui, -apple-system, sans-serif !important;
+            --bg-main-rgb: {_r}, {_g}, {_b} !important;
             --panel-glass: {_panel_glass} !important;
         }}
         .nav-item.active {{
@@ -3157,6 +3197,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
     es_admin_str = "true" if es_admin(request) else "false"
     html = html.replace("<style id=\"custom-theme-css\">", f"<script>window.ES_ADMIN = {es_admin_str};</script><style id=\"custom-theme-css\">")
+    html = html.replace("{main_nav_html}", render_nav(request, "inbox"))
 
     labels_ctx_html = ""
     for l in global_labels:
@@ -5106,6 +5147,7 @@ async def pipeline_view(request: Request):
     html = html.replace("<!-- ES_ADMIN -->", es_admin_str)
     html = html.replace("<!-- PIPELINE_LABELS_JSON -->", pipeline_labels_json)
     html = html.replace("{color_global}", "var(--primary-color)")
+    html = html.replace("{main_nav_html}", render_nav(request, "pipeline"))
 
     # Inyectar ES_ADMIN para el JS del pipeline
     html = html.replace('<style id="custom-theme-css">', f'<script>window.ES_ADMIN = {es_admin_str};</script><style id="custom-theme-css">')
