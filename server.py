@@ -4136,7 +4136,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <h3 style="font-family:var(--font-heading); font-size:1.1rem; flex:1; color:var(--text-main); margin:0;"> Respuestas Rápidas</h3>
                     <button onclick="document.getElementById('rightSidebar').style.display='none'" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem;">×</button>
                 </div>
-                <div style="padding:1rem 1.5rem; border-bottom:1px solid var(--accent-border); background:var(--bg-main);">
+                <div style="padding:1rem 1.5rem; background:transparent;">
                     <div style="display:flex; gap:0.5rem; justify-content:space-between;">
                         <input type="text" id="qrSearchFilter" placeholder="Buscar... (/)" onkeyup="filtrarQuickReplies(this.value)" style="flex:1; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem;">
                         <button onclick="abrirModalCrearQR()" style="background:var(--primary-color); color:white; border:none; border-radius:6px; padding:0 0.8rem; cursor:pointer;" title="Crear nueva respuesta rápida">NUEVA</button>
@@ -4149,7 +4149,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 <!-- Plantillas Subsection -->
                 <div id="plantillasSubsection" style="padding:1rem 1.5rem; border-top:1px solid var(--accent-border); background:var(--accent-bg); display:flex; flex-direction:column; max-height:220px; flex-shrink:0;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
-                        <h4 style="margin:0; font-size:0.85rem; color:var(--text-main); font-weight:600;">Plantillas (Meta)</h4>
+                        <h4 onclick="var tl=document.getElementById('templateList');var ar=document.getElementById('plantArrow');if(tl.style.display==='none'){{tl.style.display='block';ar.textContent='\u25be'}}else{{tl.style.display='none';ar.textContent='\u25b8'}}" style="margin:0; font-size:0.85rem; color:var(--text-main); font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.4rem; user-select:none;"><span id="plantArrow" style="font-size:0.75rem;">▾</span>Plantillas (Meta)</h4>
                         <button onclick="if(window.crearPlantilla) window.crearPlantilla()" style="background:var(--primary-color); color:white; border:none; border-radius:4px; padding:0.2rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:bold;" title="Añadir Plantilla">AÑADIR</button>
                     </div>
                     <div id="templateList" class="hide-scrollbar" style="overflow-y:auto; display:flex; flex-direction:column; gap:0.4rem; flex:1;">
@@ -4234,8 +4234,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 const input = document.getElementById("manualMsgInput");
                 if(!input) return;
                 
-                document.getElementById('rightSidebar').style.display = 'none';
-                
+                // sidebar permanece abierto tras usar QR
                 const form = input.closest('form');
                 const btn = form.querySelector('button[type="submit"]');
                 
