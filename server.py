@@ -1431,6 +1431,41 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
         
         return msg
 
+    # ── Escalación automática por frustración repetida ───
+    # Si el bot ya comunicó el estado del pedido Y el cliente lleva 2+ mensajes más
+    # expresando frustración/impaciencia, es mejor escalar a un humano.
+    _FRUSTRACION_KW = ["avanzar", "siguen", "sigue igual", "cuánto tiempo", "cuanto tiempo",
+                       "demasiado", "ya es", "desde el", "días esperando", "semana esperando",
+                       "quiero hablar", "hablar con", "no me", "molesta", "cansada", "cansado",
+                       "puntual", "ya pagué", "ya pague", "mala", "pesimo", "pesima", "pésimo"]
+    _texto_lower = texto_cliente.lower()
+    _es_frustrado = any(kw in _texto_lower for kw in _FRUSTRACION_KW)
+    if _es_frustrado and sesion.get("datos_pedido"):
+        # Contar mensajes del cliente posteriores al primer mensaje del bot sobre el estado
+        _pedido_comunicado_idx = None
+        for _i, _m in enumerate(sesion["historial"]):
+            if _m.get("role") == "assistant":
+                _contenido_lower = _m.get("content", "").lower()
+                _kws_estado = ["preparaci", "impresi", "estampado", "empaquetado",
+                               "reparto", "entregado", "recibi", "finalizado", "disfrut"]
+                if any(k in _contenido_lower for k in _kws_estado):
+                    _pedido_comunicado_idx = _i
+                    break
+        if _pedido_comunicado_idx is not None:
+            _msgs_cliente_post = sum(1 for _m in sesion["historial"][_pedido_comunicado_idx+1:]
+                                     if _m.get("role") == "user")
+            if _msgs_cliente_post >= 2:
+                print(f"  [🚨 Frustración repetida tras comunicar estado → escalando a humano]")
+                sesion["bot_activo"]        = False
+                sesion["escalado_en"]       = datetime.utcnow()
+                sesion["motivo_escalacion"] = "Frustración repetida post-estado"
+                msg = "Entiendo tu preocupación. 🙏 Le avisaré a uno de nuestros asesores para que te atienda directamente. 😊"
+                if not is_simulacion:
+                    enviar_mensaje(numero_wa, msg)
+                try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(numero_wa, sesion)
+                except: pass
+                return msg
+
     # ── Preprocesar texto (normalizar + cancelar=pagar) ───
     texto_modelo = preprocesar_mensaje(normalizar_texto(texto_cliente))
 
@@ -1473,9 +1508,15 @@ def procesar_mensaje_interno(numero_wa: str, nombre: str, texto_cliente: str, is
                 for m in historial_para_gemini if m.get("role") == "assistant"
             )
             if _ya_comunicado:
+                # Ancla fuerte: prohibir explícitamente repetir la plantilla
                 _ancla = (
-                    f"[SISTEMA - Recordatorio: el pedido #{_id_pedido} sigue en '{_estado_actual}'. "
-                    f"NO repitas el estado. Responde de forma natural al mensaje actual del cliente.]"
+                    f"[INSTRUCCIÓN CRÍTICA DEL SISTEMA — MODO CONVERSACIONAL: "
+                    f"Ya informaste al cliente que su pedido #{_id_pedido} está en '{_estado_actual}' en un mensaje anterior. "
+                    f"ESTÁ TERMINANTEMENTE PROHIBIDO repetir frases como 'Tu pedido está siendo estampado', "
+                    f"'Tu pedido ya está en la etapa de preparación', ni ninguna variación del estado. "
+                    f"El cliente ya sabe el estado. Ahora SOLO responde al mensaje puntual que acaba de escribir: "
+                    f"si expresa frustración, empatiza y disculpa la espera sin mencionar el estado; "
+                    f"si hace una pregunta nueva, respóndela; si no hay pregunta nueva, di algo breve y humano.]"
                 )
             else:
                 _ancla = (
