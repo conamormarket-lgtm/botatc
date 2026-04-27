@@ -34,6 +34,8 @@
             color: var(--text-main);
             height: 100dvh;
             display: flex;
+            gap: 8px;
+            padding: 8px;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
@@ -41,7 +43,32 @@
         a { text-decoration: none; color: inherit; }
 
         /* --------- SIDEBAR NAV --------- */
-        .sidebar-nav { width: 55px; background-color: var(--bg-sidebar, var(--bg-main)); border-right: 1px solid var(--accent-border); display: flex; flex-direction: column; align-items: center; padding: 1.5rem 0; z-index: 10; }
+        .sidebar-nav {
+            width: 55px;
+            background: var(--panel-glass, rgba(15, 23, 42, 0.65));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 0;
+            z-index: 10;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        body.nav-top { flex-direction: column; }
+        body.nav-top .sidebar-nav {
+            width: 100%;
+            height: 55px;
+            flex-direction: row;
+            padding: 0 0.75rem;
+            gap: 0.25rem;
+        }
+        body.nav-top .nav-item { margin-bottom: 0 !important; }
+        body.nav-top .sidebar-spacer { flex: 1; }
         .nav-item { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 1rem; transition: all 0.2s ease; text-decoration: none; }
         .nav-item:hover { color: var(--text-main); background-color: var(--accent-hover-soft); }
         .nav-item.active { color: var(--primary-color); background-color: rgba(59, 130, 246, 0.1); }
@@ -56,47 +83,57 @@
             overflow-y: auto;
             position: relative;
             min-width: 0;
-            background-color: var(--bg-main);
+            background: var(--panel-glass, rgba(15, 23, 42, 0.65));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
         }
         .admin-main-panel::-webkit-scrollbar { width: 6px; }
         .admin-main-panel::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 10px; }
 
         .admin-header {
-            padding: 2rem 2.5rem;
+            padding: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--accent-border);
-            background: color-mix(in srgb, var(--bg-main) 80%, transparent);
-            backdrop-filter: blur(8px);
-            position: sticky;
-            top: 0;
-            z-index: 5;
+            background: transparent;
         }
         .admin-header h1 {
+            margin: 0;
             font-family: var(--font-heading);
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .container {
             padding: 2.5rem;
-            max-width: 1200px;
+            max-width: 1040px;
             margin: 0 auto;
             width: 100%;
         }
 
         .table-card {
-            background-color: var(--accent-bg);
+            background: rgba(var(--bg-main-rgb, 15, 23, 42), 0.42);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--accent-border);
-            border-radius: 12px;
-            overflow: hidden;
+            border-radius: 16px;
+            overflow-x: auto;
+            overflow-y: hidden;
             margin-bottom: 3rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
         }
         
         .admin-table {
             width: 100%;
+            min-width: 900px;
             border-collapse: collapse;
             text-align: left;
         }
@@ -105,7 +142,7 @@
             padding: 1.25rem 1.5rem;
             font-size: 0.75rem;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             border-bottom: 1px solid var(--accent-border);
@@ -119,6 +156,9 @@
         }
         .admin-table tr:last-child td { border-bottom: none; }
         .admin-table tr:hover td { background-color: rgba(255,255,255,0.02); }
+        .admin-table td:last-child,
+        .admin-table th:last-child { min-width: 300px; }
+        .admin-table td:last-child { white-space: nowrap; }
 
         .badge {
             font-size: 0.7rem;
@@ -131,10 +171,11 @@
             text-transform: uppercase;
             letter-spacing: 0.03em;
         }
+        button.badge { border: 1px solid transparent; cursor: pointer; font-family: var(--font-main); }
         .badge.pendiente { background-color: rgba(239, 68, 68, 0.15); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.3); }
         .badge.aprobado { background-color: rgba(16, 185, 129, 0.15); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        select { background: var(--bg-main); color: white; border: 1px solid var(--accent-border); padding: 5px 10px; border-radius: 5px; }
+        select { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--accent-border); padding: 5px 10px; border-radius: 5px; }
         
         .btn-action {
             padding: 0.4rem 0.8rem;
@@ -147,14 +188,14 @@
             text-decoration: none;
             display: inline-block;
         }
-        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary { background-color: var(--primary-color); color: var(--text-main); }
         .btn-primary:hover { background-color: var(--primary-hover); }
         .btn-danger { background-color: transparent; border: 1px solid var(--danger-color); color: var(--danger-color); }
         .btn-danger:hover { background-color: var(--danger-color); color: white; }
 
         /* RESPONSIVE DESIGN */
         @media (max-width: 768px) {
-            body { flex-direction: column; }
+            body { flex-direction: column; padding: 0; gap: 0; }
             .sidebar-nav {
                 flex-direction: row;
                 width: 100%;
@@ -162,12 +203,14 @@
                 padding: 0;
                 border-right: none;
                 border-top: 1px solid var(--accent-border);
+                border-left: none;
+                border-bottom: none;
+                border-radius: 0;
                 order: 3;
                 justify-content: space-around;
-                background-color: var(--bg-sidebar, var(--bg-main));
             }
             .nav-item { margin-bottom: 0; }
-            .admin-main-panel { order: 1; }
+            .admin-main-panel { order: 1; border: none; border-radius: 0; }
             
             .admin-header { padding: 1.5rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
             .container { padding: 1.5rem; }
@@ -181,41 +224,21 @@
 {custom_theme_css}
     </style>
 </head>
-<body>
-
-    <nav class="sidebar-nav">
-        <!-- Inbox Icon -->
-        <a href="/inbox" class="nav-item" title="Bandeja de Entrada (Inbox)">
-            <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
-        </a>
-        <!-- Pipeline Icon -->
-        <a href="/pipeline" class="nav-item" title="Pipeline de Pedidos">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
-        </a>
-        <!-- Agent Settings Icon -->
-        {settings_button}
-
-        
-        <!-- Admin Users Icon -->
-        {usuarios_button}
-        
-        <!-- System Settings Icon -->
-        {admin_button}
-        
-        <div style="flex:1;"></div>
-        
-        <a href="/perfil" class="nav-item" title="Mi Perfil" style="margin-bottom: 5px; color: var(--text-muted); display: flex; justify-content: center; text-decoration: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </a>
-        <a href="/logout" class="nav-item" title="Cerrar Sesión" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; opacity: 0.8; transition: opacity 0.2s;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-        </a>
-    </nav>
+<body class="nav-{nav_position}">
+    {main_nav_html}
 
     <!-- 2. PANEL PRINCIPAL (Admin Dashboard) -->
     <div class="admin-main-panel">
         <header class="admin-header">
-            <h1>Gestión de Usuarios</h1>
+            <h1>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                Gestión de Usuarios
+            </h1>
         </header>
 
         <div class="container">
@@ -223,15 +246,14 @@
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Usuario</th>
-                            <th>Nombre Visible</th>
-                            <th>Estado</th>
-                            <th>Permisos</th>
-                            <th>Acciones</th>
+                            <th>USUARIO</th>
+                            <th>NOMBRE VISIBLE</th>
+                            <th>ESTADO</th>
+                            <th>PERMISOS</th>
                         </tr>
                     </thead>
                     <tbody id="users-body">
-                        <tr><td colspan="5" style="text-align:center">Cargando...</td></tr>
+                        <tr><td colspan="4" style="text-align:center">Cargando...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -249,7 +271,7 @@
             const users = usersResp.filter(u => u.estado !== 'rechazado');
 
             if (users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);font-style:italic;">No hay usuarios pendientes ni aprobados.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);font-style:italic;">No hay usuarios pendientes ni aprobados.</td></tr>';
                 return;
             }
             
@@ -257,14 +279,15 @@
                 const isAdmin = u.permisos.includes('admin');
                 tbody.innerHTML += `<tr>
                         <td><strong>${u.username}</strong></td>
-                        <td><input type="text" id="nombre-${u.username}" value="${u.nombre || ''}" placeholder="Nombre visible..." style="background:var(--bg-main); color:white; border:1px solid var(--accent-border); padding:5px 8px; border-radius:5px; width:140px; font-size:13px;"></td>
-                        <td><span class="badge ${u.estado}">${u.estado}</span></td>
-                        <td>${isAdmin ? 'Admin' : 'Estándar'}</td>
-                        <td style="display: flex; gap: 0.5rem; align-items: center;">
-                            <select id="estado-${u.username}">
+                        <td><input type="text" id="nombre-${u.username}" value="${u.nombre || ''}" placeholder="Nombre visible..." style="background:var(--bg-main); color:var(--text-main); border:1px solid var(--accent-border); padding:5px 8px; border-radius:5px; width:140px; font-size:13px;"></td>
+                        <td>
+                            <button type="button" id="estadoBadge-${u.username}" class="badge ${u.estado}" onclick="editEstado('${u.username}')">${u.estado}</button>
+                            <select id="estado-${u.username}" style="display:none;" onblur="hideEstadoEditor('${u.username}')" onchange="hideEstadoEditor('${u.username}')">
                                 <option value="pendiente" ${u.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
                                 <option value="aprobado" ${u.estado === 'aprobado' ? 'selected' : ''}>Aprobado</option>
                             </select>
+                        </td>
+                        <td style="display: flex; gap: 0.5rem; align-items: center;">
                             <select id="permiso-${u.username}">
                                 <option value="">Estándar</option>
                                 <option value="admin" ${isAdmin ? 'selected' : ''}>Admin</option>
@@ -274,6 +297,25 @@
                         </td>
                     </tr>`;
             });
+        }
+
+        function editEstado(username) {
+            const badge = document.getElementById(`estadoBadge-${username}`);
+            const select = document.getElementById(`estado-${username}`);
+            if (!badge || !select) return;
+            badge.style.display = 'none';
+            select.style.display = 'inline-block';
+            select.focus();
+        }
+
+        function hideEstadoEditor(username) {
+            const badge = document.getElementById(`estadoBadge-${username}`);
+            const select = document.getElementById(`estado-${username}`);
+            if (!badge || !select) return;
+            badge.textContent = select.value;
+            badge.className = `badge ${select.value}`;
+            select.style.display = 'none';
+            badge.style.display = 'inline-block';
         }
         
         async function saveUser(username) {

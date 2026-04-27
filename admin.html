@@ -32,8 +32,10 @@
             font-family: var(--font-main);
             background-color: var(--bg-main);
             color: var(--text-main);
-            height: 100vh;
+            height: 100dvh;
             display: flex;
+            gap: 8px;
+            padding: 8px;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
@@ -41,7 +43,32 @@
         a { text-decoration: none; color: inherit; }
 
         /* --------- SIDEBAR NAV --------- */
-        .sidebar-nav { width: 55px; background-color: var(--bg-sidebar, var(--bg-main)); border-right: 1px solid var(--accent-border); display: flex; flex-direction: column; align-items: center; padding: 1.5rem 0; z-index: 10; }
+        .sidebar-nav {
+            width: 55px;
+            background: var(--panel-glass, rgba(15, 23, 42, 0.65));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 0;
+            z-index: 10;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        body.nav-top { flex-direction: column; }
+        body.nav-top .sidebar-nav {
+            width: 100%;
+            height: 55px;
+            flex-direction: row;
+            padding: 0 0.75rem;
+            gap: 0.25rem;
+        }
+        body.nav-top .nav-item { margin-bottom: 0 !important; }
+        body.nav-top .sidebar-spacer { flex: 1; }
         .nav-item { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-bottom: 1rem; transition: all 0.2s ease; text-decoration: none; }
         .nav-item:hover { color: var(--text-main); background-color: var(--accent-hover-soft); }
         .nav-item.active { color: var(--primary-color); background-color: rgba(59, 130, 246, 0.1); }
@@ -56,27 +83,33 @@
             overflow-y: auto;
             position: relative;
             min-width: 0;
-            background-color: var(--bg-main);
+            background: var(--panel-glass, rgba(15, 23, 42, 0.65));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
         }
         .admin-main-panel::-webkit-scrollbar { width: 6px; }
         .admin-main-panel::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 10px; }
 
         .admin-header {
-            padding: 2rem 2.5rem;
+            padding: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--accent-border);
-            background: color-mix(in srgb, var(--bg-main) 80%, transparent);
-            backdrop-filter: blur(8px);
-            position: sticky;
-            top: 0;
-            z-index: 5;
+            background: transparent;
         }
         .admin-header h1 {
+            margin: 0;
             font-family: var(--font-heading);
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .btn-toggle {
@@ -111,10 +144,13 @@
             margin-bottom: 3rem;
         }
         .stat-card {
-            background-color: var(--accent-bg);
+            background: rgba(var(--bg-main-rgb, 15, 23, 42), 0.42);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--accent-border);
             padding: 1.75rem;
-            border-radius: 12px;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
             transition: transform 0.2s, border-color 0.2s;
         }
         .stat-card:hover { transform: translateY(-3px); border-color: var(--primary-color); }
@@ -134,11 +170,14 @@
         }
         
         .table-card {
-            background-color: var(--accent-bg);
+            background: rgba(var(--bg-main-rgb, 15, 23, 42), 0.42);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--accent-border);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             margin-bottom: 3rem;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
         }
         
         .admin-table {
@@ -151,7 +190,7 @@
             padding: 1.25rem 1.5rem;
             font-size: 0.75rem;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             border-bottom: 1px solid var(--accent-border);
@@ -195,14 +234,14 @@
             text-decoration: none;
             display: inline-block;
         }
-        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary { background-color: var(--primary-color); color: var(--text-main); }
         .btn-primary:hover { background-color: var(--primary-hover); }
         .btn-outline { background-color: transparent; border: 1px solid var(--accent-border); color: var(--text-main); }
         .btn-outline:hover { background-color: var(--accent-hover-soft); }
 
         /* RESPONSIVE DESIGN */
         @media (max-width: 768px) {
-            body { flex-direction: column; }
+            body { flex-direction: column; padding: 0; gap: 0; }
             .sidebar-nav {
                 flex-direction: row;
                 width: 100%;
@@ -210,13 +249,15 @@
                 padding: 0;
                 border-right: none;
                 border-top: 1px solid var(--accent-border);
+                border-left: none;
+                border-bottom: none;
+                border-radius: 0;
                 order: 3;
                 justify-content: space-around;
-                background-color: var(--bg-sidebar, var(--bg-main));
             }
             .nav-item { margin-bottom: 0; }
             body.view-chat .sidebar-nav { display: none !important; }
-            .admin-main-panel { order: 1; }
+            .admin-main-panel { order: 1; border: none; border-radius: 0; }
             .bot-status-indicator { margin: auto 0; margin-right: 1rem; }
             
             .admin-header { padding: 1.5rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
@@ -228,48 +269,20 @@
         }
     </style>
 </head>
-<body>
-
-    <!-- 1. BARRA LATERAL (Idéntica al Inbox) -->
-    <nav class="sidebar-nav">
-        <!-- Inbox Icon -->
-        <a href="/inbox" class="nav-item" title="Bandeja de Entrada (Inbox)">
-            <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
-        </a>
-        <!-- Pipeline Icon -->
-        <a href="/pipeline" class="nav-item" title="Pipeline de Pedidos">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
-        </a>
-        <!-- Agent Settings Icon -->
-        <a href="/settings" class="nav-item" title="Personalizar Agente IA">
-
-            <svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-        </a>
-        <!-- Admin Users Icon -->
-        <a href="/usuarios" class="nav-item" title="Panel de Usuarios">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-        </a>
-        <!-- System Settings Icon (ACTIVO AQUI) -->
-        <a href="/admin" class="nav-item active" title="Panel Clásico Anterior">
-            <svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-        </a>
-        
-        <div style="flex:1;"></div>
-        <div class="bot-status-indicator" title="Estado Global del Bot"></div>
-        
-        <a href="/perfil" class="nav-item" title="Mi Perfil" style="margin-bottom: 5px; color: var(--text-muted); display: flex; justify-content: center; text-decoration: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </a>
-        <a href="/logout" class="nav-item" title="Cerrar Sesión" style="color: #ef4444; margin-bottom: 10px; display: flex; justify-content: center; text-decoration: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; opacity: 0.8; transition: opacity 0.2s;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-        </a>
-    </nav>
+<body class="nav-{nav_position}">
+    {main_nav_html}
 
     <!-- 2. PANEL PRINCIPAL (Admin Dashboard) -->
     <div class="admin-main-panel">
         
         <header class="admin-header">
-            <h1>Panel Analítico</h1>
+            <h1>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18"></path>
+                    <path d="m19 9-5 5-4-4-3 3"></path>
+                </svg>
+                Panel Analítico
+            </h1>
             <div>
                 <form method="post" action="/admin/toggle" style="margin:0">
                     <button type="submit" class="btn-toggle {class_btn_toggle}" title="Enciende o apaga a la IA de forma global">
@@ -289,7 +302,7 @@
                     padding: 0.7rem 2.5rem 0.7rem 1.2rem;
                     border-radius: 8px;
                     border: 1px solid var(--accent-border);
-                    background: var(--accent-bg);
+                    background: rgba(var(--bg-main-rgb, 15, 23, 42), 0.42);
                     color: var(--text-main);
                     font-family: var(--font-main);
                     font-size: 0.95rem;
@@ -336,8 +349,8 @@
                 <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom: 2rem;">Crea agrupaciones virtuales de números de WhatsApp para ver sus mensajes unificados en un solo "chat" en tu Bandeja de Entrada. Útil para monitorear equipos o proveedores en conjunto.</p>
                 
                 <div style="display:flex; gap:1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-                    <input type="text" id="vgName" placeholder="Nombre del Grupo (Ej. Proveedores)" style="flex:1; min-width:200px; padding:0.8rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--bg-main); color:white;">
-                    <input type="text" id="vgNumbers" placeholder="Números separados por comas (Ej. 51999..., 51998...)" style="flex:2; min-width:300px; padding:0.8rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--bg-main); color:white;">
+                    <input type="text" id="vgName" placeholder="Nombre del Grupo (Ej. Proveedores)" style="flex:1; min-width:200px; padding:0.8rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--bg-main); color:var(--text-main);">
+                    <input type="text" id="vgNumbers" placeholder="Números separados por comas (Ej. 51999..., 51998...)" style="flex:2; min-width:300px; padding:0.8rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--bg-main); color:var(--text-main);">
                     <button type="button" class="btn-action btn-primary" onclick="guardarGrupoVirtual()">+ Guardar Grupo</button>
                     <button type="button" class="btn-action btn-outline" id="btnCancelEditVg" style="display:none;" onclick="cancelarEdicionVg()">Cancelar</button>
                 </div>

@@ -1849,10 +1849,7 @@ async def perfil_panel(request: Request):
 
     usuario_sesion = obtener_usuario_sesion(request)
     prefs = usuario_sesion.get("preferencias_ui", {}) if usuario_sesion else {}
-    
 
-    
-    # Botones Admin
     if es_admin(request):
         admin_btn = """<a href="/admin" class="nav-item" title="Panel Estadístico"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></a>"""
         settings_btn = """<a href="/settings" class="nav-item" title="Personalizar Agente IA"><svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></a>"""
@@ -1861,7 +1858,7 @@ async def perfil_panel(request: Request):
         admin_btn = ""
         settings_btn = ""
         usuarios_btn = ""
-        
+
     html = html.replace("{admin_button}", admin_btn)
     html = html.replace("{settings_button}", settings_btn)
     html = html.replace("{usuarios_button}", usuarios_btn)
@@ -2231,6 +2228,7 @@ async def panel_admin(request: Request):
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
     html = html.replace("{class_btn_toggle}", "danger" if BOT_GLOBAL_ACTIVO else "")
     html = html.replace("{txt_btn_toggle}", "Apagar IA Global" if BOT_GLOBAL_ACTIVO else "Activar IA Global")
+    html = html.replace("{main_nav_html}", render_nav(request, "admin"))
     
     return HTMLResponse(inyectar_tema_global(request, html))
 
@@ -2931,13 +2929,8 @@ async def panel_usuarios(request: Request):
     with open("usuarios.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    admin_btn = """<a href="/admin" class="nav-item" title="Panel Estadístico"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></a>"""
-    settings_btn = """<a href="/settings" class="nav-item" title="Personalizar Agente IA"><svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></a>"""
-    usuarios_btn = """<a href="/usuarios" class="nav-item active" title="Panel de Usuarios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a>"""
     
-    html = html.replace("{admin_button}", admin_btn)
-    html = html.replace("{settings_button}", settings_btn)
-    html = html.replace("{usuarios_button}", usuarios_btn)
+    html = html.replace("{main_nav_html}", render_nav(request, "usuarios"))
     html = html.replace("{color_global}", "#10b981" if BOT_GLOBAL_ACTIVO else "#ef4444")
     
     return HTMLResponse(inyectar_tema_global(request, html))
