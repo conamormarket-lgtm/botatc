@@ -1261,6 +1261,11 @@
                     const cleanHTML = (html) => html.replace(/style="[^"]*"/g, "").replace(/>\d+:\d{2}</g, ">0:00<");
                     
                     const newChildren = Array.from(newScroll.children);
+                    tempNodes.forEach(node => {
+                        const tempText = (node.dataset.optimisticText || node.textContent || '').trim();
+                        const confirmed = newChildren.some(newNode => (newNode.textContent || '').trim().includes(tempText));
+                        if (confirmed) node.dataset.removeTemp = "true";
+                    });
                     
                     for (let i = 0; i < newChildren.length; i++) {
                         const newNode = newChildren[i];
@@ -1285,7 +1290,12 @@
                     }
                     
                     // Reinyectar elementos asíncronos fantasma
-                    tempNodes.forEach(node => oldScroll.appendChild(node));
+                    tempNodes.forEach(node => {
+                        const tempText = (node.dataset.optimisticText || node.textContent || '').trim();
+                        const existsNow = Array.from(oldScroll.children).some(child => (child.textContent || '').trim().includes(tempText));
+                        if (existsNow) node.dataset.removeTemp = "true";
+                        if (node.dataset.removeTemp !== "true") oldScroll.appendChild(node);
+                    });
                     
                     if (didAppend && isAtBottom && !window._isSearching) {
                         oldScroll.scrollTop = oldScroll.scrollHeight;
@@ -1417,6 +1427,18 @@
         window.enviarMensajeDirecto = async function(wa_id, msj, qrTitle = null) {
             if (!msj) return {ok: false};
             const replyToWamid = document.getElementById('replyToWamid') ? document.getElementById('replyToWamid').value : null;
+            const scroll = document.getElementById('chatScroll');
+            let bubble = null;
+            if (scroll && msj && !msj.startsWith('[audio:') && !msj.startsWith('[imagen:') && !msj.startsWith('[video:') && !msj.startsWith('[documento:')) {
+                bubble = document.createElement('div');
+                bubble.className = "bubble bubble-bot lado-der";
+                bubble.dataset.temp = "true";
+                bubble.dataset.optimisticText = msj;
+                bubble.style.border = "1px solid var(--primary-color)";
+                bubble.innerText = msj;
+                scroll.appendChild(bubble);
+                scroll.scrollTop = scroll.scrollHeight;
+            }
             try {
                 const res = await fetch('/api/admin/enviar_manual', {
                     method: 'POST',
@@ -1425,10 +1447,14 @@
                 });
 
                 const data = await res.json();
-                if(!data.ok) { console.error("Error direct send json", data); }
+                if(!data.ok) {
+                    console.error("Error direct send json", data);
+                    if (scroll && bubble && bubble.parentNode) bubble.parentNode.removeChild(bubble);
+                }
                 return data;
             } catch(e) {
                 console.error("Error direct send", e);
+                if (scroll && bubble && bubble.parentNode) bubble.parentNode.removeChild(bubble);
                 return {ok: false, error: e.message || "Red Error"};
             }
         };
@@ -1789,6 +1815,8 @@
             if (scroll && optimisticText) {
                 bubble = document.createElement('div');
                 bubble.className = "bubble bubble-bot lado-der";
+                bubble.dataset.temp = "true";
+                bubble.dataset.optimisticText = optimisticText;
                 bubble.style.border = "1px solid var(--primary-color)";
                 bubble.innerText = optimisticText;
                 scroll.appendChild(bubble);
