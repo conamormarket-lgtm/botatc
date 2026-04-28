@@ -13,7 +13,6 @@
 import re
 import json
 import hashlib
-import html as html_lib
 from datetime import datetime, timedelta
 import asyncio
 
@@ -3975,7 +3974,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <!-- Right utilities inside -->
                     <div style="display:flex; flex-shrink:0; align-items:center; margin-bottom: 3px;">
                         <!-- Respuestas Rápidas & Plantillas -->
-                        <button type="button" id="btnRightQR" onclick="window.toggleQuickRepliesPanel && window.toggleQuickRepliesPanel()" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas y Plantillas">
+                        <button type="button" id="btnRightQR" onclick="const side = document.getElementById('rightSidebar'); if(side.style.display==='none' || !side.style.display){{ side.style.display='flex'; localStorage.setItem('qrSidebarOpen','1'); if(window.cargarQuickReplies) window.cargarQuickReplies(); if(window.cargarPlantillas) window.cargarPlantillas(); setTimeout(()=>document.getElementById('qrSearchFilter').focus(), 50); }} else {{ side.style.display='none'; localStorage.setItem('qrSidebarOpen','0'); }}" style="background:transparent; border:none; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); transition:color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'" title="Respuestas Rápidas y Plantillas">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                         </button>
                         <!-- Clip -->
@@ -4017,78 +4016,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         session_tags = s.get("etiquetas", [])
         if session_tags is None: session_tags = []
         tags_bar = ""
-        profile_tags_html = ""
         for tid in session_tags:
             lbl = next((l for l in global_labels if l.get("id") == tid), None)
             if lbl:
                 col = lbl.get("color", "#94a3b8")
                 nm = lbl.get("name", "Etiqueta")
                 tags_bar += f'<span style="background:{col}22; color:{col}; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:4px; font-weight:600; border: 1px solid {col}44;">{nm}</span>'
-                profile_tags_html += f'<span style="background:{col}22; color:{col}; font-size:0.78rem; padding:0.35rem 0.55rem; border-radius:999px; font-weight:600; border:1px solid {col}44;">{html_lib.escape(str(nm))}</span>'
-        if not profile_tags_html:
-            profile_tags_html = '<div style="color:var(--text-muted); font-size:0.85rem;">Este chat no tiene etiquetas.</div>'
-
-        recent_media_items = []
-        media_pattern = re.compile(r"\[(sticker-local|sticker|imagen|audio|video|documento):([^\]]+)\]")
-        for msg_media in reversed(all_msgs):
-            content_media = str(msg_media.get("content", ""))
-            for media_match in reversed(list(media_pattern.finditer(content_media))):
-                media_type = media_match.group(1)
-                media_raw = media_match.group(2)
-                if "|caption:" in media_raw:
-                    media_raw = media_raw.split("|caption:", 1)[0]
-                media_id = media_raw
-                media_name = ""
-                if media_type == "documento" and "|" in media_raw:
-                    media_id, media_name = media_raw.split("|", 1)
-                src_url = f"/api/media/sticker/{media_id}" if media_type == "sticker-local" else (media_id if media_id.startswith("http") else f"/api/media/{media_id}")
-                safe_src = html_lib.escape(src_url, quote=True)
-                safe_name = html_lib.escape(str(media_name or media_type.capitalize()))
-                if media_type in ["imagen", "sticker", "sticker-local"]:
-                    recent_media_items.append(f'<a href="{safe_src}" target="_blank" style="aspect-ratio:1; border-radius:8px; overflow:hidden; background:var(--bg-main); border:1px solid var(--accent-border); display:block;"><img src="{safe_src}" alt="{safe_name}" style="width:100%; height:100%; object-fit:cover; display:block;"></a>')
-                elif media_type == "video":
-                    recent_media_items.append(f'<a href="{safe_src}" target="_blank" style="aspect-ratio:1; border-radius:8px; overflow:hidden; background:#000; border:1px solid var(--accent-border); display:flex; align-items:center; justify-content:center; color:white; text-decoration:none; position:relative;"><video src="{safe_src}" muted preload="metadata" style="width:100%; height:100%; object-fit:cover; opacity:0.75;"></video><span style="position:absolute; width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center;">▶</span></a>')
-                elif media_type == "audio":
-                    recent_media_items.append(f'<a href="{safe_src}" target="_blank" style="min-height:72px; border-radius:8px; background:var(--bg-main); border:1px solid var(--accent-border); display:flex; align-items:center; justify-content:center; color:var(--primary-color); text-decoration:none; font-size:1.35rem;">♪</a>')
-                elif media_type == "documento":
-                    recent_media_items.append(f'<a href="{safe_src}" target="_blank" style="min-height:72px; border-radius:8px; background:var(--bg-main); border:1px solid var(--accent-border); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.2rem; color:var(--text-main); text-decoration:none; font-size:0.75rem; padding:0.4rem; text-align:center; overflow:hidden;"><span style="font-size:1.25rem;">▣</span><span style="max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{safe_name}</span></a>')
-                if len(recent_media_items) >= 9:
-                    break
-            if len(recent_media_items) >= 9:
-                break
-
-        recent_media_html = ''.join(recent_media_items)
-        if not recent_media_html:
-            recent_media_html = '<div style="grid-column:1 / -1; color:var(--text-muted); font-size:0.85rem; padding:1rem 0; text-align:center;">Sin multimedia reciente.</div>'
-
-        safe_nombre_chat = html_lib.escape(str(nombre_chat))
-        safe_numero_chat = html_lib.escape(str(numero_chat_display))
-        chat_profile_html = f'''
-            <div id="chatProfilePanel" class="hide-scrollbar" style="width:320px; border-left:1px solid var(--accent-border); background:var(--accent-bg); display:none; flex-direction:column; position:relative; box-shadow:-4px 0 15px rgba(0,0,0,0.1); overflow-y:auto;">
-                <div style="padding:1.2rem 1.4rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center; background:var(--bg-main);">
-                    <h3 style="font-family:var(--font-heading); font-size:1.05rem; color:var(--text-main); margin:0;">Perfil</h3>
-                    <button type="button" onclick="window.closeChatProfilePanel && window.closeChatProfilePanel()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.35rem; line-height:1;">×</button>
-                </div>
-                <div style="padding:1.4rem; display:flex; flex-direction:column; align-items:center; gap:0.65rem; border-bottom:1px solid var(--accent-border); background:var(--bg-main);">
-                    <div style="width:104px; height:104px; border-radius:50%; background:linear-gradient(135deg, color-mix(in srgb, var(--primary-color) 22%, var(--accent-bg)), var(--accent-bg)); border:1px solid var(--accent-border); color:var(--text-muted); display:flex; align-items:center; justify-content:center;">
-                        <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
-                    </div>
-                    <div style="font-weight:700; color:var(--text-main); font-size:1.05rem; max-width:100%; text-align:center; overflow:hidden; text-overflow:ellipsis;">{safe_nombre_chat}</div>
-                    <div style="font-family:monospace; color:var(--text-muted); font-size:0.9rem;">+{safe_numero_chat}</div>
-                </div>
-                <div style="padding:1.2rem 1.4rem; border-bottom:1px solid var(--accent-border);">
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.8rem;">
-                        <h4 style="margin:0; color:var(--text-main); font-size:0.92rem; font-weight:700;">Multimedia reciente</h4>
-                        <span style="color:var(--text-muted); font-size:0.75rem;">{len(recent_media_items)}</span>
-                    </div>
-                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.45rem;">{recent_media_html}</div>
-                </div>
-                <div style="padding:1.2rem 1.4rem;">
-                    <h4 style="margin:0 0 0.8rem 0; color:var(--text-main); font-size:0.92rem; font-weight:700;">Etiquetas</h4>
-                    <div style="display:flex; flex-wrap:wrap; gap:0.45rem;">{profile_tags_html}</div>
-                </div>
-            </div>
-        '''
 
         pinned_html = ""
         if pinned_messages:
@@ -4156,8 +4089,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     <a href="/inbox?tab={tab}&line={line_filter}" class="btn-responsive-back" title="Volver a la lista">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </a>
-                    <button type="button" onclick="window.openChatProfilePanel && window.openChatProfilePanel()" title="Ver perfil del chat" style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0;border:none;cursor:pointer;padding:0;">{nombre_chat[0].upper()}</button>
-                    <div onclick="window.openChatProfilePanel && window.openChatProfilePanel()" title="Ver perfil del chat" style="min-width:0; flex:1; cursor:pointer;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--primary-color);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:1rem;font-size:1.2rem;flex-shrink:0">{nombre_chat[0].upper()}</div>
+                    <div style="min-width:0; flex:1;">
                         <h3 style="margin:0;font-size:1.1rem;font-family:var(--font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:0.5rem;cursor:context-menu;" title="Click derecho para ver mensajes destacados" oncontextmenu="document.getElementById('modalDestacados').style.display='flex'; return false;">
                             {nombre_chat} {badge_line_header} {tags_bar}
                         </h3>
@@ -4274,49 +4207,8 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 </div>
             </div>
             <!-- END RIGHT SIDEBAR -->
-            {chat_profile_html}
         </div>
         <script>
-        window.chatProfileShouldReopenQR = false;
-        window.setQuickRepliesPanelOpen = function(open){{
-          var qr = document.getElementById('rightSidebar');
-          if(!qr) return;
-          qr.style.display = open ? 'flex' : 'none';
-          localStorage.setItem('qrSidebarOpen', open ? '1' : '0');
-          if(open){{
-            if(window.cargarQuickReplies) window.cargarQuickReplies();
-            if(window.cargarPlantillas) window.cargarPlantillas();
-            setTimeout(function(){{
-              var search = document.getElementById('qrSearchFilter');
-              if(search) search.focus();
-            }}, 50);
-          }}
-        }};
-        window.toggleQuickRepliesPanel = function(){{
-          var profile = document.getElementById('chatProfilePanel');
-          if(profile && profile.style.display === 'flex') return;
-          var qr = document.getElementById('rightSidebar');
-          var isOpen = !!(qr && qr.style.display !== 'none' && qr.style.display !== '');
-          window.setQuickRepliesPanelOpen(!isOpen);
-        }};
-        window.openChatProfilePanel = function(){{
-          var profile = document.getElementById('chatProfilePanel');
-          var qr = document.getElementById('rightSidebar');
-          if(!profile) return;
-          if(profile.style.display === 'flex') return;
-          window.chatProfileShouldReopenQR = !!(qr && qr.style.display !== 'none' && qr.style.display !== '');
-          if(qr && window.chatProfileShouldReopenQR){{
-            qr.style.display = 'none';
-            localStorage.setItem('qrSidebarOpen','0');
-          }}
-          profile.style.display = 'flex';
-        }};
-        window.closeChatProfilePanel = function(){{
-          var profile = document.getElementById('chatProfilePanel');
-          if(profile) profile.style.display = 'none';
-          if(window.chatProfileShouldReopenQR) window.setQuickRepliesPanelOpen(true);
-          window.chatProfileShouldReopenQR = false;
-        }};
         // Restaurar estado del sidebar desde localStorage
         window.addEventListener('load', function(){{
           if(localStorage.getItem('qrSidebarOpen')==='1'){{
