@@ -4175,12 +4175,12 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         <button type="button" onclick="const m = document.getElementById('chatLabelMenu'); m.style.display = m.style.display==='none'?'flex':'none'; if(m.style.display==='flex') cargarChatLabels();" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0.5rem; border-radius:50%; transition:background 0.2s;" onmouseover="this.style.background='var(--accent-hover-soft)'" onmouseout="this.style.background='none'" title="Etiquetas del Chat">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                         </button>
-                        <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:220px; background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,0.5); padding:0.5rem; flex-direction:column; gap:0.4rem; z-index:100;">
+                        <div id="chatLabelMenu" style="display:none; position:absolute; top:calc(100% + 0.5rem); right:0; width:240px; background:color-mix(in srgb, var(--primary-color) 18%, var(--bg-main)); border:1px solid color-mix(in srgb, var(--primary-color) 35%, var(--accent-border)); border-radius:12px; box-shadow:0 12px 28px rgba(0,0,0,0.55); padding:0.55rem; flex-direction:column; gap:0.45rem; z-index:100;">
                             <div style="font-weight:600; font-size:0.8rem; color:var(--text-muted); padding:0.3rem 0.5rem; border-bottom:1px solid var(--accent-border); display:flex; justify-content:space-between; align-items:center;">
                                 Etiquetas 
                                 {f'<button type="button" onclick="crearGlobalLabel()" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-size:1rem; padding:0;" title="Nueva Etiqueta Global">+</button>' if es_admin(request) else ''}
                             </div>
-                            <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.2rem; max-height:220px; overflow-y:auto;">
+                            <div id="chatLabelList" style="display:flex; flex-direction:column; gap:0.35rem; max-height:240px; overflow-y:auto;">
                             </div>
                         </div>
                     </div>
@@ -4333,6 +4333,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
 
             window.ACTIVE_CHAT_LINE = "{_active_line_str}";
             window.IS_QR_LINE = {'true' if _active_line_str.lower().startswith('qr_') else 'false'};
+            window.CURRENT_CHAT_LABELS = {json.dumps(session_tags)};
             
             if(window.IS_QR_LINE) {{
                 const pSub = document.getElementById('plantillasSubsection');
@@ -4385,7 +4386,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                                 await fetch("/api/admin/chats/labels/toggle", {{
                                     method: "POST",
                                     headers: {{"Content-Type":"application/json"}},
-                                    body: JSON.stringify({{ wa_id: "{wa_id}", label_id: msgObj.media_id, action: "toggle" }})
+                                    body: JSON.stringify({{ wa_id: "{wa_id}", label_id: msgObj.media_id, action: msgObj.action || "add" }})
                                 }});
                             }} catch(e) {{}}
                         }}
@@ -4470,7 +4471,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                         const msgs = (qr.mensajes && qr.mensajes.length > 0) ? qr.mensajes : [{{type:'text', content: qr.content}}];
                         msgs.forEach(m => {{
                             if(typeof m === 'string') addQrMessageField('text', m);
-                            else addQrMessageField(m.type || 'text', m.content || '', m.media_id || null, m.filename || null);
+                            else addQrMessageField(m.type || 'text', m.content || '', m.media_id || null, m.filename || null, m.action || 'add');
                         }});
                     }}
                 }} else {{
@@ -4515,7 +4516,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                 }});
             }}
             
-            function addQrMessageField(type = 'text', content = '', mediaId = null, filename = null) {{
+            function addQrMessageField(type = 'text', content = '', mediaId = null, filename = null, action = 'add') {{
                 const msgContainer = document.getElementById('qrMessagesContainer');
                 const div = document.createElement('div');
                 div.style.cssText = 'background:var(--accent-bg); border:1px solid var(--accent-border); border-radius:8px; padding:0.6rem; position:relative;';
@@ -4538,14 +4539,19 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     inner += `<textarea rows="2" class="qr-msg-input" style="width:100%; padding:0.5rem; border-radius:5px; border:1px solid var(--accent-border); background:var(--bg-main); color:var(--text-main); outline:none; font-size:0.85rem; resize:vertical; box-sizing:border-box;" placeholder="Escribe el mensaje...">${{content}}</textarea>`;
                 }} else if(type === 'action_label') {{
                     const selId = mediaId || '';
-                    let opts = `<option value="">-- Seleccionar Etiqueta --</option>`;
+                    const selectedAction = action || 'add';
+                    let opts = `<option value="" style="color:#111827; background:#ffffff;">-- Seleccionar Etiqueta --</option>`;
                     (window._globalLabels||[]).forEach(l => {{
-                        opts += `<option value="${{l.id}}" ${{l.id===selId?'selected':''}}>${{l.name}}</option>`;
+                        opts += `<option value="${{l.id}}" style="color:#111827; background:#ffffff;" ${{l.id===selId?'selected':''}}>${{l.name}}</option>`;
                     }});
                     inner += `
                     <div style="display:flex; flex-direction:column; gap:0.4rem; padding:0.4rem; background:rgba(0,0,0,0.1); border-radius:6px; margin-top:0.3rem;">
                         <span style="font-size:0.8rem; color:var(--text-main); font-weight:600;">Acción Automática: Poner/Quitar Etiqueta</span>
                         <span style="font-size:0.7rem; color:var(--text-muted); line-height:1.2;">Al ejecutarse este paso, la etiqueta seleccionada se añadirá al chat (o se quitará si ya existe en él).</span>
+                        <select class="qr-label-action" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem; cursor:pointer;">
+                            <option value="add" style="color:#111827; background:#ffffff;" ${{selectedAction==='add'?'selected':''}}>Agregar etiqueta</option>
+                            <option value="rm" style="color:#111827; background:#ffffff;" ${{selectedAction==='rm'?'selected':''}}>Quitar etiqueta</option>
+                        </select>
                         <select class="qr-action-select qr-media-id" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid var(--accent-border); background:var(--accent-bg); color:var(--text-main); outline:none; font-size:0.85rem; cursor:pointer;">
                             ${{opts}}
                         </select>
@@ -4625,7 +4631,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                     }} else {{
                         const mediaId = block.querySelector('.qr-media-id')?.value?.trim();
                         const caption = block.querySelector('.qr-media-caption')?.value?.trim() || '';
-                        if(mediaId) mensajes.push({{type: msgType, media_id: mediaId, content: caption}});
+                        if(mediaId) {{
+                            const msgData = {{type: msgType, media_id: mediaId, content: caption}};
+                            if(msgType === 'action_label') msgData.action = block.querySelector('.qr-label-action')?.value || 'add';
+                            mensajes.push(msgData);
+                        }}
                     }}
                 }});
                 
@@ -4844,6 +4854,10 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
                             if(m.type === 'image') return '🖼 Imagen';
                             if(m.type === 'video') return '🎬 Video';
                             if(m.type === 'audio') return '🎵 Audio';
+                            if(m.type === 'action_label') {{
+                                const lbl = (window._globalLabels||[]).find(l=>l.id===m.media_id);
+                                return (m.action === 'rm' ? 'Quitar etiqueta' : 'Agregar etiqueta') + (lbl ? ': ' + lbl.name : '');
+                            }}
                             return '[media]';
                         }});
                         const prev = document.createElement("span");

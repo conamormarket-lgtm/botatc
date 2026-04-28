@@ -2333,6 +2333,7 @@
         }
 
         async function eliminarGlobalLabel(id, name, event) {
+            event.preventDefault();
             event.stopPropagation();
             if (!confirm(`¿Borrar la etiqueta global '${name}' de todo el sistema? (Se eliminará de todos los chats asignados).`)) return;
             try {
@@ -2363,20 +2364,42 @@
                     if (data.labels.length === 0) {
                         list.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Sin etiquetas. Apreta (+) para añadir.</div>`;
                     } else {
+                        window.CURRENT_CHAT_LABELS = Array.isArray(window.CURRENT_CHAT_LABELS) ? window.CURRENT_CHAT_LABELS : [];
+                        const selectedLabels = new Set(window.CURRENT_CHAT_LABELS);
                         data.labels.forEach(lbl => {
+                            const isChecked = selectedLabels.has(lbl.id);
                             const btn = document.createElement("div");
-                            btn.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:0.4rem; background:var(--bg-main); border-radius:6px; font-size:0.85rem; cursor:pointer;";
-                            btn.onclick = () => alternarChatLabel(lbl.id);
+                            btn.className = "chat-label-check-row";
+                            btn.style.cssText = `display:flex; justify-content:space-between; align-items:center; gap:0.55rem; padding:0.55rem 0.6rem; background:${isChecked ? 'color-mix(in srgb, var(--primary-color) 20%, var(--bg-main))' : 'rgba(0,0,0,0.34)'}; border:1px solid ${isChecked ? 'var(--primary-color)' : 'rgba(255,255,255,0.08)'}; border-radius:7px; font-size:0.85rem; cursor:pointer; transition:background 0.15s, border 0.15s, box-shadow 0.15s;`;
+                            btn.onclick = (e) => {
+                                if (e.target.closest('button') || e.target.matches('input[type="checkbox"]')) return;
+                                checkbox.checked = !checkbox.checked;
+                                guardarChecklistChatLabels();
+                            };
+
+                            const checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.checked = isChecked;
+                            checkbox.value = lbl.id;
+                            checkbox.style.cssText = "position:absolute; opacity:0; pointer-events:none;";
+                            checkbox.onchange = () => guardarChecklistChatLabels();
+
+                            const checkBox = document.createElement("span");
+                            checkBox.className = "chat-label-check-box";
+                            checkBox.setAttribute("aria-hidden", "true");
 
                             const colorDot = document.createElement("div");
-                            colorDot.style.cssText = `width:12px; height:12px; border-radius:50%; background:${lbl.color}; margin-right:0.5rem;`;
+                            colorDot.style.cssText = `width:12px; height:12px; border-radius:50%; background:${lbl.color}; flex-shrink:0;`;
 
                             const nameSpan = document.createElement("span");
                             nameSpan.innerText = lbl.name;
                             nameSpan.style.cssText = "flex:1; color:var(--text-main); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;";
                             
+                            btn.appendChild(checkbox);
+                            btn.appendChild(checkBox);
                             btn.appendChild(colorDot);
                             btn.appendChild(nameSpan);
+                            actualizarEstiloChatLabelRow(btn);
 
                             if (window.ES_ADMIN) {
                                 btn.draggable = true;
@@ -2452,7 +2475,44 @@
             }
         }
 
+        async function guardarChecklistChatLabels() {
+            const wa_id = location.pathname.split("/").pop();
+            if (!wa_id || (isNaN(wa_id) && !wa_id.startsWith('qr_'))) return alert("No hay un chat valido seleccionado.");
+
+            const list = document.getElementById("chatLabelList");
+            const checked = Array.from(list.querySelectorAll('input[type="checkbox"]:checked')).map(chk => chk.value);
+            window.CURRENT_CHAT_LABELS = checked;
+
+            list.querySelectorAll('.chat-label-check-row').forEach(row => actualizarEstiloChatLabelRow(row));
+
+            try {
+                const res = await fetch(`/api/admin/chats/labels`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ wa_id: wa_id, label_ids: checked })
+                });
+                const data = await res.json();
+                if (!data.ok) alert("Error: " + data.error);
+            } catch (e) {
+                alert("Error de conexion al guardar etiquetas.");
+            }
+        }
+
+        function actualizarEstiloChatLabelRow(row) {
+            const chk = row.querySelector('input[type="checkbox"]');
+            const box = row.querySelector('.chat-label-check-box');
+            const active = !!(chk && chk.checked);
+            row.style.background = active ? 'color-mix(in srgb, var(--primary-color) 20%, var(--bg-main))' : 'rgba(0,0,0,0.34)';
+            row.style.borderColor = active ? 'var(--primary-color)' : 'rgba(255,255,255,0.08)';
+            row.style.boxShadow = active ? '0 0 0 1px color-mix(in srgb, var(--primary-color) 38%, transparent)' : 'none';
+            if (box) {
+                box.textContent = active ? String.fromCharCode(10003) : '';
+                box.style.cssText = `width:17px; height:17px; border-radius:4px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; line-height:1; color:${active ? '#fff' : 'transparent'}; background:${active ? 'var(--primary-color)' : 'rgba(255,255,255,0.06)'}; border:1px solid ${active ? 'var(--primary-color)' : 'rgba(255,255,255,0.55)'}; box-shadow:${active ? '0 0 0 2px color-mix(in srgb, var(--primary-color) 22%, transparent)' : 'inset 0 0 0 1px rgba(0,0,0,0.22)'};`;
+            }
+        }
+
         function editarGlobalLabel(id, name, color, event) {
+            event.preventDefault();
             event.stopPropagation();
             const modal = document.getElementById("createLabelModal");
             if (modal) {
