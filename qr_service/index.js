@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, Browsers, downloadMediaMessage } = require('@whiskeysockets/baileys');
 const pino = require('pino');
 const QRCode = require('qrcode');
@@ -28,6 +28,36 @@ const PORT = 3000;
 
 
 const sessions = new Map(); // map: lineId -> {sock, currentQR, isConnected}
+
+// ── Sistema de alertas: evitar spam (min 30 min entre alertas por línea) ──
+const lastAlertTime = new Map();
+const ALERT_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutos
+
+async function enviarAlertaQR(lineId, motivo) {
+    const now = Date.now();
+    const last = lastAlertTime.get(lineId) || 0;
+    if (now - last < ALERT_COOLDOWN_MS) {
+        console.log(`[ALERTA] Cooldown activo para ${lineId}, omitiendo alerta.`);
+        return;
+    }
+    lastAlertTime.set(lineId, now);
+
+    const mensaje = `⚠️ *ALERTA QR - ${lineId}*\n\n` +
+        `Motivo: ${motivo}\n` +
+        `Hora: ${new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' })}\n\n` +
+        `Acción requerida: Ir al panel admin → Configuración → Líneas QR y escanear el código.`;
+
+    try {
+        await axios.post('http://127.0.0.1:8000/api/internal/alerta_qr', {
+            lineId,
+            motivo,
+            mensaje
+        }, { timeout: 5000 });
+        console.log(`[ALERTA] ✅ Alerta enviada al CRM para ${lineId}: ${motivo}`);
+    } catch (e) {
+        console.log(`[ALERTA] ⚠️ No se pudo notificar al CRM: ${e.message}`);
+    }
+}
 
 
 async function connectToWhatsApp(lineId) {
@@ -65,16 +95,23 @@ async function connectToWhatsApp(lineId) {
         if (connection === 'close') {
             session.isConnected = false;
             const statusCode = lastDisconnect?.error?.output?.statusCode;
-            console.log('ÔØî Conexi├│n cerrada. C├│digo:', statusCode, '-', lastDisconnect?.error?.message);
+            console.log('❌ Conexión cerrada. Código:', statusCode, '-', lastDisconnect?.error?.message);
             
             if (statusCode === DisconnectReason.loggedOut) {
-                // 401: Dispositivo desvinculado ÔåÆ limpiar sesi├│n y generar QR fresco
-                console.log('­ƒöä Dispositivo desvinculado. Limpiando sesi├│n para generar nuevo QR...');
+                // 401: Dispositivo desvinculado → limpiar sesión y generar QR fresco
+                console.log('🔑 Dispositivo desvinculado. Limpiando sesión para generar nuevo QR...');
+                // Alertar al admin
+                enviarAlertaQR(lineId, `Dispositivo desvinculado (código 401). El QR de la línea fue removido desde el teléfono.`);
                 const authDir = path.join(__dirname, `auth_info_baileys_${lineId}`);
                 try { fs.rmSync(authDir, { recursive: true, force: true }); } catch(e) {}
                 setTimeout(() => connectToWhatsApp(lineId), 2000);
+            } else if (statusCode === 408) {
+                // 408: QR no escaneado a tiempo — la línea quedó sin conectar
+                console.log('⏰ QR no escaneado (código 408). Reconectando y alertando...');
+                enviarAlertaQR(lineId, `QR expiró sin ser escaneado (código 408). La línea no está conectada.`);
+                setTimeout(() => connectToWhatsApp(lineId), 3000);
             } else {
-                // Otros errores (515 restart, red, etc.) ÔåÆ reconectar sin borrar sesi├│n
+                // Otros errores (515 restart, red, etc.) → reconectar sin borrar sesión
                 setTimeout(() => connectToWhatsApp(lineId), 3000);
             }
         } else if (connection === 'open') {

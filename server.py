@@ -6647,3 +6647,37 @@ async def api_test_links(text: str = 'Prueba con https://www.instagram.com'):
         return f'<a href="{href}" target="_blank">{url}</a>{trailing}'
     texto_renderizado = re.sub(r'(<[^>]+>)|((?:https?://|www\.|wa\.me/)[^\s<>]+|[a-zA-Z0-9_-]+\.[a-zA-Z]{2,5}(?:/[^\s<>]*)?)', linkify_text, texto_renderizado)
     return {'original': text, 'resultado': texto_renderizado}
+
+
+# -----------------------------------------------------------------------------
+#  ENDPOINT INTERNO: Alerta cuando una linea QR se desconecta
+#  Solo acepta llamadas desde localhost (qr_service Node.js)
+# -----------------------------------------------------------------------------
+@app.post("/api/internal/alerta_qr")
+async def alerta_qr_endpoint(request: Request):
+    client_host = request.client.host if request.client else ""
+    if client_host not in ("127.0.0.1", "::1", "localhost"):
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+
+    from config import ADMIN_ALERT_PHONE
+    from whatsapp_client import enviar_mensaje_texto
+
+    try:
+        body = await request.json()
+        line_id = body.get("lineId", "?")
+        motivo  = body.get("motivo", "Desconexion inesperada")
+        mensaje = body.get("mensaje", f"Linea QR {line_id} desconectada: {motivo}")
+
+        print(f"[ALERTA QR] Recibida alerta para {line_id}: {motivo}")
+
+        if not ADMIN_ALERT_PHONE:
+            print("[ALERTA QR] ADMIN_ALERT_PHONE no configurado -- alerta no enviada.")
+            return JSONResponse({"ok": False, "error": "ADMIN_ALERT_PHONE no configurado"})
+
+        await enviar_mensaje_texto(ADMIN_ALERT_PHONE, mensaje, line_id="principal")
+        print(f"[ALERTA QR] WhatsApp enviado a {ADMIN_ALERT_PHONE}")
+        return JSONResponse({"ok": True})
+
+    except Exception as e:
+        print(f"[ALERTA QR] Error procesando alerta: {e}")
+        return JSONResponse({"ok": False, "error": str(e)})

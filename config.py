@@ -48,3 +48,8 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")  # Debe configurarse como varia
 
 # --- Modo Tester (números que pueden probar con cualquier pedido) ---
 NUMEROS_TESTER = {"997778512", "51997778512"}  # el dueño puede probar con N° de pedido manual
+
+# --- Alertas internas (ej: QR desconectado) ---
+# Número de WhatsApp del admin que recibirá alertas del sistema (con código de país, sin +)
+ADMIN_ALERT_PHONE = os.getenv("ADMIN_ALERT_PHONE", "")  # ej: "51997778512"
+
