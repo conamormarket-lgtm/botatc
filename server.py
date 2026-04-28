@@ -968,21 +968,37 @@ async def recibir_mensaje(request: Request, background_tasks: BackgroundTasks):
             reaction_data = mensaje_data.get("reaction", {})
             emoji = reaction_data.get("emoji", "")
             msg_id_reacted = reaction_data.get("message_id", "")
-            
-            texto_original = "un mensaje"
-            if numero_wa in sesiones:
-                for m_hist in sesiones[numero_wa]["historial"]:
-                    if m_hist.get("msg_id") == msg_id_reacted:
-                        txt = m_hist.get("content", "")
-                        if txt.startswith("["): 
-                            txt = txt.split("]")[0] + "]"
-                        texto_original = (txt[:40] + '...') if len(txt) > 40 else txt
-                        break
-            
-            if emoji:
-                texto_cliente = f"[💬 Reacción: {emoji} a «{texto_original}»]"
+
+            phone_number_id = changes.get("metadata", {}).get("phone_number_id", "principal")
+            if phone_number_id and str(phone_number_id).isdigit():
+                phone_number_id = "principal"
+            session_key = get_session_key(numero_wa, phone_number_id)
+            ses = obtener_o_crear_sesion(numero_wa, phone_number_id)
+            ses["ultima_actividad"] = datetime.utcnow()
+            ses["nombre_cliente"] = nombre
+            ses["lineId"] = phone_number_id
+            ses["numero_real"] = numero_wa
+
+            updated = False
+            for m_hist in ses.get("historial", []):
+                if m_hist.get("msg_id") == msg_id_reacted:
+                    if emoji:
+                        m_hist["reaction"] = emoji
+                    else:
+                        m_hist.pop("reaction", None)
+                    updated = True
+                    break
+
+            if updated:
+                try:
+                    from firebase_client import guardar_sesion_chat
+                    guardar_sesion_chat(session_key, ses)
+                except Exception as e:
+                    print(f"[WARN] No se pudo guardar reacción: {e}")
             else:
-                texto_cliente = f"[[ERROR] Quitó reacción a «{texto_original}»]"
+                print(f"[REACTION] No se encontró mensaje objetivo {msg_id_reacted} en {session_key}")
+
+            return {"status": "ok"}
         elif tipo_mensaje == "location":
             lat = mensaje_data.get("location", {}).get("latitude", "")
             lon = mensaje_data.get("location", {}).get("longitude", "")
@@ -2924,10 +2940,12 @@ async def admin_reaccionar(payload: ReaccionPayload, request: Request):
     exito = await enviar_reaccion_async(payload.wa_id, payload.message_id, payload.emoji)
     
     if exito:
-        # Añadir al historial local? (Opcional, pero para mantener registro)
         s = sesiones.get(payload.wa_id)
         if s:
-            s["historial"].append({"role": "assistant", "content": f"*[Reacción enviada: {payload.emoji}]*"})
+            for msg in s.get("historial", []):
+                if msg.get("msg_id") == payload.message_id:
+                    msg["reaction"] = payload.emoji
+                    break
             s["ultima_actividad"] = datetime.utcnow()
             try: from firebase_client import guardar_sesion_chat; guardar_sesion_chat(payload.wa_id, s)
             except: pass
@@ -3251,7 +3269,7 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         return f"{m//1440}d"
 
     def ultimo_msg(sesion):
-        hist = [m for m in sesion.get("historial", []) if m["role"] != "system"]
+        hist = [m for m in sesion.get("historial", []) if m["role"] != "system" and not (str(m.get("content", "")).startswith("[") and ("Reacci" in str(m.get("content", "")) or "Quit" in str(m.get("content", "")) and "reacci" in str(m.get("content", "")).lower()))]
         if not hist: return "—"
         return hist[-1]["content"][:50] + ("…" if len(hist[-1]["content"]) > 50 else "")
 
@@ -3613,7 +3631,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
         nombre_chat = s.get("nombre_cliente", s.get("numero_real", wa_id))
         numero_chat_display = s.get("numero_real", wa_id)  # número real sin prefijo de línea
         activo_chat = s.get("bot_activo", True)
-        all_msgs = [m for m in s.get("historial", []) if m["role"] != "system"]
+        def _es_mensaje_reaccion_legacy(msg):
+            content = str(msg.get("content", ""))
+            return content.startswith("[") and ("Reacci" in content or "Quit" in content and "reacci" in content.lower())
+
+        all_msgs = [m for m in s.get("historial", []) if m["role"] != "system" and not _es_mensaje_reaccion_legacy(m)]
 
         # ── Badge de línea para el header del chat activo ────────────────
         badge_line_header = ""
@@ -3871,7 +3893,11 @@ def renderizar_inbox(request: Request, wa_id: str = None, tab: str = "all", labe
             if m.get("transcripcion"):
                 transcrip_html = f'<div style="margin-top:0.5rem; padding-top:0.4rem; border-top:1px dashed rgba(255,255,255,0.15); font-size:0.8rem; font-style:italic; line-height:1.3; color:inherit; opacity:0.9;">📝 {m.get("transcripcion")}</div>'
             
-            burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{transcrip_html}{meta_html}</div>'
+            reaction_html = ""
+            if m.get("reaction"):
+                reaction_html = f'<span class="msg-reaction" style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:20px; padding:0 6px; border-radius:999px; background:var(--accent-bg); border:1px solid var(--accent-border); box-shadow:0 2px 5px rgba(0,0,0,0.22); font-size:0.9rem; line-height:1; margin-top:4px; float:{"right" if es_bot else "left"}; clear:both;">{html_lib.escape(str(m.get("reaction")))}</span>'
+
+            burbujas += f'<div class="bubble {clase} {lado}"{wamid_attr}{extra_data} title="Click derecho (PC) o mantener presionado (M\u00f3vil) para opciones">{texto_renderizado}{transcrip_html}{meta_html}{reaction_html}</div>'
 
             
         if not burbujas:

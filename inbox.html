@@ -1176,6 +1176,19 @@
                 const data = await res.json();
                 if (!data.ok) {
                     alert("❌ Error: " + data.error);
+                } else {
+                    const bubbles = document.querySelectorAll('.bubble[data-wamid]');
+                    const bubble = Array.from(bubbles).find(b => b.getAttribute('data-wamid') === ctxTargetWamid);
+                    if (bubble) {
+                        let badge = bubble.querySelector('.msg-reaction');
+                        if (!badge) {
+                            badge = document.createElement('span');
+                            badge.className = 'msg-reaction';
+                            badge.style.cssText = 'display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:20px; padding:0 6px; border-radius:999px; background:var(--accent-bg); border:1px solid var(--accent-border); box-shadow:0 2px 5px rgba(0,0,0,0.22); font-size:0.9rem; line-height:1; margin-top:4px; float:right; clear:both;';
+                            bubble.appendChild(badge);
+                        }
+                        badge.textContent = emojiStr;
+                    }
                 }
             } catch (e) {
                 alert("❌ Falla de conectividad");
